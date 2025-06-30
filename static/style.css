@@ -21,18 +21,12 @@ body {
     padding: 20px;
 }
 
-/* --- The Main Glass Window (NEW "CRYSTAL CLEAR" LOOK) --- */
+/* --- The Main Glass Window (Crystal Clear Look) --- */
 .glass-morphism-container {
-    /* CHANGED: Made the white tint much more transparent */
     background: rgba(255, 255, 255, 0.02);
-
-    /* CHANGED: Reduced the blur for more clarity */
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
-
-    /* CHANGED: Crisper border */
     border: 1px solid rgba(255, 255, 255, 0.2);
-
     border-radius: 24px;
     padding: 25px 35px;
     width: 100%;
@@ -44,17 +38,6 @@ body {
     position: relative;
     overflow: hidden;
 }
-.glass-morphism-container::before {
-    content: '';
-    position: absolute;
-    top: -10%;
-    left: -10%;
-    width: 60%;
-    height: 60%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 60%);
-    opacity: 0.8;
-    pointer-events: none;
-}
 
 /* --- A. Persistent App Header --- */
 .app-header {
@@ -62,7 +45,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15); /* Slightly brighter border */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     flex-shrink: 0;
 }
 .title-container { flex-grow: 1; text-align: center; }
@@ -103,7 +86,6 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    /* CHANGED: Inner panes are now fully transparent */
     background: transparent;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -115,7 +97,6 @@ body {
     align-items:center;
     padding:12px 20px;
     flex-shrink:0;
-    /* CHANGED: Gave pane headers a subtle background to lift them off the content */
     background: rgba(0,0,0,0.15);
     border-bottom:1px solid rgba(255,255,255,.1)
 }
@@ -133,6 +114,13 @@ body {
 .pane pre { flex-grow: 1; overflow-y: auto; margin: 0; min-height: 0; }
 .pane pre code { white-space: pre-wrap; word-break: break-all; }
 #preview-content { flex-grow: 1; overflow-y: auto; padding: 20px; min-height: 0; }
+
+/* --- PERFORMANCE FIX FOR SCROLLING --- */
+.pane pre, #preview-content {
+    /* This tells the browser to optimize these elements for scrolling */
+    will-change: transform;
+}
+
 
 /* --- Custom Scrollbar Styling --- */
 ::-webkit-scrollbar { width: 10px; }

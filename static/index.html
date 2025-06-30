@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>README.md Forger</title>
+    <!-- CHANGED: Updated the browser tab title -->
+    <title>AutoDoc AI</title>
     <link rel="stylesheet" href="/static/style.css">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,27 +15,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
 </head>
 <body>
-    <!-- The Spline background, as you requested -->
     <div class="spline-background">
         <script type="module" src="https://unpkg.com/@splinetool/viewer@1.10.16/build/spline-viewer.js"></script>
-        <spline-viewer url="https://prod.spline.design/zUKU0EzqSP1OOukH/scene.splinecode"></spline-viewer>
+        <spline-viewer url="https://prod.spline.design/A9dr57t2QYTgGVjW/scene.splinecode"></spline-viewer>
     </div>
 
-    <!-- The UI container that sits on top of the background -->
     <div class="main-container">
-        <!-- This is the single, big glass window -->
         <div class="glass-morphism-container">
             
             <div class="app-header">
                 <div class="title-container">
-                    <h1 class="title">README.md Forger</h1>
-                    <p class="subtitle">AI-powered documentation, forged in seconds.</p>
+                    <!-- CHANGED: Updated the main heading -->
+                    <h1 class="title">AutoDoc AI</h1>
+                    <!-- CHANGED: Updated the slogan -->
+                    <p class="subtitle">Smart docs for smart code.</p>
                 </div>
                 <button id="back-btn" class="back-btn">Start New</button>
             </div>
             
             <div class="content-stage">
-                <!-- View 1: Input (Centered) -->
                 <div id="input-view">
                     <form id="repo-form">
                         <input type="url" id="repo-url" placeholder="Paste your public GitHub repository URL here..." required>
@@ -42,7 +41,6 @@
                     </form>
                 </div>
 
-                <!-- View 2: Output (Split View) -->
                 <div id="output-view" class="split-container" style="display: none;">
                     <div class="pane">
                         <div class="pane-header">
@@ -60,7 +58,6 @@
                     </div>
                 </div>
 
-                <!-- View 3: Loader -->
                 <div id="loader-view" style="display: none;">
                     <div class="loader-glow"></div>
                     <div class="loader-spinner"></div>
