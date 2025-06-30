@@ -295,12 +295,11 @@ def generate(request: RepoRequest):
 # --- 4. Frontend Serving ---
 
 # Mount the 'static' directory to serve files like index.html, css, js
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
 @app.get("/")
-async def read_index():
-    """Serves the main frontend page."""
+async def read_root():
     return FileResponse('static/index.html')
+# This line stays the same. It makes all files in the "static" directory available.
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # To run this app:
 # 1. Make sure you have a .env file with your GOOGLE_API_KEY.
