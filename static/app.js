@@ -16,13 +16,14 @@ const previewContent = document.getElementById('preview-content');
 const copyBtn = document.getElementById('copy-btn');
 
 // --- Loading state variables ---
-let loaderInterval;
+// We keep this array for the new animation function
+let animationTimeout;
 const loadingMessages = [
-    'Analyzing repository structure...',
-    'Identifying key files and dependencies...',
-    'Crafting the prompt for Gemini...',
-    'Writing documentation...',
-    'Polishing the final draft...'
+    'Cloning repository...',
+    'Analyzing codebase...',
+    'Preparing context for AI...',
+    'Generating README sections in parallel...',
+    'This may take a moment...'
 ];
 
 // --- Event Listeners ---
@@ -66,15 +67,14 @@ backBtn.addEventListener('click', () => {
 function setView(viewName) {
     generateBtn.disabled = true;
 
-    // Hide all views first
     inputView.style.display = 'none';
     outputView.style.display = 'none';
     loaderView.style.display = 'none';
     backBtn.classList.remove('visible');
 
-    clearInterval(loaderInterval);
+    // Clear any pending animation timeouts
+    clearTimeout(animationTimeout);
 
-    // Show the requested view by setting its display property to 'flex'
     if (viewName === 'input') {
         inputView.style.display = 'flex';
         generateBtn.disabled = false;
@@ -83,18 +83,27 @@ function setView(viewName) {
         backBtn.classList.add('visible');
     } else if (viewName === 'loader') {
         loaderView.style.display = 'flex';
-        startLoaderAnimation();
+        startLoaderAnimation(); // Call the new animation function
     }
 }
 
+// --- NEW REALISTIC LOADER ANIMATION ---
 function startLoaderAnimation() {
     let messageIndex = 0;
-    loaderText.textContent = loadingMessages[messageIndex];
-    loaderInterval = setInterval(() => {
-        messageIndex = (messageIndex + 1) % loadingMessages.length;
-        loaderText.textContent = loadingMessages[messageIndex];
-    }, 2500);
+    
+    function updateMessage() {
+        if (messageIndex < loadingMessages.length) {
+            loaderText.textContent = loadingMessages[messageIndex];
+            messageIndex++;
+            // Set the next timeout for the next message
+            animationTimeout = setTimeout(updateMessage, 2000); // Progress every 2 seconds
+        }
+        // The animation stops naturally after the last message
+    }
+    
+    updateMessage(); // Start the sequence
 }
+
 
 function copyCode() {
     navigator.clipboard.writeText(codeView.textContent).then(() => {
@@ -108,5 +117,5 @@ function copyCode() {
     });
 }
 
-// Initialize the app with the correct starting view
+// Initialize
 setView('input');
