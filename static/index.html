@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini README Forge</title>
+    <!-- Get Marked.js from a CDN for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: #f0f2f5; }
+        header { background-color: #fff; padding: 20px 40px; border-bottom: 1px solid #ddd; text-align: center; }
+        header h1 { margin: 0; }
+        .container { padding: 20px 40px; }
+        #repo-form { display: flex; gap: 10px; margin-bottom: 20px; }
+        #repo-url { flex-grow: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        #generate-btn { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        #generate-btn:disabled { background-color: #a0cfff; cursor: not-allowed; }
+        .split-container { display: flex; gap: 20px; height: calc(100vh - 200px); }
+        .pane { flex: 1; background-color: #fff; border: 1px solid #ddd; border-radius: 5px; overflow: auto; padding: 20px; }
+        #code-view { font-family: "Courier New", Courier, monospace; font-size: 14px; white-space: pre; background-color: #2d2d2d; color: #f1f1f1; }
+        /* Simple loader */
+        .loader { border: 5px solid #f3f3f3; border-top: 5px solid #007bff; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 40px auto; display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📄 Gemini README Forge 🤖</h1>
+    </header>
+
+    <div class="container">
+        <form id="repo-form">
+            <input type="url" id="repo-url" placeholder="https://github.com/fastapi-users/fastapi-users" required>
+            <button type="submit" id="generate-btn">Generate</button>
+        </form>
+
+        <div id="loader" class="loader"></div>
+
+        <div class="split-container" id="output-area" style="display: none;">
+            <div class="pane">
+                <h2>Markdown Code <button onclick="copyCode()">Copy</button></h2>
+                <textarea id="code-view" readonly style="width: 100%; height: 90%; border: none; resize: none;"></textarea>
+            </div>
+            <div class="pane" id="preview-view">
+                <h2>Live Preview</h2>
+                <div id="preview-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('repo-form');
+        const repoUrlInput = document.getElementById('repo-url');
+        const generateBtn = document.getElementById('generate-btn');
+        const loader = document.getElementById('loader');
+        const outputArea = document.getElementById('output-area');
+        const codeView = document.getElementById('code-view');
+        const previewContent = document.getElementById('preview-content');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const repoUrl = repoUrlInput.value;
+            if (!repoUrl) return;
+
+            // --- UI State: Loading ---
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating...';
+            loader.style.display = 'block';
+            outputArea.style.display = 'none';
+            codeView.value = '';
+            previewContent.innerHTML = '';
+            
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ repo_url: repoUrl })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'An unknown error occurred.');
+                }
+                
+                const data = await response.json();
+
+                // --- UI State: Success ---
+                codeView.value = data.readme;
+                previewContent.innerHTML = marked.parse(data.readme);
+                outputArea.style.display = 'flex';
+
+            } catch (error) {
+                // --- UI State: Error ---
+                previewContent.innerHTML = `<p style="color: red;"><strong>Error:</strong> ${error.message}</p>`;
+                outputArea.style.display = 'flex';
+                codeView.value = `Error: ${error.message}`;
+            } finally {
+                // --- UI State: Reset ---
+                loader.style.display = 'none';
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate';
+            }
+        });
+
+        function copyCode() {
+            codeView.select();
+            document.execCommand('copy');
+            alert('Markdown copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
