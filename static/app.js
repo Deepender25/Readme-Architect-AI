@@ -16,15 +16,18 @@ const previewContent = document.getElementById('preview-content');
 const copyBtn = document.getElementById('copy-btn');
 
 // --- Loading state variables ---
-// We keep this array for the new animation function
 let animationTimeout;
+// === START OF CHANGES ===
+// A cooler, more engaging set of messages for the new animation.
 const loadingMessages = [
-    'Cloning repository...',
-    'Analyzing codebase...',
-    'Preparing context for AI...',
-    'Generating README sections in parallel...',
-    'This may take a moment...'
+    'Warming up the AI brain cells',
+    'Analyzing repository structure',
+    'Deconstructing code logic',
+    'Consulting with digital scribes',
+    'Synthesizing documentation',
+    'Polishing the final draft'
 ];
+// === END OF CHANGES ===
 
 // --- Event Listeners ---
 form.addEventListener('submit', async (e) => {
@@ -87,22 +90,33 @@ function setView(viewName) {
     }
 }
 
-// --- NEW REALISTIC LOADER ANIMATION ---
+// === START OF CHANGES ===
+// --- NEW INTUITIVE & COOLER LOADER ANIMATION ---
+// This function now creates an animated ellipsis and cycles through messages indefinitely.
 function startLoaderAnimation() {
     let messageIndex = 0;
-    
-    function updateMessage() {
-        if (messageIndex < loadingMessages.length) {
-            loaderText.textContent = loadingMessages[messageIndex];
-            messageIndex++;
-            // Set the next timeout for the next message
-            animationTimeout = setTimeout(updateMessage, 2000); // Progress every 2 seconds
+    let dotCount = 1;
+
+    function updateLoader() {
+        // This creates a "message..." effect that updates every 500ms.
+        const baseMessage = loadingMessages[messageIndex];
+        loaderText.textContent = baseMessage + '.'.repeat(dotCount);
+        
+        dotCount++;
+        // When the dots reach 4, we reset them and move to the next message.
+        if (dotCount > 3) {
+            dotCount = 1;
+            // The modulo operator (%) makes the message list loop forever.
+            messageIndex = (messageIndex + 1) % loadingMessages.length;
         }
-        // The animation stops naturally after the last message
+
+        // Set the next timeout in the chain, ensuring it can be cleared later.
+        animationTimeout = setTimeout(updateLoader, 500);
     }
     
-    updateMessage(); // Start the sequence
+    updateLoader(); // Start the animation sequence
 }
+// === END OF CHANGES ===
 
 
 function copyCode() {

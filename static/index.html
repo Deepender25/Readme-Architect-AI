@@ -4,9 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CHANGED: Updated the browser tab title -->
     <title>AutoDoc AI</title>
-    <link rel="stylesheet" href="/static/style.css">
+    
+    <!-- === THE FIX IS HERE === -->
+    <!-- Adding '?v=1.1' forces the browser to load the new CSS file. -->
+    <!-- If you make more CSS changes later, change it to ?v=1.2, then ?v=1.3, etc. -->
+    <link rel="stylesheet" href="/static/style.css?v=1.1">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,9 +28,7 @@
             
             <div class="app-header">
                 <div class="title-container">
-                    <!-- CHANGED: Updated the main heading -->
                     <h1 class="title">AutoDoc AI</h1>
-                    <!-- CHANGED: Updated the slogan -->
                     <p class="subtitle">Smart docs for smart code.</p>
                 </div>
                 <button id="back-btn" class="back-btn">Start New</button>
@@ -59,8 +60,20 @@
                 </div>
 
                 <div id="loader-view" style="display: none;">
-                    <div class="loader-glow"></div>
-                    <div class="loader-spinner"></div>
+                    <div class="loader-container">
+                        <div class="loader-glow"></div>
+                        <div class="satellite-orbit">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="loader-rings">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
                     <p id="loader-text" class="loader-text">Initializing...</p>
                 </div>
             </div>
