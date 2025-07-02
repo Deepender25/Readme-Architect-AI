@@ -6,6 +6,11 @@ const repoUrlInput = document.getElementById('repo-url');
 const generateBtn = document.getElementById('generate-btn');
 const backBtn = document.getElementById('back-btn');
 
+const includeDemoCheckbox = document.getElementById('include-demo');
+const demoCountsContainer = document.getElementById('demo-counts-container');
+const numScreenshotsInput = document.getElementById('num-screenshots');
+const numVideosInput = document.getElementById('num-videos');
+
 const inputView = document.getElementById('input-view');
 const outputView = document.getElementById('output-view');
 const loaderView = document.getElementById('loader-view');
@@ -17,15 +22,14 @@ const copyBtn = document.getElementById('copy-btn');
 
 // --- Loading state variables ---
 let animationTimeout;
-// === START OF CHANGES ===
-// A cooler, more engaging set of messages for the new animation.
+// === START OF CHANGES: New Loading Messages ===
 const loadingMessages = [
-    'Warming up the AI brain cells',
-    'Analyzing repository structure',
-    'Deconstructing code logic',
-    'Consulting with digital scribes',
-    'Synthesizing documentation',
-    'Polishing the final draft'
+    'Igniting the digital forge...',
+    'Analyzing code blueprints...',
+    'Melting down logic into insights...',
+    'Pouring the documentation mold...',
+    'Etching the final details...',
+    'Cooling the newly forged README...'
 ];
 // === END OF CHANGES ===
 
@@ -37,11 +41,18 @@ form.addEventListener('submit', async (e) => {
 
     setView('loader');
     
+    const requestBody = {
+        repo_url: repoUrl,
+        include_demo: includeDemoCheckbox.checked,
+        num_screenshots: parseInt(numScreenshotsInput.value, 10) || 0,
+        num_videos: parseInt(numVideosInput.value, 10) || 0,
+    };
+
     try {
         const response = await fetch('/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ repo_url: repoUrl })
+            body: JSON.stringify(requestBody)
         });
 
         const data = await response.json();
@@ -64,18 +75,21 @@ form.addEventListener('submit', async (e) => {
 backBtn.addEventListener('click', () => {
     setView('input');
     repoUrlInput.value = '';
+    includeDemoCheckbox.checked = false;
+    demoCountsContainer.style.display = 'none';
+});
+
+includeDemoCheckbox.addEventListener('change', () => {
+    demoCountsContainer.style.display = includeDemoCheckbox.checked ? 'flex' : 'none';
 });
 
 // --- Core UI Logic Function ---
 function setView(viewName) {
     generateBtn.disabled = true;
-
     inputView.style.display = 'none';
     outputView.style.display = 'none';
     loaderView.style.display = 'none';
     backBtn.classList.remove('visible');
-
-    // Clear any pending animation timeouts
     clearTimeout(animationTimeout);
 
     if (viewName === 'input') {
@@ -86,38 +100,24 @@ function setView(viewName) {
         backBtn.classList.add('visible');
     } else if (viewName === 'loader') {
         loaderView.style.display = 'flex';
-        startLoaderAnimation(); // Call the new animation function
+        startLoaderAnimation();
     }
 }
 
-// === START OF CHANGES ===
-// --- NEW INTUITIVE & COOLER LOADER ANIMATION ---
-// This function now creates an animated ellipsis and cycles through messages indefinitely.
 function startLoaderAnimation() {
-    let messageIndex = 0;
-    let dotCount = 1;
-
+    let messageIndex = 0, dotCount = 1;
     function updateLoader() {
-        // This creates a "message..." effect that updates every 500ms.
         const baseMessage = loadingMessages[messageIndex];
         loaderText.textContent = baseMessage + '.'.repeat(dotCount);
-        
         dotCount++;
-        // When the dots reach 4, we reset them and move to the next message.
         if (dotCount > 3) {
             dotCount = 1;
-            // The modulo operator (%) makes the message list loop forever.
             messageIndex = (messageIndex + 1) % loadingMessages.length;
         }
-
-        // Set the next timeout in the chain, ensuring it can be cleared later.
-        animationTimeout = setTimeout(updateLoader, 500);
+        animationTimeout = setTimeout(updateLoader, 600); // Slightly slower for readability
     }
-    
-    updateLoader(); // Start the animation sequence
+    updateLoader();
 }
-// === END OF CHANGES ===
-
 
 function copyCode() {
     navigator.clipboard.writeText(codeView.textContent).then(() => {
