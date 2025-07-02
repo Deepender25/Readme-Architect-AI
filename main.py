@@ -220,7 +220,9 @@ def generate_readme_with_gemini(prompt: str) -> str:
     Handles potential API errors and content safety blocks gracefully.
     """
     try:
-        model = genai.GenerativeModel('models/gemini-2.5-pro')
+        # Using 'gemini-1.5-pro-latest' is the best practice. It ensures the app uses the most
+        # capable and up-to-date 'Pro' model without requiring code changes for future updates.
+        model = genai.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content(prompt)
         
         # Check if the model blocked the response or returned nothing
