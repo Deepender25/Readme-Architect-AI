@@ -14,112 +14,74 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 # --- 1. Configuration and Initialization ---
 
-# Load environment variables from a .env file (for the API key)
 load_dotenv()
 
-# Configure the Gemini API with the key from the environment
 try:
     genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 except TypeError:
-    # This happens if the API key is not set. We raise an error to stop the server from starting.
     raise RuntimeError("GOOGLE_API_KEY is not set. Please create a .env file and add your API key.") from None
 
-
-# Pydantic model to define the expected structure of the request body
 class RepoRequest(BaseModel):
     repo_url: str
+    include_demo: bool = Field(default=False)
+    num_screenshots: int = Field(default=0, ge=0, le=10)
+    num_videos: int = Field(default=0, ge=0, le=5)
 
-# Initialize the FastAPI application
 app = FastAPI(
-    title="Gemini README Forge",
-    description="An API to generate a README file for a GitHub repository using Google Gemini.",
-    version="1.0.0",
+    title="AutoDoc AI",
+    description="An API to generate premium README files for a GitHub repository using Google Gemini.",
+    version="2.0.2",
 )
 
 
 # --- 2. Core Logic Functions ---
 
 def clone_repo(repo_url: str) -> str:
-    """
-    Clones a public GitHub repository to a temporary directory using a shallow clone for speed.
-    Raises an HTTPException if the cloning fails.
-    """
     try:
         temp_dir = tempfile.mkdtemp()
         print(f"Cloning {repo_url} into {temp_dir}...")
-        # Use depth=1 for a shallow clone, which is much faster and uses less space.
         git.Repo.clone_from(repo_url, temp_dir, depth=1)
         print("Cloning successful.")
         return temp_dir
     except git.exc.GitCommandError as e:
-        # This error is common for private repos or invalid URLs
         print(f"GitCommandError: {e}")
-        raise HTTPException(
-            status_code=400,
-            detail=f"Failed to clone repository. Is the URL correct and the repository public? Error: {e.stderr}",
-        )
+        raise HTTPException(status_code=400, detail=f"Failed to clone. Is the URL correct and public? Error: {e.stderr}")
     except Exception as e:
-        # Catch any other unexpected errors during cloning
         print(f"An unexpected error occurred during cloning: {e}")
-        raise HTTPException(status_code=500, detail=f"An unexpected error occurred during cloning: {e}")
-
+        raise HTTPException(status_code=500, detail=f"An unexpected error during cloning: {e}")
 
 def cleanup_repo(path: str):
-    """Safely deletes the temporary directory and its contents."""
     if path and os.path.exists(path):
         try:
             shutil.rmtree(path)
             print(f"Cleaned up temporary directory: {path}")
         except Exception as e:
-            # This is not a critical error for the user, but we should log it
             print(f"Error cleaning up directory {path}: {e}")
 
-
 def analyze_codebase(repo_path: str) -> dict:
-    """
-    Performs a deep analysis of the codebase by parsing Python files with AST
-    to extract functions, classes, and docstrings for a richer context.
-    """
     print("Starting deep code analysis...")
-    context = {
-        "file_structure": "",
-        "key_files": {},
-        "dependencies": "No dependency file found.",
-        "python_code_summary": {} # New section for detailed analysis
-    }
-    
-    ignore_list = ['.git', '__pycache__', 'node_modules', '.venv', 'venv', 'target']
-    
+    context = {"file_structure": "", "dependencies": "No dependency file found.", "python_code_summary": {}}
+    ignore_list = ['.git', '__pycache__', 'node_modules', '.venv', 'venv', 'target', 'dist', 'build']
     file_structure_list = []
     for root, dirs, files in os.walk(repo_path, topdown=True):
         dirs[:] = [d for d in dirs if d not in ignore_list]
-        
         level = root.replace(repo_path, '').count(os.sep)
         indent = ' ' * 4 * level
-        file_structure_list.append(f"{indent}{os.path.basename(root)}/")
-        
+        file_structure_list.append(f"{indent}📂 {os.path.basename(root)}/")
         sub_indent = ' ' * 4 * (level + 1)
         for f in files:
-            file_structure_list.append(f"{sub_indent}{f}")
+            file_structure_list.append(f"{sub_indent}📄 {f}")
             file_path = os.path.join(root, f)
-            
-            # --- AST Analysis for Python Files ---
             if f.endswith('.py'):
                 try:
                     with open(file_path, 'r', encoding='utf-8') as py_file:
                         source_code = py_file.read()
                         tree = ast.parse(source_code)
-                        
-                        summary = {
-                            "imports": [node.names[0].name for node in ast.walk(tree) if isinstance(node, ast.Import)],
-                            "functions": [],
-                            "classes": []
-                        }
-                        
+                        summary = {"functions": [], "classes": []}
                         for node in ast.walk(tree):
                             if isinstance(node, ast.FunctionDef):
                                 docstring = ast.get_docstring(node) or "No docstring."
@@ -127,182 +89,165 @@ def analyze_codebase(repo_path: str) -> dict:
                             elif isinstance(node, ast.ClassDef):
                                 docstring = ast.get_docstring(node) or "No docstring."
                                 summary["classes"].append(f"class {node.name}: # {docstring[:80]}")
-                        
                         if summary["functions"] or summary["classes"]:
                              context["python_code_summary"][f] = summary
-
                 except Exception as e:
                     print(f"Could not parse Python file {file_path}: {e}")
-
-            # --- Existing Logic for Other Key Files ---
-            elif f in ['requirements.txt', 'package.json']:
+            elif f in ['requirements.txt', 'package.json', 'pyproject.toml', 'pom.xml']:
                 try:
                     with open(file_path, 'r', encoding='utf-8') as file_content:
                         context["dependencies"] = file_content.read()
                 except Exception: pass
-
     context["file_structure"] = "\n".join(file_structure_list)
     print("Deep code analysis finished.")
     return context
 
-
-def create_prompt(analysis_context: dict) -> str:
-    """Creates a highly detailed, structured prompt for the Gemini model."""
-    # Convert the Python summary to a readable string format for the prompt
+def create_prompt(analysis_context: dict, demo_options: dict) -> str:
+    """Creates a massively improved, highly-detailed, and structured prompt for the Gemini model."""
+    
     python_summary_str = ""
     for filename, summary in analysis_context['python_code_summary'].items():
         python_summary_str += f"\nFile: `{filename}`:\n"
-        if summary['imports']:
-            python_summary_str += "  - Imports: " + ", ".join(summary['imports']) + "\n"
-        if summary['classes']:
-            python_summary_str += "  - Classes: " + ", ".join(summary['classes']) + "\n"
-        if summary['functions']:
-            python_summary_str += "  - Functions: " + ", ".join(summary['functions']) + "\n"
+        if summary['classes']: python_summary_str += "  - Classes: " + ", ".join(summary['classes']) + "\n"
+        if summary['functions']: python_summary_str += "  - Functions: " + ", ".join(summary['functions']) + "\n"
+
+    demo_mandate = ""
+    if demo_options.get("include_demo"):
+        demo_mandate += "\n\n## 📸 Demo & Screenshots\n\n"
+        num_screenshots = demo_options.get("num_screenshots", 0)
+        if num_screenshots > 0:
+            for i in range(1, num_screenshots + 1):
+                demo_mandate += f'![Placeholder Screenshot {i}](https://placehold.co/800x450/1a1a2e/ffffff?text=App+Screenshot+{i})\n_Caption for screenshot {i}._\n\n'
+        num_videos = demo_options.get("num_videos", 0)
+        if num_videos > 0:
+            for i in range(1, num_videos + 1):
+                demo_mandate += f'[![Watch Demo Video {i}](https://placehold.co/800x450/1a1a2e/c5a8ff?text=Watch+Demo+{i})](https://www.youtube.com/watch?v=dQw4w9WgXcQ)\n_Link to video demo {i}._\n\n'
 
     return f"""
-    You are a 10x developer and an expert technical writer. Your task is to create an exceptionally detailed and professional README.md for a software project based on the deep code analysis provided below. The README should be impressive, guiding a new developer from zero to understanding and running the project.
+    **Your Role:** You are a Principal Solutions Architect and a world-class technical copywriter. You are tasked with writing a stunning, comprehensive, and professional README.md file for a new open-source project. Your work must be impeccable.
 
-    **Deep Code Analysis Report:**
+    **Source Analysis Provided:**
+    1.  **Project File Structure:**
+        ```
+        {analysis_context['file_structure']}
+        ```
+    2.  **Dependencies:**
+        ```
+        {analysis_context['dependencies']}
+        ```
+    3.  **Python Code Semantic Summary:**
+        ```
+        {python_summary_str if python_summary_str else "No Python files were analyzed."}
+        ```
 
-    **1. Project File & Directory Structure:**
-    ```
-    {analysis_context['file_structure']}
-    ```
+    **Core Mandate:**
+    Based *only* on the analysis above, generate a complete README.md. You MUST make intelligent, bold inferences about the project's purpose, architecture, and features. The tone must be professional, engaging, and polished. Use rich Markdown formatting, including emojis, tables, and blockquotes, to create a visually appealing document.
 
-    **2. Dependencies (from files like requirements.txt or package.json):**
-    ```
-    {analysis_context['dependencies']}
-    ```
+    **Strict README.md Structure (Follow this format precisely):**
 
-    **3. Python Code Semantic Summary (from AST analysis):**
-    This section outlines the key components found in the Python code, including their purpose if docstrings were available.
-    ```
-    {python_summary_str if python_summary_str else "No Python files with classes or functions were found or parsed."}
-    ```
+    1.  **Project Title:** Create a compelling, professional title. Center it and add a concise, powerful tagline underneath.
+        `<h1 align="center"> [PROJECT TITLE] </h1>`
+        `<p align="center"> [TAGLINE] </p>`
 
-    **README Generation Mandate:**
+    # === START OF CHANGE: Corrected Badge Instructions for Static Placeholders ===
+    2.  **Badges:** Create a centered paragraph of **static placeholder badges**. These badges must look professional and use generic, positive text (e.g., "Build: Passing"). This prevents "repo not found" errors on first generation. CRUCIALLY, you MUST add an HTML comment `<!-- ... -->` right after the badges, instructing the user to replace them with their own live badges.
+        Example format to follow exactly:
+        <p align="center">
+          <img alt="Build" src="https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge">
+          <img alt="Issues" src="https://img.shields.io/badge/Issues-0%20Open-blue?style=for-the-badge">
+          <img alt="Contributions" src="https://img.shields.io/badge/Contributions-Welcome-orange?style=for-the-badge">
+          <img alt="License" src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge">
+        </p>
+        <!-- 
+          **Note:** These are static placeholder badges. Replace them with your project's actual badges.
+          You can generate your own at https://shields.io
+        -->
+    # === END OF CHANGE ===
 
-    Based on all the information above, generate a complete README.md file. You MUST infer the project's purpose, architecture, and core functionality. Be bold in your inferences.
+    3.  **Table of Contents:** Create a clickable table of contents.
+        `- [Overview](#-overview)`
+        `- [Key Features](#-key-features)`
+        ... and so on for all major sections.
 
-    **Required Sections (be extremely detailed in each):**
+    4.  **⭐ Overview:**
+        -   **Hook:** Start with a compelling, single-sentence summary of the project.
+        -   **The Problem:** In a blockquote, describe the problem this project solves.
+        -   **The Solution:** Describe how your project provides an elegant solution to that problem.
+        -   **Inferred Architecture:** Based on the file structure and dependencies, describe the high-level architecture (e.g., "This project is a FastAPI-based web service...").
 
-    - **Project Title:** A creative and fitting name for the project.
-    - **Badges:** Include at least 3 relevant placeholder badges (e.g., Build Status, Code Coverage, License).
-    - **⭐ Overview:** This is the most important section. Write a comprehensive, multi-paragraph description.
-        - Start with a high-level summary of what the project does.
-        - Infer the problem it solves and its target audience.
-        - Describe the project's architecture (e.g., "This is a Flask-based web service with a frontend..."). Use the file structure and dependencies to figure this out.
-    - **✨ Key Features:** A detailed, bulleted list. Don't just list features; add a brief explanation for each one.
-        - Example: "- **Feature A:** Enables users to do X, which solves the problem of Y."
-        - Infer at least 3-5 key features from the code summary.
-    - **🛠️ Tech Stack & Architecture:**
-        - Create a bulleted list of the primary technologies, languages, and major libraries used.
-        - Briefly explain *why* each technology might have been chosen (e.g., "FastAPI was chosen for its high performance...").
-    - **🚀 Getting Started:**
-        - **Prerequisites:** A list of software the user absolutely needs (e.g., Python 3.9+, Node.js, Docker).
-        - **Installation:** A numbered, step-by-step guide. Be explicit with commands.
-            1. `git clone ...`
-            2. `cd ...`
-            3. `pip install -r requirements.txt` (or equivalent)
-    - **🔧 Usage:**
-        - Provide clear instructions on how to run the application (e.g., `uvicorn main:app --reload`).
-        - If possible, give an example of how to interact with it (e.g., "Navigate to http://127.0.0.1:8000").
-    - **🤝 How to Contribute:** A welcoming section encouraging contributions and outlining the basic process (fork, branch, pull request).
-    - **📝 License:** State the license (e.g., "Distributed under the MIT License.").
+    5.  **✨ Key Features:**
+        -   A detailed, bulleted list. For each feature, provide a brief but impactful explanation.
+        -   Infer at least 4-5 key features from the code and file structure.
+        -   Example: `- **Automated Analysis:** Leverages AST to perform deep static analysis of Python code.`
 
-    **Final Instruction:** The output must be ONLY the raw Markdown content. Do not add any commentary before or after the Markdown. Be impressive.
+    6.  **🛠️ Tech Stack & Architecture:**
+        -   Create a Markdown table listing the primary technologies, languages, and major libraries.
+        -   Include columns for "Technology", "Purpose", and "Why it was Chosen".
+        -   Example Row: `| FastAPI | API Framework | For its high performance, async support, and automatic docs generation. |`
+
+    {demo_mandate}
+
+    7.  **🚀 Getting Started:**
+        -   **Prerequisites:** A bulleted list of software the user needs (e.g., Python 3.9+, Node.js v18+).
+        -   **Installation:** A numbered, step-by-step guide with explicit, copy-pastable commands in code blocks for different package managers if inferable (e.g., `pip install -r requirements.txt`).
+
+    8.  **🔧 Usage:**
+        -   Provide clear instructions on how to run the application (e.g., `uvicorn main:app --reload`).
+        -   If it's an API, provide a `curl` example. If it's a CLI, provide a command-line example.
+
+    9.  **🤝 Contributing:**
+        -   A welcoming section encouraging contributions.
+        -   Briefly outline the fork -> branch -> pull request workflow.
+
+    10. **📝 License:**
+        -   State the license (e.g., "Distributed under the MIT License. See `LICENSE` for more information.").
+
+    **Final Instruction:** The output MUST be ONLY the raw Markdown content. Do not add any commentary, greetings, or explanations before or after the Markdown. Adhere strictly to the requested format and quality bar.
     """
-
 
 def generate_readme_with_gemini(prompt: str) -> str:
-    """
-    Sends the prompt to Gemini Pro and returns the generated README.
-    Handles potential API errors and content safety blocks gracefully.
-    """
+    """Sends the prompt to Gemini Pro and returns the generated README."""
     try:
-        # Using 'gemini-1.5-pro-latest' is the best practice. It ensures the app uses the most
-        # capable and up-to-date 'Pro' model without requiring code changes for future updates.
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        model = genai.GenerativeModel('gemini-2.5-pro') 
         response = model.generate_content(prompt)
         
-        # Check if the model blocked the response or returned nothing
         if not response.parts:
             reason = "Unknown"
-            try:
-                # Access the safety feedback to give a more specific error
-                reason = response.prompt_feedback.block_reason.name
-            except AttributeError:
-                pass # No block_reason available
-            error_message = f"Content generation failed. The model returned an empty response. Reason: {reason}. This often happens due to safety filters."
+            try: reason = response.prompt_feedback.block_reason.name
+            except AttributeError: pass 
+            error_message = f"Content generation failed due to safety filters. Reason: {reason}."
             print(f"Gemini Error: {error_message}")
             raise HTTPException(status_code=400, detail=error_message)
 
         return response.text
         
     except Exception as e:
-        # Catch exceptions raised from this function or any other API-related errors
         print(f"An error occurred while communicating with the Gemini API: {e}")
-        # Re-raise as an HTTPException to be sent to the client
-        if isinstance(e, HTTPException):
-             raise e
+        if isinstance(e, HTTPException): raise e
         raise HTTPException(status_code=500, detail=f"An error occurred with the AI model: {e}")
 
 
-# --- 3. API Endpoints ---
-
 @app.post("/api/generate")
 def generate(request: RepoRequest):
-    """
-    The main API endpoint. It takes a repository URL, orchestrates the cloning,
-    analysis, and generation process, and returns the README.
-    """
     repo_path = None
     try:
-        # Step 1: Clone the repository
         repo_path = clone_repo(request.repo_url)
-        
-        # Step 2: Analyze the codebase
         analysis = analyze_codebase(repo_path)
-        
-        # Step 3: Create the prompt for the AI
-        prompt = create_prompt(analysis)
-        
-        # Step 4: Generate the README using Gemini
+        demo_options = {
+            "include_demo": request.include_demo,
+            "num_screenshots": request.num_screenshots,
+            "num_videos": request.num_videos,
+        }
+        prompt = create_prompt(analysis, demo_options)
         readme_content = generate_readme_with_gemini(prompt)
-        
-        # Step 5: Return the successful response
         return {"readme": readme_content}
-        
     except Exception as e:
-        # This is a master catch-all for any unhandled errors in the process.
-        # It ensures the server doesn't crash and returns a structured error.
-        print("--- AN UNHANDLED EXCEPTION OCCURRED IN /api/generate ---")
         traceback.print_exc()
-        print("-----------------------------------------------------")
-        
-        # If the exception is already an HTTPException, re-raise it.
-        # Otherwise, create a generic 500 error.
-        if isinstance(e, HTTPException):
-            raise e
-        else:
-            raise HTTPException(status_code=500, detail=f"An internal server error occurred: {e}")
-            
+        if isinstance(e, HTTPException): raise e
+        else: raise HTTPException(status_code=500, detail=f"An internal server error occurred: {e}")
     finally:
-        # This block ALWAYS runs, whether the try block succeeded or failed.
-        # It's crucial for cleaning up resources.
-        if repo_path:
-            cleanup_repo(repo_path)
+        if repo_path: cleanup_repo(repo_path)
 
-
-# --- 4. Frontend Serving ---
-
-# Mount the 'static' directory to serve files like index.html, css, js
 @app.get("/")
-async def read_root():
-    return FileResponse('static/index.html')
-# This line stays the same. It makes all files in the "static" directory available.
+async def read_root(): return FileResponse('static/index.html')
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# To run this app:
-# 1. Make sure you have a .env file with your GOOGLE_API_KEY.
-# 2. In your terminal, run: uvicorn main:app --reload
