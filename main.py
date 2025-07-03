@@ -208,7 +208,7 @@ def create_prompt(analysis_context: dict, demo_options: dict) -> str:
 def generate_readme_with_gemini(prompt: str) -> str:
     """Sends the prompt to Gemini Pro and returns the generated README."""
     try:
-        model = genai.GenerativeModel('gemini-2.5-pro') 
+        model = genai.GenerativeModel('gemini-2.5-flash') 
         response = model.generate_content(prompt)
         
         if not response.parts:

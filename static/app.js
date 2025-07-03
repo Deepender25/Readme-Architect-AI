@@ -24,12 +24,12 @@ const copyBtn = document.getElementById('copy-btn');
 let animationTimeout;
 // === START OF CHANGES: New Loading Messages ===
 const loadingMessages = [
-    'Igniting the digital forge...',
-    'Analyzing code blueprints...',
-    'Melting down logic into insights...',
-    'Pouring the documentation mold...',
-    'Etching the final details...',
-    'Cooling the newly forged README...'
+    'Connecting to GitHub...',
+    'Cloning repository blueprints...',
+    'Analyzing file structure...',
+    'Parsing commit history...',
+    'Inspecting code dependencies...',
+    'Assembling documentation...'
 ];
 // === END OF CHANGES ===
 
