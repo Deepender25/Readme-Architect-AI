@@ -3,6 +3,7 @@
 // --- DOM Elements ---
 const form = document.getElementById('repo-form');
 const repoUrlInput = document.getElementById('repo-url');
+const projectNameInput = document.getElementById('project-name');
 const generateBtn = document.getElementById('generate-btn');
 const backBtn = document.getElementById('back-btn');
 
@@ -22,7 +23,6 @@ const copyBtn = document.getElementById('copy-btn');
 
 // --- Loading state variables ---
 let animationTimeout;
-// === START OF CHANGES: New Loading Messages ===
 const loadingMessages = [
     'Connecting to GitHub...',
     'Cloning repository blueprints...',
@@ -31,7 +31,6 @@ const loadingMessages = [
     'Inspecting code dependencies...',
     'Assembling documentation...'
 ];
-// === END OF CHANGES ===
 
 // --- Event Listeners ---
 form.addEventListener('submit', async (e) => {
@@ -43,6 +42,7 @@ form.addEventListener('submit', async (e) => {
     
     const requestBody = {
         repo_url: repoUrl,
+        project_name: projectNameInput.value.trim(),
         include_demo: includeDemoCheckbox.checked,
         num_screenshots: parseInt(numScreenshotsInput.value, 10) || 0,
         num_videos: parseInt(numVideosInput.value, 10) || 0,
@@ -60,14 +60,14 @@ form.addEventListener('submit', async (e) => {
         
         codeView.textContent = data.readme;
         previewContent.innerHTML = marked.parse(data.readme);
-        hljs.highlightElement(codeView);
+        hljs.highlightAll(); // Use highlightAll to be safe
         
         setView('output');
 
     } catch (error) {
         previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Generation Failed</h3><p>${error.message}</p></div>`;
         codeView.textContent = `/*\n  Error: ${error.message}\n*/`;
-        hljs.highlightElement(codeView);
+        hljs.highlightAll();
         setView('output');
     }
 });
@@ -75,8 +75,11 @@ form.addEventListener('submit', async (e) => {
 backBtn.addEventListener('click', () => {
     setView('input');
     repoUrlInput.value = '';
+    projectNameInput.value = '';
     includeDemoCheckbox.checked = false;
     demoCountsContainer.style.display = 'none';
+    numScreenshotsInput.value = "2";
+    numVideosInput.value = "1";
 });
 
 includeDemoCheckbox.addEventListener('change', () => {
@@ -114,7 +117,7 @@ function startLoaderAnimation() {
             dotCount = 1;
             messageIndex = (messageIndex + 1) % loadingMessages.length;
         }
-        animationTimeout = setTimeout(updateLoader, 600); // Slightly slower for readability
+        animationTimeout = setTimeout(updateLoader, 600);
     }
     updateLoader();
 }
