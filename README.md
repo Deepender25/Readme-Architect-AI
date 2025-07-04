@@ -65,7 +65,6 @@ _Loading state while AI generates README._
 
 _Preview of the AI-generated README._
 
-[![Watch Demo Video 1]
 https://github.com/user-attachments/assets/37fdb968-c310-4714-81ee-9c2d75f2cae5
 
 
