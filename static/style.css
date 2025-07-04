@@ -7,7 +7,7 @@ body { font-family: 'Inter', sans-serif; background-color: #0a0a0f; color: #e0e0
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes contentFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* === WINDOW AND BUTTON STYLES (Unchanged) === */
+/* === WINDOW AND BUTTON STYLES === */
 .glass-morphism-container { 
     background: rgba(16, 16, 24, 0.65); 
     backdrop-filter: blur(25px); 
@@ -96,6 +96,21 @@ body { font-family: 'Inter', sans-serif; background-color: #0a0a0f; color: #e0e0
     align-self: center; 
 }
 .option-row { display: flex; justify-content: space-between; align-items: center; }
+.text-option-input {
+    flex-grow: 1;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    color: #fff;
+    outline: 0;
+    transition: all .3s ease;
+    padding: 10px 15px;
+    font-size: 0.95rem;
+    margin-left: 20px;
+    max-width: 50%;
+}
+.text-option-input::placeholder { color: #888; }
+.text-option-input:focus { border-color:#a8b2ff; }
 .option-label { 
     font-size: 1.1rem; 
     color: #d0d0f0; 
@@ -128,7 +143,7 @@ input:checked + .slider-label:before { transform: translateX(26px); }
 ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
 ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #7a7eff, #c5a8ff); border-radius: 10px; }
 
-/* === GITHUB OCTOCAT LOADER STYLES (Unchanged) === */
+/* === GITHUB OCTOCAT LOADER STYLES === */
 #loader-view { flex-direction: column; align-items: center; justify-content: center; gap: 40px; }
 .loader-text { font-size: 1.5rem; color: #d0d0f0; z-index: 10; font-weight: 500; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
 @keyframes breathe {
@@ -165,7 +180,7 @@ input:checked + .slider-label:before { transform: translateX(26px); }
     animation-delay: 0.5s;
 }
 
-/* === START: PREVIEW PANE STYLING FIXES === */
+/* === PREVIEW PANE STYLING FIXES === */
 #preview-content h1, #preview-content h2 { border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 15px; color: #a8b2ff; } 
 #preview-content code { background: rgba(122, 126, 255, 0.2); padding: 3px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; } 
 #preview-content pre { background: #1a1a2e; padding: 15px; border-radius: 8px; border: 1px solid #3a3a5e; } 
@@ -176,24 +191,19 @@ input:checked + .slider-label:before { transform: translateX(26px); }
 #preview-content th, #preview-content td { border: 1px solid #444; padding: 10px; text-align: left; } 
 #preview-content th { background-color: rgba(0,0,0,0.2); } 
 #preview-content blockquote { border-left: 4px solid #a8b2ff; padding-left: 15px; margin: 15px 0; color: #ccc; }
-
-/* Fix for placeholder images and videos */
 #preview-content img {
-    max-width: 100%;      /* THIS IS THE KEY FIX: Prevents overflow */
-    height: auto;         /* Maintains the image's aspect ratio */
-    display: block;       /* Allows for centering with margin */
-    margin: 20px auto;    /* Centers the image and adds vertical space */
-    border-radius: 8px;   /* Adds a modern, rounded look */
-    background: #1a1a2e;  /* Adds a background color while loading */
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+    border-radius: 8px;
+    background: #1a1a2e;
 }
-
-/* Styles for the captions under the placeholders */
 #preview-content p > em {
-    display: block;       /* Ensures it takes its own line */
-    text-align: center;   /* Centers the caption text */
-    font-size: 0.9rem;    /* Makes caption text slightly smaller */
-    color: #b0b0d0;       /* Softer color for the caption */
-    margin-top: -10px;    /* Reduces the space between the image and caption */
-    margin-bottom: 20px;  /* Adds space after the caption */
+    display: block;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #b0b0d0;
+    margin-top: -10px;
+    margin-bottom: 20px;
 }
-/* === END: PREVIEW PANE STYLING FIXES === */

@@ -5,7 +5,8 @@ import os
 import shutil
 import tempfile
 import traceback
-import ast 
+import ast
+from typing import Optional
 
 # --- Third-Party Imports ---
 import git
@@ -27,6 +28,7 @@ except TypeError:
 
 class RepoRequest(BaseModel):
     repo_url: str
+    project_name: Optional[str] = Field(default=None, description="Optional user-defined project name.")
     include_demo: bool = Field(default=False)
     num_screenshots: int = Field(default=0, ge=0, le=10)
     num_videos: int = Field(default=0, ge=0, le=5)
@@ -34,7 +36,7 @@ class RepoRequest(BaseModel):
 app = FastAPI(
     title="AutoDoc AI",
     description="An API to generate premium README files for a GitHub repository using Google Gemini.",
-    version="2.0.2",
+    version="2.0.3",
 )
 
 
@@ -49,9 +51,13 @@ def clone_repo(repo_url: str) -> str:
         return temp_dir
     except git.exc.GitCommandError as e:
         print(f"GitCommandError: {e}")
+        # Make sure to cleanup the temp directory on failure
+        cleanup_repo(temp_dir)
         raise HTTPException(status_code=400, detail=f"Failed to clone. Is the URL correct and public? Error: {e.stderr}")
     except Exception as e:
         print(f"An unexpected error occurred during cloning: {e}")
+        # Make sure to cleanup the temp directory on failure
+        cleanup_repo(temp_dir)
         raise HTTPException(status_code=500, detail=f"An unexpected error during cloning: {e}")
 
 def cleanup_repo(path: str):
@@ -102,7 +108,7 @@ def analyze_codebase(repo_path: str) -> dict:
     print("Deep code analysis finished.")
     return context
 
-def create_prompt(analysis_context: dict, demo_options: dict) -> str:
+def create_prompt(analysis_context: dict, demo_options: dict, project_name: Optional[str] = None) -> str:
     """Creates a massively improved, highly-detailed, and structured prompt for the Gemini model."""
     
     python_summary_str = ""
@@ -122,6 +128,19 @@ def create_prompt(analysis_context: dict, demo_options: dict) -> str:
         if num_videos > 0:
             for i in range(1, num_videos + 1):
                 demo_mandate += f'[![Watch Demo Video {i}](https://placehold.co/800x450/1a1a2e/c5a8ff?text=Watch+Demo+{i})](https://www.youtube.com/watch?v=dQw4w9WgXcQ)\n_Link to video demo {i}._\n\n'
+
+    # Conditionally set the instruction for the project title
+    title_instruction = ""
+    if project_name and project_name.strip():
+        # User has provided a name, so instruct the AI to use it.
+        title_instruction = f"""1.  **Project Title:** Use the exact project title "{project_name}". Center it, and then create a concise, powerful tagline to go underneath it.
+        `<h1 align="center"> {project_name} </h1>`
+        `<p align="center"> [CREATE A COMPELLING TAGLINE HERE] </p>`"""
+    else:
+        # No name provided, instruct the AI to create one.
+        title_instruction = """1.  **Project Title:** Create a compelling, professional title based on the analysis. Center it and add a concise, powerful tagline underneath.
+        `<h1 align="center"> [PROJECT TITLE] </h1>`
+        `<p align="center"> [TAGLINE] </p>`"""
 
     return f"""
     **Your Role:** You are a Principal Solutions Architect and a world-class technical copywriter. You are tasked with writing a stunning, comprehensive, and professional README.md file for a new open-source project. Your work must be impeccable.
@@ -145,11 +164,8 @@ def create_prompt(analysis_context: dict, demo_options: dict) -> str:
 
     **Strict README.md Structure (Follow this format precisely):**
 
-    1.  **Project Title:** Create a compelling, professional title. Center it and add a concise, powerful tagline underneath.
-        `<h1 align="center"> [PROJECT TITLE] </h1>`
-        `<p align="center"> [TAGLINE] </p>`
+    {title_instruction}
 
-    # === START OF CHANGE: Corrected Badge Instructions for Static Placeholders ===
     2.  **Badges:** Create a centered paragraph of **static placeholder badges**. These badges must look professional and use generic, positive text (e.g., "Build: Passing"). This prevents "repo not found" errors on first generation. CRUCIALLY, you MUST add an HTML comment `<!-- ... -->` right after the badges, instructing the user to replace them with their own live badges.
         Example format to follow exactly:
         <p align="center">
@@ -162,7 +178,6 @@ def create_prompt(analysis_context: dict, demo_options: dict) -> str:
           **Note:** These are static placeholder badges. Replace them with your project's actual badges.
           You can generate your own at https://shields.io
         -->
-    # === END OF CHANGE ===
 
     3.  **Table of Contents:** Create a clickable table of contents.
         `- [Overview](#-overview)`
@@ -208,7 +223,7 @@ def create_prompt(analysis_context: dict, demo_options: dict) -> str:
 def generate_readme_with_gemini(prompt: str) -> str:
     """Sends the prompt to Gemini Pro and returns the generated README."""
     try:
-        model = genai.GenerativeModel('gemini-2.5-flash') 
+        model = genai.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content(prompt)
         
         if not response.parts:
@@ -238,7 +253,7 @@ def generate(request: RepoRequest):
             "num_screenshots": request.num_screenshots,
             "num_videos": request.num_videos,
         }
-        prompt = create_prompt(analysis, demo_options)
+        prompt = create_prompt(analysis, demo_options, request.project_name)
         readme_content = generate_readme_with_gemini(prompt)
         return {"readme": readme_content}
     except Exception as e:
