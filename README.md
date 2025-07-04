@@ -52,16 +52,22 @@ This project operates as a robust web service with a clear separation of concern
 
 ## 📸 Demo & Screenshots
 
-![Placeholder Screenshot 1](https://placehold.co/800x450/1a1a2e/ffffff?text=Web+Interface+Input)
+![Placeholder Screenshot 1](https://github.com/user-attachments/assets/63e19962-7241-4927-9480-295f4a9b612c)
+
 _Input form for repository URL and options._
 
-![Placeholder Screenshot 2](https://placehold.co/800x450/1a1a2e/ffffff?text=Processing+Indicator)
+![Placeholder Screenshot 2](https://github.com/user-attachments/assets/da037308-93e7-470c-8e9c-9a99158103fe)
+
+
 _Loading state while AI generates README._
 
-![Placeholder Screenshot 3](https://placehold.co/800x450/1a1a2e/ffffff?text=Generated+README+Preview)
+![Placeholder Screenshot 3](https://github.com/user-attachments/assets/8c02e8e4-6e4b-46a3-9ca9-a7bb43c35528)
+
 _Preview of the AI-generated README._
 
-[![Watch Demo Video 1](https://placehold.co/800x450/1a1a2e/c5a8ff?text=Watch+Demo+Video)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+[![Watch Demo Video 1](https://github.com/user-attachments/assets/37fdb968-c310-4714-81ee-9c2d75f2cae5)
+
+
 _Link to a comprehensive walkthrough of GeminiDocs AI in action._
 
 ## 🚀 Getting Started
