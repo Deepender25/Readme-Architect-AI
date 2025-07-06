@@ -12,10 +12,12 @@ from typing import Optional
 import git
 import google.generativeai as genai
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
+import asyncio
+import json
 
 # --- 1. Configuration and Initialization ---
 
@@ -242,27 +244,56 @@ def generate_readme_with_gemini(prompt: str) -> str:
         raise HTTPException(status_code=500, detail=f"An error occurred with the AI model: {e}")
 
 
-@app.post("/api/generate")
-def generate(request: RepoRequest):
-    repo_path = None
-    try:
-        repo_path = clone_repo(request.repo_url)
-        analysis = analyze_codebase(repo_path)
-        demo_options = {
-            "include_demo": request.include_demo,
-            "num_screenshots": request.num_screenshots,
-            "num_videos": request.num_videos,
-        }
-        prompt = create_prompt(analysis, demo_options, request.project_name)
-        readme_content = generate_readme_with_gemini(prompt)
-        return {"readme": readme_content}
-    except Exception as e:
-        traceback.print_exc()
-        if isinstance(e, HTTPException): raise e
-        else: raise HTTPException(status_code=500, detail=f"An internal server error occurred: {e}")
-    finally:
-        if repo_path: cleanup_repo(repo_path)
+@app.get("/api/generate")
+async def generate(
+    repo_url: str,
+    project_name: Optional[str] = None,
+    include_demo: bool = False,
+    num_screenshots: int = 0,
+    num_videos: int = 0
+):
+    async def event_stream():
+        repo_path = None
+        try:
+            # --- 1. Cloning ---
+            yield f"data: {json.dumps({'status': 'Cloning repository...'})}\n\n"
+            await asyncio.sleep(1) # Simulate work
+            repo_path = await asyncio.to_thread(clone_repo, repo_url)
+
+            # --- 2. Analyzing ---
+            yield f"data: {json.dumps({'status': 'Analyzing codebase...'})}\n\n"
+            await asyncio.sleep(1) # Simulate work
+            analysis = await asyncio.to_thread(analyze_codebase, repo_path)
+
+            # --- 3. Prompting ---
+            yield f"data: {json.dumps({'status': 'Building prompt for AI...'})}\n\n"
+            await asyncio.sleep(1) # Simulate work
+            demo_options = {
+                "include_demo": include_demo,
+                "num_screenshots": num_screenshots,
+                "num_videos": num_videos,
+            }
+            prompt = create_prompt(analysis, demo_options, project_name)
+
+            # --- 4. Generating ---
+            yield f"data: {json.dumps({'status': 'Generating README with Gemini...'})}\n\n"
+            await asyncio.sleep(1) # Simulate work
+            readme_content = await asyncio.to_thread(generate_readme_with_gemini, prompt)
+            
+            # --- 5. Success ---
+            yield f"data: {json.dumps({'readme': readme_content})}\n\n"
+
+        except Exception as e:
+            traceback.print_exc()
+            error_detail = e.detail if isinstance(e, HTTPException) else str(e)
+            yield f"data: {json.dumps({'error': error_detail})}\n\n"
+        finally:
+            if repo_path:
+                cleanup_repo(repo_path)
+
+    return StreamingResponse(event_stream(), media_type="text/event-stream")
 
 @app.get("/")
 async def read_root(): return FileResponse('static/index.html')
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
