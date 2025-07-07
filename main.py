@@ -84,6 +84,7 @@ def analyze_codebase(repo_path: str) -> dict:
         for f in files:
             file_structure_list.append(f"{sub_indent}📄 {f}")
             file_path = os.path.join(root, f)
+            
             if f.endswith('.py'):
                 try:
                     with open(file_path, 'r', encoding='utf-8') as py_file:
@@ -182,8 +183,8 @@ def create_prompt(analysis_context: dict, demo_options: dict, project_name: Opti
         -->
 
     3.  **Table of Contents:** Create a clickable table of contents.
-        `- [Overview](#-overview)`
-        `- [Key Features](#-key-features)`
+        - [Overview](#-overview)
+        - [Key Features](#-key-features)
         ... and so on for all major sections.
 
     4.  **⭐ Overview:**
