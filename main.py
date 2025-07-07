@@ -133,8 +133,6 @@ def create_prompt(analysis_context: dict, demo_options: dict, project_name: Opti
             demo_mandate += "</details>\n\n"
         num_videos = demo_options.get("num_videos", 0)
         if num_videos > 0:
-            for i in range(1, num_videos + 1):
-                if num_videos > 0:
             demo_mandate += "<details>\n"
             demo_mandate += "  <summary>🎬 Video Demos</summary>\n"
             for i in range(1, num_videos + 1):
