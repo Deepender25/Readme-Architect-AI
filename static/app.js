@@ -107,7 +107,8 @@ backBtn.addEventListener('click', () => {
     repoUrlInput.value = '';
     projectNameInput.value = '';
     includeDemoCheckbox.checked = false;
-    demoCountsContainer.style.display = 'none';
+    demoCountsContainer.style.opacity = 0;
+    demoCountsContainer.style.transform = 'translateY(-10px)';
     numScreenshotsInput.value = "2";
     numVideosInput.value = "1";
 });
@@ -115,7 +116,6 @@ backBtn.addEventListener('click', () => {
 includeDemoCheckbox.addEventListener('change', () => {
     const isChecked = includeDemoCheckbox.checked;
     if (isChecked) {
-        demoCountsContainer.style.display = 'flex';
         anime({
             targets: demoCountsContainer,
             opacity: [0, 1],
@@ -272,6 +272,9 @@ function initialize() {
     anime.set('#back-btn', { opacity: 0, translateX: 20 });
     anime.set('#repo-form .form-main', { opacity: 0, translateY: 30 });
     anime.set('#repo-form .form-options .option-row', { opacity: 0, translateY: 20 });
+    if (!includeDemoCheckbox.checked) {
+        anime.set(demoCountsContainer, { opacity: 0, translateY: -10 });
+    }
 
     // Now animate them in
     animateFormIn();
