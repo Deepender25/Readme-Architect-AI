@@ -125,12 +125,24 @@ def create_prompt(analysis_context: dict, demo_options: dict, project_name: Opti
         demo_mandate += "\n\n## 📸 Demo & Screenshots\n\n"
         num_screenshots = demo_options.get("num_screenshots", 0)
         if num_screenshots > 0:
+            demo_mandate += "<details>\n"
+            demo_mandate += "  <summary>🖼️ Screenshots</summary>\n"
             for i in range(1, num_screenshots + 1):
-                demo_mandate += f'![Placeholder Screenshot {i}](https://placehold.co/800x450/1a1a2e/ffffff?text=App+Screenshot+{i})\n_Caption for screenshot {i}._\n\n'
+                demo_mandate += f'  <img src="https://placehold.co/800x450/2d2d4d/ffffff?text=App+Screenshot+{i}" alt="App Screenshot {i}" width="100%">\n'
+                demo_mandate += f'  <em><p align="center">Caption for screenshot {i}.</p></em>\n'
+            demo_mandate += "</details>\n\n"
         num_videos = demo_options.get("num_videos", 0)
         if num_videos > 0:
             for i in range(1, num_videos + 1):
-                demo_mandate += f'[![Watch Demo Video {i}](https://placehold.co/800x450/1a1a2e/c5a8ff?text=Watch+Demo+{i})](https://www.youtube.com/watch?v=dQw4w9WgXcQ)\n_Link to video demo {i}._\n\n'
+                if num_videos > 0:
+            demo_mandate += "<details>\n"
+            demo_mandate += "  <summary>🎬 Video Demos</summary>\n"
+            for i in range(1, num_videos + 1):
+                demo_mandate += f'  <a href="https://example.com/your-video-link-{i}" target="_blank">\n'
+                demo_mandate += f'    <img src="https://placehold.co/800x450/2d2d4d/c5a8ff?text=Watch+Video+Demo+{i}" alt="Video Demo {i}" width="100%">\n'
+                demo_mandate += f'  </a>\n'
+                demo_mandate += f'  <em><p align="center">Caption for video demo {i}.</p></em>\n'
+            demo_mandate += "</details>\n\n"
 
     # Conditionally set the instruction for the project title
     title_instruction = ""
