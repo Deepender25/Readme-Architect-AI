@@ -116,6 +116,7 @@ backBtn.addEventListener('click', () => {
 includeDemoCheckbox.addEventListener('change', () => {
     const isChecked = includeDemoCheckbox.checked;
     if (isChecked) {
+        demoCountsContainer.style.display = 'flex';
         anime({
             targets: demoCountsContainer,
             opacity: [0, 1],
