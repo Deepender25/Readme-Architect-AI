@@ -171,3 +171,15 @@ input:checked + .slider-label:before { transform: translateX(26px); }
     .title-container { text-align: left; }
     .back-btn { grid-column: 2; }
 }
+/* Copy Success Slider */
+.copy-success-slider {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%; /* Will be animated to 0 */
+    height: 5px; /* Thin green bar */
+    background-color: #4CAF50; /* Green color */
+    z-index: 9999; /* Ensure it's on top */
+    transform: translateX(100%); /* Start off-screen right */
+    /* No transition here, anime.js will handle it */
+}
