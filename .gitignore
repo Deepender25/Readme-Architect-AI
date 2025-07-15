@@ -54,3 +54,4 @@ htmlcov/
 # Any log files your application might generate.
 *.log
 logs/
+.vercel

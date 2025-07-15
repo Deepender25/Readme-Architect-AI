@@ -109,6 +109,7 @@ backBtn.addEventListener('click', () => {
     includeDemoCheckbox.checked = false;
     demoCountsContainer.style.opacity = 0;
     demoCountsContainer.style.transform = 'translateY(-10px)';
+    demoCountsContainer.style.display = 'none'; // Explicitly hide on back
     numScreenshotsInput.value = "2";
     numVideosInput.value = "1";
 });
@@ -235,28 +236,46 @@ function animateOutputIn() {
 
 function copyCode() {
     navigator.clipboard.writeText(codeView.textContent).then(() => {
-        const originalText = copyBtn.querySelector('span').textContent;
-        if (originalText === 'Copied!') return;
-
-        copyBtn.querySelector('span').textContent = 'Copied!';
-        anime({
-            targets: copyBtn,
-            scale: [1, 1.05, 1],
-            duration: 150,
-            easing: 'easeOutCubic'
-        });
-
-        setTimeout(() => {
-            copyBtn.querySelector('span').textContent = originalText;
-        }, 1000);
+        showCopySuccessAnimation();
     }).catch(err => {
         alert('Failed to copy text.');
+    });
+}
+
+function showCopySuccessAnimation() {
+    const slider = document.createElement('div');
+    slider.className = 'copy-success-slider';
+    document.body.appendChild(slider);
+
+    anime.timeline({
+        easing: 'easeOutQuad',
+        duration: 300,
+        complete: () => {
+            anime({
+                targets: slider,
+                translateX: ['0%', '100%'],
+                opacity: [1, 0],
+                duration: 300,
+                easing: 'easeInQuad',
+                complete: () => {
+                    slider.remove();
+                }
+            });
+        }
+    })
+    .add({
+        targets: slider,
+        translateX: ['100%', '0%'],
+        opacity: [0, 1],
+        duration: 300
     });
 }
 
 // Initialize
 function initialize() {
     if (initialLoadComplete) return; // Prevent re-initialization
+
+    includeDemoCheckbox.checked = false; // Explicitly uncheck on load
 
     // Ensure inputView is visible and opaque initially
     inputView.style.display = 'flex';
@@ -275,6 +294,7 @@ function initialize() {
     anime.set('#repo-form .form-options .option-row', { opacity: 0, translateY: 20 });
     if (!includeDemoCheckbox.checked) {
         anime.set(demoCountsContainer, { opacity: 0, translateY: -10 });
+        demoCountsContainer.style.display = 'none';
     }
 
     // Now animate them in
