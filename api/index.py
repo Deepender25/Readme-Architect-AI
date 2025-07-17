@@ -768,8 +768,8 @@ class handler(BaseHTTPRequestHandler):
 </head>
 <body>
     <div class="spline-background">
-        <script type="module" src="https://unpkg.com/@splinetool/viewer@1.10.16/build/spline-viewer.js"></script>
-        <spline-viewer url="https://prod.spline.design/A9dr57t2QYTgGVjW/scene.splinecode"></spline-viewer>
+        <script type="module" src="https://unpkg.com/@splinetool/viewer@1.10.32/build/spline-viewer.js"></script>
+        <spline-viewer url="https://prod.spline.design/1JMRk3yqXSOTghO3/scene.splinecode"></spline-viewer>
     </div>
     
     <div class="main-container">
