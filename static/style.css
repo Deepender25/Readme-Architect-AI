@@ -3,7 +3,6 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Inter', sans-serif; background-color: #0a0a0f; color: #e0e0e0; height: 100vh; overflow: hidden; }
 .spline-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
-.spline-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 .main-container { position: relative; z-index: 2; height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
