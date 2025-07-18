@@ -7,6 +7,9 @@ import shutil
 import requests
 import zipfile
 import ast
+import sqlite3
+import secrets
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -18,6 +21,169 @@ try:
     AI_AVAILABLE = True
 except:
     AI_AVAILABLE = False
+
+# GitHub OAuth Configuration
+GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID")
+GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
+GITHUB_REDIRECT_URI = os.getenv("GITHUB_REDIRECT_URI", "https://autodocai.vercel.app/auth/callback")
+
+# Database setup
+def init_database():
+    """Initialize SQLite database for user sessions and README history"""
+    try:
+        conn = sqlite3.connect('autodoc.db')
+        cursor = conn.cursor()
+        
+        # Users table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                github_id INTEGER UNIQUE,
+                username TEXT,
+                avatar_url TEXT,
+                access_token TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        # Sessions table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS sessions (
+                id TEXT PRIMARY KEY,
+                user_id INTEGER,
+                expires_at TIMESTAMP,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users (id)
+            )
+        ''')
+        
+        # README history table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS readme_history (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER,
+                repo_name TEXT,
+                repo_url TEXT,
+                readme_content TEXT,
+                project_name TEXT,
+                include_demo BOOLEAN,
+                num_screenshots INTEGER,
+                num_videos INTEGER,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users (id)
+            )
+        ''')
+        
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Database initialization error: {e}")
+
+def create_session(user_id):
+    """Create a new session for user"""
+    try:
+        session_id = secrets.token_urlsafe(32)
+        expires_at = datetime.now() + timedelta(days=30)
+        
+        conn = sqlite3.connect('autodoc.db')
+        cursor = conn.cursor()
+        cursor.execute(
+            'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)',
+            (session_id, user_id, expires_at)
+        )
+        conn.commit()
+        conn.close()
+        
+        return session_id
+    except Exception as e:
+        print(f"Session creation error: {e}")
+        return None
+
+def get_user_by_session(session_id):
+    """Get user by session ID"""
+    try:
+        conn = sqlite3.connect('autodoc.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT u.* FROM users u
+            JOIN sessions s ON u.id = s.user_id
+            WHERE s.id = ? AND s.expires_at > datetime('now')
+        ''', (session_id,))
+        user = cursor.fetchone()
+        conn.close()
+        return user
+    except Exception as e:
+        print(f"User session error: {e}")
+        return None
+
+def save_readme_history(user_id, repo_name, repo_url, readme_content, project_name=None, include_demo=False, num_screenshots=0, num_videos=0):
+    """Save README to user's history"""
+    try:
+        conn = sqlite3.connect('autodoc.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO readme_history 
+            (user_id, repo_name, repo_url, readme_content, project_name, include_demo, num_screenshots, num_videos)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (user_id, repo_name, repo_url, readme_content, project_name, include_demo, num_screenshots, num_videos))
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"History save error: {e}")
+
+def get_user_readme_history(user_id):
+    """Get user's README history"""
+    try:
+        conn = sqlite3.connect('autodoc.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT id, repo_name, repo_url, project_name, created_at
+            FROM readme_history 
+            WHERE user_id = ? 
+            ORDER BY created_at DESC
+        ''', (user_id,))
+        history = cursor.fetchall()
+        conn.close()
+        return history
+    except Exception as e:
+        print(f"History fetch error: {e}")
+        return []
+
+def get_github_repositories(access_token):
+    """Fetch user's GitHub repositories"""
+    headers = {
+        'Authorization': f'token {access_token}',
+        'Accept': 'application/vnd.github.v3+json'
+    }
+    
+    try:
+        # Get user's repositories
+        response = requests.get('https://api.github.com/user/repos', headers=headers, params={
+            'sort': 'updated',
+            'per_page': 100
+        })
+        
+        if response.status_code == 200:
+            repos = response.json()
+            return [{
+                'id': repo['id'],
+                'name': repo['name'],
+                'full_name': repo['full_name'],
+                'description': repo['description'],
+                'html_url': repo['html_url'],
+                'clone_url': repo['clone_url'],
+                'updated_at': repo['updated_at'],
+                'language': repo['language'],
+                'stargazers_count': repo['stargazers_count'],
+                'private': repo['private']
+            } for repo in repos if not repo['fork']], None
+        else:
+            return None, f"Failed to fetch repositories: {response.status_code}"
+    except Exception as e:
+        return None, str(e)
+
+# Initialize database on startup
+init_database()
 
 def download_repo(repo_url):
     """Download repository as ZIP from GitHub"""
@@ -188,10 +354,190 @@ def generate_readme(analysis_context, project_name=None, include_demo=False, num
         return None, str(e)
 
 class handler(BaseHTTPRequestHandler):
+    def get_session_from_request(self):
+        """Extract session ID from request headers or cookies"""
+        # Try to get from cookie first
+        cookie_header = self.headers.get('Cookie', '')
+        if 'session=' in cookie_header:
+            for cookie in cookie_header.split(';'):
+                if cookie.strip().startswith('session='):
+                    return cookie.split('=')[1].strip()
+        
+        # Try to get from query parameter
+        parsed_url = urllib.parse.urlparse(self.path)
+        query_params = urllib.parse.parse_qs(parsed_url.query)
+        session_id = query_params.get('session', [None])[0]
+        return session_id
+    
+    def send_json_response(self, data, status_code=200):
+        """Send JSON response"""
+        self.send_response(status_code)
+        self.send_header('Content-type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        self.end_headers()
+        self.wfile.write(json.dumps(data).encode())
+
     def do_GET(self):
         parsed_url = urllib.parse.urlparse(self.path)
+        query_params = urllib.parse.parse_qs(parsed_url.query)
         
-        if parsed_url.path == '/':
+        # GitHub OAuth login
+        if parsed_url.path == '/auth/github':
+            github_auth_url = f"https://github.com/login/oauth/authorize?client_id={GITHUB_CLIENT_ID}&redirect_uri={GITHUB_REDIRECT_URI}&scope=repo"
+            self.send_response(302)
+            self.send_header('Location', github_auth_url)
+            self.end_headers()
+            return
+        
+        # GitHub OAuth callback
+        elif parsed_url.path == '/auth/callback':
+            code = query_params.get('code', [None])[0]
+            if not code:
+                self.send_error(400, "Missing authorization code")
+                return
+            
+            try:
+                # Exchange code for access token
+                token_response = requests.post('https://github.com/login/oauth/access_token', {
+                    'client_id': GITHUB_CLIENT_ID,
+                    'client_secret': GITHUB_CLIENT_SECRET,
+                    'code': code
+                }, headers={'Accept': 'application/json'})
+                
+                token_data = token_response.json()
+                access_token = token_data.get('access_token')
+                
+                if not access_token:
+                    self.send_error(400, "Failed to get access token")
+                    return
+                
+                # Get user info from GitHub
+                user_response = requests.get('https://api.github.com/user', 
+                    headers={'Authorization': f'token {access_token}'})
+                user_data = user_response.json()
+                
+                # Save or update user in database
+                conn = sqlite3.connect('autodoc.db')
+                cursor = conn.cursor()
+                cursor.execute('''
+                    INSERT OR REPLACE INTO users (github_id, username, avatar_url, access_token)
+                    VALUES (?, ?, ?, ?)
+                ''', (user_data['id'], user_data['login'], user_data['avatar_url'], access_token))
+                
+                user_id = cursor.lastrowid or cursor.execute('SELECT id FROM users WHERE github_id = ?', (user_data['id'],)).fetchone()[0]
+                conn.commit()
+                conn.close()
+                
+                # Create session
+                session_id = create_session(user_id)
+                
+                # Redirect to main app with session
+                self.send_response(302)
+                self.send_header('Location', f'/?session={session_id}')
+                self.send_header('Set-Cookie', f'session={session_id}; Path=/; Max-Age=2592000; HttpOnly; Secure; SameSite=Lax')
+                self.end_headers()
+                return
+                
+            except Exception as e:
+                self.send_error(500, f"Authentication failed: {str(e)}")
+                return
+        
+        # Get user repositories
+        elif parsed_url.path == '/api/repositories':
+            session_id = self.get_session_from_request()
+            if not session_id:
+                self.send_json_response({'error': 'Not authenticated'}, 401)
+                return
+            
+            user = get_user_by_session(session_id)
+            if not user:
+                self.send_json_response({'error': 'Invalid session'}, 401)
+                return
+            
+            repos, error = get_github_repositories(user[4])  # access_token is at index 4
+            if error:
+                self.send_json_response({'error': error}, 500)
+                return
+            
+            self.send_json_response({'repositories': repos})
+            return
+        
+        # Get user README history
+        elif parsed_url.path == '/api/history':
+            session_id = self.get_session_from_request()
+            if not session_id:
+                self.send_json_response({'error': 'Not authenticated'}, 401)
+                return
+            
+            user = get_user_by_session(session_id)
+            if not user:
+                self.send_json_response({'error': 'Invalid session'}, 401)
+                return
+            
+            history = get_user_readme_history(user[0])  # user_id is at index 0
+            formatted_history = []
+            for item in history:
+                formatted_history.append({
+                    'id': item[0],
+                    'repo_name': item[1],
+                    'repo_url': item[2],
+                    'project_name': item[3],
+                    'created_at': item[4]
+                })
+            self.send_json_response({'history': formatted_history})
+            return
+        
+        # Get specific README from history
+        elif parsed_url.path.startswith('/api/history/'):
+            history_id = parsed_url.path.split('/')[-1]
+            session_id = self.get_session_from_request()
+            if not session_id:
+                self.send_json_response({'error': 'Not authenticated'}, 401)
+                return
+            
+            user = get_user_by_session(session_id)
+            if not user:
+                self.send_json_response({'error': 'Invalid session'}, 401)
+                return
+            
+            conn = sqlite3.connect('autodoc.db')
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT readme_content FROM readme_history 
+                WHERE id = ? AND user_id = ?
+            ''', (history_id, user[0]))
+            result = cursor.fetchone()
+            conn.close()
+            
+            if result:
+                self.send_json_response({'readme_content': result[0]})
+            else:
+                self.send_json_response({'error': 'README not found'}, 404)
+            return
+        
+        # Get user info
+        elif parsed_url.path == '/api/user':
+            session_id = self.get_session_from_request()
+            if not session_id:
+                self.send_json_response({'error': 'Not authenticated'}, 401)
+                return
+            
+            user = get_user_by_session(session_id)
+            if not user:
+                self.send_json_response({'error': 'Invalid session'}, 401)
+                return
+            
+            self.send_json_response({
+                'id': user[0],
+                'github_id': user[1],
+                'username': user[2],
+                'avatar_url': user[3]
+            })
+            return
+        
+        elif parsed_url.path == '/':
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
@@ -1242,6 +1588,12 @@ class handler(BaseHTTPRequestHandler):
                 return
             
             try:
+                # Check if user is authenticated
+                session_id = self.get_session_from_request()
+                user = None
+                if session_id:
+                    user = get_user_by_session(session_id)
+                
                 repo_path, error = download_repo(repo_url)
                 if error:
                     response = {"error": error}
@@ -1259,6 +1611,14 @@ class handler(BaseHTTPRequestHandler):
                     response = {"error": error}
                     self.wfile.write(json.dumps(response).encode())
                     return
+                
+                # Save to history if user is authenticated
+                if user:
+                    repo_name = repo_url.split('/')[-1].replace('.git', '')
+                    save_readme_history(
+                        user[0], repo_name, repo_url, readme_content, 
+                        project_name, include_demo, num_screenshots, num_videos
+                    )
                 
                 if repo_path and os.path.exists(repo_path):
                     shutil.rmtree(os.path.dirname(repo_path), ignore_errors=True)

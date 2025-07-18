@@ -37,8 +37,113 @@ body { font-family: 'Inter', sans-serif; background-color: #0a0a0f; color: #e0e0
     padding-bottom: 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     flex-shrink: 0;
+    gap: 20px;
 }
-.title-container { grid-column: 2; text-align: center; }
+
+/* User Section Styles */
+.user-section {
+    grid-column: 1;
+    justify-self: start;
+}
+
+.github-login-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #24292e 0%, #1a1e22 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.github-login-btn:hover {
+    background: linear-gradient(135deg, #2c3237 0%, #1f2428 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 8px 12px;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.user-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    color: #a0a8b8;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0;
+    text-align: left;
+    transition: color 0.2s ease;
+}
+
+.logout-btn:hover {
+    color: #ffffff;
+}
+
+.title-container { 
+    grid-column: 2; 
+    text-align: center; 
+}
+
+/* Navigation Section */
+.nav-section {
+    grid-column: 3;
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #f0f0f0;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
 .back-btn {
     grid-column: 3; 
     justify-self: end; 
