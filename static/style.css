@@ -47,7 +47,7 @@ body { font-family: 'Inter', sans-serif; background-color: #0a0a0f; color: #e0e0
 }
 
 .github-login-btn {
-    display: flex;
+    display: flex !important;
     align-items: center;
     gap: 8px;
     background: linear-gradient(135deg, #24292e 0%, #1a1e22 100%);
@@ -59,6 +59,8 @@ body { font-family: 'Inter', sans-serif; background-color: #0a0a0f; color: #e0e0
     font-size: 0.9rem;
     font-weight: 500;
     transition: all 0.3s ease;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 .github-login-btn:hover {
@@ -286,4 +288,210 @@ input:checked + .slider-label:before { transform: translateX(26px); }
     z-index: 9999; /* Ensure it's on top */
     transform: translateX(100%); /* Start off-screen right */
     /* No transition here, anime.js will handle it */
+}
+
+/* === GITHUB AUTH STYLES === */
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.github-login-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #24292e 0%, #1f2428 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 10px 16px;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.github-login-btn:hover {
+    background: linear-gradient(135deg, #2c3237 0%, #1f2428 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.github-login-btn svg {
+    flex-shrink: 0;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 8px 12px;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.user-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.logout-btn {
+    background: rgba(255, 107, 107, 0.2);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    border-radius: 6px;
+    padding: 4px 8px;
+    color: #ff6b6b;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 107, 107, 0.3);
+    transform: translateY(-1px);
+}
+
+.nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #e0e0e0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+/* === REPOSITORY AND HISTORY VIEWS === */
+.repositories-container, .history-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.repositories-header, .history-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.repositories-header h2, .history-header h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.repositories-header p, .history-header p {
+    font-size: 1rem;
+    color: #a0a8b8;
+}
+
+.repositories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.repo-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.repo-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.repo-card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.repo-card p {
+    font-size: 0.9rem;
+    color: #a0a8b8;
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+
+.repo-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.8rem;
+    color: #8a92a8;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.history-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.history-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.history-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 6px;
+}
+
+.history-item p {
+    font-size: 0.85rem;
+    color: #a0a8b8;
+    margin-bottom: 8px;
+}
+
+.history-date {
+    font-size: 0.8rem;
+    color: #8a92a8;
 }

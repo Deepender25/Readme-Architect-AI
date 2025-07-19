@@ -9,6 +9,7 @@ import zipfile
 import ast
 import sqlite3
 import secrets
+import base64
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
@@ -26,6 +27,10 @@ except:
 GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID")
 GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
 GITHUB_REDIRECT_URI = os.getenv("GITHUB_REDIRECT_URI", "https://autodocai.vercel.app/auth/callback")
+
+# Vercel KV Database Configuration
+KV_REST_API_URL = os.getenv("KV_REST_API_URL")
+KV_REST_API_TOKEN = os.getenv("KV_REST_API_TOKEN")
 
 # Database setup
 def init_database():
@@ -379,6 +384,21 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps(data).encode())
 
+    def get_user_from_cookie(self):
+        """Extract user data from GitHub cookie"""
+        cookie_header = self.headers.get('Cookie', '')
+        if 'github_user=' in cookie_header:
+            for cookie in cookie_header.split(';'):
+                if cookie.strip().startswith('github_user='):
+                    try:
+                        cookie_value = cookie.split('=')[1].strip()
+                        user_data = json.loads(base64.b64decode(cookie_value).decode())
+                        return user_data
+                    except Exception as e:
+                        print(f"Error parsing user cookie: {e}")
+                        return None
+        return None
+
     def do_GET(self):
         parsed_url = urllib.parse.urlparse(self.path)
         query_params = urllib.parse.parse_qs(parsed_url.query)
@@ -418,25 +438,21 @@ class handler(BaseHTTPRequestHandler):
                     headers={'Authorization': f'token {access_token}'})
                 user_data = user_response.json()
                 
-                # Save or update user in database
-                conn = sqlite3.connect('autodoc.db')
-                cursor = conn.cursor()
-                cursor.execute('''
-                    INSERT OR REPLACE INTO users (github_id, username, avatar_url, access_token)
-                    VALUES (?, ?, ?, ?)
-                ''', (user_data['id'], user_data['login'], user_data['avatar_url'], access_token))
+                # Create user session data for cookie
+                user_session_data = {
+                    'github_id': user_data['id'],
+                    'username': user_data['login'],
+                    'avatar_url': user_data['avatar_url'],
+                    'access_token': access_token
+                }
                 
-                user_id = cursor.lastrowid or cursor.execute('SELECT id FROM users WHERE github_id = ?', (user_data['id'],)).fetchone()[0]
-                conn.commit()
-                conn.close()
-                
-                # Create session
-                session_id = create_session(user_id)
+                # Encode user data as session cookie
+                session_data = base64.b64encode(json.dumps(user_session_data).encode()).decode()
                 
                 # Redirect to main app with session
                 self.send_response(302)
-                self.send_header('Location', f'/?session={session_id}')
-                self.send_header('Set-Cookie', f'session={session_id}; Path=/; Max-Age=2592000; HttpOnly; Secure; SameSite=Lax')
+                self.send_header('Location', f'/?session=success')
+                self.send_header('Set-Cookie', f'github_user={session_data}; Path=/; Max-Age=2592000; SameSite=Lax')
                 self.end_headers()
                 return
                 
@@ -446,17 +462,12 @@ class handler(BaseHTTPRequestHandler):
         
         # Get user repositories
         elif parsed_url.path == '/api/repositories':
-            session_id = self.get_session_from_request()
-            if not session_id:
+            user = self.get_user_from_cookie()
+            if not user:
                 self.send_json_response({'error': 'Not authenticated'}, 401)
                 return
             
-            user = get_user_by_session(session_id)
-            if not user:
-                self.send_json_response({'error': 'Invalid session'}, 401)
-                return
-            
-            repos, error = get_github_repositories(user[4])  # access_token is at index 4
+            repos, error = get_github_repositories(user['access_token'])
             if error:
                 self.send_json_response({'error': error}, 500)
                 return
@@ -466,27 +477,14 @@ class handler(BaseHTTPRequestHandler):
         
         # Get user README history
         elif parsed_url.path == '/api/history':
-            session_id = self.get_session_from_request()
-            if not session_id:
+            user = self.get_user_from_cookie()
+            if not user:
                 self.send_json_response({'error': 'Not authenticated'}, 401)
                 return
             
-            user = get_user_by_session(session_id)
-            if not user:
-                self.send_json_response({'error': 'Invalid session'}, 401)
-                return
-            
-            history = get_user_readme_history(user[0])  # user_id is at index 0
-            formatted_history = []
-            for item in history:
-                formatted_history.append({
-                    'id': item[0],
-                    'repo_name': item[1],
-                    'repo_url': item[2],
-                    'project_name': item[3],
-                    'created_at': item[4]
-                })
-            self.send_json_response({'history': formatted_history})
+            # For now, return empty history since we're using cookie-based auth
+            # In production, you'd want to store history in Vercel KV with user's github_id
+            self.send_json_response({'history': []})
             return
         
         # Get specific README from history

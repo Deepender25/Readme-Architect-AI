@@ -21,6 +21,23 @@ const codeView = document.getElementById('code-view');
 const previewContent = document.getElementById('preview-content');
 const copyBtn = document.getElementById('copy-btn');
 
+// GitHub Auth Elements
+const githubLoginBtn = document.getElementById('github-login-btn');
+const userProfile = document.getElementById('user-profile');
+const userAvatar = document.getElementById('user-avatar');
+const userName = document.getElementById('user-name');
+const logoutBtn = document.getElementById('logout-btn');
+const historyBtn = document.getElementById('history-btn');
+
+// View Elements
+const repositoriesView = document.getElementById('repositories-view');
+const historyView = document.getElementById('history-view');
+const repositoriesGrid = document.getElementById('repositories-grid');
+const historyList = document.getElementById('history-list');
+
+// Current user data
+let currentUser = null;
+
 let currentView = 'input';
 let isAnimating = false;
 let initialLoadComplete = false; // Flag to prevent double initial animations
@@ -138,6 +155,202 @@ includeDemoCheckbox.addEventListener('change', () => {
         });
     }
 });
+
+// --- GitHub Authentication Functions ---
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
+function deleteCookie(name) {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+}
+
+function checkAuthStatus() {
+    const githubUserCookie = getCookie('github_user');
+    if (githubUserCookie) {
+        try {
+            const userData = JSON.parse(atob(githubUserCookie));
+            currentUser = userData;
+            showUserProfile(userData);
+            return true;
+        } catch (e) {
+            console.error('Failed to parse user data:', e);
+            deleteCookie('github_user');
+        }
+    }
+    showLoginButton();
+    return false;
+}
+
+function showUserProfile(userData) {
+    githubLoginBtn.style.display = 'none';
+    userProfile.style.display = 'flex';
+    userAvatar.src = userData.avatar_url;
+    userName.textContent = userData.username;
+    historyBtn.style.display = 'inline-flex';
+}
+
+function showLoginButton() {
+    githubLoginBtn.style.display = 'flex';
+    userProfile.style.display = 'none';
+    historyBtn.style.display = 'none';
+    currentUser = null;
+}
+
+function handleLogin() {
+    window.location.href = '/auth/github';
+}
+
+function handleLogout() {
+    deleteCookie('github_user');
+    showLoginButton();
+    // Redirect to clear any URL parameters
+    window.location.href = '/';
+}
+
+// Check for successful OAuth callback
+function handleOAuthCallback() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('session') === 'success') {
+        // Clean up URL
+        window.history.replaceState({}, document.title, '/');
+        // Check auth status to update UI
+        checkAuthStatus();
+    }
+}
+
+// Load user repositories
+async function loadRepositories() {
+    if (!currentUser) return;
+    
+    try {
+        const response = await fetch('/api/repositories', {
+            credentials: 'include'
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch repositories');
+        }
+        
+        const data = await response.json();
+        displayRepositories(data.repositories || []);
+    } catch (error) {
+        console.error('Error loading repositories:', error);
+        repositoriesGrid.innerHTML = '<p>Failed to load repositories. Please try again.</p>';
+    }
+}
+
+// Display repositories
+function displayRepositories(repositories) {
+    if (repositories.length === 0) {
+        repositoriesGrid.innerHTML = '<p>No repositories found.</p>';
+        return;
+    }
+    
+    const repoCards = repositories.map(repo => `
+        <div class="repo-card" onclick="selectRepository('${repo.html_url}')">
+            <h3>${repo.name}</h3>
+            <p>${repo.description || 'No description available'}</p>
+            <div class="repo-meta">
+                <span>⭐ ${repo.stargazers_count}</span>
+                ${repo.language ? `<span>${repo.language}</span>` : ''}
+                <span>${new Date(repo.updated_at).toLocaleDateString()}</span>
+            </div>
+        </div>
+    `).join('');
+    
+    repositoriesGrid.innerHTML = repoCards;
+}
+
+// Select repository
+function selectRepository(repoUrl) {
+    repoUrlInput.value = repoUrl;
+    setView('input');
+    repoUrlInput.focus();
+}
+
+// Load user history
+async function loadHistory() {
+    if (!currentUser) return;
+    
+    try {
+        const response = await fetch('/api/history', {
+            credentials: 'include'
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch history');
+        }
+        
+        const data = await response.json();
+        displayHistory(data.history || []);
+    } catch (error) {
+        console.error('Error loading history:', error);
+        historyList.innerHTML = '<p>Failed to load history. Please try again.</p>';
+    }
+}
+
+// Display history
+function displayHistory(history) {
+    if (history.length === 0) {
+        historyList.innerHTML = '<p>No README history found.</p>';
+        return;
+    }
+    
+    const historyItems = history.map(item => `
+        <div class="history-item" onclick="loadHistoryItem(${item.id})">
+            <h3>${item.project_name || item.repo_name}</h3>
+            <p>${item.repo_url}</p>
+            <span class="history-date">${new Date(item.created_at).toLocaleDateString()}</span>
+        </div>
+    `).join('');
+    
+    historyList.innerHTML = historyItems;
+}
+
+// Load history item
+async function loadHistoryItem(historyId) {
+    try {
+        const response = await fetch(`/api/history/${historyId}`, {
+            credentials: 'include'
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to load README');
+        }
+        
+        const data = await response.json();
+        
+        // Show the README
+        codeView.textContent = data.readme_content;
+        previewContent.innerHTML = marked.parse(data.readme_content);
+        hljs.highlightAll();
+        setView('output');
+        animateOutputIn();
+    } catch (error) {
+        console.error('Error loading history item:', error);
+        alert('Failed to load README from history');
+    }
+}
+
+// Add GitHub auth event listeners
+if (githubLoginBtn) {
+    githubLoginBtn.addEventListener('click', handleLogin);
+}
+
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', handleLogout);
+}
+
+if (historyBtn) {
+    historyBtn.addEventListener('click', () => {
+        setView('history');
+        loadHistory();
+    });
+}
 
 
 // --- Core UI Logic Function ---
@@ -275,6 +488,12 @@ function showCopySuccessAnimation() {
 function initialize() {
     if (initialLoadComplete) return; // Prevent re-initialization
 
+    // Handle OAuth callback first
+    handleOAuthCallback();
+    
+    // Check authentication status
+    checkAuthStatus();
+
     includeDemoCheckbox.checked = false; // Explicitly uncheck on load
 
     // Ensure inputView is visible and opaque initially
@@ -285,6 +504,8 @@ function initialize() {
     // Set other views to hidden
     outputView.style.display = 'none';
     loaderView.style.display = 'none';
+    repositoriesView.style.display = 'none';
+    historyView.style.display = 'none';
     
     // Set initial states for animation targets to ensure they animate in from 0 opacity
     anime.set('.app-header .title', { opacity: 0, translateY: -20 });
