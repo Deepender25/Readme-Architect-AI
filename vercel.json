@@ -4,6 +4,14 @@
     {
       "src": "api/index.py",
       "use": "@vercel/python"
+    },
+    {
+      "src": "api/generate.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "static/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -12,7 +20,19 @@
       "dest": "/static/$1"
     },
     {
-      "src": "/(.*)",
+      "src": "/",
+      "dest": "/static/index.html"
+    },
+    {
+      "src": "/api/generate",
+      "dest": "/api/generate.py"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/auth/(.*)",
       "dest": "/api/index.py"
     }
   ]
