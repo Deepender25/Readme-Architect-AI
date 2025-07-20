@@ -190,17 +190,52 @@ function checkAuthStatus() {
 }
 
 function showUserProfile(userData) {
-    githubLoginBtn.style.display = 'none';
-    userProfile.style.display = 'flex';
-    userAvatar.src = userData.avatar_url;
-    userName.textContent = userData.username;
-    historyBtn.style.display = 'inline-flex';
+    // Ensure login button is completely hidden
+    if (githubLoginBtn) {
+        githubLoginBtn.style.display = 'none';
+        githubLoginBtn.style.visibility = 'hidden';
+        githubLoginBtn.style.opacity = '0';
+    }
+    
+    // Show user profile
+    if (userProfile) {
+        userProfile.style.display = 'flex';
+        userProfile.style.visibility = 'visible';
+        userProfile.style.opacity = '1';
+    }
+    
+    // Set user data
+    if (userAvatar && userData.avatar_url) {
+        userAvatar.src = userData.avatar_url;
+    }
+    if (userName && userData.username) {
+        userName.textContent = userData.username;
+    }
+    if (historyBtn) {
+        historyBtn.style.display = 'inline-flex';
+    }
 }
 
 function showLoginButton() {
-    githubLoginBtn.style.display = 'flex';
-    userProfile.style.display = 'none';
-    historyBtn.style.display = 'none';
+    // Show login button
+    if (githubLoginBtn) {
+        githubLoginBtn.style.display = 'flex';
+        githubLoginBtn.style.visibility = 'visible';
+        githubLoginBtn.style.opacity = '1';
+    }
+    
+    // Hide user profile
+    if (userProfile) {
+        userProfile.style.display = 'none';
+        userProfile.style.visibility = 'hidden';
+        userProfile.style.opacity = '0';
+    }
+    
+    // Hide history button
+    if (historyBtn) {
+        historyBtn.style.display = 'none';
+    }
+    
     currentUser = null;
 }
 
@@ -570,7 +605,10 @@ function animateLoaderIn() {
 }
 
 // Call initialize only once when the DOM is ready
-document.addEventListener('DOMContentLoaded', initialize);
+document.addEventListener('DOMContentLoaded', () => {
+    // Small delay to ensure all elements are properly loaded
+    setTimeout(initialize, 100);
+});
 
 // Add button animations
 function setupButtonAnimations() {

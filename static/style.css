@@ -64,7 +64,7 @@ body {
 }
 
 .github-login-btn {
-    display: flex !important;
+    display: flex;
     align-items: center;
     gap: 8px;
     background: linear-gradient(135deg, #24292e 0%, #1a1e22 100%);
@@ -76,8 +76,6 @@ body {
     font-size: 0.9rem;
     font-weight: 500;
     transition: all 0.3s ease;
-    visibility: visible !important;
-    opacity: 1 !important;
 }
 
 .github-login-btn:hover {
@@ -87,13 +85,16 @@ body {
 }
 
 .user-profile {
-    display: flex;
+    display: none; /* Hidden by default */
     align-items: center;
     gap: 12px;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
     padding: 8px 12px;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
 }
 
 .user-avatar {
@@ -366,16 +367,6 @@ input:checked + .slider-label:before { transform: translateX(26px); }
 
 .github-login-btn svg {
     flex-shrink: 0;
-}
-
-.user-profile {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    padding: 8px 12px;
 }
 
 .user-avatar {
