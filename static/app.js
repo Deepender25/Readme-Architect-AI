@@ -75,7 +75,9 @@ form.addEventListener('submit', async (e) => {
     if (!repoUrl || isAnimating) return;
 
     setView('loader');
-    updateLoaderText(); // Initial call for loader text
+    
+    // Start loader animation
+    animationTimeout = setInterval(updateLoaderText, 500);
 
     const params = new URLSearchParams({
         repo_url: repoUrl,
@@ -85,37 +87,39 @@ form.addEventListener('submit', async (e) => {
         num_videos: parseInt(numVideosInput.value, 10) || 0,
     });
 
-    const eventSource = new EventSource(`/api/generate?${params.toString()}`);
+    try {
+        const response = await fetch(`/api/generate?${params.toString()}`);
+        const data = await response.json();
 
-    eventSource.onmessage = function(event) {
-        const data = JSON.parse(event.data);
+        // Clear loader animation
+        if (animationTimeout) {
+            clearInterval(animationTimeout);
+        }
 
-        if (data.status) {
-            loaderText.textContent = data.status; // Use status from backend if available
-        } else if (data.readme) {
+        if (data.readme) {
             codeView.textContent = data.readme;
             previewContent.innerHTML = marked.parse(data.readme);
             hljs.highlightAll();
             setView('output');
-            animateOutputIn(); // Animate output when content is ready
-            eventSource.close();
+            animateOutputIn();
         } else if (data.error) {
             previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Generation Failed</h3><p>${data.error}</p></div>`;
             codeView.textContent = `/*\n  Error: ${data.error}\n*/`;
             hljs.highlightAll();
             setView('output');
-            eventSource.close();
         }
-    };
-
-    eventSource.onerror = function(err) {
-        console.error("EventSource failed:", err);
+    } catch (error) {
+        // Clear loader animation
+        if (animationTimeout) {
+            clearInterval(animationTimeout);
+        }
+        
+        console.error("Request failed:", error);
         previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Connection Error</h3><p>Could not connect to the server. Please try again later.</p></div>`;
         codeView.textContent = `/*\n  Error: Connection failed.\n*/`;
         hljs.highlightAll();
         setView('output');
-        eventSource.close();
-    };
+    }
 });
 
 backBtn.addEventListener('click', () => {

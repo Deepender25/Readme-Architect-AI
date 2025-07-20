@@ -1,3 +1,4 @@
+# api/generate.py - Simple, focused API just for README generation
 from http.server import BaseHTTPRequestHandler
 import json
 import urllib.parse
@@ -7,7 +8,6 @@ import shutil
 import requests
 import zipfile
 import ast
-import base64
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -21,12 +21,7 @@ try:
 except:
     AI_AVAILABLE = False
 
-# GitHub OAuth Configuration
-GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID")
-GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
-GITHUB_REDIRECT_URI = os.getenv("GITHUB_REDIRECT_URI", "https://autodocai.vercel.app/auth/callback")
-
-def download_repo(repo_url: str):
+def download_repo(repo_url):
     """Download repository as ZIP from GitHub"""
     try:
         if "github.com" in repo_url:
@@ -60,10 +55,11 @@ def download_repo(repo_url: str):
     except Exception as e:
         return None, str(e)
 
-def analyze_codebase(repo_path: str):
+def analyze_codebase(repo_path):
     """Analyze the codebase structure"""
     try:
         context = {"file_structure": "", "dependencies": "No dependency file found.", "python_code_summary": {}}
+        
         ignore_list = ['.git', '__pycache__', 'node_modules', '.venv', 'venv', 'target', 'dist', 'build']
         file_structure_list = []
         
@@ -72,8 +68,8 @@ def analyze_codebase(repo_path: str):
             level = root.replace(repo_path, '').count(os.sep)
             indent = ' ' * 4 * level
             file_structure_list.append(f"{indent}📂 {os.path.basename(root)}/")
-            sub_indent = ' ' * 4 * (level + 1)
             
+            sub_indent = ' ' * 4 * (level + 1)
             for f in files:
                 file_structure_list.append(f"{sub_indent}📄 {f}")
                 file_path = os.path.join(root, f)
@@ -84,6 +80,7 @@ def analyze_codebase(repo_path: str):
                             source_code = py_file.read()
                             tree = ast.parse(source_code)
                             summary = {"functions": [], "classes": []}
+                            
                             for node in ast.walk(tree):
                                 if isinstance(node, ast.FunctionDef):
                                     docstring = ast.get_docstring(node) or "No docstring."
@@ -91,6 +88,7 @@ def analyze_codebase(repo_path: str):
                                 elif isinstance(node, ast.ClassDef):
                                     docstring = ast.get_docstring(node) or "No docstring."
                                     summary["classes"].append(f"class {node.name}: # {docstring[:80]}")
+                            
                             if summary["functions"] or summary["classes"]:
                                 context["python_code_summary"][f] = summary
                     except Exception:
@@ -108,10 +106,10 @@ def analyze_codebase(repo_path: str):
     except Exception as e:
         return None, str(e)
 
-def generate_readme_with_gemini(analysis_context: dict, project_name: str = None, include_demo: bool = False, num_screenshots: int = 0, num_videos: int = 0):
+def generate_readme(analysis_context, project_name=None, include_demo=False, num_screenshots=0, num_videos=0):
     """Generate README using Google Gemini"""
     if not AI_AVAILABLE:
-        return None, "Google AI not available. Please set GOOGLE_API_KEY environment variable."
+        return None, "Google AI not available"
     
     try:
         python_summary_str = ""
@@ -121,11 +119,19 @@ def generate_readme_with_gemini(analysis_context: dict, project_name: str = None
                 python_summary_str += "  - Classes: " + ", ".join(summary['classes']) + "\n"
             if summary['functions']: 
                 python_summary_str += "  - Functions: " + ", ".join(summary['functions']) + "\n"
-
+        
+        title_instruction = f"""Create a compelling, professional title based on the analysis. Center it and add a concise, powerful tagline underneath.
+        `<h1 align="center"> [PROJECT TITLE] </h1>`
+        `<p align="center"> [TAGLINE] </p>`"""
+        
+        if project_name and project_name.strip():
+            title_instruction = f"""Use the exact project title "{project_name}". Center it, and then create a concise, powerful tagline to go underneath it.
+            `<h1 align="center"> {project_name} </h1>`
+            `<p align="center"> [CREATE A COMPELLING TAGLINE HERE] </p>`"""
+        
         demo_section = ""
         if include_demo and (num_screenshots > 0 or num_videos > 0):
             demo_section = "\n\n## 📸 Demo & Screenshots\n\n"
-            
             if num_screenshots > 0:
                 demo_section += "### 🖼️ Screenshots\n\n"
                 for i in range(1, num_screenshots + 1):
@@ -139,37 +145,28 @@ def generate_readme_with_gemini(analysis_context: dict, project_name: str = None
                     demo_section += f'  <img src="https://placehold.co/800x450/2d2d4d/c5a8ff?text=Watch+Video+Demo+{i}" alt="Video Demo {i}" width="100%">\n'
                     demo_section += f'</a>\n'
                     demo_section += f'<p align="center"><em>Caption for video demo {i}.</em></p>\n\n'
-
-        title_instruction = ""
-        if project_name and project_name.strip():
-            title_instruction = f"""Use the exact project title "{project_name}". Center it and add a compelling tagline.
-            `<h1 align="center"> {project_name} </h1>`
-            `<p align="center"> [CREATE A COMPELLING TAGLINE HERE] </p>`"""
-        else:
-            title_instruction = """Create a compelling, professional title based on the analysis. Center it and add a concise tagline.
-            `<h1 align="center"> [PROJECT TITLE] </h1>`
-            `<p align="center"> [TAGLINE] </p>`"""
-
+        
         prompt = f"""
         You are a Principal Solutions Architect and technical copywriter. Create a comprehensive, professional README.md file.
-
+        
         **Source Analysis:**
         1. **Project File Structure:**
         ```
         {analysis_context['file_structure']}
         ```
+        
         2. **Dependencies:**
         ```
         {analysis_context['dependencies']}
         ```
+        
         3. **Python Code Summary:**
         ```
         {python_summary_str if python_summary_str else "No Python files analyzed."}
         ```
-
+        
         **README Structure:**
         {title_instruction}
-
         2. **Badges:** Create centered static placeholder badges with HTML comment for replacement.
         3. **Table of Contents:** Clickable navigation.
         4. **⭐ Overview:** Hook, problem, solution, architecture.
@@ -180,10 +177,10 @@ def generate_readme_with_gemini(analysis_context: dict, project_name: str = None
         8. **🔧 Usage:** Clear run instructions with examples.
         9. **🤝 Contributing:** Welcoming contribution guidelines.
         10. **📝 License:** License information.
-
+        
         Output ONLY the raw Markdown content. Be professional, engaging, and use rich formatting.
         """
-
+        
         model = genai.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content(prompt)
         
@@ -191,26 +188,10 @@ def generate_readme_with_gemini(analysis_context: dict, project_name: str = None
             return None, "Content generation failed due to safety filters"
         
         return response.text, None
-        
     except Exception as e:
         return None, str(e)
 
-class handler(BaseHTTPRequestHandler):
-    def get_user_from_cookie(self):
-        """Extract user data from GitHub cookie"""
-        cookie_header = self.headers.get('Cookie', '')
-        if 'github_user=' in cookie_header:
-            for cookie in cookie_header.split(';'):
-                if cookie.strip().startswith('github_user='):
-                    try:
-                        cookie_value = cookie.split('=')[1].strip()
-                        user_data = json.loads(base64.b64decode(cookie_value).decode())
-                        return user_data
-                    except Exception as e:
-                        print(f"Error parsing user cookie: {e}")
-                        return None
-        return None
-
+class Handler(BaseHTTPRequestHandler):
     def send_json_response(self, data, status_code=200):
         """Send JSON response"""
         self.send_response(status_code)
@@ -220,116 +201,47 @@ class handler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
         self.end_headers()
         self.wfile.write(json.dumps(data).encode())
-
+    
     def do_GET(self):
         parsed_url = urllib.parse.urlparse(self.path)
         query_params = urllib.parse.parse_qs(parsed_url.query)
         
-        # GitHub OAuth login
-        if parsed_url.path == '/auth/github':
-            if not GITHUB_CLIENT_ID or not GITHUB_CLIENT_SECRET:
-                self.send_json_response({'error': 'GitHub OAuth not configured. Please set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET environment variables.'}, 500)
-                return
-                
-            github_auth_url = f"https://github.com/login/oauth/authorize?client_id={GITHUB_CLIENT_ID}&redirect_uri={GITHUB_REDIRECT_URI}&scope=repo"
-            self.send_response(302)
-            self.send_header('Location', github_auth_url)
-            self.end_headers()
+        repo_url = query_params.get('repo_url', [''])[0]
+        project_name = query_params.get('project_name', [''])[0]
+        include_demo = query_params.get('include_demo', ['false'])[0].lower() == 'true'
+        num_screenshots = int(query_params.get('num_screenshots', ['0'])[0])
+        num_videos = int(query_params.get('num_videos', ['0'])[0])
+        
+        if not repo_url:
+            self.send_json_response({"error": "Repository URL is required"}, 400)
             return
         
-        # GitHub OAuth callback
-        elif parsed_url.path == '/auth/callback':
-            code = query_params.get('code', [None])[0]
-            if not code:
-                self.send_error(400, "Missing authorization code")
+        try:
+            # Step 1: Download repository
+            repo_path, error = download_repo(repo_url)
+            if error:
+                self.send_json_response({"error": error}, 400)
                 return
             
-            try:
-                # Exchange code for access token
-                token_response = requests.post('https://github.com/login/oauth/access_token', {
-                    'client_id': GITHUB_CLIENT_ID,
-                    'client_secret': GITHUB_CLIENT_SECRET,
-                    'code': code
-                }, headers={'Accept': 'application/json'})
-                
-                token_data = token_response.json()
-                access_token = token_data.get('access_token')
-                
-                if not access_token:
-                    self.send_error(400, "Failed to get access token")
-                    return
-                
-                # Get user info from GitHub
-                user_response = requests.get('https://api.github.com/user', 
-                    headers={'Authorization': f'token {access_token}'})
-                user_data = user_response.json()
-                
-                # Create user session data for cookie
-                user_session_data = {
-                    'github_id': user_data['id'],
-                    'username': user_data['login'],
-                    'avatar_url': user_data['avatar_url'],
-                    'access_token': access_token
-                }
-                
-                # Encode user data as session cookie
-                session_data = base64.b64encode(json.dumps(user_session_data).encode()).decode()
-                
-                # Redirect to main app with session
-                self.send_response(302)
-                self.send_header('Location', f'/?session=success')
-                self.send_header('Set-Cookie', f'github_user={session_data}; Path=/; Max-Age=2592000; SameSite=Lax')
-                self.end_headers()
-                return
-                
-            except Exception as e:
-                self.send_error(500, f"Authentication failed: {str(e)}")
-                return
-        
-        # README Generation API
-        elif parsed_url.path == '/api/generate':
-            repo_url = query_params.get('repo_url', [''])[0]
-            project_name = query_params.get('project_name', [''])[0]
-            include_demo = query_params.get('include_demo', ['false'])[0].lower() == 'true'
-            num_screenshots = int(query_params.get('num_screenshots', ['0'])[0])
-            num_videos = int(query_params.get('num_videos', ['0'])[0])
-            
-            if not repo_url:
-                self.send_json_response({"error": "Repository URL is required"}, 400)
+            # Step 2: Analyze codebase
+            analysis, error = analyze_codebase(repo_path)
+            if error:
+                self.send_json_response({"error": error}, 500)
                 return
             
-            try:
-                # Step 1: Download repository
-                repo_path, error = download_repo(repo_url)
-                if error:
-                    self.send_json_response({"error": error}, 400)
-                    return
-                
-                # Step 2: Analyze codebase
-                analysis, error = analyze_codebase(repo_path)
-                if error:
-                    self.send_json_response({"error": error}, 500)
-                    return
-                
-                # Step 3: Generate README
-                readme_content, error = generate_readme_with_gemini(
-                    analysis, project_name, include_demo, num_screenshots, num_videos
-                )
-                if error:
-                    self.send_json_response({"error": error}, 500)
-                    return
-                
-                # Step 4: Cleanup and return
-                if repo_path and os.path.exists(repo_path):
-                    shutil.rmtree(os.path.dirname(repo_path), ignore_errors=True)
-                
-                self.send_json_response({"readme": readme_content})
-                
-            except Exception as e:
-                self.send_json_response({"error": str(e)}, 500)
+            # Step 3: Generate README
+            readme_content, error = generate_readme(analysis, project_name, include_demo, num_screenshots, num_videos)
+            if error:
+                self.send_json_response({"error": error}, 500)
                 return
-        
-        else:
-            self.send_response(404)
-            self.end_headers()
-            self.wfile.write(b'Not found')
+            
+            # Step 4: Cleanup and return
+            if repo_path and os.path.exists(repo_path):
+                shutil.rmtree(os.path.dirname(repo_path), ignore_errors=True)
+            
+            self.send_json_response({"readme": readme_content})
+            
+        except Exception as e:
+            self.send_json_response({"error": str(e)}, 500)
+# Export handler for Vercel
+handler = Handler
