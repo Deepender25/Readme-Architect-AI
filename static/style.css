@@ -1297,4 +1297,127 @@ obile responsive navigation */
     body.nav-open .main-container {
         padding-left: 280px;
     }
+}/*
+ === REPOSITORY AND HISTORY VIEWS === */
+.repositories-container, .history-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.repositories-header, .history-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.repositories-header h2, .history-header h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.repositories-header p, .history-header p {
+    font-size: 1rem;
+    color: #a0a8b8;
+}
+
+.repositories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    align-items: stretch;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Empty State Styles */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    text-align: center;
+    color: #a0a8b8;
+    grid-column: 1 / -1; /* Span full width in grid */
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    opacity: 0.7;
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 12px;
+}
+
+.empty-state p {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 8px;
+    max-width: 400px;
+}
+
+.empty-note {
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    max-width: 500px;
+}
+
+.empty-note small {
+    color: #8a92a8;
+    font-size: 0.85rem;
+}
+
+/* Loading State Styles */
+.loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: #a0a8b8;
+    font-size: 1rem;
+    grid-column: 1 / -1; /* Span full width in grid */
+}
+
+.loading-state::before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(168, 178, 255, 0.3);
+    border-top: 2px solid #a8b2ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 12px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Back button visibility */
+.back-btn.visible {
+    visibility: visible;
+    opacity: 1;
 }
