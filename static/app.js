@@ -540,7 +540,8 @@ function initializeNavigation() {
             e.preventDefault();
             e.stopPropagation();
             closeNavigation();
-            handleLogin();
+            console.log('Login button clicked - redirecting to GitHub OAuth');
+            window.location.href = '/auth/github';
         });
     }
 
