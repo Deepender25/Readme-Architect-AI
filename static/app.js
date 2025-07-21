@@ -927,6 +927,19 @@ document.addEventListener('DOMContentLoaded', setupButtonAnimations);
 
 // === NAVIGATION FUNCTIONALITY ===
 
+// Simple toggle function for onclick
+function toggleNav() {
+    console.log('toggleNav() called directly');
+    const leftNav = document.getElementById('left-nav');
+    if (leftNav) {
+        leftNav.classList.toggle('open');
+        document.body.classList.toggle('nav-open');
+        console.log('Navigation toggled, open class:', leftNav.classList.contains('open'));
+    } else {
+        console.error('leftNav element not found');
+    }
+}
+
 // Navigation toggle functions
 function toggleNavigation() {
     console.log('Toggle navigation clicked');

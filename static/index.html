@@ -96,7 +96,7 @@
     </nav>
 
     <!-- Navigation Toggle Button -->
-    <button class="nav-toggle-btn" id="nav-toggle-btn">
+    <button class="nav-toggle-btn" id="nav-toggle-btn" onclick="toggleNav()">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
             <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
         </svg>
@@ -212,6 +212,39 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    
+    <!-- Simple Navigation Script -->
+    <script>
+        function toggleNav() {
+            console.log('toggleNav() called');
+            const leftNav = document.getElementById('left-nav');
+            const body = document.body;
+            
+            if (leftNav) {
+                leftNav.classList.toggle('open');
+                body.classList.toggle('nav-open');
+                console.log('Navigation toggled, open:', leftNav.classList.contains('open'));
+            } else {
+                console.error('leftNav not found');
+            }
+        }
+        
+        // Close navigation when clicking the X button
+        document.addEventListener('DOMContentLoaded', function() {
+            const navToggle = document.getElementById('nav-toggle');
+            if (navToggle) {
+                navToggle.addEventListener('click', function() {
+                    const leftNav = document.getElementById('left-nav');
+                    const body = document.body;
+                    if (leftNav) {
+                        leftNav.classList.remove('open');
+                        body.classList.remove('nav-open');
+                    }
+                });
+            }
+        });
+    </script>
+    
     <script src="/static/app.js?v=2.1"></script>
 </body>
 
