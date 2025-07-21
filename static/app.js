@@ -223,7 +223,7 @@ function handleLogin() {
 }
 
 // Global function to match HTML calls
-window.handleGitHubLogin = function() {
+window.handleGitHubLogin = function () {
     console.log('GitHub login clicked - redirecting to GitHub OAuth');
     handleLogin();
 };
