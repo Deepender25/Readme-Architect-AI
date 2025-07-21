@@ -1277,4 +1277,24 @@ input:checked + .slider-label:before { transform: translateX(26px); }
 /* Adjust main container when nav is open */
 body.nav-open .main-container {
     padding-left: 300px;
+}/* M
+obile responsive navigation */
+@media (max-width: 768px) {
+    .left-nav {
+        width: 260px;
+    }
+    
+    .nav-toggle-btn {
+        top: 15px;
+        left: 15px;
+        padding: 10px;
+    }
+    
+    .main-container {
+        padding-left: 60px;
+    }
+    
+    body.nav-open .main-container {
+        padding-left: 280px;
+    }
 }
