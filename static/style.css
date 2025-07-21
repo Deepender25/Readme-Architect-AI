@@ -1420,4 +1420,81 @@ obile responsive navigation */
 .back-btn.visible {
     visibility: visible;
     opacity: 1;
+}/* 
+=== NAVIGATION FUNCTIONALITY CSS === */
+
+/* Show navigation when open */
+.left-nav.open {
+    left: 0 !important;
+}
+
+/* Adjust body when navigation is open */
+body.nav-open .main-container {
+    padding-left: 300px !important;
+}
+
+/* Ensure navigation toggle button is visible and clickable */
+.nav-toggle-btn {
+    position: fixed !important;
+    top: 20px !important;
+    left: 20px !important;
+    z-index: 99999 !important;
+    background: rgba(20, 20, 30, 0.9) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 12px !important;
+    padding: 12px !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.nav-toggle-btn:hover {
+    background: rgba(30, 30, 40, 0.95) !important;
+    transform: scale(1.05) !important;
+}
+
+/* Ensure left navigation is properly positioned */
+.left-nav {
+    position: fixed !important;
+    top: 0 !important;
+    left: -280px !important;
+    width: 280px !important;
+    height: 100vh !important;
+    background: linear-gradient(180deg, rgba(20, 20, 30, 0.95) 0%, rgba(16, 16, 24, 0.95) 100%) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+    z-index: 100000 !important;
+    transition: left 0.3s ease !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow-y: auto !important;
+}
+
+/* Navigation items styling */
+.nav-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+    padding: 12px 20px !important;
+    background: none !important;
+    border: none !important;
+    color: #a0a8b8 !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    text-align: left !important;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: #ffffff !important;
+}
+
+/* Ensure main container adjusts for navigation */
+.main-container {
+    transition: padding-left 0.3s ease !important;
 }

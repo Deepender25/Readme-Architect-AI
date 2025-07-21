@@ -557,7 +557,7 @@ async function testAuthentication() {
 // Initialize navigation functionality
 function initializeNavigation() {
     console.log('Initializing navigation...');
-    
+
     // Set up navigation toggle event listeners
     if (navToggleBtn) {
         console.log('Adding click listener to nav toggle button');
@@ -641,8 +641,8 @@ function initializeNavigation() {
 
     // Close navigation when clicking outside
     document.addEventListener('click', (e) => {
-        if (leftNav && navToggleBtn && 
-            !leftNav.contains(e.target) && 
+        if (leftNav && navToggleBtn &&
+            !leftNav.contains(e.target) &&
             !navToggleBtn.contains(e.target)) {
             closeNavigation();
         }
@@ -950,33 +950,33 @@ function closeNavigation() {
 // View switching function
 function setView(viewName) {
     console.log('Setting view to:', viewName);
-    
+
     if (viewName === currentView || isAnimating) return;
     isAnimating = true;
 
     const currentViewEl = document.getElementById(`${currentView}-view`);
     const nextViewEl = document.getElementById(`${viewName}-view`);
-    
+
     // Hide current view
     if (currentViewEl) {
         currentViewEl.style.display = 'none';
     }
-    
+
     // Show next view
     if (nextViewEl) {
         nextViewEl.style.display = 'flex';
     }
-    
+
     currentView = viewName;
     isAnimating = false;
-    
+
     // Update back button visibility
     if (viewName === 'input') {
         if (backBtn) backBtn.classList.remove('visible');
     } else {
         if (backBtn) backBtn.classList.add('visible');
     }
-    
+
     console.log('View set to:', viewName);
 }
 
@@ -1633,4 +1633,348 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         initializeNavigation();
     }, 100);
+});// === NA
+VIGATION FUNCTIONALITY ===
+
+// Navigation toggle functions
+function toggleNavigation() {
+    console.log('Toggle navigation clicked');
+    if (leftNav) {
+        leftNav.classList.toggle('open');
+        document.body.classList.toggle('nav-open');
+        console.log('Navigation toggled, open class:', leftNav.classList.contains('open'));
+    } else {
+        console.error('leftNav element not found');
+    }
+}
+
+function closeNavigation() {
+    console.log('Close navigation');
+    if (leftNav) {
+        leftNav.classList.remove('open');
+        document.body.classList.remove('nav-open');
+    }
+}
+
+// View switching function
+function setView(viewName) {
+    console.log('Setting view to:', viewName);
+    
+    if (viewName === currentView || isAnimating) return;
+    isAnimating = true;
+
+    const currentViewEl = document.getElementById(`${currentView}-view`);
+    const nextViewEl = document.getElementById(`${viewName}-view`);
+    
+    // Hide current view
+    if (currentViewEl) {
+        currentViewEl.style.display = 'none';
+    }
+    
+    // Show next view
+    if (nextViewEl) {
+        nextViewEl.style.display = 'flex';
+    }
+    
+    currentView = viewName;
+    isAnimating = false;
+    
+    // Update back button visibility
+    if (viewName === 'input') {
+        if (backBtn) backBtn.classList.remove('visible');
+    } else {
+        if (backBtn) backBtn.classList.add('visible');
+    }
+    
+    console.log('View set to:', viewName);
+}
+
+// Repository loading function
+async function loadRepositories() {
+    const repositoriesGrid = document.getElementById('repositories-grid');
+    if (!repositoriesGrid) {
+        // Create repositories view if it doesn't exist
+        const repositoriesView = document.createElement('div');
+        repositoriesView.id = 'repositories-view';
+        repositoriesView.style.display = 'none';
+        repositoriesView.innerHTML = `
+            <div class="repositories-container">
+                <div class="repositories-header">
+                    <h2>My Repositories</h2>
+                    <p>Choose from your GitHub repositories to generate documentation</p>
+                </div>
+                <div class="repositories-grid" id="repositories-grid">
+                    <div class="loading-state">Loading repositories...</div>
+                </div>
+            </div>
+        `;
+        document.querySelector('.content-stage').appendChild(repositoriesView);
+        return;
+    }
+    
+    if (!currentUser) {
+        repositoriesGrid.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🔐</div>
+                <h3>Authentication Required</h3>
+                <p>Please log in with GitHub to view your repositories.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    repositoriesGrid.innerHTML = '<div class="loading-state">Loading repositories...</div>';
+    
+    try {
+        // Simulate API call for now
+        setTimeout(() => {
+            repositoriesGrid.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📚</div>
+                    <h3>No Repositories Found</h3>
+                    <p>This feature requires backend integration to load your GitHub repositories.</p>
+                    <p>For now, you can manually enter repository URLs in the Home section.</p>
+                </div>
+            `;
+        }, 1000);
+    } catch (error) {
+        console.error('Error loading repositories:', error);
+        repositoriesGrid.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">❌</div>
+                <h3>Failed to Load Repositories</h3>
+                <p>Error: ${error.message}</p>
+            </div>
+        `;
+    }
+}
+
+// History loading function
+async function loadHistory() {
+    const historyList = document.getElementById('history-list');
+    if (!historyList) {
+        // Create history view if it doesn't exist
+        const historyView = document.createElement('div');
+        historyView.id = 'history-view';
+        historyView.style.display = 'none';
+        historyView.innerHTML = `
+            <div class="history-container">
+                <div class="history-header">
+                    <h2>README History</h2>
+                    <p>Your previously generated documentation</p>
+                </div>
+                <div class="history-list" id="history-list">
+                    <div class="loading-state">Loading history...</div>
+                </div>
+            </div>
+        `;
+        document.querySelector('.content-stage').appendChild(historyView);
+        return;
+    }
+    
+    if (!currentUser) {
+        historyList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🔐</div>
+                <h3>Authentication Required</h3>
+                <p>Please log in with GitHub to view your history.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    historyList.innerHTML = '<div class="loading-state">Loading history...</div>';
+    
+    try {
+        // Simulate API call for now
+        setTimeout(() => {
+            historyList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📜</div>
+                    <h3>No README History</h3>
+                    <p>You haven't generated any READMEs yet.</p>
+                    <p>Generate your first README to see it appear here!</p>
+                    <div class="empty-note">
+                        <small>💡 Note: History feature requires database setup.</small>
+                    </div>
+                </div>
+            `;
+        }, 1000);
+    } catch (error) {
+        console.error('Error loading history:', error);
+        historyList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">❌</div>
+                <h3>Failed to Load History</h3>
+                <p>Error: ${error.message}</p>
+            </div>
+        `;
+    }
+}
+
+// Authentication functions
+function handleLogin() {
+    console.log('Login clicked');
+    closeNavigation();
+    window.location.href = '/auth/github';
+}
+
+function handleLogout() {
+    console.log('Logout clicked');
+    currentUser = null;
+    updateNavUserProfile(null);
+    closeNavigation();
+}
+
+// Update user profile display for navigation
+function updateNavUserProfile(userData) {
+    if (userData) {
+        // Show user in navigation
+        if (navUser) navUser.style.display = 'flex';
+        if (navLogin) navLogin.style.display = 'none';
+        if (navLogout) navLogout.style.display = 'block';
+
+        // Show repository and history nav items
+        const navRepositories = document.getElementById('nav-repositories');
+        const navHistory = document.getElementById('nav-history');
+        const navProfile = document.getElementById('nav-profile');
+
+        if (navRepositories) navRepositories.style.display = 'flex';
+        if (navHistory) navHistory.style.display = 'flex';
+        if (navProfile) navProfile.style.display = 'flex';
+
+        // Set user data
+        if (navUserAvatar && userData.avatar_url) {
+            navUserAvatar.src = userData.avatar_url;
+        }
+        if (navUserName && userData.username) {
+            navUserName.textContent = userData.username;
+        }
+        if (navUserHandle && userData.username) {
+            navUserHandle.textContent = `@${userData.username}`;
+        }
+    } else {
+        // Hide user in navigation
+        if (navUser) navUser.style.display = 'none';
+        if (navLogin) navLogin.style.display = 'block';
+        if (navLogout) navLogout.style.display = 'none';
+
+        // Hide repository and history nav items
+        const navRepositories = document.getElementById('nav-repositories');
+        const navHistory = document.getElementById('nav-history');
+        const navProfile = document.getElementById('nav-profile');
+
+        if (navRepositories) navRepositories.style.display = 'none';
+        if (navHistory) navHistory.style.display = 'none';
+        if (navProfile) navProfile.style.display = 'none';
+    }
+}
+
+// Initialize navigation functionality
+function initializeNavigation() {
+    console.log('Initializing navigation...');
+    
+    // Set up navigation toggle event listeners
+    if (navToggleBtn) {
+        console.log('Adding click listener to nav toggle button');
+        navToggleBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Nav toggle button clicked!');
+            toggleNavigation();
+        });
+    } else {
+        console.error('Nav toggle button not found');
+    }
+
+    if (navToggle) {
+        navToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeNavigation();
+        });
+    }
+
+    // Set up navigation item event listeners
+    const navHome = document.getElementById('nav-home');
+    const navRepositories = document.getElementById('nav-repositories');
+    const navHistory = document.getElementById('nav-history');
+    const navProfile = document.getElementById('nav-profile');
+
+    if (navHome) {
+        navHome.addEventListener('click', function() {
+            console.log('Home navigation clicked');
+            setView('input');
+            closeNavigation();
+        });
+    }
+
+    if (navRepositories) {
+        navRepositories.addEventListener('click', function() {
+            console.log('Repositories navigation clicked');
+            setView('repositories');
+            loadRepositories();
+            closeNavigation();
+        });
+    }
+
+    if (navHistory) {
+        navHistory.addEventListener('click', function() {
+            console.log('History navigation clicked');
+            setView('history');
+            loadHistory();
+            closeNavigation();
+        });
+    }
+
+    if (navProfile) {
+        navProfile.addEventListener('click', function() {
+            console.log('Profile navigation clicked');
+            closeNavigation();
+            if (currentUser && currentUser.html_url) {
+                window.open(currentUser.html_url, '_blank');
+            } else if (currentUser && currentUser.username) {
+                window.open(`https://github.com/${currentUser.username}`, '_blank');
+            } else {
+                alert('Please log in to view your profile');
+            }
+        });
+    }
+
+    // Set up login/logout handlers for navigation
+    if (navLogin) {
+        navLogin.addEventListener('click', function() {
+            closeNavigation();
+            handleLogin();
+        });
+    }
+
+    if (navLogout) {
+        navLogout.addEventListener('click', function() {
+            closeNavigation();
+            handleLogout();
+        });
+    }
+
+    // Close navigation when clicking outside
+    document.addEventListener('click', function(e) {
+        if (leftNav && navToggleBtn && 
+            !leftNav.contains(e.target) && 
+            !navToggleBtn.contains(e.target)) {
+            closeNavigation();
+        }
+    });
+
+    // Initialize user profile state
+    updateNavUserProfile(currentUser);
+
+    console.log('Navigation initialized successfully');
+}
+
+// Initialize navigation when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing navigation...');
+    setTimeout(function() {
+        initializeNavigation();
+    }, 500); // Increased delay to ensure all elements are loaded
 });
