@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test GitHub OAuth Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+        .test-section {
+            background: #16213e;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #0f3460;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #28a745; }
+        .error { background: #dc3545; }
+        .info { background: #17a2b8; }
+    </style>
+</head>
+<body>
+    <h1>🧪 GitHub OAuth Login Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Test OAuth Configuration</h2>
+        <button type="button" onclick="testConfig()">Check OAuth Config</button>
+        <div id="config-status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Test GitHub OAuth Redirect</h2>
+        <button type="button" onclick="testGitHubRedirect()">Test GitHub Login</button>
+        <div id="redirect-status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Test Authentication Status</h2>
+        <button type="button" onclick="testAuthStatus()">Check Auth Status</button>
+        <div id="auth-status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Test Cookie Handling</h2>
+        <button type="button" onclick="testCookies()">Check Cookies</button>
+        <div id="cookie-status"></div>
+    </div>
+
+    <script>
+        async function testConfig() {
+            const statusDiv = document.getElementById('config-status');
+            statusDiv.innerHTML = '<div class="status info">Testing OAuth configuration...</div>';
+            
+            try {
+                const response = await fetch('/api/debug-config');
+                const data = await response.json();
+                
+                let html = '<div class="status success">OAuth Configuration:</div>';
+                html += `<ul>`;
+                html += `<li>GitHub OAuth Configured: ${data.github_oauth_configured ? '✅' : '❌'}</li>`;
+                html += `<li>Client ID Set: ${data.client_id_set ? '✅' : '❌'}</li>`;
+                html += `<li>Client Secret Set: ${data.client_secret_set ? '✅' : '❌'}</li>`;
+                html += `<li>Redirect URI: ${data.redirect_uri}</li>`;
+                html += `<li>Google AI Configured: ${data.google_ai_configured ? '✅' : '❌'}</li>`;
+                html += `</ul>`;
+                
+                statusDiv.innerHTML = html;
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status error">Error: ${error.message}</div>`;
+            }
+        }
+        
+        function testGitHubRedirect() {
+            const statusDiv = document.getElementById('redirect-status');
+            statusDiv.innerHTML = '<div class="status info">Redirecting to GitHub OAuth...</div>';
+            
+            // This should redirect to GitHub OAuth
+            window.location.href = '/auth/github';
+        }
+        
+        async function testAuthStatus() {
+            const statusDiv = document.getElementById('auth-status');
+            statusDiv.innerHTML = '<div class="status info">Checking authentication status...</div>';
+            
+            try {
+                const response = await fetch('/api/test-auth');
+                const data = await response.json();
+                
+                let html = `<div class="status ${data.authenticated ? 'success' : 'error'}">`;
+                html += `Authentication Status: ${data.authenticated ? 'Authenticated ✅' : 'Not Authenticated ❌'}</div>`;
+                
+                if (data.authenticated && data.user) {
+                    html += `<ul>`;
+                    html += `<li>Username: ${data.user.username}</li>`;
+                    html += `<li>GitHub ID: ${data.user.github_id}</li>`;
+                    html += `<li>Has Token: ${data.user.has_token ? '✅' : '❌'}</li>`;
+                    html += `</ul>`;
+                } else if (data.error) {
+                    html += `<div class="status error">Error: ${data.error}</div>`;
+                }
+                
+                statusDiv.innerHTML = html;
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status error">Error: ${error.message}</div>`;
+            }
+        }
+        
+        function testCookies() {
+            const statusDiv = document.getElementById('cookie-status');
+            
+            const cookies = document.cookie.split(';').reduce((acc, cookie) => {
+                const [key, value] = cookie.trim().split('=');
+                acc[key] = value;
+                return acc;
+            }, {});
+            
+            let html = '<div class="status info">Current Cookies:</div>';
+            html += '<ul>';
+            
+            if (cookies.github_user) {
+                try {
+                    const userData = JSON.parse(atob(cookies.github_user));
+                    html += `<li>GitHub User Cookie: ✅ Found</li>`;
+                    html += `<li>Username: ${userData.username}</li>`;
+                    html += `<li>Has Access Token: ${userData.access_token ? '✅' : '❌'}</li>`;
+                } catch (e) {
+                    html += `<li>GitHub User Cookie: ❌ Invalid format</li>`;
+                }
+            } else {
+                html += `<li>GitHub User Cookie: ❌ Not found</li>`;
+            }
+            
+            html += `<li>All Cookies: ${Object.keys(cookies).length > 0 ? Object.keys(cookies).join(', ') : 'None'}</li>`;
+            html += '</ul>';
+            
+            statusDiv.innerHTML = html;
+        }
+        
+        // Check for OAuth callback on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('session') === 'success') {
+                document.body.insertAdjacentHTML('afterbegin', 
+                    '<div class="status success">🎉 OAuth callback successful! Session established.</div>'
+                );
+            } else if (urlParams.get('error')) {
+                document.body.insertAdjacentHTML('afterbegin', 
+                    `<div class="status error">❌ OAuth error: ${urlParams.get('error')}</div>`
+                );
+            }
+        });
+    </script>
+</body>
+</html>
