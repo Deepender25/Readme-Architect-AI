@@ -636,17 +636,7 @@
                 });
             }
             
-            // Login button
-            const navLogin = document.getElementById('nav-login');
-            if (navLogin) {
-                navLogin.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Login clicked');
-                    closeNav();
-                    handleGitHubLogin();
-                });
-            }
+            // Login button - handled by app.js, no duplicate event listener needed here
             
             // Logout button
             const navLogout = document.getElementById('nav-logout');

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Navigation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+        .test-section {
+            background: #16213e;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #0f3460;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #28a745; }
+        .error { background: #dc3545; }
+        .info { background: #17a2b8; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Navigation Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Test Navigation Elements</h2>
+        <button type="button" onclick="testNavElements()">Check Nav Elements</button>
+        <div id="nav-elements-status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Test Toggle Function</h2>
+        <button type="button" onclick="testToggleFunction()">Test Toggle Function</button>
+        <div id="toggle-function-status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Test Navigation Toggle</h2>
+        <button type="button" onclick="testNavToggle()">Toggle Navigation</button>
+        <div id="nav-toggle-status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Test CSS Classes</h2>
+        <button type="button" onclick="testCSSClasses()">Check CSS Classes</button>
+        <div id="css-classes-status"></div>
+    </div>
+
+    <script>
+        function testNavElements() {
+            const statusDiv = document.getElementById('nav-elements-status');
+            
+            const leftNav = document.getElementById('left-nav');
+            const navToggleBtn = document.getElementById('nav-toggle-btn');
+            
+            let html = '<div class="status info">Navigation Elements:</div>';
+            html += '<ul>';
+            html += `<li>Left Nav Element: ${leftNav ? '✅ Found' : '❌ Not found'}</li>`;
+            html += `<li>Toggle Button: ${navToggleBtn ? '✅ Found' : '❌ Not found'}</li>`;
+            
+            if (leftNav) {
+                html += `<li>Left Nav Classes: ${leftNav.className || 'None'}</li>`;
+                html += `<li>Left Nav Style: ${leftNav.style.cssText || 'None'}</li>`;
+            }
+            
+            html += '</ul>';
+            statusDiv.innerHTML = html;
+        }
+        
+        function testToggleFunction() {
+            const statusDiv = document.getElementById('toggle-function-status');
+            
+            let html = '<div class="status info">Toggle Functions:</div>';
+            html += '<ul>';
+            html += `<li>window.toggleNav: ${typeof window.toggleNav === 'function' ? '✅ Available' : '❌ Not available'}</li>`;
+            html += `<li>toggleNav (global): ${typeof toggleNav === 'function' ? '✅ Available' : '❌ Not available'}</li>`;
+            
+            // Try to find the function in the parent window if in iframe
+            if (window.parent && window.parent !== window) {
+                html += `<li>Parent window.toggleNav: ${typeof window.parent.toggleNav === 'function' ? '✅ Available' : '❌ Not available'}</li>`;
+            }
+            
+            html += '</ul>';
+            statusDiv.innerHTML = html;
+        }
+        
+        function testNavToggle() {
+            const statusDiv = document.getElementById('nav-toggle-status');
+            
+            try {
+                const leftNav = document.getElementById('left-nav');
+                const body = document.body;
+                
+                if (!leftNav) {
+                    statusDiv.innerHTML = '<div class="status error">❌ Left nav element not found</div>';
+                    return;
+                }
+                
+                // Test manual toggle
+                const wasOpen = leftNav.classList.contains('open');
+                leftNav.classList.toggle('open');
+                body.classList.toggle('nav-open');
+                
+                const isNowOpen = leftNav.classList.contains('open');
+                const bodyHasClass = body.classList.contains('nav-open');
+                
+                let html = '<div class="status success">✅ Manual toggle test:</div>';
+                html += '<ul>';
+                html += `<li>Was open: ${wasOpen}</li>`;
+                html += `<li>Is now open: ${isNowOpen}</li>`;
+                html += `<li>Body has nav-open class: ${bodyHasClass}</li>`;
+                html += `<li>Toggle worked: ${wasOpen !== isNowOpen ? '✅ Yes' : '❌ No'}</li>`;
+                html += '</ul>';
+                
+                statusDiv.innerHTML = html;
+                
+                // Reset state
+                setTimeout(() => {
+                    leftNav.classList.remove('open');
+                    body.classList.remove('nav-open');
+                }, 2000);
+                
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status error">❌ Error: ${error.message}</div>`;
+            }
+        }
+        
+        function testCSSClasses() {
+            const statusDiv = document.getElementById('css-classes-status');
+            
+            const leftNav = document.getElementById('left-nav');
+            
+            if (!leftNav) {
+                statusDiv.innerHTML = '<div class="status error">❌ Left nav element not found</div>';
+                return;
+            }
+            
+            // Get computed styles
+            const computedStyle = window.getComputedStyle(leftNav);
+            const leftValue = computedStyle.left;
+            const positionValue = computedStyle.position;
+            
+            let html = '<div class="status info">CSS Information:</div>';
+            html += '<ul>';
+            html += `<li>Position: ${positionValue}</li>`;
+            html += `<li>Left value: ${leftValue}</li>`;
+            html += `<li>Current classes: ${leftNav.className}</li>`;
+            
+            // Test adding open class
+            leftNav.classList.add('open');
+            const openLeftValue = window.getComputedStyle(leftNav).left;
+            html += `<li>Left value when open: ${openLeftValue}</li>`;
+            leftNav.classList.remove('open');
+            
+            html += '</ul>';
+            statusDiv.innerHTML = html;
+        }
+        
+        // Auto-run tests on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                testNavElements();
+                testToggleFunction();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
