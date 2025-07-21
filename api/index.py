@@ -238,6 +238,69 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps(data).encode())
 
+    def do_POST(self):
+        """Handle POST requests"""
+        parsed_url = urllib.parse.urlparse(self.path)
+        
+        # Handle OAuth callback POST (alternative method)
+        if parsed_url.path == '/api/auth/callback':
+            try:
+                content_length = int(self.headers['Content-Length'])
+                post_data = self.rfile.read(content_length)
+                data = json.loads(post_data.decode('utf-8'))
+                
+                code = data.get('code')
+                if not code:
+                    self.send_json_response({'error': 'Missing authorization code'}, 400)
+                    return
+                
+                # Exchange code for access token
+                token_response = requests.post('https://github.com/login/oauth/access_token', {
+                    'client_id': GITHUB_CLIENT_ID,
+                    'client_secret': GITHUB_CLIENT_SECRET,
+                    'code': code
+                }, headers={'Accept': 'application/json'})
+                
+                token_data = token_response.json()
+                access_token = token_data.get('access_token')
+                
+                if not access_token:
+                    self.send_json_response({'error': 'Failed to get access token'}, 400)
+                    return
+                
+                # Get user info from GitHub
+                user_response = requests.get('https://api.github.com/user', 
+                    headers={'Authorization': f'token {access_token}'})
+                
+                if user_response.status_code != 200:
+                    self.send_json_response({'error': 'Failed to get user info'}, 400)
+                    return
+                
+                user_data = user_response.json()
+                
+                # Create user session data
+                user_session_data = {
+                    'github_id': user_data['id'],
+                    'username': user_data['login'],
+                    'name': user_data.get('name', user_data['login']),
+                    'avatar_url': user_data['avatar_url'],
+                    'html_url': user_data['html_url'],
+                    'access_token': access_token
+                }
+                
+                # Return user data (frontend will handle cookie setting)
+                self.send_json_response({'user': user_session_data})
+                return
+                
+            except Exception as e:
+                self.send_json_response({'error': f'Authentication failed: {str(e)}'}, 500)
+                return
+        
+        else:
+            self.send_response(404)
+            self.end_headers()
+            self.wfile.write(b'Not found')
+
     def do_GET(self):
         parsed_url = urllib.parse.urlparse(self.path)
         query_params = urllib.parse.parse_qs(parsed_url.query)
