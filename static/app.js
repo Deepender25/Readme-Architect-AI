@@ -222,6 +222,12 @@ function handleLogin() {
     window.location.href = '/auth/github';
 }
 
+// Global function to match HTML calls
+window.handleGitHubLogin = function() {
+    console.log('GitHub login clicked - redirecting to GitHub OAuth');
+    handleLogin();
+};
+
 function handleLogout() {
     console.log('Logging out...');
     deleteCookie('github_user');
@@ -425,7 +431,7 @@ function toggleNavigation() {
 }
 
 // Global function for HTML onclick (matches the HTML button)
-window.toggleNav = function() {
+window.toggleNav = function () {
     console.log('toggleNav() called from app.js');
     toggleNavigation();
 };
