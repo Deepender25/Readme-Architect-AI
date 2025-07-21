@@ -174,30 +174,28 @@ function deleteCookie(name) {
 
 function checkAuthStatus() {
     console.log('Checking authentication status...');
-
-    // Clear any localStorage demo data first
-    localStorage.removeItem('github_user');
+    console.log('All cookies:', document.cookie);
 
     const githubUserCookie = getCookie('github_user');
-    console.log('GitHub user cookie found:', !!githubUserCookie);
+    console.log('GitHub user cookie:', githubUserCookie);
 
     if (githubUserCookie) {
         try {
             const userData = JSON.parse(atob(githubUserCookie));
             console.log('Parsed user data:', userData);
 
-            // Validate that this is real user data, not demo data
-            if (userData.username && userData.username !== 'demo-user' && userData.access_token) {
+            // Accept any valid user data with username and access_token
+            if (userData.username && userData.access_token) {
                 currentUser = userData;
                 showUserProfile(userData);
+                console.log('User authenticated successfully:', userData.username);
                 return true;
             } else {
-                console.log('Invalid or demo user data found, clearing...');
+                console.log('Invalid user data, missing username or access_token');
                 deleteCookie('github_user');
             }
         } catch (e) {
             console.error('Failed to parse user data:', e);
-            console.log('Clearing invalid cookie...');
             deleteCookie('github_user');
         }
     }
