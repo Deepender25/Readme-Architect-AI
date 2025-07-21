@@ -229,19 +229,101 @@
             }
         }
         
-        // Close navigation when clicking the X button
+        // Close navigation function
+        function closeNav() {
+            const leftNav = document.getElementById('left-nav');
+            const body = document.body;
+            if (leftNav) {
+                leftNav.classList.remove('open');
+                body.classList.remove('nav-open');
+                console.log('Navigation closed');
+            }
+        }
+        
+        // Initialize all navigation functionality
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing navigation...');
+            
+            // Close button (X) in navigation
             const navToggle = document.getElementById('nav-toggle');
             if (navToggle) {
-                navToggle.addEventListener('click', function() {
-                    const leftNav = document.getElementById('left-nav');
-                    const body = document.body;
-                    if (leftNav) {
-                        leftNav.classList.remove('open');
-                        body.classList.remove('nav-open');
-                    }
+                navToggle.addEventListener('click', closeNav);
+                console.log('Close button listener added');
+            }
+            
+            // Home button
+            const navHome = document.getElementById('nav-home');
+            if (navHome) {
+                navHome.addEventListener('click', function() {
+                    console.log('Home clicked');
+                    closeNav();
+                    // Switch to home view if needed
                 });
             }
+            
+            // Repositories button
+            const navRepositories = document.getElementById('nav-repositories');
+            if (navRepositories) {
+                navRepositories.addEventListener('click', function() {
+                    console.log('Repositories clicked');
+                    closeNav();
+                    alert('Repositories feature - coming soon!');
+                });
+            }
+            
+            // History button
+            const navHistory = document.getElementById('nav-history');
+            if (navHistory) {
+                navHistory.addEventListener('click', function() {
+                    console.log('History clicked');
+                    closeNav();
+                    alert('History feature - coming soon!');
+                });
+            }
+            
+            // Profile button
+            const navProfile = document.getElementById('nav-profile');
+            if (navProfile) {
+                navProfile.addEventListener('click', function() {
+                    console.log('Profile clicked');
+                    closeNav();
+                    alert('Please log in to view your profile');
+                });
+            }
+            
+            // Login button
+            const navLogin = document.getElementById('nav-login');
+            if (navLogin) {
+                navLogin.addEventListener('click', function() {
+                    console.log('Login clicked');
+                    closeNav();
+                    alert('Login feature - redirect to GitHub OAuth');
+                });
+            }
+            
+            // Logout button
+            const navLogout = document.getElementById('nav-logout');
+            if (navLogout) {
+                navLogout.addEventListener('click', function() {
+                    console.log('Logout clicked');
+                    closeNav();
+                    alert('Logout successful');
+                });
+            }
+            
+            // Click outside to close navigation
+            document.addEventListener('click', function(e) {
+                const leftNav = document.getElementById('left-nav');
+                const navToggleBtn = document.getElementById('nav-toggle-btn');
+                
+                if (leftNav && navToggleBtn && 
+                    !leftNav.contains(e.target) && 
+                    !navToggleBtn.contains(e.target)) {
+                    closeNav();
+                }
+            });
+            
+            console.log('Navigation initialization complete');
         });
     </script>
     
