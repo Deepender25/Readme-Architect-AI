@@ -127,15 +127,21 @@ form.addEventListener('submit', async (e) => {
 
 backBtn.addEventListener('click', () => {
     if (isAnimating) return;
+    
+    // Always go back to input view
     setView('input');
-    repoUrlInput.value = '';
-    projectNameInput.value = '';
-    includeDemoCheckbox.checked = false;
-    demoCountsContainer.style.opacity = 0;
-    demoCountsContainer.style.transform = 'translateY(-10px)';
-    demoCountsContainer.style.display = 'none'; // Explicitly hide on back
-    numScreenshotsInput.value = "2";
-    numVideosInput.value = "1";
+    
+    // Reset form only if coming from output view
+    if (currentView === 'output') {
+        repoUrlInput.value = '';
+        projectNameInput.value = '';
+        includeDemoCheckbox.checked = false;
+        demoCountsContainer.style.opacity = 0;
+        demoCountsContainer.style.transform = 'translateY(-10px)';
+        demoCountsContainer.style.display = 'none';
+        numScreenshotsInput.value = "2";
+        numVideosInput.value = "1";
+    }
 });
 
 includeDemoCheckbox.addEventListener('change', () => {
@@ -219,12 +225,18 @@ function showLoginButton() {
 }
 
 function handleLogin() {
+    console.log('Redirecting to GitHub OAuth...');
     window.location.href = '/auth/github';
 }
 
 function handleLogout() {
+    console.log('Logging out...');
     deleteCookie('github_user');
     showLoginButton();
+    
+    // Clear current user
+    currentUser = null;
+    
     // Redirect to clear any URL parameters
     window.location.href = '/';
 }
@@ -233,10 +245,26 @@ function handleLogout() {
 function handleOAuthCallback() {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('session') === 'success') {
+        console.log('OAuth callback successful - session established');
+        
         // Clean up URL
         window.history.replaceState({}, document.title, '/');
+        
         // Check auth status to update UI
-        checkAuthStatus();
+        setTimeout(() => {
+            checkAuthStatus();
+        }, 500);
+        
+        return;
+    }
+    
+    // Handle error callback
+    if (urlParams.get('error')) {
+        console.error('OAuth callback error:', urlParams.get('error'));
+        alert('GitHub login failed. Please try again.');
+        
+        // Clean up URL
+        window.history.replaceState({}, document.title, '/');
     }
 }
 
@@ -660,6 +688,12 @@ function setView(viewName) {
     const currentViewEl = document.getElementById(`${currentView}-view`);
     const nextViewEl = document.getElementById(`${viewName}-view`);
 
+    if (!nextViewEl) {
+        console.error(`View element not found: ${viewName}-view`);
+        isAnimating = false;
+        return;
+    }
+
     const timeline = anime.timeline({
         easing: 'easeOutCubic', // Consistent, clean easing
         duration: 300, // Faster overall transition
@@ -704,12 +738,16 @@ function setView(viewName) {
         complete: () => {
             if (viewName === 'input') {
                 generateBtn.disabled = false;
+                backBtn.classList.remove('visible');
             }
             else if (viewName === 'output') {
                 backBtn.classList.add('visible');
             }
             else if (viewName === 'loader') {
                 generateBtn.disabled = true;
+            }
+            else if (viewName === 'repositories' || viewName === 'history') {
+                backBtn.classList.add('visible');
             }
         }
     }); // No overlap, sequential
