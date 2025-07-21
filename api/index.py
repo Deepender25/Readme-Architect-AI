@@ -273,43 +273,57 @@ class handler(BaseHTTPRequestHandler):
                 access_token = token_data.get('access_token')
                 
                 if not access_token:
-                    self.send_error(400, "Failed to get access token")
+                    print(f"Failed to get access token: {token_data}")
+                    self.send_response(302)
+                    self.send_header('Location', '/?error=token_failed')
+                    self.end_headers()
                     return
                 
                 # Get user info from GitHub
                 user_response = requests.get('https://api.github.com/user', 
                     headers={'Authorization': f'token {access_token}'})
+                
+                if user_response.status_code != 200:
+                    print(f"Failed to get user info: {user_response.status_code}")
+                    self.send_response(302)
+                    self.send_header('Location', '/?error=user_failed')
+                    self.end_headers()
+                    return
+                
                 user_data = user_response.json()
                 
                 # Create user session data for cookie
                 user_session_data = {
                     'github_id': user_data['id'],
                     'username': user_data['login'],
+                    'name': user_data.get('name', user_data['login']),
                     'avatar_url': user_data['avatar_url'],
+                    'html_url': user_data['html_url'],
                     'access_token': access_token
                 }
                 
                 # Encode user data as session cookie
                 session_data = base64.b64encode(json.dumps(user_session_data).encode()).decode()
                 
-                # Redirect to main app with session
+                # Redirect to main app with session success
                 self.send_response(302)
-                self.send_header('Location', f'/?session=success')
+                self.send_header('Location', '/?session=success')
                 
-                # Set cookie to be accessible to both JavaScript and HTTP requests
-                # Remove SameSite=Lax temporarily to test if that's the issue
-                cookie_value = f'github_user={session_data}; Path=/; Max-Age=86400'
+                # Set secure cookie
+                cookie_value = f'github_user={session_data}; Path=/; Max-Age=86400; HttpOnly=false; SameSite=Lax'
                 self.send_header('Set-Cookie', cookie_value)
                 
                 self.end_headers()
                 
                 print(f"OAuth callback successful for user: {user_data['login']}")
-                print(f"Setting cookie: {cookie_value}")
-                print(f"Session data: {session_data[:50]}...")
+                print(f"Setting cookie with session data")
                 return
                 
             except Exception as e:
-                self.send_error(500, f"Authentication failed: {str(e)}")
+                print(f"OAuth callback error: {str(e)}")
+                self.send_response(302)
+                self.send_header('Location', f'/?error=auth_failed')
+                self.end_headers()
                 return
         
         # Get user repositories
