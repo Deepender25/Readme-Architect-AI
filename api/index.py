@@ -197,18 +197,35 @@ def generate_readme_with_gemini(analysis_context: dict, project_name: str = None
 
 class handler(BaseHTTPRequestHandler):
     def get_user_from_cookie(self):
-        """Extract user data from GitHub cookie"""
+        """Extract user data from GitHub cookie or custom header"""
+        # First try to get from cookie
         cookie_header = self.headers.get('Cookie', '')
+        print(f"Full cookie header: {cookie_header}")
+        
         if 'github_user=' in cookie_header:
             for cookie in cookie_header.split(';'):
                 if cookie.strip().startswith('github_user='):
                     try:
                         cookie_value = cookie.split('=')[1].strip()
+                        print(f"Found github_user cookie: {cookie_value[:50]}...")
                         user_data = json.loads(base64.b64decode(cookie_value).decode())
+                        print(f"Successfully parsed user data from cookie: {user_data.get('username')}")
                         return user_data
                     except Exception as e:
                         print(f"Error parsing user cookie: {e}")
-                        return None
+        
+        # Fallback: try to get from custom header (for debugging)
+        auth_header = self.headers.get('X-GitHub-User', '')
+        if auth_header:
+            try:
+                print(f"Found X-GitHub-User header: {auth_header[:50]}...")
+                user_data = json.loads(base64.b64decode(auth_header).decode())
+                print(f"Successfully parsed user data from header: {user_data.get('username')}")
+                return user_data
+            except Exception as e:
+                print(f"Error parsing user header: {e}")
+        
+        print("No github_user cookie or header found")
         return None
 
     def send_json_response(self, data, status_code=200):
@@ -278,13 +295,153 @@ class handler(BaseHTTPRequestHandler):
                 # Redirect to main app with session
                 self.send_response(302)
                 self.send_header('Location', f'/?session=success')
-                self.send_header('Set-Cookie', f'github_user={session_data}; Path=/; Max-Age=2592000; SameSite=Lax')
+                
+                # Set cookie to be accessible to both JavaScript and HTTP requests
+                # Remove SameSite=Lax temporarily to test if that's the issue
+                cookie_value = f'github_user={session_data}; Path=/; Max-Age=86400'
+                self.send_header('Set-Cookie', cookie_value)
+                
                 self.end_headers()
+                
+                print(f"OAuth callback successful for user: {user_data['login']}")
+                print(f"Setting cookie: {cookie_value}")
+                print(f"Session data: {session_data[:50]}...")
                 return
                 
             except Exception as e:
                 self.send_error(500, f"Authentication failed: {str(e)}")
                 return
+        
+        # Get user repositories
+        elif parsed_url.path == '/api/repositories':
+            print(f"Repository request received. Headers: {dict(self.headers)}")
+            
+            user_data = self.get_user_from_cookie()
+            print(f"User data from cookie: {user_data}")
+            
+            if not user_data:
+                print("No user data found in cookie")
+                self.send_json_response({'error': 'Authentication required. Please log in with GitHub.'}, 401)
+                return
+            
+            if 'access_token' not in user_data:
+                print("No access token found in user data")
+                self.send_json_response({'error': 'Invalid authentication. Please log out and log in again.'}, 401)
+                return
+            
+            try:
+                # Get user repositories from GitHub API
+                headers = {'Authorization': f'token {user_data["access_token"]}'}
+                print(f"Making GitHub API request with token: {user_data['access_token'][:10]}...")
+                
+                response = requests.get('https://api.github.com/user/repos?sort=updated&per_page=50', headers=headers)
+                print(f"GitHub API response status: {response.status_code}")
+                
+                if response.status_code == 401:
+                    print("GitHub API returned 401 - token may be expired")
+                    self.send_json_response({'error': 'GitHub authentication expired. Please log out and log in again.'}, 401)
+                    return
+                elif response.status_code != 200:
+                    print(f"GitHub API error: {response.text}")
+                    self.send_json_response({'error': f'GitHub API error: {response.status_code}'}, 500)
+                    return
+                
+                repos = response.json()
+                print(f"Found {len(repos)} repositories")
+                
+                # Filter and format repository data
+                formatted_repos = []
+                for repo in repos:
+                    formatted_repos.append({
+                        'name': repo['name'],
+                        'full_name': repo['full_name'],
+                        'description': repo['description'],
+                        'html_url': repo['html_url'],
+                        'language': repo['language'],
+                        'stargazers_count': repo['stargazers_count'],
+                        'updated_at': repo['updated_at'],
+                        'private': repo['private']
+                    })
+                
+                print(f"Returning {len(formatted_repos)} formatted repositories")
+                self.send_json_response({'repositories': formatted_repos})
+                return
+                
+            except Exception as e:
+                print(f"Exception in repositories endpoint: {str(e)}")
+                self.send_json_response({'error': f'Failed to fetch repositories: {str(e)}'}, 500)
+                return
+        
+        # Test authentication endpoint
+        elif parsed_url.path == '/api/test-auth':
+            print(f"Test auth request received. Headers: {dict(self.headers)}")
+            user_data = self.get_user_from_cookie()
+            print(f"User data from cookie: {user_data}")
+            
+            # Check OAuth configuration
+            oauth_configured = bool(GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET)
+            
+            if not user_data:
+                self.send_json_response({
+                    'authenticated': False, 
+                    'error': 'No user data in cookie',
+                    'oauth_configured': oauth_configured,
+                    'client_id_set': bool(GITHUB_CLIENT_ID),
+                    'client_secret_set': bool(GITHUB_CLIENT_SECRET)
+                })
+            else:
+                self.send_json_response({
+                    'authenticated': True, 
+                    'user': {
+                        'username': user_data.get('username'),
+                        'github_id': user_data.get('github_id'),
+                        'has_token': 'access_token' in user_data
+                    },
+                    'oauth_configured': oauth_configured
+                })
+            return
+        
+        # Debug endpoint to check OAuth configuration
+        elif parsed_url.path == '/api/debug-config':
+            self.send_json_response({
+                'github_oauth_configured': bool(GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET),
+                'client_id_set': bool(GITHUB_CLIENT_ID),
+                'client_secret_set': bool(GITHUB_CLIENT_SECRET),
+                'redirect_uri': GITHUB_REDIRECT_URI,
+                'google_ai_configured': bool(os.getenv("GOOGLE_API_KEY"))
+            })
+            return
+        
+        # Get user README history (requires database implementation)
+        elif parsed_url.path == '/api/history':
+            print(f"History request received. Headers: {dict(self.headers)}")
+            
+            user_data = self.get_user_from_cookie()
+            print(f"User data from cookie: {user_data}")
+            
+            if not user_data:
+                print("No user data found in cookie")
+                self.send_json_response({'error': 'Authentication required. Please log in with GitHub.'}, 401)
+                return
+            
+            # For now, return empty history since we don't have a database
+            # In production, this would query a database for user's README history
+            self.send_json_response({
+                'history': [],
+                'message': 'README history feature requires database setup. Generate some READMEs to see them here!'
+            })
+            return
+        
+        # Get specific history item (placeholder)
+        elif parsed_url.path.startswith('/api/history/'):
+            user_data = self.get_user_from_cookie()
+            if not user_data:
+                self.send_json_response({'error': 'Authentication required'}, 401)
+                return
+            
+            # For now, return empty since we don't have a database
+            self.send_json_response({'error': 'History item not found'}, 404)
+            return
         
         # README Generation API
         elif parsed_url.path == '/api/generate':

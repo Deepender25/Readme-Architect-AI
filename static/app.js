@@ -24,10 +24,21 @@ const copyBtn = document.getElementById('copy-btn');
 // GitHub Auth Elements
 const githubLoginBtn = document.getElementById('github-login-btn');
 const userProfile = document.getElementById('user-profile');
+const userProfileTrigger = document.getElementById('user-profile-trigger');
+const userDropdown = document.getElementById('user-dropdown');
 const userAvatar = document.getElementById('user-avatar');
 const userName = document.getElementById('user-name');
-const logoutBtn = document.getElementById('logout-btn');
-const historyBtn = document.getElementById('history-btn');
+const userHandle = document.getElementById('user-handle');
+
+// Dropdown elements
+const dropdownAvatar = document.getElementById('dropdown-avatar');
+const dropdownName = document.getElementById('dropdown-name');
+const dropdownHandle = document.getElementById('dropdown-handle');
+const repositoriesOption = document.getElementById('repositories-option');
+const historyOption = document.getElementById('history-option');
+const profileOption = document.getElementById('profile-option');
+const settingsOption = document.getElementById('settings-option');
+const logoutOption = document.getElementById('logout-option');
 
 // View Elements
 const repositoriesView = document.getElementById('repositories-view');
@@ -173,18 +184,25 @@ function deleteCookie(name) {
 }
 
 function checkAuthStatus() {
+    console.log('Checking authentication status...');
     const githubUserCookie = getCookie('github_user');
+    console.log('GitHub user cookie found:', !!githubUserCookie);
+    
     if (githubUserCookie) {
         try {
             const userData = JSON.parse(atob(githubUserCookie));
+            console.log('Parsed user data:', userData);
             currentUser = userData;
             showUserProfile(userData);
             return true;
         } catch (e) {
             console.error('Failed to parse user data:', e);
+            console.log('Clearing invalid cookie...');
             deleteCookie('github_user');
         }
     }
+    
+    console.log('No valid authentication found, showing login button');
     showLoginButton();
     return false;
 }
@@ -199,21 +217,41 @@ function showUserProfile(userData) {
     
     // Show user profile
     if (userProfile) {
-        userProfile.style.display = 'flex';
+        userProfile.style.display = 'block';
         userProfile.style.visibility = 'visible';
         userProfile.style.opacity = '1';
     }
     
-    // Set user data
+    // Set user data in main profile
     if (userAvatar && userData.avatar_url) {
         userAvatar.src = userData.avatar_url;
     }
     if (userName && userData.username) {
         userName.textContent = userData.username;
     }
-    if (historyBtn) {
-        historyBtn.style.display = 'inline-flex';
+    if (userHandle && userData.username) {
+        userHandle.textContent = `@${userData.username}`;
     }
+    
+    // Set user data in dropdown
+    if (dropdownAvatar && userData.avatar_url) {
+        dropdownAvatar.src = userData.avatar_url;
+    }
+    if (dropdownName && userData.username) {
+        dropdownName.textContent = userData.name || userData.username;
+    }
+    if (dropdownHandle && userData.username) {
+        dropdownHandle.textContent = `@${userData.username}`;
+    }
+    
+    // Test authentication after showing profile
+    setTimeout(async () => {
+        const authResult = await testAuthentication();
+        if (!authResult.authenticated) {
+            console.log('Frontend shows user but backend has no auth - clearing frontend state');
+            showLoginButton();
+        }
+    }, 1000);
 }
 
 function showLoginButton() {
@@ -224,17 +262,15 @@ function showLoginButton() {
         githubLoginBtn.style.opacity = '1';
     }
     
-    // Hide user profile
+    // Hide user profile and close dropdown
     if (userProfile) {
         userProfile.style.display = 'none';
         userProfile.style.visibility = 'hidden';
         userProfile.style.opacity = '0';
     }
     
-    // Hide history button
-    if (historyBtn) {
-        historyBtn.style.display = 'none';
-    }
+    // Close dropdown if open
+    closeDropdown();
     
     currentUser = null;
 }
@@ -263,40 +299,103 @@ function handleOAuthCallback() {
 
 // Load user repositories
 async function loadRepositories() {
-    if (!currentUser) return;
+    if (!currentUser) {
+        repositoriesGrid.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🔐</div>
+                <h3>Authentication Required</h3>
+                <p>Please log in with GitHub to view your repositories.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Show loading state
+    repositoriesGrid.innerHTML = '<div class="loading-state">Loading repositories...</div>';
     
     try {
-        const response = await fetch('/api/repositories', {
-            credentials: 'include'
+        console.log('Fetching repositories for user:', currentUser.username);
+        
+        // First check OAuth configuration (with cache busting)
+        const configResponse = await fetch(`/api/debug-config?t=${Date.now()}`);
+        const configData = await configResponse.json();
+        console.log('OAuth configuration:', configData);
+        
+        if (!configData.github_oauth_configured) {
+            repositoriesGrid.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">⚙️</div>
+                    <h3>GitHub OAuth Not Configured</h3>
+                    <p>To see your real repositories, GitHub OAuth needs to be set up.</p>
+                    <div class="empty-note">
+                        <small>💡 Set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET environment variables</small>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+        
+        // Get the cookie value to send as header (workaround for cookie transmission issue)
+        const githubUserCookie = getCookie('github_user');
+        
+        const response = await fetch(`/api/repositories?t=${Date.now()}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache',
+                'X-GitHub-User': githubUserCookie || ''
+            }
         });
         
+        console.log('Repository response status:', response.status);
+        
         if (!response.ok) {
-            throw new Error('Failed to fetch repositories');
+            const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+            throw new Error(errorData.error || `HTTP ${response.status}`);
         }
         
         const data = await response.json();
+        console.log('Repository data received:', data);
         displayRepositories(data.repositories || []);
     } catch (error) {
         console.error('Error loading repositories:', error);
-        repositoriesGrid.innerHTML = '<p>Failed to load repositories. Please try again.</p>';
+        repositoriesGrid.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">❌</div>
+                <h3>Failed to Load Repositories</h3>
+                <p>Error: ${error.message}</p>
+                <p>Please try logging out and back in.</p>
+            </div>
+        `;
     }
 }
 
 // Display repositories
 function displayRepositories(repositories) {
     if (repositories.length === 0) {
-        repositoriesGrid.innerHTML = '<p>No repositories found.</p>';
+        repositoriesGrid.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📚</div>
+                <h3>No Repositories Found</h3>
+                <p>It looks like you don't have any repositories yet, or they might be private.</p>
+                <p>Create a new repository on GitHub to get started!</p>
+            </div>
+        `;
         return;
     }
     
     const repoCards = repositories.map(repo => `
         <div class="repo-card" onclick="selectRepository('${repo.html_url}')">
-            <h3>${repo.name}</h3>
+            <div class="repo-header">
+                <h3>${repo.name}</h3>
+                ${repo.private ? '<span class="private-badge">Private</span>' : ''}
+            </div>
             <p>${repo.description || 'No description available'}</p>
             <div class="repo-meta">
                 <span>⭐ ${repo.stargazers_count}</span>
-                ${repo.language ? `<span>${repo.language}</span>` : ''}
-                <span>${new Date(repo.updated_at).toLocaleDateString()}</span>
+                ${repo.language ? `<span class="language-tag">${repo.language}</span>` : ''}
+                <span class="updated-date">Updated ${new Date(repo.updated_at).toLocaleDateString()}</span>
             </div>
         </div>
     `).join('');
@@ -313,29 +412,71 @@ function selectRepository(repoUrl) {
 
 // Load user history
 async function loadHistory() {
-    if (!currentUser) return;
+    if (!currentUser) {
+        historyList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🔐</div>
+                <h3>Authentication Required</h3>
+                <p>Please log in with GitHub to view your history.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Show loading state
+    historyList.innerHTML = '<div class="loading-state">Loading history...</div>';
     
     try {
+        console.log('Fetching history for user:', currentUser.username);
+        // Get the cookie value to send as header (workaround for cookie transmission issue)
+        const githubUserCookie = getCookie('github_user');
+        
         const response = await fetch('/api/history', {
-            credentials: 'include'
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-GitHub-User': githubUserCookie || ''
+            }
         });
         
+        console.log('History response status:', response.status);
+        
         if (!response.ok) {
-            throw new Error('Failed to fetch history');
+            const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+            throw new Error(errorData.error || `HTTP ${response.status}`);
         }
         
         const data = await response.json();
+        console.log('History data received:', data);
         displayHistory(data.history || []);
     } catch (error) {
         console.error('Error loading history:', error);
-        historyList.innerHTML = '<p>Failed to load history. Please try again.</p>';
+        historyList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">❌</div>
+                <h3>Failed to Load History</h3>
+                <p>Error: ${error.message}</p>
+                <p>Please try logging out and back in.</p>
+            </div>
+        `;
     }
 }
 
 // Display history
 function displayHistory(history) {
     if (history.length === 0) {
-        historyList.innerHTML = '<p>No README history found.</p>';
+        historyList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📜</div>
+                <h3>No README History</h3>
+                <p>You haven't generated any READMEs yet.</p>
+                <p>Generate your first README to see it appear here!</p>
+                <div class="empty-note">
+                    <small>💡 Note: History feature requires database setup. This is a demo version.</small>
+                </div>
+            </div>
+        `;
         return;
     }
     
@@ -353,25 +494,72 @@ function displayHistory(history) {
 // Load history item
 async function loadHistoryItem(historyId) {
     try {
+        console.log('Loading history item:', historyId);
+        
         const response = await fetch(`/api/history/${historyId}`, {
-            credentials: 'include'
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
         
         if (!response.ok) {
-            throw new Error('Failed to load README');
+            throw new Error('Failed to load README from history');
         }
         
         const data = await response.json();
         
-        // Show the README
-        codeView.textContent = data.readme_content;
-        previewContent.innerHTML = marked.parse(data.readme_content);
-        hljs.highlightAll();
-        setView('output');
-        animateOutputIn();
+        if (data.readme_content) {
+            // Show the README
+            codeView.textContent = data.readme_content;
+            previewContent.innerHTML = marked.parse(data.readme_content);
+            hljs.highlightAll();
+            setView('output');
+            animateOutputIn();
+        } else {
+            throw new Error('No README content found');
+        }
+        
     } catch (error) {
         console.error('Error loading history item:', error);
-        alert('Failed to load README from history');
+        alert('Failed to load README from history. This feature requires database setup.');
+    }
+}
+
+// Dropdown functionality
+let dropdownOpen = false;
+
+function toggleDropdown() {
+    dropdownOpen = !dropdownOpen;
+    
+    if (dropdownOpen) {
+        userDropdown.classList.add('show');
+        userProfile.classList.add('dropdown-open');
+        
+        // Close dropdown when clicking outside
+        setTimeout(() => {
+            document.addEventListener('click', closeDropdownOnOutsideClick);
+        }, 100);
+    } else {
+        userDropdown.classList.remove('show');
+        userProfile.classList.remove('dropdown-open');
+        document.removeEventListener('click', closeDropdownOnOutsideClick);
+    }
+}
+
+function closeDropdownOnOutsideClick(event) {
+    if (!userProfile.contains(event.target)) {
+        closeDropdown();
+    }
+}
+
+function closeDropdown() {
+    if (dropdownOpen) {
+        dropdownOpen = false;
+        userDropdown.classList.remove('show');
+        userProfile.classList.remove('dropdown-open');
+        document.removeEventListener('click', closeDropdownOnOutsideClick);
     }
 }
 
@@ -380,14 +568,91 @@ if (githubLoginBtn) {
     githubLoginBtn.addEventListener('click', handleLogin);
 }
 
-if (logoutBtn) {
-    logoutBtn.addEventListener('click', handleLogout);
+// User profile dropdown trigger
+if (userProfileTrigger) {
+    userProfileTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        // Add ripple effect
+        userProfileTrigger.classList.add('ripple');
+        setTimeout(() => {
+            userProfileTrigger.classList.remove('ripple');
+        }, 600);
+        
+        toggleDropdown();
+    });
 }
 
-if (historyBtn) {
-    historyBtn.addEventListener('click', () => {
+// Dropdown menu options
+if (repositoriesOption) {
+    repositoriesOption.addEventListener('click', () => {
+        closeDropdown();
+        setView('repositories');
+        loadRepositories();
+    });
+}
+
+if (historyOption) {
+    historyOption.addEventListener('click', () => {
+        closeDropdown();
         setView('history');
         loadHistory();
+    });
+}
+
+if (profileOption) {
+    profileOption.addEventListener('click', () => {
+        closeDropdown();
+        // Open GitHub profile in new tab
+        if (currentUser && currentUser.html_url) {
+            window.open(currentUser.html_url, '_blank');
+        } else if (currentUser && currentUser.username) {
+            window.open(`https://github.com/${currentUser.username}`, '_blank');
+        }
+    });
+}
+
+// Add test authentication function for debugging
+async function testAuthentication() {
+    try {
+        console.log('Testing authentication...');
+        console.log('Current cookies:', document.cookie);
+        
+        // Get the cookie value to send as header (workaround for cookie transmission issue)
+        const githubUserCookie = getCookie('github_user');
+        
+        const response = await fetch('/api/test-auth', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-GitHub-User': githubUserCookie || ''
+            }
+        });
+        
+        const data = await response.json();
+        console.log('Auth test result:', data);
+        return data;
+    } catch (error) {
+        console.error('Auth test failed:', error);
+        return { authenticated: false, error: error.message };
+    }
+}
+
+// Remove duplicate function - keeping the original one above
+
+if (settingsOption) {
+    settingsOption.addEventListener('click', () => {
+        closeDropdown();
+        // TODO: Implement settings view
+        alert('Settings feature coming soon!');
+    });
+}
+
+if (logoutOption) {
+    logoutOption.addEventListener('click', () => {
+        closeDropdown();
+        handleLogout();
     });
 }
 
