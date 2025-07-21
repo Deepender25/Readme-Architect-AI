@@ -356,7 +356,145 @@
         // Handle GitHub login
         function handleGitHubLogin() {
             console.log('GitHub login clicked');
-            alert('Redirecting to GitHub OAuth...\n\nThis would normally redirect to:\n/auth/github');
+            
+            // Show loading state
+            const authBtn = document.querySelector('.auth-btn');
+            if (authBtn) {
+                authBtn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z">
+                            <animateTransform attributeName="transform" type="rotate" dur="1s" values="0 12 12;360 12 12" repeatCount="indefinite"/>
+                        </path>
+                    </svg>
+                    Redirecting to GitHub...
+                `;
+                authBtn.disabled = true;
+            }
+            
+            // Redirect to GitHub OAuth
+            setTimeout(() => {
+                window.location.href = '/auth/github';
+            }, 1000);
+        }
+        
+        // Check if user is already logged in
+        function checkAuthStatus() {
+            // Check for auth token or user data in localStorage or cookies
+            const userData = localStorage.getItem('github_user');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    showLoggedInState(user);
+                } catch (e) {
+                    console.error('Error parsing user data:', e);
+                }
+            }
+        }
+        
+        // Show logged in state
+        function showLoggedInState(user) {
+            console.log('User logged in:', user);
+            
+            // Show user in navigation
+            const navUser = document.getElementById('nav-user');
+            const navLogin = document.getElementById('nav-login');
+            const navLogout = document.getElementById('nav-logout');
+            const navRepositories = document.getElementById('nav-repositories');
+            const navHistory = document.getElementById('nav-history');
+            const navProfile = document.getElementById('nav-profile');
+            
+            if (navUser) {
+                navUser.style.display = 'flex';
+                
+                // Set user data
+                const navUserAvatar = document.getElementById('nav-user-avatar');
+                const navUserName = document.getElementById('nav-user-name');
+                const navUserHandle = document.getElementById('nav-user-handle');
+                
+                if (navUserAvatar && user.avatar_url) {
+                    navUserAvatar.src = user.avatar_url;
+                }
+                if (navUserName && user.name) {
+                    navUserName.textContent = user.name;
+                }
+                if (navUserHandle && user.login) {
+                    navUserHandle.textContent = `@${user.login}`;
+                }
+            }
+            
+            if (navLogin) navLogin.style.display = 'none';
+            if (navLogout) navLogout.style.display = 'block';
+            if (navRepositories) navRepositories.style.display = 'flex';
+            if (navHistory) navHistory.style.display = 'flex';
+            if (navProfile) navProfile.style.display = 'flex';
+        }
+        
+        // Handle logout
+        function handleLogout() {
+            console.log('Logout clicked');
+            
+            // Clear user data
+            localStorage.removeItem('github_user');
+            
+            // Reset navigation
+            const navUser = document.getElementById('nav-user');
+            const navLogin = document.getElementById('nav-login');
+            const navLogout = document.getElementById('nav-logout');
+            const navRepositories = document.getElementById('nav-repositories');
+            const navHistory = document.getElementById('nav-history');
+            const navProfile = document.getElementById('nav-profile');
+            
+            if (navUser) navUser.style.display = 'none';
+            if (navLogin) navLogin.style.display = 'block';
+            if (navLogout) navLogout.style.display = 'none';
+            if (navRepositories) navRepositories.style.display = 'none';
+            if (navHistory) navHistory.style.display = 'none';
+            if (navProfile) navProfile.style.display = 'none';
+            
+            closeNav();
+            showHomeView();
+            
+            alert('Logged out successfully!');
+        }
+        
+        // Handle OAuth callback
+        function handleOAuthCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+            
+            if (code) {
+                console.log('OAuth callback received with code:', code);
+                
+                // Exchange code for access token
+                fetch('/auth/callback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ code, state })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.user) {
+                        // Store user data
+                        localStorage.setItem('github_user', JSON.stringify(data.user));
+                        showLoggedInState(data.user);
+                        
+                        // Clean up URL
+                        window.history.replaceState({}, document.title, '/');
+                        
+                        alert(`Welcome, ${data.user.name || data.user.login}!`);
+                    } else {
+                        console.error('OAuth callback failed:', data);
+                        alert('Login failed. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('OAuth callback error:', error);
+                    alert('Login failed. Please try again.');
+                });
+            }
         }
         
         // Select demo repository
@@ -433,7 +571,7 @@
                 navLogin.addEventListener('click', function() {
                     console.log('Login clicked');
                     closeNav();
-                    alert('Login feature - redirect to GitHub OAuth');
+                    handleGitHubLogin();
                 });
             }
             
@@ -443,7 +581,7 @@
                 navLogout.addEventListener('click', function() {
                     console.log('Logout clicked');
                     closeNav();
-                    alert('Logout successful');
+                    handleLogout();
                 });
             }
             
@@ -460,6 +598,12 @@
             });
             
             console.log('Navigation initialization complete');
+            
+            // Check authentication status on page load
+            checkAuthStatus();
+            
+            // Handle OAuth callback if present
+            handleOAuthCallback();
         });
     </script>
     
