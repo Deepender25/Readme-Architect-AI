@@ -861,70 +861,15 @@ function setupButtonAnimations() {
 // Call setupButtonAnimations after initialize
 document.addEventListener('DOMContentLoaded', setupButtonAnimations);
 
-// Initialize navigation on page load
-document.addEventListener('DOMContentLoaded', () => {
-    // Close navigation when clicking outside
-    document.addEventListener('click', (e) => {
-        if (leftNav && navToggleBtn && !leftNav.contains(e.target) && !navToggleBtn.contains(e.target)) {
-            closeNavigation();
-        }
-    });
-});/
-/ === NAVIGATION FUNCTIONALITY ===
-
-// Navigation toggle functions
-function toggleNavigation() {
-    if (leftNav) {
-        leftNav.classList.toggle('open');
-        document.body.classList.toggle('nav-open');
-    }
-}
-
-function closeNavigation() {
-    if (leftNav) {
-        leftNav.classList.remove('open');
-        document.body.classList.remove('nav-open');
-    }
-}
-
-// View switching function
-function setView(viewName) {
-    if (viewName === currentView || isAnimating) return;
-    isAnimating = true;
-
-    const currentViewEl = document.getElementById(`${currentView}-view`);
-    const nextViewEl = document.getElementById(`${viewName}-view`);
-    
-    // Hide current view
-    if (currentViewEl) {
-        currentViewEl.style.display = 'none';
-    }
-    
-    // Show next view
-    if (nextViewEl) {
-        nextViewEl.style.display = 'flex';
-    }
-    
-    currentView = viewName;
-    isAnimating = false;
-    
-    // Update back button visibility
-    if (viewName === 'input') {
-        if (backBtn) backBtn.classList.remove('visible');
-    } else {
-        if (backBtn) backBtn.classList.add('visible');
-    }
-}
-
 // Navigation item handlers
 function handleHomeNavigation() {
-    console.log('Navigating to Home');
+    console.log('Home navigation clicked');
     setView('input');
     closeNavigation();
 }
 
 function handleRepositoriesNavigation() {
-    console.log('Navigating to Repositories');
+    console.log('Repositories navigation clicked');
     
     // Create repositories view if it doesn't exist
     if (!document.getElementById('repositories-view')) {
@@ -951,7 +896,7 @@ function handleRepositoriesNavigation() {
 }
 
 function handleHistoryNavigation() {
-    console.log('Navigating to History');
+    console.log('History navigation clicked');
     
     // Create history view if it doesn't exist
     if (!document.getElementById('history-view')) {
@@ -978,9 +923,185 @@ function handleHistoryNavigation() {
 }
 
 function handleProfileNavigation() {
-    console.log('Navigating to Profile');
+    console.log('Profile navigation clicked');
     closeNavigation();
     
+    if (currentUser && currentUser.html_url) {
+        window.open(currentUser.html_url, '_blank');
+    } else if (currentUser && currentUser.username) {
+        window.open(`https://github.com/${currentUser.username}`, '_blank');
+    } else {
+        alert('Please log in to view your profile');
+    }
+}
+
+// Initialize navigation functionality
+function initializeNavigation() {
+    console.log('Initializing navigation...');
+    
+    // Set up navigation toggle event listeners
+    if (navToggleBtn) {
+        console.log('Adding click listener to nav toggle button');
+        navToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleNavigation();
+        });
+    } else {
+        console.error('Nav toggle button not found');
+    }
+    
+    if (navToggle) {
+        navToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeNavigation();
+        });
+    }
+    
+    // Set up navigation item event listeners
+    const navHome = document.getElementById('nav-home');
+    const navRepositories = document.getElementById('nav-repositories');
+    const navHistory = document.getElementById('nav-history');
+    const navProfile = document.getElementById('nav-profile');
+    
+    if (navHome) {
+        navHome.addEventListener('click', handleHomeNavigation);
+    }
+    
+    if (navRepositories) {
+        navRepositories.addEventListener('click', handleRepositoriesNavigation);
+    }
+    
+    if (navHistory) {
+        navHistory.addEventListener('click', handleHistoryNavigation);
+    }
+    
+    if (navProfile) {
+        navProfile.addEventListener('click', handleProfileNavigation);
+    }
+    
+    // Set up login/logout handlers
+    if (navLogin) {
+        navLogin.addEventListener('click', () => {
+            closeNavigation();
+            handleLogin();
+        });
+    }
+    
+    if (navLogout) {
+        navLogout.addEventListener('click', () => {
+            closeNavigation();
+            handleLogout();
+        });
+    }
+    
+    // Close navigation when clicking outside
+    document.addEventListener('click', (e) => {
+        if (leftNav && navToggleBtn && 
+            !leftNav.contains(e.target) && 
+            !navToggleBtn.contains(e.target)) {
+            closeNavigation();
+        }
+    });
+    
+    // Initialize user profile state
+    updateNavUserProfile(currentUser);
+    
+    console.log('Navigation initialized successfully');
+}
+
+// Initialize navigation when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing navigation...');
+    setTimeout(() => {
+        initializeNavigation();
+    }, 100);
+});
+        currentViewEl.style.display = 'none';
+    }
+
+    // Show next view
+    if (nextViewEl) {
+        nextViewEl.style.display = 'flex';
+    }
+
+    currentView = viewName;
+    isAnimating = false;
+
+    // Update back button visibility
+    if (viewName === 'input') {
+        if (backBtn) backBtn.classList.remove('visible');
+    } else {
+        if (backBtn) backBtn.classList.add('visible');
+    }
+}
+
+// Navigation item handlers
+function handleHomeNavigation() {
+    console.log('Navigating to Home');
+    setView('input');
+    closeNavigation();
+}
+
+function handleRepositoriesNavigation() {
+    console.log('Navigating to Repositories');
+
+    // Create repositories view if it doesn't exist
+    if (!document.getElementById('repositories-view')) {
+        const repositoriesView = document.createElement('div');
+        repositoriesView.id = 'repositories-view';
+        repositoriesView.style.display = 'none';
+        repositoriesView.innerHTML = `
+            <div class="repositories-container">
+                <div class="repositories-header">
+                    <h2>My Repositories</h2>
+                    <p>Choose from your GitHub repositories to generate documentation</p>
+                </div>
+                <div class="repositories-grid" id="repositories-grid">
+                    <div class="loading-state">Loading repositories...</div>
+                </div>
+            </div>
+        `;
+        document.querySelector('.content-stage').appendChild(repositoriesView);
+    }
+
+    setView('repositories');
+    loadRepositories();
+    closeNavigation();
+}
+
+function handleHistoryNavigation() {
+    console.log('Navigating to History');
+
+    // Create history view if it doesn't exist
+    if (!document.getElementById('history-view')) {
+        const historyView = document.createElement('div');
+        historyView.id = 'history-view';
+        historyView.style.display = 'none';
+        historyView.innerHTML = `
+            <div class="history-container">
+                <div class="history-header">
+                    <h2>README History</h2>
+                    <p>Your previously generated documentation</p>
+                </div>
+                <div class="history-list" id="history-list">
+                    <div class="loading-state">Loading history...</div>
+                </div>
+            </div>
+        `;
+        document.querySelector('.content-stage').appendChild(historyView);
+    }
+
+    setView('history');
+    loadHistory();
+    closeNavigation();
+}
+
+function handleProfileNavigation() {
+    console.log('Navigating to Profile');
+    closeNavigation();
+
     if (currentUser && currentUser.html_url) {
         window.open(currentUser.html_url, '_blank');
     } else if (currentUser && currentUser.username) {
@@ -994,7 +1115,7 @@ function handleProfileNavigation() {
 async function loadRepositories() {
     const repositoriesGrid = document.getElementById('repositories-grid');
     if (!repositoriesGrid) return;
-    
+
     if (!currentUser) {
         repositoriesGrid.innerHTML = `
             <div class="empty-state">
@@ -1005,9 +1126,9 @@ async function loadRepositories() {
         `;
         return;
     }
-    
+
     repositoriesGrid.innerHTML = '<div class="loading-state">Loading repositories...</div>';
-    
+
     try {
         // Simulate API call for now
         setTimeout(() => {
@@ -1036,7 +1157,7 @@ async function loadRepositories() {
 async function loadHistory() {
     const historyList = document.getElementById('history-list');
     if (!historyList) return;
-    
+
     if (!currentUser) {
         historyList.innerHTML = `
             <div class="empty-state">
@@ -1047,9 +1168,9 @@ async function loadHistory() {
         `;
         return;
     }
-    
+
     historyList.innerHTML = '<div class="loading-state">Loading history...</div>';
-    
+
     try {
         // Simulate API call for now
         setTimeout(() => {
@@ -1099,16 +1220,16 @@ function updateNavUserProfile(userData) {
         if (navUser) navUser.style.display = 'flex';
         if (navLogin) navLogin.style.display = 'none';
         if (navLogout) navLogout.style.display = 'block';
-        
+
         // Show repository and history nav items
         const navRepositories = document.getElementById('nav-repositories');
         const navHistory = document.getElementById('nav-history');
         const navProfile = document.getElementById('nav-profile');
-        
+
         if (navRepositories) navRepositories.style.display = 'flex';
         if (navHistory) navHistory.style.display = 'flex';
         if (navProfile) navProfile.style.display = 'flex';
-        
+
         // Set user data
         if (navUserAvatar && userData.avatar_url) {
             navUserAvatar.src = userData.avatar_url;
@@ -1124,12 +1245,12 @@ function updateNavUserProfile(userData) {
         if (navUser) navUser.style.display = 'none';
         if (navLogin) navLogin.style.display = 'block';
         if (navLogout) navLogout.style.display = 'none';
-        
+
         // Hide repository and history nav items
         const navRepositories = document.getElementById('nav-repositories');
         const navHistory = document.getElementById('nav-history');
         const navProfile = document.getElementById('nav-profile');
-        
+
         if (navRepositories) navRepositories.style.display = 'none';
         if (navHistory) navHistory.style.display = 'none';
         if (navProfile) navProfile.style.display = 'none';
@@ -1142,58 +1263,58 @@ function initializeNavigation() {
     if (navToggleBtn) {
         navToggleBtn.addEventListener('click', toggleNavigation);
     }
-    
+
     if (navToggle) {
         navToggle.addEventListener('click', closeNavigation);
     }
-    
+
     // Set up navigation item event listeners
     const navHome = document.getElementById('nav-home');
     const navRepositories = document.getElementById('nav-repositories');
     const navHistory = document.getElementById('nav-history');
     const navProfile = document.getElementById('nav-profile');
-    
+
     if (navHome) {
         navHome.addEventListener('click', handleHomeNavigation);
     }
-    
+
     if (navRepositories) {
         navRepositories.addEventListener('click', handleRepositoriesNavigation);
     }
-    
+
     if (navHistory) {
         navHistory.addEventListener('click', handleHistoryNavigation);
     }
-    
+
     if (navProfile) {
         navProfile.addEventListener('click', handleProfileNavigation);
     }
-    
+
     // Set up login/logout handlers
     if (navLogin) {
         navLogin.addEventListener('click', handleLogin);
     }
-    
+
     if (navLogout) {
         navLogout.addEventListener('click', handleLogout);
     }
-    
+
     // Set up back button
     if (backBtn) {
         backBtn.addEventListener('click', () => {
             setView('input');
         });
     }
-    
+
     // Close navigation when clicking outside
     document.addEventListener('click', (e) => {
-        if (leftNav && navToggleBtn && 
-            !leftNav.contains(e.target) && 
+        if (leftNav && navToggleBtn &&
+            !leftNav.contains(e.target) &&
             !navToggleBtn.contains(e.target)) {
             closeNavigation();
         }
     });
-    
+
     // Initialize user profile state
     updateNavUserProfile(currentUser);
 }
@@ -1201,4 +1322,372 @@ function initializeNavigation() {
 // Initialize navigation when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     initializeNavigation();
+});
+// === NAVIGATION FUNCTIONALITY ===
+
+// Get navigation elements
+const leftNav = document.getElementById('left-nav');
+const navToggleBtn = document.getElementById('nav-toggle-btn');
+const navToggle = document.getElementById('nav-toggle');
+const navLogin = document.getElementById('nav-login');
+const navLogout = document.getElementById('nav-logout');
+const navUser = document.getElementById('nav-user');
+const navUserAvatar = document.getElementById('nav-user-avatar');
+const navUserName = document.getElementById('nav-user-name');
+const navUserHandle = document.getElementById('nav-user-handle');
+
+// View switching function
+function setView(viewName) {
+    console.log('Setting view to:', viewName);
+
+    if (viewName === currentView || isAnimating) return;
+    isAnimating = true;
+
+    const currentViewEl = document.getElementById(`${currentView}-view`);
+    const nextViewEl = document.getElementById(`${viewName}-view`);
+
+    // Hide current view
+    if (currentViewEl) {
+        currentViewEl.style.display = 'none';
+    }
+
+    // Show next view
+    if (nextViewEl) {
+        nextViewEl.style.display = 'flex';
+    }
+
+    currentView = viewName;
+    isAnimating = false;
+
+    // Update back button visibility
+    if (viewName === 'input') {
+        if (backBtn) backBtn.classList.remove('visible');
+    } else {
+        if (backBtn) backBtn.classList.add('visible');
+    }
+
+    console.log('View set to:', viewName);
+}
+
+// Navigation toggle functions
+function toggleNavigation() {
+    console.log('Toggle navigation clicked');
+    if (leftNav) {
+        leftNav.classList.toggle('open');
+        document.body.classList.toggle('nav-open');
+        console.log('Navigation toggled, open class:', leftNav.classList.contains('open'));
+    }
+}
+
+function closeNavigation() {
+    console.log('Close navigation');
+    if (leftNav) {
+        leftNav.classList.remove('open');
+        document.body.classList.remove('nav-open');
+    }
+}
+
+// Navigation item handlers
+function handleHomeNavigation() {
+    console.log('Home navigation clicked');
+    setView('input');
+    closeNavigation();
+}
+
+function handleRepositoriesNavigation() {
+    console.log('Repositories navigation clicked');
+
+    // Create repositories view if it doesn't exist
+    if (!document.getElementById('repositories-view')) {
+        const repositoriesView = document.createElement('div');
+        repositoriesView.id = 'repositories-view';
+        repositoriesView.style.display = 'none';
+        repositoriesView.innerHTML = `
+            <div class="repositories-container">
+                <div class="repositories-header">
+                    <h2>My Repositories</h2>
+                    <p>Choose from your GitHub repositories to generate documentation</p>
+                </div>
+                <div class="repositories-grid" id="repositories-grid">
+                    <div class="loading-state">Loading repositories...</div>
+                </div>
+            </div>
+        `;
+        document.querySelector('.content-stage').appendChild(repositoriesView);
+    }
+
+    setView('repositories');
+    loadRepositories();
+    closeNavigation();
+}
+
+function handleHistoryNavigation() {
+    console.log('History navigation clicked');
+
+    // Create history view if it doesn't exist
+    if (!document.getElementById('history-view')) {
+        const historyView = document.createElement('div');
+        historyView.id = 'history-view';
+        historyView.style.display = 'none';
+        historyView.innerHTML = `
+            <div class="history-container">
+                <div class="history-header">
+                    <h2>README History</h2>
+                    <p>Your previously generated documentation</p>
+                </div>
+                <div class="history-list" id="history-list">
+                    <div class="loading-state">Loading history...</div>
+                </div>
+            </div>
+        `;
+        document.querySelector('.content-stage').appendChild(historyView);
+    }
+
+    setView('history');
+    loadHistory();
+    closeNavigation();
+}
+
+function handleProfileNavigation() {
+    console.log('Profile navigation clicked');
+    closeNavigation();
+
+    if (currentUser && currentUser.html_url) {
+        window.open(currentUser.html_url, '_blank');
+    } else if (currentUser && currentUser.username) {
+        window.open(`https://github.com/${currentUser.username}`, '_blank');
+    } else {
+        alert('Please log in to view your profile');
+    }
+}
+
+// Repository loading function
+async function loadRepositories() {
+    const repositoriesGrid = document.getElementById('repositories-grid');
+    if (!repositoriesGrid) return;
+
+    if (!currentUser) {
+        repositoriesGrid.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🔐</div>
+                <h3>Authentication Required</h3>
+                <p>Please log in with GitHub to view your repositories.</p>
+            </div>
+        `;
+        return;
+    }
+
+    repositoriesGrid.innerHTML = '<div class="loading-state">Loading repositories...</div>';
+
+    try {
+        // Simulate API call for now
+        setTimeout(() => {
+            repositoriesGrid.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📚</div>
+                    <h3>No Repositories Found</h3>
+                    <p>This feature requires backend integration to load your GitHub repositories.</p>
+                    <p>For now, you can manually enter repository URLs in the Home section.</p>
+                </div>
+            `;
+        }, 1000);
+    } catch (error) {
+        console.error('Error loading repositories:', error);
+        repositoriesGrid.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">❌</div>
+                <h3>Failed to Load Repositories</h3>
+                <p>Error: ${error.message}</p>
+            </div>
+        `;
+    }
+}
+
+// History loading function
+async function loadHistory() {
+    const historyList = document.getElementById('history-list');
+    if (!historyList) return;
+
+    if (!currentUser) {
+        historyList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🔐</div>
+                <h3>Authentication Required</h3>
+                <p>Please log in with GitHub to view your history.</p>
+            </div>
+        `;
+        return;
+    }
+
+    historyList.innerHTML = '<div class="loading-state">Loading history...</div>';
+
+    try {
+        // Simulate API call for now
+        setTimeout(() => {
+            historyList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📜</div>
+                    <h3>No README History</h3>
+                    <p>You haven't generated any READMEs yet.</p>
+                    <p>Generate your first README to see it appear here!</p>
+                    <div class="empty-note">
+                        <small>💡 Note: History feature requires database setup.</small>
+                    </div>
+                </div>
+            `;
+        }, 1000);
+    } catch (error) {
+        console.error('Error loading history:', error);
+        historyList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">❌</div>
+                <h3>Failed to Load History</h3>
+                <p>Error: ${error.message}</p>
+            </div>
+        `;
+    }
+}
+
+// Authentication functions
+function handleLogin() {
+    console.log('Login clicked');
+    closeNavigation();
+    window.location.href = '/auth/github';
+}
+
+function handleLogout() {
+    console.log('Logout clicked');
+    currentUser = null;
+    updateNavUserProfile(null);
+    closeNavigation();
+    // TODO: Implement actual logout API call
+}
+
+// Update user profile display for navigation
+function updateNavUserProfile(userData) {
+    if (userData) {
+        // Show user in navigation
+        if (navUser) navUser.style.display = 'flex';
+        if (navLogin) navLogin.style.display = 'none';
+        if (navLogout) navLogout.style.display = 'block';
+
+        // Show repository and history nav items
+        const navRepositories = document.getElementById('nav-repositories');
+        const navHistory = document.getElementById('nav-history');
+        const navProfile = document.getElementById('nav-profile');
+
+        if (navRepositories) navRepositories.style.display = 'flex';
+        if (navHistory) navHistory.style.display = 'flex';
+        if (navProfile) navProfile.style.display = 'flex';
+
+        // Set user data
+        if (navUserAvatar && userData.avatar_url) {
+            navUserAvatar.src = userData.avatar_url;
+        }
+        if (navUserName && userData.username) {
+            navUserName.textContent = userData.username;
+        }
+        if (navUserHandle && userData.username) {
+            navUserHandle.textContent = `@${userData.username}`;
+        }
+    } else {
+        // Hide user in navigation
+        if (navUser) navUser.style.display = 'none';
+        if (navLogin) navLogin.style.display = 'block';
+        if (navLogout) navLogout.style.display = 'none';
+
+        // Hide repository and history nav items
+        const navRepositories = document.getElementById('nav-repositories');
+        const navHistory = document.getElementById('nav-history');
+        const navProfile = document.getElementById('nav-profile');
+
+        if (navRepositories) navRepositories.style.display = 'none';
+        if (navHistory) navHistory.style.display = 'none';
+        if (navProfile) navProfile.style.display = 'none';
+    }
+}
+
+// Initialize navigation functionality
+function initializeNavigation() {
+    console.log('Initializing navigation...');
+
+    // Set up navigation toggle event listeners
+    if (navToggleBtn) {
+        console.log('Adding click listener to nav toggle button');
+        navToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleNavigation();
+        });
+    } else {
+        console.error('Nav toggle button not found');
+    }
+
+    if (navToggle) {
+        navToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeNavigation();
+        });
+    }
+
+    // Set up navigation item event listeners
+    const navHome = document.getElementById('nav-home');
+    const navRepositories = document.getElementById('nav-repositories');
+    const navHistory = document.getElementById('nav-history');
+    const navProfile = document.getElementById('nav-profile');
+
+    if (navHome) {
+        navHome.addEventListener('click', handleHomeNavigation);
+    }
+
+    if (navRepositories) {
+        navRepositories.addEventListener('click', handleRepositoriesNavigation);
+    }
+
+    if (navHistory) {
+        navHistory.addEventListener('click', handleHistoryNavigation);
+    }
+
+    if (navProfile) {
+        navProfile.addEventListener('click', handleProfileNavigation);
+    }
+
+    // Set up login/logout handlers
+    if (navLogin) {
+        navLogin.addEventListener('click', handleLogin);
+    }
+
+    if (navLogout) {
+        navLogout.addEventListener('click', handleLogout);
+    }
+
+    // Set up back button
+    if (backBtn) {
+        backBtn.addEventListener('click', () => {
+            setView('input');
+        });
+    }
+
+    // Close navigation when clicking outside
+    document.addEventListener('click', (e) => {
+        if (leftNav && navToggleBtn &&
+            !leftNav.contains(e.target) &&
+            !navToggleBtn.contains(e.target)) {
+            closeNavigation();
+        }
+    });
+
+    // Initialize user profile state
+    updateNavUserProfile(currentUser);
+
+    console.log('Navigation initialized successfully');
+}
+
+// Initialize navigation when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing navigation...');
+    setTimeout(() => {
+        initializeNavigation();
+    }, 100);
 });
