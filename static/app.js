@@ -654,7 +654,9 @@ function initializeNavigation() {
 
     // Set up login/logout handlers for navigation
     if (navLogin) {
-        navLogin.addEventListener('click', () => {
+        navLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             closeNavigation();
             handleLogin();
         });
@@ -1994,7 +1996,9 @@ function initializeNavigation() {
 
     // Set up login/logout handlers for navigation
     if (navLogin) {
-        navLogin.addEventListener('click', function() {
+        navLogin.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             closeNavigation();
             handleLogin();
         });
