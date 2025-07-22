@@ -173,17 +173,24 @@ function checkAuthStatus() {
 
 function showUserProfile(userData) {
     console.log('showUserProfile called with:', userData);
-    
+    console.log('userLogin element:', userLogin);
+    console.log('userProfile element:', userProfile);
+
     currentUser = userData;
-    
+
     // Hide login button and show profile dropdown
     if (userLogin) {
         userLogin.style.display = 'none';
-        console.log('Hidden login button');
+        console.log('✅ Hidden login button');
+    } else {
+        console.error('❌ userLogin element not found');
     }
+    
     if (userProfile) {
         userProfile.style.display = 'block';
-        console.log('Shown user profile dropdown');
+        console.log('✅ Shown user profile dropdown');
+    } else {
+        console.error('❌ userProfile element not found');
     }
 
     // Set profile trigger data
@@ -404,7 +411,7 @@ function initialize() {
 function toggleUserDropdown() {
     const dropdown = document.getElementById('user-dropdown');
     const trigger = document.querySelector('.user-profile-trigger');
-    
+
     if (dropdown.style.display === 'none' || !dropdown.style.display) {
         dropdown.style.display = 'block';
         trigger.classList.add('active');
@@ -437,7 +444,7 @@ function showSettings() {
 document.addEventListener('click', (e) => {
     const dropdown = document.getElementById('user-dropdown');
     const trigger = document.querySelector('.user-profile-trigger');
-    
+
     if (dropdown && trigger && !trigger.contains(e.target) && !dropdown.contains(e.target)) {
         dropdown.style.display = 'none';
         trigger.classList.remove('active');
@@ -460,7 +467,7 @@ pdown toggle functionality
 function toggleUserDropdown() {
     const dropdown = document.getElementById('user-dropdown');
     const trigger = document.querySelector('.user-profile-trigger');
-    
+
     if (dropdown.style.display === 'none' || !dropdown.style.display) {
         dropdown.style.display = 'block';
         trigger.classList.add('active');
@@ -475,7 +482,7 @@ document.addEventListener('click', (e) => {
     const userSection = document.getElementById('user-section');
     const dropdown = document.getElementById('user-dropdown');
     const trigger = document.querySelector('.user-profile-trigger');
-    
+
     if (userSection && !userSection.contains(e.target)) {
         if (dropdown) dropdown.style.display = 'none';
         if (trigger) trigger.classList.remove('active');
