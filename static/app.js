@@ -56,75 +56,131 @@ function updateLoaderText() {
     }
 }
 
-// Form submission
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const repoUrl = repoUrlInput.value;
-    if (!repoUrl || isAnimating) return;
+// Form submission handler
+function setupFormSubmission() {
+    if (!form) {
+        console.error('Form element not found!');
+        return;
+    }
+    
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        console.log('Form submitted!');
+        
+        const repoUrl = repoUrlInput?.value;
+        if (!repoUrl || isAnimating) {
+            console.log('No repo URL or animation in progress');
+            return;
+        }
 
-    setView('loader');
-    animationTimeout = setInterval(updateLoaderText, 500);
+        console.log('Starting README generation for:', repoUrl);
+        setView('loader');
+        animationTimeout = setInterval(updateLoaderText, 500);
 
-    const params = new URLSearchParams({
-        repo_url: repoUrl,
-        project_name: projectNameInput.value.trim(),
-        include_demo: includeDemoCheckbox.checked,
-        num_screenshots: parseInt(numScreenshotsInput.value, 10) || 0,
-        num_videos: parseInt(numVideosInput.value, 10) || 0,
+        const params = new URLSearchParams({
+            repo_url: repoUrl,
+            project_name: projectNameInput?.value?.trim() || '',
+            include_demo: includeDemoCheckbox?.checked || false,
+            num_screenshots: parseInt(numScreenshotsInput?.value, 10) || 0,
+            num_videos: parseInt(numVideosInput?.value, 10) || 0,
+        });
+
+        console.log('Request parameters:', params.toString());
+
+        try {
+            const response = await fetch(`/api/generate?${params.toString()}`);
+            console.log('API response status:', response.status);
+            
+            const data = await response.json();
+            console.log('API response data:', data);
+
+            if (animationTimeout) {
+                clearInterval(animationTimeout);
+            }
+
+            if (data.readme) {
+                console.log('README generated successfully');
+                codeView.textContent = data.readme;
+                previewContent.innerHTML = marked.parse(data.readme);
+                hljs.highlightAll();
+                setView('output');
+            } else if (data.error) {
+                console.error('API returned error:', data.error);
+                previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Generation Failed</h3><p>${data.error}</p></div>`;
+                codeView.textContent = `/*\\n  Error: ${data.error}\\n*/`;
+                hljs.highlightAll();
+                setView('output');
+            } else {
+                console.error('Unexpected API response format');
+                previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Unexpected Response</h3><p>The server returned an unexpected response format.</p></div>`;
+                codeView.textContent = `/*\\n  Error: Unexpected response format\\n*/`;
+                hljs.highlightAll();
+                setView('output');
+            }
+        } catch (error) {
+            if (animationTimeout) {
+                clearInterval(animationTimeout);
+            }
+            console.error("Request failed:", error);
+            previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Connection Error</h3><p>Could not connect to the server. Please check your internet connection and try again.</p></div>`;
+            codeView.textContent = `/*\\n  Error: Connection failed - ${error.message}\\n*/`;
+            hljs.highlightAll();
+            setView('output');
+        }
     });
+    
+    console.log('Form submission handler attached successfully');
+}
 
-    try {
-        const response = await fetch(`/api/generate?${params.toString()}`);
-        const data = await response.json();
-
-        if (animationTimeout) {
-            clearInterval(animationTimeout);
-        }
-
-        if (data.readme) {
-            codeView.textContent = data.readme;
-            previewContent.innerHTML = marked.parse(data.readme);
-            hljs.highlightAll();
-            setView('output');
-        } else if (data.error) {
-            previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Generation Failed</h3><p>${data.error}</p></div>`;
-            codeView.textContent = `/*\\n  Error: ${data.error}\\n*/`;
-            hljs.highlightAll();
-            setView('output');
-        }
-    } catch (error) {
-        if (animationTimeout) {
-            clearInterval(animationTimeout);
-        }
-        console.error("Request failed:", error);
-        previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Connection Error</h3><p>Could not connect to the server.</p></div>`;
-        codeView.textContent = `/*\\n  Error: Connection failed.\\n*/`;
-        hljs.highlightAll();
-        setView('output');
+// Setup all event listeners
+function setupEventListeners() {
+    // Back button
+    if (backBtn) {
+        backBtn.addEventListener('click', () => {
+            if (isAnimating) return;
+            setView('input');
+            if (repoUrlInput) repoUrlInput.value = '';
+            if (projectNameInput) projectNameInput.value = '';
+            if (includeDemoCheckbox) includeDemoCheckbox.checked = false;
+            if (demoCountsContainer) demoCountsContainer.style.display = 'none';
+            if (numScreenshotsInput) numScreenshotsInput.value = "2";
+            if (numVideosInput) numVideosInput.value = "1";
+        });
+        console.log('✓ Back button event listener attached');
     }
-});
 
-// Back button
-backBtn.addEventListener('click', () => {
-    if (isAnimating) return;
-    setView('input');
-    repoUrlInput.value = '';
-    projectNameInput.value = '';
-    includeDemoCheckbox.checked = false;
-    demoCountsContainer.style.display = 'none';
-    numScreenshotsInput.value = "2";
-    numVideosInput.value = "1";
-});
-
-// Demo checkbox
-includeDemoCheckbox.addEventListener('change', () => {
-    const isChecked = includeDemoCheckbox.checked;
-    if (isChecked) {
-        demoCountsContainer.style.display = 'flex';
-    } else {
-        demoCountsContainer.style.display = 'none';
+    // Demo checkbox
+    if (includeDemoCheckbox && demoCountsContainer) {
+        includeDemoCheckbox.addEventListener('change', () => {
+            const isChecked = includeDemoCheckbox.checked;
+            if (isChecked) {
+                demoCountsContainer.style.display = 'flex';
+            } else {
+                demoCountsContainer.style.display = 'none';
+            }
+        });
+        console.log('✓ Demo checkbox event listener attached');
     }
-});
+    
+    // Copy button
+    if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+            if (codeView && codeView.textContent) {
+                navigator.clipboard.writeText(codeView.textContent).then(() => {
+                    copyBtn.innerHTML = '✓ Copied!';
+                    setTimeout(() => {
+                        copyBtn.innerHTML = 'Copy';
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+            }
+        });
+        console.log('✓ Copy button event listener attached');
+    }
+    
+    console.log('All event listeners setup complete');
+}
 
 // Authentication functions
 function getCookie(name) {
@@ -377,14 +433,53 @@ function copyCode() {
 
 // Initialize
 function initialize() {
+    console.log('Initializing application...');
+    
+    // Check if all required elements exist
+    const requiredElements = {
+        'form': form,
+        'repoUrlInput': repoUrlInput,
+        'projectNameInput': projectNameInput,
+        'generateBtn': generateBtn,
+        'backBtn': backBtn,
+        'includeDemoCheckbox': includeDemoCheckbox,
+        'codeView': codeView,
+        'previewContent': previewContent
+    };
+    
+    for (const [name, element] of Object.entries(requiredElements)) {
+        if (!element) {
+            console.error(`Required element '${name}' not found!`);
+        } else {
+            console.log(`✓ Element '${name}' found`);
+        }
+    }
+    
+    // Setup form submission
+    setupFormSubmission();
+    
+    // Setup other event listeners
+    setupEventListeners();
+    
+    // Handle OAuth callback and check auth status
     handleOAuthCallback();
     checkAuthStatus();
 
-    includeDemoCheckbox.checked = false;
-    demoCountsContainer.style.display = 'none';
+    if (includeDemoCheckbox) {
+        includeDemoCheckbox.checked = false;
+    }
+    if (demoCountsContainer) {
+        demoCountsContainer.style.display = 'none';
+    }
 
-    inputView.style.display = 'flex';
-    outputView.style.display = 'none';
+    if (inputView) {
+        inputView.style.display = 'flex';
+    }
+    if (outputView) {
+        outputView.style.display = 'none';
+    }
+    
+    console.log('Application initialized successfully');
     loaderView.style.display = 'none';
     repositoriesView.style.display = 'none';
 }
