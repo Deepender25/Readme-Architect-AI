@@ -27,26 +27,81 @@
 
 
 
-    <!-- User Login Section -->
+    <!-- User Profile Section -->
     <div class="user-section" id="user-section">
+        <!-- Login Button (shown when not logged in) -->
         <div class="user-login" id="user-login">
             <button type="button" class="login-btn" onclick="window.location.href='/auth/github'">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.30.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.30 3.297-1.30.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                 </svg>
                 Login with GitHub
             </button>
         </div>
         
-        <div class="user-profile" id="user-profile" style="display: none;">
-            <img id="user-avatar" class="user-avatar" src="" alt="User Avatar">
-            <div class="user-info">
-                <span id="user-name" class="user-name"></span>
-                <span id="user-handle" class="user-handle"></span>
+        <!-- User Profile Dropdown (shown when logged in) -->
+        <div class="user-profile-container" id="user-profile" style="display: none;">
+            <div class="user-profile-trigger" onclick="toggleUserDropdown()">
+                <img id="user-avatar" class="user-avatar" src="" alt="User Avatar">
+                <div class="user-info">
+                    <span id="user-name" class="user-name"></span>
+                    <span id="user-handle" class="user-handle"></span>
+                </div>
+                <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7 10l5 5 5-5z"/>
+                </svg>
             </div>
-            <div class="user-actions">
-                <button type="button" class="action-btn" onclick="showRepositories()">My Repos</button>
-                <button type="button" class="action-btn logout-btn" onclick="handleLogout()">Logout</button>
+            
+            <div class="user-dropdown" id="user-dropdown" style="display: none;">
+                <div class="dropdown-header">
+                    <img id="dropdown-avatar" class="dropdown-avatar" src="" alt="User Avatar">
+                    <div class="dropdown-user-info">
+                        <div id="dropdown-name" class="dropdown-name"></div>
+                        <div id="dropdown-handle" class="dropdown-handle"></div>
+                        <div id="dropdown-email" class="dropdown-email"></div>
+                    </div>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                
+                <div class="dropdown-menu">
+                    <button class="dropdown-item" onclick="showRepositories()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        My Repositories
+                    </button>
+                    
+                    <button class="dropdown-item" onclick="showHistory()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
+                        </svg>
+                        README History
+                    </button>
+                    
+                    <button class="dropdown-item" onclick="openGitHubProfile()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                        View GitHub Profile
+                    </button>
+                    
+                    <button class="dropdown-item" onclick="showSettings()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.82,11.69,4.82,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                        </svg>
+                        Settings
+                    </button>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                
+                <button class="dropdown-item logout-item" onclick="handleLogout()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                    </svg>
+                    Sign Out
+                </button>
             </div>
         </div>
     </div>
@@ -242,369 +297,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     
-    <!-- Simple Navigation Script -->
-    <script>
-        function toggleNav() {
-            console.log('toggleNav() called');
-            const leftNav = document.getElementById('left-nav');
-            const body = document.body;
-            
-            if (leftNav) {
-                leftNav.classList.toggle('open');
-                body.classList.toggle('nav-open');
-                console.log('Navigation toggled, open:', leftNav.classList.contains('open'));
-            } else {
-                console.error('leftNav not found');
-            }
-        }
-        
-        // Close navigation function
-        function closeNav() {
-            const leftNav = document.getElementById('left-nav');
-            const body = document.body;
-            if (leftNav) {
-                leftNav.classList.remove('open');
-                body.classList.remove('nav-open');
-                console.log('Navigation closed');
-            }
-        }
-        
-        // Show repositories view
-        function showRepositoriesView() {
-            console.log('Showing repositories view');
-            
-            // Hide all other views
-            const inputView = document.getElementById('input-view');
-            const outputView = document.getElementById('output-view');
-            const loaderView = document.getElementById('loader-view');
-            
-            if (inputView) inputView.style.display = 'none';
-            if (outputView) outputView.style.display = 'none';
-            if (loaderView) loaderView.style.display = 'none';
-            
-            // Check if repositories view already exists
-            let repositoriesView = document.getElementById('repositories-view');
-            
-            if (!repositoriesView) {
-                // Create repositories view
-                repositoriesView = document.createElement('div');
-                repositoriesView.id = 'repositories-view';
-                repositoriesView.innerHTML = `
-                    <div class="repositories-container">
-                        <div class="repositories-header">
-                            <h2>My Repositories</h2>
-                            <p>Choose from your GitHub repositories to generate documentation</p>
-                        </div>
-                        <div class="repositories-content">
-                            <div class="auth-required">
-                                <div class="auth-icon">🔐</div>
-                                <h3>GitHub Authentication Required</h3>
-                                <p>Please log in with your GitHub account to view your repositories.</p>
-                                <button class="auth-btn" onclick="handleGitHubLogin()">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.30.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                                    </svg>
-                                    Login with GitHub
-                                </button>
-                                <div class="demo-repos">
-                                    <h4>Demo Repositories</h4>
-                                    <p>Here are some example repositories you can try:</p>
-                                    <div class="demo-repo-list">
-                                        <div class="demo-repo-item" onclick="selectDemoRepo('https://github.com/facebook/react')">
-                                            <div class="demo-repo-info">
-                                                <h5>facebook/react</h5>
-                                                <p>The library for web and native user interfaces</p>
-                                            </div>
-                                            <button class="demo-select-btn">Try This</button>
-                                        </div>
-                                        <div class="demo-repo-item" onclick="selectDemoRepo('https://github.com/microsoft/vscode')">
-                                            <div class="demo-repo-info">
-                                                <h5>microsoft/vscode</h5>
-                                                <p>Visual Studio Code</p>
-                                            </div>
-                                            <button class="demo-select-btn">Try This</button>
-                                        </div>
-                                        <div class="demo-repo-item" onclick="selectDemoRepo('https://github.com/nodejs/node')">
-                                            <div class="demo-repo-info">
-                                                <h5>nodejs/node</h5>
-                                                <p>Node.js JavaScript runtime</p>
-                                            </div>
-                                            <button class="demo-select-btn">Try This</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                // Add to content stage
-                const contentStage = document.querySelector('.content-stage');
-                if (contentStage) {
-                    contentStage.appendChild(repositoriesView);
-                }
-            }
-            
-            // Show repositories view
-            repositoriesView.style.display = 'flex';
-            
-            // Show back button
-            const backBtn = document.getElementById('back-btn');
-            if (backBtn) {
-                backBtn.style.display = 'flex';
-                backBtn.onclick = function() {
-                    showHomeView();
-                };
-            }
-        }
-        
-        // Show home view
-        function showHomeView() {
-            console.log('Showing home view');
-            
-            // Hide all views
-            const repositoriesView = document.getElementById('repositories-view');
-            const outputView = document.getElementById('output-view');
-            const loaderView = document.getElementById('loader-view');
-            
-            if (repositoriesView) repositoriesView.style.display = 'none';
-            if (outputView) outputView.style.display = 'none';
-            if (loaderView) loaderView.style.display = 'none';
-            
-            // Show input view
-            const inputView = document.getElementById('input-view');
-            if (inputView) inputView.style.display = 'flex';
-            
-            // Hide back button
-            const backBtn = document.getElementById('back-btn');
-            if (backBtn) {
-                backBtn.style.display = 'none';
-            }
-        }
-        
-        // Handle GitHub login
-        function handleGitHubLogin() {
-            console.log('GitHub login clicked - redirecting to GitHub OAuth');
-            
-            // Show loading state
-            const authBtn = document.querySelector('.auth-btn');
-            if (authBtn) {
-                authBtn.innerHTML = `
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z">
-                            <animateTransform attributeName="transform" type="rotate" dur="1s" values="0 12 12;360 12 12" repeatCount="indefinite"/>
-                        </path>
-                    </svg>
-                    Redirecting to GitHub...
-                `;
-                authBtn.disabled = true;
-            }
-            
-            // Redirect to GitHub OAuth endpoint
-            window.location.href = '/auth/github';
-        }
-        
-        // Check if user is already logged in
-        function checkAuthStatus() {
-            // Check for auth token or user data in localStorage or cookies
-            const userData = localStorage.getItem('github_user');
-            if (userData) {
-                try {
-                    const user = JSON.parse(userData);
-                    showLoggedInState(user);
-                } catch (e) {
-                    console.error('Error parsing user data:', e);
-                }
-            }
-        }
-        
-        // Show logged in state
-        function showLoggedInState(user) {
-            console.log('User logged in:', user);
-            
-            // Show user in navigation
-            const navUser = document.getElementById('nav-user');
-            const navLogin = document.getElementById('nav-login');
-            const navLogout = document.getElementById('nav-logout');
-            const navRepositories = document.getElementById('nav-repositories');
-            const navHistory = document.getElementById('nav-history');
-            const navProfile = document.getElementById('nav-profile');
-            
-            if (navUser) {
-                navUser.style.display = 'flex';
-                
-                // Set user data
-                const navUserAvatar = document.getElementById('nav-user-avatar');
-                const navUserName = document.getElementById('nav-user-name');
-                const navUserHandle = document.getElementById('nav-user-handle');
-                
-                if (navUserAvatar && user.avatar_url) {
-                    navUserAvatar.src = user.avatar_url;
-                }
-                if (navUserName && user.name) {
-                    navUserName.textContent = user.name;
-                }
-                if (navUserHandle && user.login) {
-                    navUserHandle.textContent = `@${user.login}`;
-                }
-            }
-            
-            if (navLogin) navLogin.style.display = 'none';
-            if (navLogout) navLogout.style.display = 'block';
-            if (navRepositories) navRepositories.style.display = 'flex';
-            if (navHistory) navHistory.style.display = 'flex';
-            if (navProfile) navProfile.style.display = 'flex';
-        }
-        
-        // Handle logout
-        function handleLogout() {
-            console.log('Logout clicked');
-            
-            // Clear user data
-            localStorage.removeItem('github_user');
-            
-            // Reset navigation
-            const navUser = document.getElementById('nav-user');
-            const navLogin = document.getElementById('nav-login');
-            const navLogout = document.getElementById('nav-logout');
-            const navRepositories = document.getElementById('nav-repositories');
-            const navHistory = document.getElementById('nav-history');
-            const navProfile = document.getElementById('nav-profile');
-            
-            if (navUser) navUser.style.display = 'none';
-            if (navLogin) navLogin.style.display = 'block';
-            if (navLogout) navLogout.style.display = 'none';
-            if (navRepositories) navRepositories.style.display = 'none';
-            if (navHistory) navHistory.style.display = 'none';
-            if (navProfile) navProfile.style.display = 'none';
-            
-            closeNav();
-            showHomeView();
-            
-            alert('Logged out successfully!');
-        }
-        
-        // OAuth callback handled by app.js
-        
-        // Select demo repository
-        function selectDemoRepo(repoUrl) {
-            console.log('Demo repo selected:', repoUrl);
-            
-            // Fill the input field
-            const repoInput = document.getElementById('repo-url');
-            if (repoInput) {
-                repoInput.value = repoUrl;
-            }
-            
-            // Go back to home view
-            showHomeView();
-            
-            // Show success message
-            alert('Repository selected!\n\n' + repoUrl + '\n\nYou can now generate documentation for this repository.');
-        }
-        
-        // Select demo repository
-        function selectDemoRepo(repoUrl) {
-            console.log('Demo repo selected:', repoUrl);
-            
-            // Fill the input field
-            const repoInput = document.getElementById('repo-url');
-            if (repoInput) {
-                repoInput.value = repoUrl;
-            }
-            
-            // Go back to home view
-            showHomeView();
-            
-            // Show success message
-            alert('Repository selected!\n\n' + repoUrl + '\n\nYou can now generate documentation for this repository.');
-        }
-        
-        // Initialize all navigation functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Initializing navigation...');
-            
-            // Close button (X) in navigation
-            const navToggle = document.getElementById('nav-toggle');
-            if (navToggle) {
-                navToggle.addEventListener('click', closeNav);
-                console.log('Close button listener added');
-            }
-            
-            // Home button
-            const navHome = document.getElementById('nav-home');
-            if (navHome) {
-                navHome.addEventListener('click', function() {
-                    console.log('Home clicked');
-                    closeNav();
-                    showHomeView();
-                });
-            }
-            
-            // Repositories button
-            const navRepositories = document.getElementById('nav-repositories');
-            if (navRepositories) {
-                navRepositories.addEventListener('click', function() {
-                    console.log('Repositories clicked');
-                    closeNav();
-                    showRepositoriesView();
-                });
-            }
-            
-            // History button
-            const navHistory = document.getElementById('nav-history');
-            if (navHistory) {
-                navHistory.addEventListener('click', function() {
-                    console.log('History clicked');
-                    closeNav();
-                    alert('History feature - coming soon!');
-                });
-            }
-            
-            // Profile button
-            const navProfile = document.getElementById('nav-profile');
-            if (navProfile) {
-                navProfile.addEventListener('click', function() {
-                    console.log('Profile clicked');
-                    closeNav();
-                    alert('Please log in to view your profile');
-                });
-            }
-            
-            // Login button - handled by app.js, no duplicate event listener needed here
-            
-            // Logout button
-            const navLogout = document.getElementById('nav-logout');
-            if (navLogout) {
-                navLogout.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Logout clicked');
-                    closeNav();
-                    handleLogout();
-                });
-            }
-            
-            // Click outside to close navigation
-            document.addEventListener('click', function(e) {
-                const leftNav = document.getElementById('left-nav');
-                const navToggleBtn = document.getElementById('nav-toggle-btn');
-                
-                if (leftNav && navToggleBtn && 
-                    !leftNav.contains(e.target) && 
-                    !navToggleBtn.contains(e.target)) {
-                    closeNav();
-                }
-            });
-            
-            console.log('Navigation initialization complete');
-            
-            // Check authentication status on page load
-            checkAuthStatus();
-            
-            // OAuth callback handled by app.js
-        });
-    </script>
+    
     
     <script src="/static/app.js"></script>
 </body>

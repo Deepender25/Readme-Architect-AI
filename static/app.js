@@ -141,7 +141,7 @@ function deleteCookie(name) {
 function checkAuthStatus() {
     console.log('Checking authentication status...');
     console.log('All cookies:', document.cookie);
-    
+
     const githubUserCookie = getCookie('github_user');
     console.log('GitHub user cookie:', githubUserCookie ? 'Found' : 'Not found');
 
@@ -173,30 +173,71 @@ function checkAuthStatus() {
 
 function showUserProfile(userData) {
     console.log('showUserProfile called with:', userData);
-    console.log('userLogin element:', userLogin);
-    console.log('userProfile element:', userProfile);
     
     currentUser = userData;
+    
+    // Hide login button and show profile dropdown
     if (userLogin) {
         userLogin.style.display = 'none';
         console.log('Hidden login button');
     }
     if (userProfile) {
-        userProfile.style.display = 'flex';
-        console.log('Shown user profile');
+        userProfile.style.display = 'block';
+        console.log('Shown user profile dropdown');
     }
 
+    // Set profile trigger data
     if (userAvatar && userData.avatar_url) {
         userAvatar.src = userData.avatar_url;
         console.log('Set user avatar');
     }
-    if (userName && userData.username) {
-        userName.textContent = userData.username;
-        console.log('Set username:', userData.username);
+    if (userName && userData.name) {
+        userName.textContent = userData.name || userData.username;
+        console.log('Set name:', userData.name || userData.username);
     }
     if (userHandle && userData.username) {
         userHandle.textContent = `@${userData.username}`;
         console.log('Set user handle');
+    }
+
+    // Set dropdown header data
+    const dropdownAvatar = document.getElementById('dropdown-avatar');
+    const dropdownName = document.getElementById('dropdown-name');
+    const dropdownHandle = document.getElementById('dropdown-handle');
+    const dropdownEmail = document.getElementById('dropdown-email');
+
+    if (dropdownAvatar && userData.avatar_url) {
+        dropdownAvatar.src = userData.avatar_url;
+    }
+    if (dropdownName) {
+        dropdownName.textContent = userData.name || userData.username;
+    }
+    if (dropdownHandle && userData.username) {
+        dropdownHandle.textContent = `@${userData.username}`;
+    }
+    if (dropdownEmail && userData.email) {
+        dropdownEmail.textContent = userData.email;
+    } else if (dropdownEmail) {
+        dropdownEmail.style.display = 'none';
+    }
+
+    // Update dropdown header
+    const dropdownAvatar = document.getElementById('dropdown-avatar');
+    const dropdownName = document.getElementById('dropdown-name');
+    const dropdownHandle = document.getElementById('dropdown-handle');
+    const dropdownEmail = document.getElementById('dropdown-email');
+
+    if (dropdownAvatar && userData.avatar_url) {
+        dropdownAvatar.src = userData.avatar_url;
+    }
+    if (dropdownName) {
+        dropdownName.textContent = userData.name || userData.username;
+    }
+    if (dropdownHandle && userData.username) {
+        dropdownHandle.textContent = `@${userData.username}`;
+    }
+    if (dropdownEmail && userData.email) {
+        dropdownEmail.textContent = userData.email;
     }
 }
 
@@ -207,6 +248,7 @@ function showLoginButton() {
 }
 
 function handleLogout() {
+    toggleUserDropdown(); // Close dropdown
     deleteCookie('github_user');
     showLoginButton();
     if (currentView === 'repositories') {
@@ -227,6 +269,7 @@ function handleOAuthCallback() {
 
 // Show repositories
 function showRepositories() {
+    toggleUserDropdown(); // Close dropdown
     if (!currentUser) {
         alert('Please log in first');
         return;
@@ -357,11 +400,112 @@ function initialize() {
     repositoriesView.style.display = 'none';
 }
 
+// Dropdown functionality
+function toggleUserDropdown() {
+    const dropdown = document.getElementById('user-dropdown');
+    const trigger = document.querySelector('.user-profile-trigger');
+    
+    if (dropdown.style.display === 'none' || !dropdown.style.display) {
+        dropdown.style.display = 'block';
+        trigger.classList.add('active');
+    } else {
+        dropdown.style.display = 'none';
+        trigger.classList.remove('active');
+    }
+}
+
+function showHistory() {
+    alert('README History feature coming soon!');
+    toggleUserDropdown();
+}
+
+function openGitHubProfile() {
+    if (currentUser && currentUser.html_url) {
+        window.open(currentUser.html_url, '_blank');
+    } else if (currentUser && currentUser.username) {
+        window.open(`https://github.com/${currentUser.username}`, '_blank');
+    }
+    toggleUserDropdown();
+}
+
+function showSettings() {
+    alert('Settings feature coming soon!');
+    toggleUserDropdown();
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('user-dropdown');
+    const trigger = document.querySelector('.user-profile-trigger');
+    
+    if (dropdown && trigger && !trigger.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+        trigger.classList.remove('active');
+    }
+});
+
 // Global functions for HTML buttons
 window.showRepositories = showRepositories;
 window.handleLogout = handleLogout;
+window.toggleUserDropdown = toggleUserDropdown;
+window.showHistory = showHistory;
+window.openGitHubProfile = openGitHubProfile;
+window.showSettings = showSettings;
 
 // Start when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(initialize, 100);
+});// Dro
+pdown toggle functionality
+function toggleUserDropdown() {
+    const dropdown = document.getElementById('user-dropdown');
+    const trigger = document.querySelector('.user-profile-trigger');
+    
+    if (dropdown.style.display === 'none' || !dropdown.style.display) {
+        dropdown.style.display = 'block';
+        trigger.classList.add('active');
+    } else {
+        dropdown.style.display = 'none';
+        trigger.classList.remove('active');
+    }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    const userSection = document.getElementById('user-section');
+    const dropdown = document.getElementById('user-dropdown');
+    const trigger = document.querySelector('.user-profile-trigger');
+    
+    if (userSection && !userSection.contains(e.target)) {
+        if (dropdown) dropdown.style.display = 'none';
+        if (trigger) trigger.classList.remove('active');
+    }
 });
+
+// Additional dropdown functions
+function showHistory() {
+    toggleUserDropdown();
+    alert('README History feature coming soon!');
+}
+
+function openGitHubProfile() {
+    toggleUserDropdown();
+    if (currentUser && currentUser.html_url) {
+        window.open(currentUser.html_url, '_blank');
+    } else if (currentUser && currentUser.username) {
+        window.open(`https://github.com/${currentUser.username}`, '_blank');
+    }
+}
+
+function showSettings() {
+    toggleUserDropdown();
+    alert('Settings feature coming soon!');
+}
+
+// Global functions for HTML buttons
+window.showRepositories = showRepositories;
+window.handleLogout = handleLogout;
+window.toggleUserDropdown = toggleUserDropdown;
+window.showHistory = showHistory;
+window.openGitHubProfile = openGitHubProfile;
+window.showSettings = showSettings;
