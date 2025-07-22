@@ -21,16 +21,13 @@ const codeView = document.getElementById('code-view');
 const previewContent = document.getElementById('preview-content');
 const copyBtn = document.getElementById('copy-btn');
 
-// Navigation Elements
-const leftNav = document.getElementById('left-nav');
-const navToggleBtn = document.getElementById('nav-toggle-btn');
-const navToggle = document.getElementById('nav-toggle');
-const navLogin = document.getElementById('nav-login');
-const navLogout = document.getElementById('nav-logout');
-const navUser = document.getElementById('nav-user');
-const navUserAvatar = document.getElementById('nav-user-avatar');
-const navUserName = document.getElementById('nav-user-name');
-const navUserHandle = document.getElementById('nav-user-handle');
+// User Elements
+const userSection = document.getElementById('user-section');
+const userLogin = document.getElementById('user-login');
+const userProfile = document.getElementById('user-profile');
+const userAvatar = document.getElementById('user-avatar');
+const userName = document.getElementById('user-name');
+const userHandle = document.getElementById('user-handle');
 
 // View Elements
 const repositoriesView = document.getElementById('repositories-view');
@@ -207,12 +204,12 @@ function checkAuthStatus() {
 
 function showUserProfile(userData) {
     currentUser = userData;
-    updateNavUserProfile(userData);
+    updateUserProfile(userData);
 }
 
 function showLoginButton() {
     currentUser = null;
-    updateNavUserProfile(null);
+    updateUserProfile(null);
 }
 
 function handleLogin() {
@@ -239,11 +236,11 @@ function handleLogout() {
 function handleOAuthCallback() {
     const urlParams = new URLSearchParams(window.location.search);
     console.log('Checking OAuth callback, URL params:', urlParams.toString());
-    
+
     if (urlParams.get('session') === 'success') {
         console.log('OAuth callback successful - session established');
         window.history.replaceState({}, document.title, '/');
-        
+
         // Force immediate auth check
         setTimeout(() => {
             console.log('Running auth check after OAuth callback');
@@ -447,7 +444,7 @@ function closeNavigation() {
 // Update user profile display for navigation
 function updateNavUserProfile(userData) {
     console.log('Updating nav user profile with:', userData);
-    
+
     if (userData) {
         console.log('Showing user profile in navigation');
         if (navUser) navUser.style.display = 'flex';
