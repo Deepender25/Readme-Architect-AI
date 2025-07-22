@@ -228,24 +228,6 @@ function showUserProfile(userData) {
         dropdownEmail.style.display = 'none';
     }
 
-    // Update dropdown header
-    const dropdownAvatar = document.getElementById('dropdown-avatar');
-    const dropdownName = document.getElementById('dropdown-name');
-    const dropdownHandle = document.getElementById('dropdown-handle');
-    const dropdownEmail = document.getElementById('dropdown-email');
-
-    if (dropdownAvatar && userData.avatar_url) {
-        dropdownAvatar.src = userData.avatar_url;
-    }
-    if (dropdownName) {
-        dropdownName.textContent = userData.name || userData.username;
-    }
-    if (dropdownHandle && userData.username) {
-        dropdownHandle.textContent = `@${userData.username}`;
-    }
-    if (dropdownEmail && userData.email) {
-        dropdownEmail.textContent = userData.email;
-    }
 }
 
 function showLoginButton() {
