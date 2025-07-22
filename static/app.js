@@ -185,7 +185,7 @@ function showUserProfile(userData) {
     } else {
         console.error('❌ userLogin element not found');
     }
-    
+
     if (userProfile) {
         userProfile.style.display = 'block';
         console.log('✅ Shown user profile dropdown');
@@ -409,12 +409,17 @@ function showHistory() {
 }
 
 function openGitHubProfile() {
+    toggleUserDropdown();
     if (currentUser && currentUser.html_url) {
         window.open(currentUser.html_url, '_blank');
     } else if (currentUser && currentUser.username) {
         window.open(`https://github.com/${currentUser.username}`, '_blank');
     }
+}
+
+function showSettings() {
     toggleUserDropdown();
+    alert('Settings feature coming soon!');
 }
 
 function showSettings() {
@@ -444,8 +449,9 @@ window.showSettings = showSettings;
 // Start when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(initialize, 100);
-});// Dro
-pdown toggle functionality
+});
+
+// Dropdown toggle functionality
 function toggleUserDropdown() {
     const dropdown = document.getElementById('user-dropdown');
     const trigger = document.querySelector('.user-profile-trigger');
@@ -477,24 +483,4 @@ function showHistory() {
     alert('README History feature coming soon!');
 }
 
-function openGitHubProfile() {
-    toggleUserDropdown();
-    if (currentUser && currentUser.html_url) {
-        window.open(currentUser.html_url, '_blank');
-    } else if (currentUser && currentUser.username) {
-        window.open(`https://github.com/${currentUser.username}`, '_blank');
-    }
-}
-
-function showSettings() {
-    toggleUserDropdown();
-    alert('Settings feature coming soon!');
-}
-
-// Global functions for HTML buttons
-window.showRepositories = showRepositories;
-window.handleLogout = handleLogout;
-window.toggleUserDropdown = toggleUserDropdown;
-window.showHistory = showHistory;
-window.openGitHubProfile = openGitHubProfile;
-window.showSettings = showSettings;
+// Duplicate functions removed
