@@ -140,41 +140,63 @@ function deleteCookie(name) {
 
 function checkAuthStatus() {
     console.log('Checking authentication status...');
+    console.log('All cookies:', document.cookie);
+    
     const githubUserCookie = getCookie('github_user');
+    console.log('GitHub user cookie:', githubUserCookie ? 'Found' : 'Not found');
 
     if (githubUserCookie) {
         try {
             const userData = JSON.parse(atob(githubUserCookie));
-            console.log('User authenticated:', userData.username);
-            
+            console.log('User authenticated:', userData);
+
             if (userData.username && userData.access_token) {
                 currentUser = userData;
                 showUserProfile(userData);
+                console.log('User profile should now be visible');
                 return true;
+            } else {
+                console.log('Invalid user data - missing username or access_token');
             }
         } catch (e) {
             console.error('Failed to parse user data:', e);
             deleteCookie('github_user');
         }
+    } else {
+        console.log('No github_user cookie found');
     }
 
+    console.log('Showing login button');
     showLoginButton();
     return false;
 }
 
 function showUserProfile(userData) {
+    console.log('showUserProfile called with:', userData);
+    console.log('userLogin element:', userLogin);
+    console.log('userProfile element:', userProfile);
+    
     currentUser = userData;
-    if (userLogin) userLogin.style.display = 'none';
-    if (userProfile) userProfile.style.display = 'flex';
+    if (userLogin) {
+        userLogin.style.display = 'none';
+        console.log('Hidden login button');
+    }
+    if (userProfile) {
+        userProfile.style.display = 'flex';
+        console.log('Shown user profile');
+    }
 
     if (userAvatar && userData.avatar_url) {
         userAvatar.src = userData.avatar_url;
+        console.log('Set user avatar');
     }
     if (userName && userData.username) {
         userName.textContent = userData.username;
+        console.log('Set username:', userData.username);
     }
     if (userHandle && userData.username) {
         userHandle.textContent = `@${userData.username}`;
+        console.log('Set user handle');
     }
 }
 
@@ -299,17 +321,17 @@ function setView(viewName) {
     if (currentViewEl) {
         currentViewEl.style.display = 'none';
     }
-    
+
     nextViewEl.style.display = 'flex';
     currentView = viewName;
-    
+
     // Show/hide back button
     if (viewName === 'input') {
         backBtn.classList.remove('visible');
     } else {
         backBtn.classList.add('visible');
     }
-    
+
     isAnimating = false;
 }
 
@@ -325,10 +347,10 @@ function copyCode() {
 function initialize() {
     handleOAuthCallback();
     checkAuthStatus();
-    
+
     includeDemoCheckbox.checked = false;
     demoCountsContainer.style.display = 'none';
-    
+
     inputView.style.display = 'flex';
     outputView.style.display = 'none';
     loaderView.style.display = 'none';
