@@ -238,12 +238,17 @@ function handleLogout() {
 // Check for successful OAuth callback
 function handleOAuthCallback() {
     const urlParams = new URLSearchParams(window.location.search);
+    console.log('Checking OAuth callback, URL params:', urlParams.toString());
+    
     if (urlParams.get('session') === 'success') {
         console.log('OAuth callback successful - session established');
         window.history.replaceState({}, document.title, '/');
+        
+        // Force immediate auth check
         setTimeout(() => {
+            console.log('Running auth check after OAuth callback');
             checkAuthStatus();
-        }, 500);
+        }, 100);
         return;
     }
 
@@ -441,7 +446,10 @@ function closeNavigation() {
 
 // Update user profile display for navigation
 function updateNavUserProfile(userData) {
+    console.log('Updating nav user profile with:', userData);
+    
     if (userData) {
+        console.log('Showing user profile in navigation');
         if (navUser) navUser.style.display = 'flex';
         if (navLogin) navLogin.style.display = 'none';
         if (navLogout) navLogout.style.display = 'block';
@@ -456,14 +464,17 @@ function updateNavUserProfile(userData) {
 
         if (navUserAvatar && userData.avatar_url) {
             navUserAvatar.src = userData.avatar_url;
+            console.log('Set user avatar:', userData.avatar_url);
         }
         if (navUserName && userData.username) {
             navUserName.textContent = userData.username;
+            console.log('Set username:', userData.username);
         }
         if (navUserHandle && userData.username) {
             navUserHandle.textContent = `@${userData.username}`;
         }
     } else {
+        console.log('Hiding user profile, showing login');
         if (navUser) navUser.style.display = 'none';
         if (navLogin) navLogin.style.display = 'block';
         if (navLogout) navLogout.style.display = 'none';

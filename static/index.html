@@ -522,34 +522,7 @@
             alert('Logged out successfully!');
         }
         
-        // Handle OAuth callback
-        function handleOAuthCallback() {
-            const urlParams = new URLSearchParams(window.location.search);
-            
-            // Check for successful OAuth callback
-            if (urlParams.get('session') === 'success') {
-                console.log('OAuth callback successful - session established');
-                
-                // Clean up URL
-                window.history.replaceState({}, document.title, '/');
-                
-                // Check auth status to update UI
-                setTimeout(() => {
-                    checkAuthStatus();
-                }, 500);
-                
-                return;
-            }
-            
-            // Handle error callback
-            if (urlParams.get('error')) {
-                console.error('OAuth callback error:', urlParams.get('error'));
-                alert('GitHub login failed. Please try again.');
-                
-                // Clean up URL
-                window.history.replaceState({}, document.title, '/');
-            }
-        }
+        // OAuth callback handled by app.js
         
         // Select demo repository
         function selectDemoRepo(repoUrl) {
@@ -667,8 +640,7 @@
             // Check authentication status on page load
             checkAuthStatus();
             
-            // Handle OAuth callback if present
-            handleOAuthCallback();
+            // OAuth callback handled by app.js
         });
     </script>
     
