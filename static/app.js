@@ -56,79 +56,178 @@ function updateLoaderText() {
     }
 }
 
-// Form submission handler
+// Direct form submission to API
 function setupFormSubmission() {
     if (!form) {
         console.error('Form element not found!');
         return;
     }
-    
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        console.log('Form submitted!');
         
+        // Get form values
         const repoUrl = repoUrlInput?.value;
-        if (!repoUrl || isAnimating) {
-            console.log('No repo URL or animation in progress');
+        if (!repoUrl) {
+            alert('Please enter a GitHub repository URL');
+            return;
+        }
+        
+        if (isAnimating) {
             return;
         }
 
-        console.log('Starting README generation for:', repoUrl);
+        // Show loading state
         setView('loader');
         animationTimeout = setInterval(updateLoaderText, 500);
+        isAnimating = true;
+        
+        // Disable generate button
+        if (generateBtn) {
+            generateBtn.disabled = true;
+        }
 
+        // Build request parameters
         const params = new URLSearchParams({
             repo_url: repoUrl,
             project_name: projectNameInput?.value?.trim() || '',
-            include_demo: includeDemoCheckbox?.checked || false,
+            include_demo: includeDemoCheckbox?.checked ? 'true' : 'false',
             num_screenshots: parseInt(numScreenshotsInput?.value, 10) || 0,
             num_videos: parseInt(numVideosInput?.value, 10) || 0,
         });
 
-        console.log('Request parameters:', params.toString());
-
         try {
-            const response = await fetch(`/api/generate?${params.toString()}`);
-            console.log('API response status:', response.status);
+            // Make direct API request
+            const apiUrl = `/api/generate?${params.toString()}`;
             
-            const data = await response.json();
-            console.log('API response data:', data);
+            const response = await fetch(apiUrl);
 
+            // Clear loading animation
             if (animationTimeout) {
                 clearInterval(animationTimeout);
+                animationTimeout = null;
             }
 
-            if (data.readme) {
-                console.log('README generated successfully');
-                codeView.textContent = data.readme;
-                previewContent.innerHTML = marked.parse(data.readme);
-                hljs.highlightAll();
+            // Process response
+            if (!response.ok) {
+                throw new Error(`API request failed with status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data && data.readme) {
+                // Success case - README generated
+                const readmeContent = data.readme;
+                
+                // Store the README content
+                codeView.textContent = readmeContent;
+                
+                // Use try-catch for markdown parsing in case of errors
+                try {
+                    // Check if marked is available
+                    if (typeof marked !== 'undefined') {
+                        previewContent.innerHTML = marked.parse(readmeContent);
+                        
+                        // Apply syntax highlighting if available
+                        if (typeof hljs !== 'undefined') {
+                            hljs.highlightAll();
+                        }
+                    } else {
+                        // Fallback if marked is not available
+                        previewContent.innerHTML = `<pre>${readmeContent}</pre>`;
+                    }
+                } catch (markdownError) {
+                    console.error('Error parsing markdown:', markdownError);
+                    previewContent.innerHTML = `<pre>${readmeContent}</pre>`;
+                }
+                
+                // Show the output view
                 setView('output');
-            } else if (data.error) {
-                console.error('API returned error:', data.error);
-                previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Generation Failed</h3><p>${data.error}</p></div>`;
-                codeView.textContent = `/*\\n  Error: ${data.error}\\n*/`;
-                hljs.highlightAll();
+                
+                // Enable copy button
+                if (copyBtn) {
+                    copyBtn.disabled = false;
+                }
+            } else if (data && data.error) {
+                // Error case - API returned error
+                const errorMessage = data.error;
+                
+                previewContent.innerHTML = `
+                    <div style="color: #ff8a8a; padding: 20px;">
+                        <h3>README Generation Failed</h3>
+                        <p>${errorMessage}</p>
+                        <p>Please try again with a different repository.</p>
+                    </div>`;
+                    
+                codeView.textContent = `/*\n  Error: ${errorMessage}\n*/`;
+                
+                if (typeof hljs !== 'undefined') {
+                    hljs.highlightAll();
+                }
+                
                 setView('output');
             } else {
-                console.error('Unexpected API response format');
-                previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Unexpected Response</h3><p>The server returned an unexpected response format.</p></div>`;
-                codeView.textContent = `/*\\n  Error: Unexpected response format\\n*/`;
-                hljs.highlightAll();
+                // Unexpected response format
+                previewContent.innerHTML = `
+                    <div style="color: #ff8a8a; padding: 20px;">
+                        <h3>Unexpected Response</h3>
+                        <p>The server returned an unexpected response format.</p>
+                        <p>Please try again or contact support if the issue persists.</p>
+                    </div>`;
+                    
+                codeView.textContent = `/*\n  Error: Unexpected response format\n*/`;
+                
+                if (typeof hljs !== 'undefined') {
+                    hljs.highlightAll();
+                }
+                
                 setView('output');
             }
         } catch (error) {
+            // Clear loading animation
             if (animationTimeout) {
                 clearInterval(animationTimeout);
+                animationTimeout = null;
             }
-            console.error("Request failed:", error);
-            previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Connection Error</h3><p>Could not connect to the server. Please check your internet connection and try again.</p></div>`;
-            codeView.textContent = `/*\\n  Error: Connection failed - ${error.message}\\n*/`;
-            hljs.highlightAll();
+            
+            console.error("README generation failed:", error);
+            
+            // Show user-friendly error message
+            previewContent.innerHTML = `
+                <div style="color: #ff8a8a; padding: 20px;">
+                    <h3>README Generation Failed</h3>
+                    <p>${error.message || 'Could not connect to the server'}</p>
+                    <p>Please try again with a different repository or check your internet connection.</p>
+                    <div style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.1); border-radius: 4px;">
+                        <strong>Technical details:</strong> ${error.toString()}
+                    </div>
+                </div>`;
+            
+            codeView.textContent = `/*
+  Error: README generation failed - ${error.message || 'Connection error'}
+  
+  Possible solutions:
+  - Check your internet connection
+  - Verify the repository URL is correct and public
+  - Try again in a few minutes
+*/`;
+            
+            if (typeof hljs !== 'undefined') {
+                hljs.highlightAll();
+            }
+            
             setView('output');
+        } finally {
+            // Always reset animation state
+            isAnimating = false;
+            
+            // Re-enable generate button
+            if (generateBtn) {
+                generateBtn.disabled = false;
+            }
         }
     });
-    
+
     console.log('Form submission handler attached successfully');
 }
 
@@ -161,7 +260,7 @@ function setupEventListeners() {
         });
         console.log('✓ Demo checkbox event listener attached');
     }
-    
+
     // Copy button
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
@@ -178,7 +277,7 @@ function setupEventListeners() {
         });
         console.log('✓ Copy button event listener attached');
     }
-    
+
     console.log('All event listeners setup complete');
 }
 
@@ -434,7 +533,7 @@ function copyCode() {
 // Initialize
 function initialize() {
     console.log('Initializing application...');
-    
+
     // Check if all required elements exist
     const requiredElements = {
         'form': form,
@@ -446,7 +545,7 @@ function initialize() {
         'codeView': codeView,
         'previewContent': previewContent
     };
-    
+
     for (const [name, element] of Object.entries(requiredElements)) {
         if (!element) {
             console.error(`Required element '${name}' not found!`);
@@ -454,13 +553,13 @@ function initialize() {
             console.log(`✓ Element '${name}' found`);
         }
     }
-    
+
     // Setup form submission
     setupFormSubmission();
-    
+
     // Setup other event listeners
     setupEventListeners();
-    
+
     // Handle OAuth callback and check auth status
     handleOAuthCallback();
     checkAuthStatus();
@@ -478,7 +577,7 @@ function initialize() {
     if (outputView) {
         outputView.style.display = 'none';
     }
-    
+
     console.log('Application initialized successfully');
     loaderView.style.display = 'none';
     repositoriesView.style.display = 'none';
@@ -579,3 +678,129 @@ function showHistory() {
 }
 
 // Duplicate functions removed
+// De
+bug function to test README generation
+window.testReadmeGeneration = function (testUrl = 'https://github.com/fastapi/fastapi') {
+    console.log('🧪 Testing README generation with URL:', testUrl);
+
+    if (!form) {
+        console.error('❌ Form element not found!');
+        return;
+    }
+
+    if (!repoUrlInput) {
+        console.error('❌ Repo URL input not found!');
+        return;
+    }
+
+    // Set test URL
+    repoUrlInput.value = testUrl;
+
+    // Trigger form submission
+    const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+    form.dispatchEvent(submitEvent);
+
+    console.log('✅ Test form submission triggered');
+};
+
+// Debug function to check all elements
+window.debugElements = function () {
+    console.log('🔍 Debugging all elements:');
+    console.log('Form:', form);
+    console.log('Repo URL Input:', repoUrlInput);
+    console.log('Project Name Input:', projectNameInput);
+    console.log('Generate Button:', generateBtn);
+    console.log('Back Button:', backBtn);
+    console.log('Include Demo Checkbox:', includeDemoCheckbox);
+    console.log('Demo Counts Container:', demoCountsContainer);
+    console.log('Code View:', codeView);
+    console.log('Preview Content:', previewContent);
+    console.log('Copy Button:', copyBtn);
+};
+
+// Debug function to test API directly
+window.testAPI = async function (testUrl = 'https://github.com/fastapi/fastapi') {
+    console.log('🔌 Testing API directly with URL:', testUrl);
+
+    const params = new URLSearchParams({
+        repo_url: testUrl,
+        project_name: 'Test Project',
+        include_demo: true,
+        num_screenshots: 1,
+        num_videos: 1,
+    });
+
+    try {
+        console.log('📡 Making API request...');
+        console.log('📡 Request URL:', `/api/generate?${params.toString()}`);
+
+        // Show loading state in UI if possible
+        if (loaderView && inputView && outputView) {
+            setView('loader');
+            if (loaderText) {
+                loaderText.textContent = 'Testing API connection...';
+            }
+        }
+
+        const response = await fetch(`/api/generate?${params.toString()}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Cache-Control': 'no-cache'
+            }
+        });
+
+        console.log('📡 Response status:', response.status);
+        console.log('📡 Response headers:', [...response.headers.entries()]);
+
+        const data = await response.json();
+        console.log('📡 Response data keys:', Object.keys(data));
+
+        if (data.readme) {
+            console.log('✅ README generated successfully!');
+            console.log('📄 README length:', data.readme.length, 'characters');
+            console.log('📄 README preview:', data.readme.substring(0, 200) + '...');
+
+            // Update UI if possible
+            if (codeView && previewContent) {
+                codeView.textContent = data.readme;
+                try {
+                    previewContent.innerHTML = marked.parse(data.readme);
+                    hljs.highlightAll();
+                } catch (e) {
+                    console.error('Error rendering markdown:', e);
+                    previewContent.innerHTML = `<pre>${data.readme}</pre>`;
+                }
+                setView('output');
+            }
+        } else if (data.error) {
+            console.error('❌ API error:', data.error);
+
+            // Update UI if possible
+            if (previewContent && codeView) {
+                previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Generation Failed</h3><p>${data.error}</p></div>`;
+                codeView.textContent = `/*\n  Error: ${data.error}\n*/`;
+                setView('output');
+            }
+        } else {
+            console.error('❌ Unexpected response format');
+
+            // Update UI if possible
+            if (previewContent && codeView) {
+                previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Unexpected Response</h3><p>The server returned an unexpected response format.</p></div>`;
+                codeView.textContent = `/*\n  Error: Unexpected response format\n*/`;
+                setView('output');
+            }
+        }
+
+        return data;
+    } catch (error) {
+        console.error('❌ API request failed:', error);
+        return { error: error.message };
+    }
+};
+
+console.log('🛠️ Debug functions loaded:');
+console.log('- testReadmeGeneration(url) - Test form submission');
+console.log('- debugElements() - Check all DOM elements');
+console.log('- testAPI(url) - Test API directly');
