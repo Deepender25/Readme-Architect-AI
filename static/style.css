@@ -514,6 +514,13 @@ input:checked + .slider-label:before { transform: translateX(26px); }
     min-height: 0;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
+    background: rgba(0, 0, 0, 0.1); 
+    border-radius: 8px; 
+    border: 1px solid rgba(255, 255, 255, 0.1); 
+    color: #ffffff; 
+    line-height: 1.6; 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; 
+    word-break: break-word;
 }
 
 /* Enhanced Scrollbar Styling */
@@ -554,19 +561,130 @@ input:checked + .slider-label:before { transform: translateX(26px); }
 .github-octocat-loader svg path { fill: #c5a8ff; }
 .github-octocat-loader::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(100deg, rgba(255,255,255,0) 20%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0) 80%); animation: shimmer 2s linear infinite; animation-delay: 0.5s; }
 
-/* === PREVIEW PANE STYLING FIXES === */
-#preview-content h1, #preview-content h2 { border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 15px; color: #a8b2ff; } 
-#preview-content code { background: rgba(122, 126, 255, 0.2); padding: 3px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; } 
-#preview-content pre { background: #1a1a2e; padding: 15px; border-radius: 8px; border: 1px solid #3a3a5e; } 
-#preview-content pre code { background: transparent; padding: 0; } 
-#preview-content a { color: #8cb2ff; text-decoration: none; } 
-#preview-content a:hover { text-decoration: underline; } 
-#preview-content table { border-collapse: collapse; width: 100%; margin: 20px 0; } 
-#preview-content th, #preview-content td { border: 1px solid #444; padding: 10px; text-align: left; } 
-#preview-content th { background-color: rgba(0,0,0,0.2); } 
-#preview-content blockquote { border-left: 44px solid #a8b2ff; padding-left: 15px; margin: 15px 0; color: #ccc; }
-#preview-content img { max-width: 100%; height: auto; display: block; margin: 20px auto; border-radius: 8px; background: #1a1a2e; }
-#preview-content p > em { display: block; text-align: center; font-size: 0.9rem; color: #b0b0d0; margin-top: -10px; margin-bottom: 20px; }
+/* === PREVIEW PANE STYLING === */
+#preview-content h1, 
+#preview-content h2, 
+#preview-content h3, 
+#preview-content h4, 
+#preview-content h5, 
+#preview-content h6 { 
+    color: #a8b2ff; 
+    margin-top: 24px; 
+    margin-bottom: 16px; 
+    font-weight: 600; 
+    line-height: 1.25; 
+}
+
+#preview-content h1, 
+#preview-content h2 { 
+    border-bottom: 1px solid #444; 
+    padding-bottom: 8px; 
+}
+
+#preview-content h1 { font-size: 2em; }
+#preview-content h2 { font-size: 1.5em; }
+#preview-content h3 { font-size: 1.25em; }
+
+#preview-content p { 
+    margin-bottom: 16px; 
+    color: #e0e0e0; 
+}
+
+#preview-content code { 
+    background: rgba(122, 126, 255, 0.2); 
+    padding: 3px 6px; 
+    border-radius: 4px; 
+    font-family: 'Courier New', Courier, monospace; 
+    font-size: 0.9em;
+    color: #ffd700;
+} 
+
+#preview-content pre { 
+    background: #1a1a2e; 
+    padding: 16px; 
+    border-radius: 8px; 
+    border: 1px solid #3a3a5e; 
+    overflow-x: auto;
+    margin: 16px 0;
+} 
+
+#preview-content pre code { 
+    background: transparent; 
+    padding: 0; 
+    color: #e0e0e0;
+} 
+
+#preview-content a { 
+    color: #8cb2ff; 
+    text-decoration: none; 
+} 
+
+#preview-content a:hover { 
+    text-decoration: underline; 
+} 
+
+#preview-content ul, 
+#preview-content ol { 
+    margin: 16px 0; 
+    padding-left: 24px; 
+}
+
+#preview-content li { 
+    margin-bottom: 8px; 
+    color: #e0e0e0;
+}
+
+#preview-content table { 
+    border-collapse: collapse; 
+    width: 100%; 
+    margin: 20px 0; 
+    border: 1px solid #444;
+} 
+
+#preview-content th, 
+#preview-content td { 
+    border: 1px solid #444; 
+    padding: 12px; 
+    text-align: left; 
+} 
+
+#preview-content th { 
+    background-color: rgba(0,0,0,0.3); 
+    font-weight: 600;
+    color: #a8b2ff;
+} 
+
+#preview-content blockquote { 
+    border-left: 4px solid #a8b2ff; 
+    padding-left: 16px; 
+    margin: 16px 0; 
+    color: #ccc; 
+    font-style: italic;
+}
+
+#preview-content img { 
+    max-width: 100%; 
+    height: auto; 
+    display: block; 
+    margin: 20px auto; 
+    border-radius: 8px; 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#preview-content p > em { 
+    display: block; 
+    text-align: center; 
+    font-size: 0.9rem; 
+    color: #b0b0d0; 
+    margin-top: -10px; 
+    margin-bottom: 20px; 
+}
+
+#preview-content hr {
+    border: none;
+    border-top: 1px solid #444;
+    margin: 24px 0;
+}
 
 @media (max-width: 768px) {
     .glass-morphism-container { padding: 20px; height: 95vh; }
