@@ -297,19 +297,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script>
-        // Configure marked for better rendering
-        if (typeof marked !== 'undefined') {
-            marked.setOptions({
-                breaks: true,
-                gfm: true,
-                headerIds: true,
-                mangle: false,
-                sanitize: false
-            });
-            console.log('✅ Marked library configured');
-        } else {
-            console.error('❌ Marked library not loaded');
-        }
+        // Wait for marked library to load and configure it
+        window.addEventListener('load', function() {
+            if (typeof marked !== 'undefined') {
+                marked.setOptions({
+                    breaks: true,
+                    gfm: true,
+                    headerIds: false,
+                    mangle: false,
+                    sanitize: false
+                });
+                console.log('✅ Marked library loaded and configured');
+                console.log('Marked version:', marked.version || 'unknown');
+            } else {
+                console.error('❌ Marked library not loaded');
+            }
+        });
     </script>
     <script src="/static/app.js"></script>
 </body>
