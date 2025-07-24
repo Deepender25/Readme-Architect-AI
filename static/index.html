@@ -293,12 +293,12 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script>
-        // Wait for marked library to load and configure it
-        window.addEventListener('load', function() {
+        // Configure marked library when it loads
+        document.addEventListener('DOMContentLoaded', function() {
             if (typeof marked !== 'undefined') {
                 marked.setOptions({
                     breaks: true,
@@ -307,10 +307,9 @@
                     mangle: false,
                     sanitize: false
                 });
-                console.log('✅ Marked library loaded and configured');
-                console.log('Marked version:', marked.version || 'unknown');
+                console.log('✅ Marked library configured successfully');
             } else {
-                console.error('❌ Marked library not loaded');
+                console.error('❌ Marked library failed to load');
             }
         });
     </script>
