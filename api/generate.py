@@ -51,6 +51,16 @@ class handler(BaseHTTPRequestHandler):
         query_params = urllib.parse.parse_qs(parsed_url.query)
         
         print(f"📝 Generate request: {self.path}")
+        print(f"📝 Query params: {query_params}")
+        
+        # Health check endpoint
+        if query_params.get('health'):
+            self.send_json_response({
+                "status": "ok", 
+                "ai_available": AI_AVAILABLE,
+                "message": "README Generator API is running"
+            })
+            return
         
         # Extract parameters
         repo_url = query_params.get('repo_url', [''])[0]
@@ -203,6 +213,8 @@ class handler(BaseHTTPRequestHandler):
         if not AI_AVAILABLE:
             return None, "Google AI not available. Please check your API key configuration."
         
+        print(f"🤖 Starting README generation for: {project_name or 'Unnamed Project'}")
+        
         try:
             # Prepare Python code summary
             python_summary_str = ""
@@ -300,13 +312,18 @@ MIT
             
             try:
                 # Use gemini-1.5-flash as it's more stable
+                print("🤖 Initializing Gemini model...")
                 model = genai.GenerativeModel('gemini-1.5-flash')
+                
+                print("🤖 Sending prompt to Gemini...")
                 response = model.generate_content(prompt)
                 
                 if not response or not response.text:
-                    return None, "Content generation failed - empty response from AI"
+                    print("❌ Empty response from Gemini")
+                    return fallback_readme, None
                 
                 readme_content = response.text.strip()
+                print(f"✅ Gemini response received ({len(readme_content)} chars)")
                 
                 # Validate the response is proper markdown
                 if not readme_content.startswith('#'):
@@ -315,7 +332,8 @@ MIT
                 return readme_content, None
                 
             except Exception as e:
-                return None, f"AI generation failed: {str(e)}"
+                print(f"❌ Gemini error: {str(e)}")
+                return fallback_readme, None
                 
         except Exception as e:
             return None, str(e)
