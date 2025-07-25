@@ -282,7 +282,20 @@ function getCookie(name) {
 }
 
 function deleteCookie(name) {
+    // Delete cookie with multiple path variations to ensure complete removal
+    const paths = ['/', '/auth', '/api'];
+    const domains = [window.location.hostname, `.${window.location.hostname}`];
+    
+    paths.forEach(path => {
+        domains.forEach(domain => {
+            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=${domain};`;
+            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path};`;
+        });
+    });
+    
+    // Also try without domain
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    console.log(`🗑️ Deleted cookie: ${name}`);
 }
 
 function checkAuthStatus() {
@@ -298,16 +311,16 @@ function checkAuthStatus() {
             console.log('User authenticated:', userData);
 
             if (userData.username && userData.access_token) {
-                currentUser = userData;
-                showUserProfile(userData);
-                console.log('User profile should now be visible');
+                // Validate that the token is still valid by checking if we can make a simple API call
+                validateUserToken(userData);
                 return true;
             } else {
                 console.log('Invalid user data - missing username or access_token');
+                handleInvalidAuth();
             }
         } catch (e) {
             console.error('Failed to parse user data:', e);
-            deleteCookie('github_user');
+            handleInvalidAuth();
         }
     } else {
         console.log('No github_user cookie found');
@@ -316,6 +329,59 @@ function checkAuthStatus() {
     console.log('Showing login button');
     showLoginButton();
     return false;
+}
+
+// Validate if the stored token is still valid
+async function validateUserToken(userData) {
+    try {
+        // Try to make a simple API call to validate the token
+        const response = await fetch('/api/repositories', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.status === 401) {
+            // Token is invalid/revoked
+            console.log('🚫 Token is invalid or revoked');
+            handleInvalidAuth();
+            return;
+        }
+
+        // Token is valid, show user profile
+        currentUser = userData;
+        showUserProfile(userData);
+        console.log('✅ User profile should now be visible');
+        
+    } catch (error) {
+        console.log('⚠️ Could not validate token, assuming valid:', error);
+        // If we can't validate, assume it's valid (network issues, etc.)
+        currentUser = userData;
+        showUserProfile(userData);
+    }
+}
+
+// Handle invalid authentication (revoked OAuth, expired tokens, etc.)
+function handleInvalidAuth() {
+    console.log('🚫 Invalid authentication detected, clearing user data...');
+    
+    // Clear all stored data
+    currentUser = null;
+    deleteCookie('github_user');
+    clearUserProfileData();
+    
+    // Clear storage
+    try {
+        localStorage.removeItem('github_user');
+        sessionStorage.removeItem('github_user');
+    } catch (e) {
+        console.log('Could not clear storage:', e);
+    }
+    
+    // Show login button
+    showLoginButton();
 }
 
 function showUserProfile(userData) {
@@ -384,12 +450,93 @@ function showLoginButton() {
 }
 
 function handleLogout() {
-    toggleUserDropdown(); // Close dropdown
+    console.log('🚪 Logging out user...');
+    
+    // Close dropdown if open
+    const dropdown = document.getElementById('user-dropdown');
+    const trigger = document.querySelector('.user-profile-trigger');
+    if (dropdown && dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
+        if (trigger) trigger.classList.remove('active');
+    }
+    
+    // Clear all user data
+    currentUser = null;
+    
+    // Delete all possible cookies
     deleteCookie('github_user');
+    deleteCookie('session');
+    deleteCookie('auth_token');
+    
+    // Clear localStorage and sessionStorage
+    try {
+        localStorage.removeItem('github_user');
+        localStorage.removeItem('user_data');
+        sessionStorage.removeItem('github_user');
+        sessionStorage.removeItem('user_data');
+        console.log('🗑️ Cleared local storage');
+    } catch (e) {
+        console.log('⚠️ Could not clear storage:', e);
+    }
+    
+    // Reset UI to login state
     showLoginButton();
-    if (currentView === 'repositories') {
+    
+    // Clear user profile data
+    clearUserProfileData();
+    
+    // Return to input view if in user-specific views
+    if (currentView === 'repositories' || currentView === 'history') {
         setView('input');
     }
+    
+    // Show confirmation
+    console.log('✅ User logged out successfully');
+    
+    // Optional: Redirect to clear any URL parameters
+    if (window.location.search) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+}
+
+// Clear all user profile data from UI
+function clearUserProfileData() {
+    console.log('🧹 Clearing user profile data from UI...');
+    
+    // Clear profile trigger elements
+    if (userAvatar) {
+        userAvatar.src = '';
+        userAvatar.alt = 'User Avatar';
+    }
+    if (userName) {
+        userName.textContent = '';
+    }
+    if (userHandle) {
+        userHandle.textContent = '';
+    }
+    
+    // Clear dropdown header elements
+    const dropdownAvatar = document.getElementById('dropdown-avatar');
+    const dropdownName = document.getElementById('dropdown-name');
+    const dropdownHandle = document.getElementById('dropdown-handle');
+    const dropdownEmail = document.getElementById('dropdown-email');
+    
+    if (dropdownAvatar) {
+        dropdownAvatar.src = '';
+        dropdownAvatar.alt = 'User Avatar';
+    }
+    if (dropdownName) {
+        dropdownName.textContent = '';
+    }
+    if (dropdownHandle) {
+        dropdownHandle.textContent = '';
+    }
+    if (dropdownEmail) {
+        dropdownEmail.textContent = '';
+        dropdownEmail.style.display = 'none';
+    }
+    
+    console.log('✅ User profile data cleared');
 }
 
 function handleOAuthCallback() {
@@ -911,6 +1058,60 @@ document.addEventListener('keydown', (e) => {
         }
     }
 });
+
+// Force logout function - can be called manually to clear all user data
+window.forceLogout = function() {
+    console.log('🔧 Force logout initiated...');
+    handleLogout();
+    
+    // Additional cleanup - clear ALL cookies
+    document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+    });
+    
+    // Clear all storage
+    try {
+        localStorage.clear();
+        sessionStorage.clear();
+    } catch (e) {
+        console.log('Could not clear all storage:', e);
+    }
+    
+    console.log('✅ Force logout completed');
+    alert('✅ All user data cleared! The page will reload to ensure clean state.');
+    
+    // Reload page to ensure completely clean state
+    setTimeout(() => {
+        window.location.reload();
+    }, 1000);
+};
+
+// Check authentication status manually
+window.checkAuth = function() {
+    console.log('🔍 Manual auth check...');
+    console.log('Current user:', currentUser);
+    console.log('All cookies:', document.cookie);
+    console.log('Profile display:', document.getElementById('user-profile')?.style.display);
+    console.log('Login display:', document.getElementById('user-login')?.style.display);
+    
+    checkAuthStatus();
+};
+
+// Test function to simulate login
+window.testLogin = function() {
+    console.log('🧪 Simulating user login...');
+    
+    const mockUser = {
+        username: 'testuser',
+        name: 'Test User',
+        avatar_url: 'https://github.com/github.png',
+        html_url: 'https://github.com/testuser',
+        access_token: 'mock_token'
+    };
+    
+    showUserProfile(mockUser);
+    console.log('✅ Mock login completed');
+};
 
 // Start when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
