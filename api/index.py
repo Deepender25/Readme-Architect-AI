@@ -256,6 +256,7 @@ class handler(BaseHTTPRequestHandler):
 
     def analyze_codebase(self, repo_path: str):
         try:
+            print("Starting deep code analysis...")
             context = {"file_structure": "", "dependencies": "No dependency file found.", "python_code_summary": {}}
             ignore_list = ['.git', '__pycache__', 'node_modules', '.venv', 'venv', 'target', 'dist', 'build']
             file_structure_list = []
@@ -273,7 +274,7 @@ class handler(BaseHTTPRequestHandler):
                     
                     if f.endswith('.py'):
                         try:
-                            with open(file_path, 'r', encoding='utf-8', errors='ignore') as py_file:
+                            with open(file_path, 'r', encoding='utf-8') as py_file:
                                 source_code = py_file.read()
                                 tree = ast.parse(source_code)
                                 summary = {"functions": [], "classes": []}
@@ -284,19 +285,18 @@ class handler(BaseHTTPRequestHandler):
                                     elif isinstance(node, ast.ClassDef):
                                         docstring = ast.get_docstring(node) or "No docstring."
                                         summary["classes"].append(f"class {node.name}: # {docstring[:80]}")
-                                if summary["functions"] or summary['classes']:
-                                    context["python_code_summary"][f] = summary
-                        except Exception:
-                            pass
-                    
+                                if summary["functions"] or summary["classes"]:
+                                     context["python_code_summary"][f] = summary
+                        except Exception as e:
+                            print(f"Could not parse Python file {file_path}: {e}")
                     elif f in ['requirements.txt', 'package.json', 'pyproject.toml', 'pom.xml']:
                         try:
-                            with open(file_path, 'r', encoding='utf-8', errors='ignore') as file_content:
+                            with open(file_path, 'r', encoding='utf-8') as file_content:
                                 context["dependencies"] = file_content.read()
-                        except Exception:
-                            pass
+                        except Exception: pass
             
             context["file_structure"] = "\n".join(file_structure_list)
+            print("Deep code analysis finished.")
             return context, None
         except Exception as e:
             return None, str(e)
@@ -342,47 +342,104 @@ class handler(BaseHTTPRequestHandler):
                 `<h1 align="center"> [PROJECT TITLE] </h1>`
                 `<p align="center"> [TAGLINE] </p>`"""
 
+            # Enhanced prompt from main.py with superior structure
             prompt = f"""
-            You are a Principal Solutions Architect and technical copywriter. Create a comprehensive, professional README.md file.
+**Your Role:** You are a Principal Solutions Architect and a world-class technical copywriter. You are tasked with writing a stunning, comprehensive, and professional README.md file for a new open-source project. Your work must be impeccable.
 
-            **Source Analysis:**
-            1. **Project File Structure:**
-            ```
-            {analysis_context['file_structure']}
-            ```
-            2. **Dependencies:**
-            ```
-            {analysis_context['dependencies']}
-            ```
-            3. **Python Code Summary:**
-            ```
-            {python_summary_str if python_summary_str else "No Python files analyzed."}
-            ```
+**Source Analysis Provided:**
+1.  **Project File Structure:**
+    ```
+    {analysis_context['file_structure']}
+    ```
+2.  **Dependencies:**
+    ```
+    {analysis_context['dependencies']}
+    ```
+3.  **Python Code Semantic Summary:**
+    ```
+    {python_summary_str if python_summary_str else "No Python files were analyzed."}
+    ```
 
-            **README Structure:**
-            {title_instruction}
+**Core Mandate:**
+Based *only* on the analysis above, generate a complete README.md. You MUST make intelligent, bold inferences about the project's purpose, architecture, and features. The tone must be professional, engaging, and polished. Use rich Markdown formatting, including emojis, tables, and blockquotes, to create a visually appealing document.
 
-            2. **Badges:** Create centered static placeholder badges with HTML comment for replacement.
-            3. **Table of Contents:** Clickable navigation.
-            4. **⭐ Overview:** Hook, problem, solution, architecture.
-            5. **✨ Key Features:** Detailed bulleted list (4-5 features).
-            6. **🛠️ Tech Stack:** Markdown table with Technology, Purpose, Why columns.
-            {demo_section}
-            7. **🚀 Getting Started:** Prerequisites and installation steps.
-            8. **🔧 Usage:** Clear run instructions with examples.
-            9. **🤝 Contributing:** Welcoming contribution guidelines.
-            10. **📝 License:** License information.
+**Strict README.md Structure (Follow this format precisely):**
 
-            Output ONLY the raw Markdown content. Be professional, engaging, and use rich formatting.
-            """
+1.  **Project Title:** {title_instruction}
 
+2.  **Badges:** Create a centered paragraph of **static placeholder badges**. These badges must look professional and use generic, positive text (e.g., "Build: Passing"). This prevents "repo not found" errors on first generation. CRUCIALLY, you MUST add an HTML comment `<!-- ... -->` right after the badges, instructing the user to replace them with their own live badges.
+    Example format to follow exactly:
+    <p align="center">
+      <img alt="Build" src="https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge">
+      <img alt="Issues" src="https://img.shields.io/badge/Issues-0%20Open-blue?style=for-the-badge">
+      <img alt="Contributions" src="https://img.shields.io/badge/Contributions-Welcome-orange?style=for-the-badge">
+      <img alt="License" src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge">
+    </p>
+    <!-- 
+      **Note:** These are static placeholder badges. Replace them with your project's actual badges.
+      You can generate your own at https://shields.io
+    -->
+
+3.  **Table of Contents:** Create a clickable table of contents.
+    - [Overview](#-overview)
+    - [Key Features](#-key-features)
+    - [Tech Stack & Architecture](#️-tech-stack--architecture)
+    - [Demo & Screenshots](#-demo--screenshots) (if applicable)
+    - [Getting Started](#-getting-started)
+    - [Usage](#-usage)
+    - [Contributing](#-contributing)
+    - [License](#-license)
+
+4.  **⭐ Overview:**
+    -   **Hook:** Start with a compelling, single-sentence summary of the project.
+    -   **The Problem:** In a blockquote, describe the problem this project solves.
+    -   **The Solution:** Describe how your project provides an elegant solution to that problem.
+    -   **Inferred Architecture:** Based on the file structure and dependencies, describe the high-level architecture (e.g., "This project is a FastAPI-based web service...").
+
+5.  **✨ Key Features:**
+    -   A detailed, bulleted list. For each feature, provide a brief but impactful explanation.
+    -   Infer at least 4-5 key features from the code and file structure.
+    -   Example: `- **Automated Analysis:** Leverages AST to perform deep static analysis of Python code.`
+
+6.  **🛠️ Tech Stack & Architecture:**
+    -   Create a Markdown table listing the primary technologies, languages, and major libraries.
+    -   Include columns for "Technology", "Purpose", and "Why it was Chosen".
+    -   Example Row: `| FastAPI | API Framework | For its high performance, async support, and automatic docs generation. |`
+
+{demo_section}
+
+7.  **🚀 Getting Started:**
+    -   **Prerequisites:** A bulleted list of software the user needs (e.g., Python 3.9+, Node.js v18+).
+    -   **Installation:** A numbered, step-by-step guide with explicit, copy-pastable commands in code blocks for different package managers if inferable (e.g., `pip install -r requirements.txt`).
+
+8.  **🔧 Usage:**
+    -   Provide clear instructions on how to run the application (e.g., `uvicorn main:app --reload`).
+    -   If it's an API, provide a `curl` example. If it's a CLI, provide a command-line example.
+
+9.  **🤝 Contributing:**
+    -   A welcoming section encouraging contributions.
+    -   Briefly outline the fork -> branch -> pull request workflow.
+
+10. **📝 License:**
+    -   State the license (e.g., "Distributed under the MIT License. See `LICENSE` for more information.").
+
+**Final Instruction:** The output MUST be ONLY the raw Markdown content. Do not add any commentary, greetings, or explanations before or after the Markdown. Adhere strictly to the requested format and quality bar.
+"""
+
+            print("🤖 Initializing Gemini 2.5 Flash model...")
             model = genai.GenerativeModel('gemini-2.5-flash')
+            
+            print("🤖 Sending enhanced prompt to Gemini...")
             response = model.generate_content(prompt)
             
             if not response.parts:
+                print("❌ Content generation failed due to safety filters")
                 return None, "Content generation failed due to safety filters"
             
-            return response.text, None
+            readme_content = response.text.strip()
+            print(f"✅ Enhanced README generated successfully ({len(readme_content)} chars)")
+            
+            return readme_content, None
             
         except Exception as e:
             return None, str(e)
