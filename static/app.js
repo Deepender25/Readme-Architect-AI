@@ -137,47 +137,91 @@ function setupFormSubmission() {
 // Function to render markdown preview
 function renderMarkdownPreview(markdownContent) {
     console.log('🔄 Rendering markdown preview...');
+    console.log('📝 Content to render:', markdownContent.substring(0, 100) + '...');
     
     if (!previewContent) {
         console.error('❌ Preview content element not found');
         return;
     }
     
+    // Clear existing content
+    previewContent.innerHTML = '';
+    
     try {
-        // Check if marked library is available
-        if (typeof marked !== 'undefined') {
-            console.log('✅ Using marked library');
-            const htmlContent = marked.parse(markdownContent);
-            previewContent.innerHTML = htmlContent;
+        // Always use our custom parser for reliability
+        console.log('🔧 Converting markdown to HTML...');
+        
+        // Process the markdown content line by line for better control
+        const lines = markdownContent.split('\n');
+        let htmlLines = [];
+        let inCodeBlock = false;
+        let codeBlockContent = [];
+        let codeLanguage = '';
+        
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i];
             
-            // Apply syntax highlighting
-            setTimeout(() => {
-                if (typeof hljs !== 'undefined') {
-                    hljs.highlightAll();
+            // Handle code blocks
+            if (line.startsWith('```')) {
+                if (!inCodeBlock) {
+                    // Start of code block
+                    inCodeBlock = true;
+                    codeLanguage = line.substring(3).trim();
+                    codeBlockContent = [];
+                } else {
+                    // End of code block
+                    inCodeBlock = false;
+                    const codeContent = codeBlockContent.join('\n');
+                    htmlLines.push(`<pre><code class="language-${codeLanguage}">${codeContent}</code></pre>`);
+                    codeBlockContent = [];
                 }
-            }, 100);
+                continue;
+            }
             
-        } else {
-            console.log('⚠️ Marked not available, using fallback');
-            // Simple fallback markdown to HTML conversion
-            let htmlContent = markdownContent
-                .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-                .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-                .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-                .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
-                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.+?)\*/g, '<em>$1</em>')
-                .replace(/`([^`]+)`/g, '<code>$1</code>')
-                .replace(/```[\s\S]*?```/g, function(match) {
-                    const code = match.replace(/```/g, '').trim();
-                    return `<pre><code>${code}</code></pre>`;
-                })
-                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
-                .replace(/\n\n/g, '</p><p>')
-                .replace(/\n/g, '<br>');
+            if (inCodeBlock) {
+                codeBlockContent.push(line);
+                continue;
+            }
             
-            previewContent.innerHTML = '<div class="markdown-content"><p>' + htmlContent + '</p></div>';
+            // Process regular lines
+            if (line.startsWith('# ')) {
+                htmlLines.push(`<h1>${line.substring(2)}</h1>`);
+            } else if (line.startsWith('## ')) {
+                htmlLines.push(`<h2>${line.substring(3)}</h2>`);
+            } else if (line.startsWith('### ')) {
+                htmlLines.push(`<h3>${line.substring(4)}</h3>`);
+            } else if (line.startsWith('#### ')) {
+                htmlLines.push(`<h4>${line.substring(5)}</h4>`);
+            } else if (line.startsWith('##### ')) {
+                htmlLines.push(`<h5>${line.substring(6)}</h5>`);
+            } else if (line.startsWith('###### ')) {
+                htmlLines.push(`<h6>${line.substring(7)}</h6>`);
+            } else if (line.trim() === '') {
+                htmlLines.push('<br>');
+            } else {
+                // Process inline formatting
+                let processedLine = line
+                    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                    .replace(/`([^`]+)`/g, '<code>$1</code>')
+                    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+                
+                htmlLines.push(`<p>${processedLine}</p>`);
+            }
         }
+        
+        const finalHtml = htmlLines.join('\n');
+        console.log('📄 Generated HTML:', finalHtml.substring(0, 200) + '...');
+        
+        // Set the HTML content
+        previewContent.innerHTML = finalHtml;
+        
+        // Apply syntax highlighting
+        setTimeout(() => {
+            if (typeof hljs !== 'undefined') {
+                hljs.highlightAll();
+            }
+        }, 100);
         
         console.log('✅ Markdown preview rendered successfully');
         
@@ -185,7 +229,7 @@ function renderMarkdownPreview(markdownContent) {
         console.error('❌ Error rendering markdown:', error);
         previewContent.innerHTML = `<div style="color: #ff6b6b; padding: 20px;">
             <h3>Preview Error</h3>
-            <p>Failed to render markdown preview</p>
+            <p>Failed to render markdown preview: ${error.message}</p>
             <pre style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 4px; margin-top: 10px;">${markdownContent}</pre>
         </div>`;
     }
@@ -618,10 +662,28 @@ This preview should show \`inline code\` and **bold text** properly.
 `;
     
     console.log('🧪 Testing preview with sample README...');
+    console.log('Preview element:', previewContent);
+    
+    if (!previewContent) {
+        console.error('❌ Preview element not found!');
+        return;
+    }
+    
     renderMarkdownPreview(testMarkdown);
     
     // Switch to output view to see the result
     setView('output');
+    
+    console.log('✅ Test completed - check the preview panel');
+};
+
+// Debug function to check elements
+window.debugPreview = function() {
+    console.log('🔍 Debug info:');
+    console.log('- previewContent element:', previewContent);
+    console.log('- previewContent exists:', !!previewContent);
+    console.log('- previewContent innerHTML:', previewContent ? previewContent.innerHTML.substring(0, 100) : 'N/A');
+    console.log('- marked library:', typeof marked !== 'undefined' ? 'Available' : 'Not available');
 };
 
 // Global functions for HTML buttons
