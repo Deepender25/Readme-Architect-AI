@@ -7,219 +7,146 @@ import shutil
 import requests
 import zipfile
 import ast
-import base64
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
+import time
 
 # Google AI Configuration
 try:
     import google.generativeai as genai
-    genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-    AI_AVAILABLE = True
-except:
+    api_key = os.environ.get("GOOGLE_API_KEY")
+    if not api_key:
+        print("WARNING: GOOGLE_API_KEY environment variable not set")
+        AI_AVAILABLE = False
+    else:
+        genai.configure(api_key=api_key)
+        AI_AVAILABLE = True
+        print("Google AI API configured successfully")
+except Exception as e:
+    print(f"ERROR configuring Google AI: {str(e)}")
     AI_AVAILABLE = False
-
-# GitHub OAuth Configuration
-GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID")
-GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
-GITHUB_REDIRECT_URI = os.getenv("GITHUB_REDIRECT_URI", "https://autodocai.vercel.app/auth/callback")
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        self.do_request()
+        try:
+            self.handle_stream()
+        except Exception as e:
+            print(f"ERROR in do_GET: {str(e)}")
+            self.send_error_event(f"Server error: {str(e)}")
 
     def do_POST(self):
-        self.do_request()
-
-    def do_request(self):
-        parsed_url = urllib.parse.urlparse(self.path)
-        query_params = urllib.parse.parse_qs(parsed_url.query)
-        
-        if parsed_url.path == '/auth/github':
-            self.handle_github_auth()
-        elif parsed_url.path == '/auth/callback':
-            self.handle_github_callback(query_params)
-        elif parsed_url.path == '/api/repositories':
-            self.handle_repositories()
-        elif parsed_url.path == '/api/generate':
-            self.handle_generate(query_params)
-        else:
-            self.send_response(404)
-            self.end_headers()
-            self.wfile.write(b'Not found')
-
-    def handle_github_auth(self):
-        if not GITHUB_CLIENT_ID or not GITHUB_CLIENT_SECRET:
-            self.send_json_response({'error': 'GitHub OAuth not configured.'}, 500)
-            return
-            
-        github_auth_url = f"https://github.com/login/oauth/authorize?client_id={GITHUB_CLIENT_ID}&redirect_uri={GITHUB_REDIRECT_URI}&scope=repo"
-        self.send_response(302)
-        self.send_header('Location', github_auth_url)
-        self.end_headers()
-
-    def handle_github_callback(self, query_params):
-        code = query_params.get('code', [None])[0]
-        if not code:
-            self.send_error(400, "Missing authorization code")
-            return
-        
         try:
-            token_response = requests.post('https://github.com/login/oauth/access_token', {
-                'client_id': GITHUB_CLIENT_ID,
-                'client_secret': GITHUB_CLIENT_SECRET,
-                'code': code
-            }, headers={'Accept': 'application/json'})
-            
-            token_data = token_response.json()
-            access_token = token_data.get('access_token')
-            
-            if not access_token:
-                self.send_response(302)
-                self.send_header('Location', '/?error=token_failed')
-                self.end_headers()
-                return
-            
-            user_response = requests.get('https://api.github.com/user', 
-                headers={'Authorization': f'token {access_token}'})
-            
-            if user_response.status_code != 200:
-                self.send_response(302)
-                self.send_header('Location', '/?error=user_failed')
-                self.end_headers()
-                return
-            
-            user_data = user_response.json()
-            
-            user_session_data = {
-                'github_id': user_data['id'],
-                'username': user_data['login'],
-                'name': user_data.get('name', user_data['login']),
-                'avatar_url': user_data['avatar_url'],
-                'html_url': user_data['html_url'],
-                'access_token': access_token
-            }
-            
-            session_data = base64.b64encode(json.dumps(user_session_data).encode()).decode()
-            
-            self.send_response(302)
-            self.send_header('Location', '/?session=success')
-            
-            cookie_value = f'github_user={session_data}; Path=/; Max-Age=86400; SameSite=Lax'
-            self.send_header('Set-Cookie', cookie_value)
-            
-            self.end_headers()
-            
+            self.handle_stream()
         except Exception as e:
-            self.send_response(302)
-            self.send_header('Location', f'/?error=auth_failed')
-            self.end_headers()
-
-    def handle_repositories(self):
-        user_data = self.get_user_from_cookie()
-        
-        if not user_data:
-            self.send_json_response({'error': 'Authentication required.'}, 401)
-            return
-        
-        if 'access_token' not in user_data:
-            self.send_json_response({'error': 'Invalid authentication.'}, 401)
-            return
-        
-        try:
-            headers = {'Authorization': f'token {user_data["access_token"]}'}
-            
-            response = requests.get('https://api.github.com/user/repos?sort=updated&per_page=50', headers=headers)
-            
-            if response.status_code == 401:
-                self.send_json_response({'error': 'GitHub authentication expired.'}, 401)
-                return
-            elif response.status_code != 200:
-                self.send_json_response({'error': f'GitHub API error: {response.status_code}'}, 500)
-                return
-            
-            repos = response.json()
-            
-            formatted_repos = []
-            for repo in repos:
-                formatted_repos.append({
-                    'name': repo['name'],
-                    'full_name': repo['full_name'],
-                    'description': repo['description'],
-                    'html_url': repo['html_url'],
-                    'language': repo['language'],
-                    'stargazers_count': repo['stargazers_count'],
-                    'updated_at': repo['updated_at'],
-                    'private': repo['private']
-                })
-            
-            self.send_json_response({'repositories': formatted_repos})
-            
-        except Exception as e:
-            self.send_json_response({'error': f'Failed to fetch repositories: {str(e)}'}, 500)
-
-    def handle_generate(self, query_params):
-        repo_url = query_params.get('repo_url', [''])[0]
-        project_name = query_params.get('project_name', [''])[0]
-        include_demo = query_params.get('include_demo', ['false'])[0].lower() == 'true'
-        num_screenshots = int(query_params.get('num_screenshots', ['0'])[0])
-        num_videos = int(query_params.get('num_videos', ['0'])[0])
-        
-        if not repo_url:
-            self.send_json_response({"error": "Repository URL is required"}, 400)
-            return
-        
-        try:
-            repo_path, error = self.download_repo(repo_url)
-            if error:
-                self.send_json_response({"error": error}, 400)
-                return
-            
-            analysis, error = self.analyze_codebase(repo_path)
-            if error:
-                self.send_json_response({"error": error}, 500)
-                return
-            
-            readme_content, error = self.generate_readme_with_gemini(
-                analysis, project_name, include_demo, num_screenshots, num_videos
-            )
-            if error:
-                self.send_json_response({"error": error}, 500)
-                return
-            
-            if repo_path and os.path.exists(repo_path):
-                shutil.rmtree(os.path.dirname(repo_path), ignore_errors=True)
-            
-            self.send_json_response({"readme": readme_content})
-            
-        except Exception as e:
-            self.send_json_response({"error": str(e)}, 500)
-
-    def get_user_from_cookie(self):
-        cookie_header = self.headers.get('Cookie', '')
-        
-        if 'github_user=' in cookie_header:
-            for cookie in cookie_header.split(';'):
-                if cookie.strip().startswith('github_user='):
-                    try:
-                        cookie_value = cookie.split('=')[1].strip()
-                        user_data = json.loads(base64.b64decode(cookie_value).decode())
-                        return user_data
-                    except Exception as e:
-                        return None
-        
-        return None
-
-    def send_json_response(self, data, status_code=200):
-        self.send_response(status_code)
-        self.send_header('Content-type', 'application/json')
+            print(f"ERROR in do_POST: {str(e)}")
+            self.send_error_event(f"Server error: {str(e)}")
+    
+    def do_OPTIONS(self):
+        self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
         self.end_headers()
-        self.wfile.write(json.dumps(data).encode())
+
+    def handle_stream(self):
+        # Parse query parameters
+        parsed_url = urllib.parse.urlparse(self.path)
+        query_params = urllib.parse.parse_qs(parsed_url.query)
+        
+        print(f"📡 Stream request: {self.path}")
+        
+        # Extract parameters
+        repo_url = query_params.get('repo_url', [''])[0]
+        project_name = query_params.get('project_name', [''])[0]
+        include_demo = query_params.get('include_demo', ['false'])[0].lower() == 'true'
+        
+        try:
+            num_screenshots = int(query_params.get('num_screenshots', ['0'])[0])
+            num_videos = int(query_params.get('num_videos', ['0'])[0])
+        except ValueError:
+            num_screenshots = 0
+            num_videos = 0
+        
+        # Validate required parameters
+        if not repo_url:
+            self.send_error_event("Repository URL is required")
+            return
+            
+        if not ("github.com" in repo_url):
+            self.send_error_event("Only GitHub repositories are supported")
+            return
+        
+        # Setup Server-Sent Events
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/event-stream')
+        self.send_header('Cache-Control', 'no-cache')
+        self.send_header('Connection', 'keep-alive')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        self.end_headers()
+        
+        repo_path = None
+        try:
+            # Step 1: Cloning
+            self.send_status_event("Cloning repository...")
+            time.sleep(0.5)  # Small delay for better UX
+            repo_path, error = self.download_repo(repo_url)
+            if error:
+                self.send_error_event(error)
+                return
+            
+            # Step 2: Analyzing
+            self.send_status_event("Analyzing codebase...")
+            time.sleep(0.5)
+            analysis, error = self.analyze_codebase(repo_path)
+            if error:
+                self.send_error_event(error)
+                return
+            
+            # Step 3: Building prompt
+            self.send_status_event("Building prompt for AI...")
+            time.sleep(0.5)
+            
+            # Step 4: Generating
+            self.send_status_event("Generating README with Gemini...")
+            time.sleep(0.5)
+            readme_content, error = self.generate_readme_with_gemini(
+                analysis, project_name, include_demo, num_screenshots, num_videos
+            )
+            if error:
+                self.send_error_event(error)
+                return
+            
+            # Step 5: Success
+            self.send_success_event(readme_content)
+            
+        except Exception as e:
+            print(f"❌ Stream error: {str(e)}")
+            self.send_error_event(str(e))
+        finally:
+            # Clean up temporary files
+            if repo_path and os.path.exists(repo_path):
+                try:
+                    shutil.rmtree(os.path.dirname(repo_path), ignore_errors=True)
+                except:
+                    pass
+
+    def send_status_event(self, status):
+        """Send a status update event"""
+        data = json.dumps({"status": status})
+        self.wfile.write(f"data: {data}\n\n".encode())
+        self.wfile.flush()
+
+    def send_success_event(self, readme_content):
+        """Send the final success event with README content"""
+        data = json.dumps({"readme": readme_content})
+        self.wfile.write(f"data: {data}\n\n".encode())
+        self.wfile.flush()
+
+    def send_error_event(self, error_message):
+        """Send an error event"""
+        data = json.dumps({"error": error_message})
+        self.wfile.write(f"data: {data}\n\n".encode())
+        self.wfile.flush()
 
     def download_repo(self, repo_url: str):
         try:
@@ -303,9 +230,12 @@ class handler(BaseHTTPRequestHandler):
 
     def generate_readme_with_gemini(self, analysis_context: dict, project_name: str = None, include_demo: bool = False, num_screenshots: int = 0, num_videos: int = 0):
         if not AI_AVAILABLE:
-            return None, "Google AI not available."
+            return None, "Google AI not available. Please check your API key configuration."
+        
+        print(f"🤖 Starting README generation for: {project_name or 'Unnamed Project'}")
         
         try:
+            # Prepare Python code summary
             python_summary_str = ""
             for filename, summary in analysis_context.get('python_code_summary', {}).items():
                 python_summary_str += f"\nFile: `{filename}`:\n"
@@ -314,24 +244,28 @@ class handler(BaseHTTPRequestHandler):
                 if summary['functions']: 
                     python_summary_str += "  - Functions: " + ", ".join(summary['functions']) + "\n"
 
+            # Enhanced demo section from main.py - only if demo is enabled AND has content
             demo_section = ""
             if include_demo and (num_screenshots > 0 or num_videos > 0):
                 demo_section += "\n\n## 📸 Demo & Screenshots\n\n"
                 
                 if num_screenshots > 0:
-                    demo_section += "### 🖼️ Screenshots\n\n"
+                    demo_section += "## 🖼️ Screenshots\n\n"
                     for i in range(1, num_screenshots + 1):
-                        demo_section += f'<img src="https://placehold.co/800x450/2d2d4d/ffffff?text=App+Screenshot+{i}" alt="App Screenshot {i}" width="100%">\n'
-                        demo_section += f'<p align="center"><em>Caption for screenshot {i}.</em></p>\n\n'
+                        demo_section += f'  <img src="https://placehold.co/800x450/2d2d4d/ffffff?text=App+Screenshot+{i}" alt="App Screenshot {i}" width="100%">\n'
+                        demo_section += f'  <em><p align="center">Caption for screenshot {i}.</p></em>\n'
+                    demo_section += "\n"
                 
                 if num_videos > 0:
-                    demo_section += "### 🎬 Video Demos\n\n"
+                    demo_section += "## 🎬 Video Demos\n\n"
                     for i in range(1, num_videos + 1):
-                        demo_section += f'<a href="https://example.com/your-video-link-{i}" target="_blank">\n'
-                        demo_section += f'  <img src="https://placehold.co/800x450/2d2d4d/c5a8ff?text=Watch+Video+Demo+{i}" alt="Video Demo {i}" width="100%">\n'
-                        demo_section += f'</a>\n'
-                        demo_section += f'<p align="center"><em>Caption for video demo {i}.</em></p>\n\n'
+                        demo_section += f'  <a href="https://example.com/your-video-link-{i}" target="_blank">\n'
+                        demo_section += f'    <img src="https://placehold.co/800x450/2d2d4d/c5a8ff?text=Watch+Video+Demo+{i}" alt="Video Demo {i}" width="100%">\n'
+                        demo_section += f'  </a>\n'
+                        demo_section += f'  <em><p align="center">Caption for video demo {i}.</p></em>\n'
+                    demo_section += "\n"
 
+            # Set title instruction based on provided project name
             title_instruction = ""
             if project_name and project_name.strip():
                 title_instruction = f"""Use the exact project title "{project_name}". Center it and add a compelling tagline.
@@ -425,21 +359,27 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
 
 **Final Instruction:** The output MUST be ONLY the raw Markdown content. Do not add any commentary, greetings, or explanations before or after the Markdown. Adhere strictly to the requested format and quality bar.
 """
-
-            print("🤖 Initializing Gemini 2.5 Flash model...")
-            model = genai.GenerativeModel('gemini-2.5-flash')
             
-            print("🤖 Sending enhanced prompt to Gemini...")
-            response = model.generate_content(prompt)
-            
-            if not response.parts:
-                print("❌ Content generation failed due to safety filters")
-                return None, "Content generation failed due to safety filters"
-            
-            readme_content = response.text.strip()
-            print(f"✅ Enhanced README generated successfully ({len(readme_content)} chars)")
-            
-            return readme_content, None
-            
+            try:
+                # Use gemini-2.5-flash for better results (from main.py)
+                print("🤖 Initializing Gemini 2.5 Flash model...")
+                model = genai.GenerativeModel('gemini-2.5-flash')
+                
+                print("🤖 Sending enhanced prompt to Gemini...")
+                response = model.generate_content(prompt)
+                
+                if not response.parts:
+                    print("❌ Content generation failed due to safety filters")
+                    return None, "Content generation failed due to safety filters"
+                
+                readme_content = response.text.strip()
+                print(f"✅ Enhanced README generated successfully ({len(readme_content)} chars)")
+                
+                return readme_content, None
+                
+            except Exception as e:
+                print(f"❌ Gemini error: {str(e)}")
+                return None, f"AI generation failed: {str(e)}"
+                
         except Exception as e:
             return None, str(e)
