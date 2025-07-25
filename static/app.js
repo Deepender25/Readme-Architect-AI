@@ -35,12 +35,17 @@ let currentUser = null;
 let currentView = 'input';
 let isAnimating = false;
 
-// Loading messages
+// Enhanced loading messages
 const loadingMessages = [
     "Connecting to GitHub...",
-    "Analyzing repository...",
-    "Generating documentation...",
-    "Finalizing README..."
+    "Cloning repository blueprints...",
+    "Analyzing file structure...",
+    "Parsing commit history...",
+    "Inspecting code dependencies...",
+    "Assembling documentation...",
+    "Optimizing README content...",
+    "Finalizing markdown structure...",
+    "Preparing for display..."
 ];
 let messageIndex = 0;
 let dotCount = 1;
@@ -88,44 +93,109 @@ function setupFormSubmission() {
         console.log('Request parameters:', params.toString());
 
         try {
-            const response = await fetch(`/api/generate?${params.toString()}`);
-            console.log('API response status:', response.status);
+            // Try streaming first, fallback to regular API
+            const useStreaming = true; // You can make this configurable
             
-            const data = await response.json();
-            console.log('API response data:', data);
-
-            if (animationTimeout) {
-                clearInterval(animationTimeout);
-            }
-
-            if (data.readme) {
-                console.log('README generated successfully');
-                codeView.textContent = data.readme;
+            if (useStreaming && typeof EventSource !== 'undefined') {
+                console.log('🚀 Using streaming API for real-time updates');
                 
-                // Render markdown preview properly
-                renderMarkdownPreview(data.readme);
+                const eventSource = new EventSource(`/api/stream?${params.toString()}`);
                 
-                setView('output');
-            } else if (data.error) {
-                console.error('API returned error:', data.error);
-                previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Generation Failed</h3><p>${data.error}</p></div>`;
-                codeView.textContent = `/*\n  Error: ${data.error}\n*/`;
-                hljs.highlightAll();
-                setView('output');
+                eventSource.onmessage = function(event) {
+                    const data = JSON.parse(event.data);
+                    
+                    if (data.status) {
+                        console.log('📡 Status update:', data.status);
+                        loaderText.textContent = data.status;
+                    } else if (data.readme) {
+                        console.log('✅ README received via stream');
+                        if (animationTimeout) {
+                            clearInterval(animationTimeout);
+                        }
+                        
+                        codeView.textContent = data.readme;
+                        
+                        // Simple and clean preview rendering like temp app.js
+                        previewContent.innerHTML = marked.parse(data.readme);
+                        hljs.highlightAll();
+                        
+                        setView('output');
+                        if (typeof animateOutputIn === 'function') {
+                            animateOutputIn(); // Animate output when content is ready
+                        }
+                        eventSource.close();
+                    } else if (data.error) {
+                        console.error('❌ Stream error:', data.error);
+                        if (animationTimeout) {
+                            clearInterval(animationTimeout);
+                        }
+                        
+                        previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Generation Failed</h3><p>${data.error}</p></div>`;
+                        codeView.textContent = `/*\n  Error: ${data.error}\n*/`;
+                        hljs.highlightAll();
+                        setView('output');
+                        eventSource.close();
+                    }
+                };
+                
+                eventSource.onerror = function(err) {
+                    console.error('❌ EventSource failed, falling back to regular API:', err);
+                    eventSource.close();
+                    
+                    // Fallback to regular API
+                    handleRegularAPI();
+                };
+                
             } else {
-                console.error('Unexpected API response format');
-                previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Unexpected Response</h3><p>The server returned an unexpected response format.</p></div>`;
-                codeView.textContent = `/*\n  Error: Unexpected response format\n*/`;
-                hljs.highlightAll();
-                setView('output');
+                console.log('📡 Using regular API (streaming not available)');
+                handleRegularAPI();
             }
+            
+            async function handleRegularAPI() {
+                const response = await fetch(`/api/generate?${params.toString()}`);
+                console.log('API response status:', response.status);
+                
+                const data = await response.json();
+                console.log('API response data:', data);
+
+                if (animationTimeout) {
+                    clearInterval(animationTimeout);
+                }
+
+                if (data.readme) {
+                    console.log('README generated successfully');
+                    codeView.textContent = data.readme;
+                    
+                    // Simple and clean preview rendering like temp app.js
+                    previewContent.innerHTML = marked.parse(data.readme);
+                    hljs.highlightAll();
+                    
+                    setView('output');
+                    if (typeof animateOutputIn === 'function') {
+                        animateOutputIn(); // Animate output when content is ready
+                    }
+                } else if (data.error) {
+                    console.error('API returned error:', data.error);
+                    previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Generation Failed</h3><p>${data.error}</p></div>`;
+                    codeView.textContent = `/*\n  Error: ${data.error}\n*/`;
+                    hljs.highlightAll();
+                    setView('output');
+                } else {
+                    console.error('Unexpected API response format');
+                    previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Unexpected Response</h3><p>The server returned an unexpected response format.</p></div>`;
+                    codeView.textContent = `/*\n  Error: Unexpected response format\n*/`;
+                    hljs.highlightAll();
+                    setView('output');
+                }
+            }
+            
         } catch (error) {
             if (animationTimeout) {
                 clearInterval(animationTimeout);
             }
             console.error("Request failed:", error);
             previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Connection Error</h3><p>Could not connect to the server. Please check your internet connection and try again.</p></div>`;
-            codeView.textContent = `/*\\n  Error: Connection failed - ${error.message}\\n*/`;
+            codeView.textContent = `/*\n  Error: Connection failed - ${error.message}\n*/`;
             hljs.highlightAll();
             setView('output');
         }
@@ -134,126 +204,7 @@ function setupFormSubmission() {
     console.log('Form submission handler attached successfully');
 }
 
-// Function to render markdown preview
-function renderMarkdownPreview(markdownContent) {
-    console.log('🔄 Rendering markdown preview...');
-    
-    if (!previewContent) {
-        console.error('❌ Preview content element not found');
-        return;
-    }
-    
-    // Clear existing content
-    previewContent.innerHTML = '';
-    
-    try {
-        // Use marked library if available, otherwise use fallback
-        if (typeof marked !== 'undefined') {
-            console.log('✅ Using marked library for rendering');
-            const htmlContent = marked.parse(markdownContent);
-            previewContent.innerHTML = htmlContent;
-            
-            // Apply syntax highlighting
-            setTimeout(() => {
-                if (typeof hljs !== 'undefined') {
-                    hljs.highlightAll();
-                }
-            }, 100);
-            
-        } else {
-            console.log('⚠️ Using fallback markdown parser');
-            // Simple but effective markdown to HTML conversion
-            const lines = markdownContent.split('\n');
-            let htmlLines = [];
-            let inCodeBlock = false;
-            let codeBlockContent = [];
-            let inList = false;
-            let listItems = [];
-            
-            for (let i = 0; i < lines.length; i++) {
-                let line = lines[i];
-                
-                // Handle code blocks
-                if (line.startsWith('```')) {
-                    if (!inCodeBlock) {
-                        inCodeBlock = true;
-                        codeBlockContent = [];
-                    } else {
-                        inCodeBlock = false;
-                        const codeContent = codeBlockContent.join('\n');
-                        htmlLines.push(`<pre><code>${escapeHtml(codeContent)}</code></pre>`);
-                        codeBlockContent = [];
-                    }
-                    continue;
-                }
-                
-                if (inCodeBlock) {
-                    codeBlockContent.push(line);
-                    continue;
-                }
-                
-                // Handle lists
-                if (line.match(/^[\s]*[-*+]\s+/)) {
-                    if (!inList) {
-                        inList = true;
-                        listItems = [];
-                    }
-                    const listContent = line.replace(/^[\s]*[-*+]\s+/, '');
-                    listItems.push(`<li>${processInlineFormatting(listContent)}</li>`);
-                    continue;
-                } else if (inList) {
-                    htmlLines.push(`<ul>${listItems.join('')}</ul>`);
-                    inList = false;
-                    listItems = [];
-                }
-                
-                // Handle headers
-                if (line.startsWith('# ')) {
-                    htmlLines.push(`<h1>${processInlineFormatting(line.substring(2))}</h1>`);
-                } else if (line.startsWith('## ')) {
-                    htmlLines.push(`<h2>${processInlineFormatting(line.substring(3))}</h2>`);
-                } else if (line.startsWith('### ')) {
-                    htmlLines.push(`<h3>${processInlineFormatting(line.substring(4))}</h3>`);
-                } else if (line.startsWith('#### ')) {
-                    htmlLines.push(`<h4>${processInlineFormatting(line.substring(5))}</h4>`);
-                } else if (line.startsWith('##### ')) {
-                    htmlLines.push(`<h5>${processInlineFormatting(line.substring(6))}</h5>`);
-                } else if (line.startsWith('###### ')) {
-                    htmlLines.push(`<h6>${processInlineFormatting(line.substring(7))}</h6>`);
-                } else if (line.startsWith('> ')) {
-                    htmlLines.push(`<blockquote><p>${processInlineFormatting(line.substring(2))}</p></blockquote>`);
-                } else if (line.trim() === '') {
-                    htmlLines.push('<br>');
-                } else if (line.match(/^!\[.*\]\(.*\)$/)) {
-                    // Images
-                    const match = line.match(/^!\[(.*?)\]\((.*?)\)$/);
-                    if (match) {
-                        htmlLines.push(`<p><img src="${match[2]}" alt="${match[1]}" style="max-width: 100%; height: auto;"></p>`);
-                    }
-                } else {
-                    // Regular paragraphs
-                    htmlLines.push(`<p>${processInlineFormatting(line)}</p>`);
-                }
-            }
-            
-            // Close any remaining lists
-            if (inList) {
-                htmlLines.push(`<ul>${listItems.join('')}</ul>`);
-            }
-            
-            previewContent.innerHTML = htmlLines.join('\n');
-        }
-        
-        console.log('✅ Markdown preview rendered successfully');
-        
-    } catch (error) {
-        console.error('❌ Error rendering markdown:', error);
-        previewContent.innerHTML = `<div style="color: #ff6b6b; padding: 20px;">
-            <h3>Preview Error</h3>
-            <p>Failed to render markdown preview: ${error.message}</p>
-        </div>`;
-    }
-}
+// Removed complex enhanced functions - using simple marked.parse approach like temp app.js
 
 // Helper function to process inline formatting
 function processInlineFormatting(text) {
@@ -531,7 +482,7 @@ function selectRepository(repoUrl) {
     repoUrlInput.focus();
 }
 
-// View switching
+// Enhanced view switching with animations (from temp app.js)
 function setView(viewName) {
     if (viewName === currentView || isAnimating) return;
     isAnimating = true;
@@ -545,30 +496,150 @@ function setView(viewName) {
         return;
     }
 
-    // Simple view switching without animations
-    if (currentViewEl) {
-        currentViewEl.style.display = 'none';
-    }
+    // Check if anime.js is available for animations
+    if (typeof anime !== 'undefined') {
+        const timeline = anime.timeline({
+            easing: 'easeOutCubic',
+            duration: 300,
+            complete: () => {
+                isAnimating = false;
+                currentView = viewName;
+            }
+        });
 
-    nextViewEl.style.display = 'flex';
-    currentView = viewName;
+        // Animate out current view
+        if (currentViewEl) {
+            timeline.add({
+                targets: currentViewEl,
+                opacity: [1, 0],
+                translateY: [0, -40],
+                duration: 150,
+                begin: () => {
+                    if (viewName === 'input') {
+                        backBtn.classList.remove('visible');
+                    }
+                },
+                complete: () => {
+                    currentViewEl.style.display = 'none';
+                }
+            });
+        }
 
-    // Show/hide back button
-    if (viewName === 'input') {
-        backBtn.classList.remove('visible');
+        // Animate in next view
+        timeline.add({
+            targets: nextViewEl,
+            opacity: [0, 1],
+            translateY: [40, 0],
+            duration: 250,
+            begin: () => {
+                nextViewEl.style.display = 'flex';
+                nextViewEl.style.opacity = 0;
+                nextViewEl.style.transform = 'translateY(40px)';
+            },
+            complete: () => {
+                if (viewName === 'output') {
+                    backBtn.classList.add('visible');
+                }
+            }
+        });
     } else {
-        backBtn.classList.add('visible');
+        // Fallback without animations
+        if (currentViewEl) {
+            currentViewEl.style.display = 'none';
+        }
+        nextViewEl.style.display = 'flex';
+        currentView = viewName;
+        
+        if (viewName === 'input') {
+            backBtn.classList.remove('visible');
+        } else {
+            backBtn.classList.add('visible');
+        }
+        
+        isAnimating = false;
     }
-
-    isAnimating = false;
 }
 
+// Animation function for output view (from temp app.js)
+function animateOutputIn() {
+    if (typeof anime !== 'undefined') {
+        anime({
+            targets: '#output-view .pane',
+            opacity: [0, 1],
+            translateY: [25, 0],
+            delay: anime.stagger(180),
+            duration: 500,
+            easing: 'easeOutCubic'
+        });
+    }
+}
+
+// Enhanced copy function with animation (from temp app.js)
 function copyCode() {
     navigator.clipboard.writeText(codeView.textContent).then(() => {
-        alert('Code copied to clipboard!');
+        if (typeof showCopySuccessAnimation === 'function') {
+            showCopySuccessAnimation();
+        } else {
+            // Fallback for when animation isn't available
+            copyBtn.innerHTML = '✓ Copied!';
+            setTimeout(() => {
+                copyBtn.innerHTML = 'Copy';
+            }, 2000);
+        }
     }).catch(err => {
         alert('Failed to copy text.');
     });
+}
+
+// Copy success animation (from temp app.js)
+function showCopySuccessAnimation() {
+    if (typeof anime !== 'undefined') {
+        const slider = document.createElement('div');
+        slider.className = 'copy-success-slider';
+        slider.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        `;
+        slider.textContent = '✓ Copied to clipboard!';
+        document.body.appendChild(slider);
+
+        anime.timeline({
+            easing: 'easeOutQuad',
+            duration: 300,
+            complete: () => {
+                anime({
+                    targets: slider,
+                    translateX: ['0%', '100%'],
+                    opacity: [1, 0],
+                    duration: 300,
+                    easing: 'easeInQuad',
+                    complete: () => {
+                        slider.remove();
+                    }
+                });
+            }
+        })
+        .add({
+            targets: slider,
+            translateX: ['100%', '0%'],
+            opacity: [0, 1],
+            duration: 300
+        });
+    } else {
+        // Fallback without animation
+        copyBtn.innerHTML = '✓ Copied!';
+        setTimeout(() => {
+            copyBtn.innerHTML = 'Copy';
+        }, 2000);
+    }
 }
 
 // Initialize
@@ -673,7 +744,38 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Test function for markdown preview
+// Simple and clean markdown preview function (like temp app.js)
+function renderMarkdownPreview(markdownContent) {
+    console.log('🔄 Rendering markdown preview with marked.js');
+    
+    if (!previewContent) {
+        console.error('❌ Preview content element not found');
+        return;
+    }
+    
+    try {
+        // Use marked library for clean, simple rendering
+        if (typeof marked !== 'undefined') {
+            previewContent.innerHTML = marked.parse(markdownContent);
+            hljs.highlightAll();
+            console.log('✅ Markdown preview rendered successfully');
+        } else {
+            console.error('❌ marked.js library not available');
+            previewContent.innerHTML = `<div style="color: #ff6b6b; padding: 20px;">
+                <h3>Preview Error</h3>
+                <p>marked.js library is required for markdown preview</p>
+            </div>`;
+        }
+    } catch (error) {
+        console.error('❌ Error rendering markdown:', error);
+        previewContent.innerHTML = `<div style="color: #ff6b6b; padding: 20px;">
+            <h3>Preview Error</h3>
+            <p>Failed to render markdown preview: ${error.message}</p>
+        </div>`;
+    }
+}
+
+// Test function for markdown preview (simplified like temp app.js)
 window.testPreview = function() {
     const testMarkdown = `# Test README
 
@@ -695,12 +797,24 @@ const greeting = "Welcome to the preview!";
 [GitHub](https://github.com) | [Documentation](https://docs.example.com)
 
 This preview should show \`inline code\` and **bold text** properly.
+
+| Technology | Purpose | Why Chosen |
+|------------|---------|------------|
+| JavaScript | Frontend | Interactive UI |
+| Node.js | Backend | Server-side logic |
+
+> This is a blockquote example with enhanced styling.
 `;
     
-    console.log('🧪 Testing preview with sample README...');
-    renderMarkdownPreview(testMarkdown);
+    console.log('🧪 Testing simple preview with sample README...');
+    codeView.textContent = testMarkdown;
+    previewContent.innerHTML = marked.parse(testMarkdown);
+    hljs.highlightAll();
     setView('output');
-    console.log('✅ Test completed - check the preview panel');
+    if (typeof animateOutputIn === 'function') {
+        animateOutputIn();
+    }
+    console.log('✅ Simple test completed - check the preview panel');
 };
 
 // Global functions for HTML buttons
