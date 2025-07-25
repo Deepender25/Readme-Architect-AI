@@ -695,37 +695,95 @@ function initialize() {
     repositoriesView.style.display = 'none';
 }
 
-// Dropdown functionality
+// Enhanced dropdown functionality with proper error handling
 function toggleUserDropdown() {
+    console.log('🔽 toggleUserDropdown called');
+    
     const dropdown = document.getElementById('user-dropdown');
     const trigger = document.querySelector('.user-profile-trigger');
+    
+    console.log('Dropdown element:', dropdown);
+    console.log('Trigger element:', trigger);
 
-    if (dropdown.style.display === 'none' || !dropdown.style.display) {
-        dropdown.style.display = 'block';
-        trigger.classList.add('active');
-    } else {
+    if (!dropdown) {
+        console.error('❌ Dropdown element not found!');
+        return;
+    }
+    
+    if (!trigger) {
+        console.error('❌ Trigger element not found!');
+        return;
+    }
+
+    const isOpen = dropdown.style.display === 'block';
+    console.log('Current dropdown state - isOpen:', isOpen);
+    
+    if (isOpen) {
         dropdown.style.display = 'none';
         trigger.classList.remove('active');
+        console.log('✅ Dropdown closed');
+    } else {
+        dropdown.style.display = 'block';
+        trigger.classList.add('active');
+        console.log('✅ Dropdown opened');
     }
+}
+
+// Professional dropdown functions
+function showRepositories() {
+    toggleUserDropdown(); // Close dropdown
+    if (!currentUser) {
+        alert('Please log in first');
+        return;
+    }
+    console.log('📚 Loading user repositories...');
+    setView('repositories');
+    loadRepositories();
 }
 
 function showHistory() {
-    alert('README History feature coming soon!');
-    toggleUserDropdown();
+    toggleUserDropdown(); // Close dropdown
+    if (!currentUser) {
+        alert('Please log in first');
+        return;
+    }
+    console.log('📜 Loading README history...');
+    setView('history');
+    loadHistory();
 }
 
 function openGitHubProfile() {
-    toggleUserDropdown();
-    if (currentUser && currentUser.html_url) {
-        window.open(currentUser.html_url, '_blank');
-    } else if (currentUser && currentUser.username) {
-        window.open(`https://github.com/${currentUser.username}`, '_blank');
+    toggleUserDropdown(); // Close dropdown
+    if (!currentUser) {
+        alert('Please log in first');
+        return;
     }
+    
+    const profileUrl = currentUser.html_url || `https://github.com/${currentUser.username}`;
+    console.log('🔗 Opening GitHub profile:', profileUrl);
+    window.open(profileUrl, '_blank');
+}
+
+function showApiUsage() {
+    toggleUserDropdown(); // Close dropdown
+    if (!currentUser) {
+        alert('Please log in first');
+        return;
+    }
+    console.log('📊 API Usage feature coming soon!');
+    alert('📊 API Usage statistics coming soon!');
 }
 
 function showSettings() {
-    toggleUserDropdown();
-    alert('Settings feature coming soon!');
+    toggleUserDropdown(); // Close dropdown
+    console.log('⚙️ Settings feature coming soon!');
+    alert('⚙️ Settings feature coming soon!');
+}
+
+function showHelp() {
+    toggleUserDropdown(); // Close dropdown
+    console.log('❓ Help feature coming soon!');
+    alert('❓ Help & Support coming soon!');
 }
 
 function showSettings() {
@@ -819,11 +877,40 @@ This preview should show \`inline code\` and **bold text** properly.
 
 // Global functions for HTML buttons
 window.showRepositories = showRepositories;
-window.handleLogout = handleLogout;
-window.toggleUserDropdown = toggleUserDropdown;
 window.showHistory = showHistory;
 window.openGitHubProfile = openGitHubProfile;
+window.showApiUsage = showApiUsage;
 window.showSettings = showSettings;
+window.showHelp = showHelp;
+window.handleLogout = handleLogout;
+window.toggleUserDropdown = toggleUserDropdown;
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    const userSection = document.getElementById('user-section');
+    const dropdown = document.getElementById('user-dropdown');
+    const trigger = document.querySelector('.user-profile-trigger');
+
+    if (userSection && !userSection.contains(e.target)) {
+        if (dropdown && dropdown.style.display === 'block') {
+            dropdown.style.display = 'none';
+            if (trigger) trigger.classList.remove('active');
+        }
+    }
+});
+
+// Close dropdown on escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const dropdown = document.getElementById('user-dropdown');
+        const trigger = document.querySelector('.user-profile-trigger');
+        
+        if (dropdown && dropdown.style.display === 'block') {
+            dropdown.style.display = 'none';
+            if (trigger) trigger.classList.remove('active');
+        }
+    }
+});
 
 // Start when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
