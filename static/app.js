@@ -137,7 +137,6 @@ function setupFormSubmission() {
 // Function to render markdown preview
 function renderMarkdownPreview(markdownContent) {
     console.log('🔄 Rendering markdown preview...');
-    console.log('📝 Content to render:', markdownContent.substring(0, 100) + '...');
     
     if (!previewContent) {
         console.error('❌ Preview content element not found');
@@ -148,80 +147,102 @@ function renderMarkdownPreview(markdownContent) {
     previewContent.innerHTML = '';
     
     try {
-        // Always use our custom parser for reliability
-        console.log('🔧 Converting markdown to HTML...');
-        
-        // Process the markdown content line by line for better control
-        const lines = markdownContent.split('\n');
-        let htmlLines = [];
-        let inCodeBlock = false;
-        let codeBlockContent = [];
-        let codeLanguage = '';
-        
-        for (let i = 0; i < lines.length; i++) {
-            let line = lines[i];
+        // Use marked library if available, otherwise use fallback
+        if (typeof marked !== 'undefined') {
+            console.log('✅ Using marked library for rendering');
+            const htmlContent = marked.parse(markdownContent);
+            previewContent.innerHTML = htmlContent;
             
-            // Handle code blocks
-            if (line.startsWith('```')) {
-                if (!inCodeBlock) {
-                    // Start of code block
-                    inCodeBlock = true;
-                    codeLanguage = line.substring(3).trim();
-                    codeBlockContent = [];
-                } else {
-                    // End of code block
-                    inCodeBlock = false;
-                    const codeContent = codeBlockContent.join('\n');
-                    htmlLines.push(`<pre><code class="language-${codeLanguage}">${codeContent}</code></pre>`);
-                    codeBlockContent = [];
+            // Apply syntax highlighting
+            setTimeout(() => {
+                if (typeof hljs !== 'undefined') {
+                    hljs.highlightAll();
                 }
-                continue;
-            }
+            }, 100);
             
-            if (inCodeBlock) {
-                codeBlockContent.push(line);
-                continue;
-            }
+        } else {
+            console.log('⚠️ Using fallback markdown parser');
+            // Simple but effective markdown to HTML conversion
+            const lines = markdownContent.split('\n');
+            let htmlLines = [];
+            let inCodeBlock = false;
+            let codeBlockContent = [];
+            let inList = false;
+            let listItems = [];
             
-            // Process regular lines
-            if (line.startsWith('# ')) {
-                htmlLines.push(`<h1>${line.substring(2)}</h1>`);
-            } else if (line.startsWith('## ')) {
-                htmlLines.push(`<h2>${line.substring(3)}</h2>`);
-            } else if (line.startsWith('### ')) {
-                htmlLines.push(`<h3>${line.substring(4)}</h3>`);
-            } else if (line.startsWith('#### ')) {
-                htmlLines.push(`<h4>${line.substring(5)}</h4>`);
-            } else if (line.startsWith('##### ')) {
-                htmlLines.push(`<h5>${line.substring(6)}</h5>`);
-            } else if (line.startsWith('###### ')) {
-                htmlLines.push(`<h6>${line.substring(7)}</h6>`);
-            } else if (line.trim() === '') {
-                htmlLines.push('<br>');
-            } else {
-                // Process inline formatting
-                let processedLine = line
-                    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-                    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-                    .replace(/`([^`]+)`/g, '<code>$1</code>')
-                    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i];
                 
-                htmlLines.push(`<p>${processedLine}</p>`);
+                // Handle code blocks
+                if (line.startsWith('```')) {
+                    if (!inCodeBlock) {
+                        inCodeBlock = true;
+                        codeBlockContent = [];
+                    } else {
+                        inCodeBlock = false;
+                        const codeContent = codeBlockContent.join('\n');
+                        htmlLines.push(`<pre><code>${escapeHtml(codeContent)}</code></pre>`);
+                        codeBlockContent = [];
+                    }
+                    continue;
+                }
+                
+                if (inCodeBlock) {
+                    codeBlockContent.push(line);
+                    continue;
+                }
+                
+                // Handle lists
+                if (line.match(/^[\s]*[-*+]\s+/)) {
+                    if (!inList) {
+                        inList = true;
+                        listItems = [];
+                    }
+                    const listContent = line.replace(/^[\s]*[-*+]\s+/, '');
+                    listItems.push(`<li>${processInlineFormatting(listContent)}</li>`);
+                    continue;
+                } else if (inList) {
+                    htmlLines.push(`<ul>${listItems.join('')}</ul>`);
+                    inList = false;
+                    listItems = [];
+                }
+                
+                // Handle headers
+                if (line.startsWith('# ')) {
+                    htmlLines.push(`<h1>${processInlineFormatting(line.substring(2))}</h1>`);
+                } else if (line.startsWith('## ')) {
+                    htmlLines.push(`<h2>${processInlineFormatting(line.substring(3))}</h2>`);
+                } else if (line.startsWith('### ')) {
+                    htmlLines.push(`<h3>${processInlineFormatting(line.substring(4))}</h3>`);
+                } else if (line.startsWith('#### ')) {
+                    htmlLines.push(`<h4>${processInlineFormatting(line.substring(5))}</h4>`);
+                } else if (line.startsWith('##### ')) {
+                    htmlLines.push(`<h5>${processInlineFormatting(line.substring(6))}</h5>`);
+                } else if (line.startsWith('###### ')) {
+                    htmlLines.push(`<h6>${processInlineFormatting(line.substring(7))}</h6>`);
+                } else if (line.startsWith('> ')) {
+                    htmlLines.push(`<blockquote><p>${processInlineFormatting(line.substring(2))}</p></blockquote>`);
+                } else if (line.trim() === '') {
+                    htmlLines.push('<br>');
+                } else if (line.match(/^!\[.*\]\(.*\)$/)) {
+                    // Images
+                    const match = line.match(/^!\[(.*?)\]\((.*?)\)$/);
+                    if (match) {
+                        htmlLines.push(`<p><img src="${match[2]}" alt="${match[1]}" style="max-width: 100%; height: auto;"></p>`);
+                    }
+                } else {
+                    // Regular paragraphs
+                    htmlLines.push(`<p>${processInlineFormatting(line)}</p>`);
+                }
             }
+            
+            // Close any remaining lists
+            if (inList) {
+                htmlLines.push(`<ul>${listItems.join('')}</ul>`);
+            }
+            
+            previewContent.innerHTML = htmlLines.join('\n');
         }
-        
-        const finalHtml = htmlLines.join('\n');
-        console.log('📄 Generated HTML:', finalHtml.substring(0, 200) + '...');
-        
-        // Set the HTML content
-        previewContent.innerHTML = finalHtml;
-        
-        // Apply syntax highlighting
-        setTimeout(() => {
-            if (typeof hljs !== 'undefined') {
-                hljs.highlightAll();
-            }
-        }, 100);
         
         console.log('✅ Markdown preview rendered successfully');
         
@@ -230,9 +251,25 @@ function renderMarkdownPreview(markdownContent) {
         previewContent.innerHTML = `<div style="color: #ff6b6b; padding: 20px;">
             <h3>Preview Error</h3>
             <p>Failed to render markdown preview: ${error.message}</p>
-            <pre style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 4px; margin-top: 10px;">${markdownContent}</pre>
         </div>`;
     }
+}
+
+// Helper function to process inline formatting
+function processInlineFormatting(text) {
+    return text
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/`([^`]+)`/g, '<code class="github-inline-code">$1</code>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" class="github-link">$1</a>')
+        .replace(/~~(.+?)~~/g, '<del>$1</del>');
+}
+
+// Helper function to escape HTML
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // Setup all event listeners
@@ -638,52 +675,32 @@ document.addEventListener('click', (e) => {
 
 // Test function for markdown preview
 window.testPreview = function() {
-    const testMarkdown = `# 🚀 Test README
+    const testMarkdown = `# Test README
 
-## 📋 Overview
+## Overview
 This is a **test** README with *italic* text and proper formatting.
 
-### ✨ Features
-- **Feature 1**: Amazing functionality
-- **Feature 2**: Great performance  
-- **Feature 3**: Easy to use
+### Features
+- Feature 1: Amazing functionality
+- Feature 2: Great performance  
+- Feature 3: Easy to use
 
-### 💻 Code Example
+### Code Example
 \`\`\`javascript
 console.log("Hello World!");
 const greeting = "Welcome to the preview!";
 \`\`\`
 
-### 🔗 Links
+### Links
 [GitHub](https://github.com) | [Documentation](https://docs.example.com)
 
-### 📝 Notes
 This preview should show \`inline code\` and **bold text** properly.
 `;
     
     console.log('🧪 Testing preview with sample README...');
-    console.log('Preview element:', previewContent);
-    
-    if (!previewContent) {
-        console.error('❌ Preview element not found!');
-        return;
-    }
-    
     renderMarkdownPreview(testMarkdown);
-    
-    // Switch to output view to see the result
     setView('output');
-    
     console.log('✅ Test completed - check the preview panel');
-};
-
-// Debug function to check elements
-window.debugPreview = function() {
-    console.log('🔍 Debug info:');
-    console.log('- previewContent element:', previewContent);
-    console.log('- previewContent exists:', !!previewContent);
-    console.log('- previewContent innerHTML:', previewContent ? previewContent.innerHTML.substring(0, 100) : 'N/A');
-    console.log('- marked library:', typeof marked !== 'undefined' ? 'Available' : 'Not available');
 };
 
 // Global functions for HTML buttons
