@@ -1253,6 +1253,114 @@ window.forceLogout = function() {
     }, 1000);
 };
 
+// Comprehensive dropdown diagnostic and fix function
+window.fixDropdown = function() {
+    console.log('🔧 DROPDOWN DIAGNOSTIC AND FIX');
+    console.log('================================');
+    
+    // Step 1: Check all required elements
+    const elements = {
+        userLogin: document.getElementById('user-login'),
+        userProfile: document.getElementById('user-profile'),
+        userDropdown: document.getElementById('user-dropdown'),
+        userProfileTrigger: document.querySelector('.user-profile-trigger'),
+        userAvatar: document.getElementById('user-avatar'),
+        userName: document.getElementById('user-name'),
+        userHandle: document.getElementById('user-handle')
+    };
+    
+    console.log('📋 ELEMENT CHECK:');
+    Object.entries(elements).forEach(([name, element]) => {
+        if (element) {
+            console.log(`✅ ${name}: Found (display: ${element.style.display || 'default'})`);
+        } else {
+            console.error(`❌ ${name}: NOT FOUND`);
+        }
+    });
+    
+    // Step 2: Check current user state
+    console.log('\n👤 USER STATE:');
+    console.log('Current user:', currentUser);
+    console.log('Cookies:', document.cookie);
+    
+    // Step 3: Force setup if user exists but profile not shown
+    if (!currentUser) {
+        console.log('\n🧪 SIMULATING LOGIN (no user found):');
+        const mockUser = {
+            username: 'testuser',
+            name: 'Test User',
+            avatar_url: 'https://github.com/github.png',
+            html_url: 'https://github.com/testuser',
+            access_token: 'mock_token'
+        };
+        
+        currentUser = mockUser;
+        showUserProfile(mockUser);
+    }
+    
+    // Step 4: Force show profile elements
+    console.log('\n🔧 FORCING PROFILE VISIBILITY:');
+    if (elements.userLogin) {
+        elements.userLogin.style.display = 'none';
+        console.log('✅ Hidden login button');
+    }
+    
+    if (elements.userProfile) {
+        elements.userProfile.style.display = 'block';
+        console.log('✅ Shown user profile');
+    }
+    
+    if (elements.userDropdown) {
+        elements.userDropdown.style.display = 'none';
+        console.log('✅ Reset dropdown to hidden');
+    }
+    
+    // Step 5: Set up profile data
+    if (currentUser && elements.userAvatar) {
+        elements.userAvatar.src = currentUser.avatar_url || 'https://github.com/github.png';
+        console.log('✅ Set avatar');
+    }
+    
+    if (currentUser && elements.userName) {
+        elements.userName.textContent = currentUser.name || currentUser.username || 'Test User';
+        console.log('✅ Set name');
+    }
+    
+    if (currentUser && elements.userHandle) {
+        elements.userHandle.textContent = `@${currentUser.username || 'testuser'}`;
+        console.log('✅ Set handle');
+    }
+    
+    // Step 6: Test dropdown toggle
+    console.log('\n🧪 TESTING DROPDOWN TOGGLE:');
+    if (elements.userDropdown && elements.userProfileTrigger) {
+        console.log('Attempting to toggle dropdown...');
+        toggleUserDropdown();
+        
+        setTimeout(() => {
+            const isVisible = elements.userDropdown.style.display === 'block';
+            console.log(`Dropdown visible: ${isVisible}`);
+            
+            if (isVisible) {
+                console.log('🎉 SUCCESS: Dropdown is working!');
+            } else {
+                console.log('❌ FAILED: Dropdown still not working');
+                
+                // Force show dropdown for testing
+                elements.userDropdown.style.display = 'block';
+                elements.userProfileTrigger.classList.add('active');
+                console.log('🔧 FORCED dropdown to show for testing');
+            }
+        }, 100);
+    }
+    
+    console.log('\n📝 SUMMARY:');
+    console.log('- Run this function to diagnose dropdown issues');
+    console.log('- Check console output for specific problems');
+    console.log('- Profile should now be visible with working dropdown');
+    console.log('- If still not working, there may be CSS or HTML issues');
+};
+
 // Check authentication status manually
 window.checkAuth = function() {
     console.log('🔍 Manual auth check...');
@@ -1262,6 +1370,51 @@ window.checkAuth = function() {
     console.log('Login display:', document.getElementById('user-login')?.style.display);
     
     checkAuthStatus();
+};
+
+// Quick fix for dropdown - run this if dropdown not working
+window.quickFixDropdown = function() {
+    console.log('⚡ QUICK DROPDOWN FIX');
+    
+    // Ensure user profile is visible
+    const userProfile = document.getElementById('user-profile');
+    const userLogin = document.getElementById('user-login');
+    
+    if (userProfile) {
+        userProfile.style.display = 'block';
+        console.log('✅ Profile container shown');
+    }
+    
+    if (userLogin) {
+        userLogin.style.display = 'none';
+        console.log('✅ Login button hidden');
+    }
+    
+    // Set mock user if none exists
+    if (!currentUser) {
+        currentUser = {
+            username: 'testuser',
+            name: 'Test User',
+            avatar_url: 'https://github.com/github.png'
+        };
+        
+        // Set profile data
+        const avatar = document.getElementById('user-avatar');
+        const name = document.getElementById('user-name');
+        const handle = document.getElementById('user-handle');
+        
+        if (avatar) avatar.src = currentUser.avatar_url;
+        if (name) name.textContent = currentUser.name;
+        if (handle) handle.textContent = `@${currentUser.username}`;
+        
+        console.log('✅ Mock user data set');
+    }
+    
+    // Test dropdown
+    console.log('🧪 Testing dropdown...');
+    toggleUserDropdown();
+    
+    console.log('✅ Quick fix completed - try clicking your avatar now!');
 };
 
 // Test function to simulate login
@@ -1303,6 +1456,14 @@ window.testUserDropdown = function() {
     Object.entries(elements).forEach(([name, element]) => {
         if (element) {
             console.log(`✅ ${name}: Found`, element.style.display || 'default');
+            
+            // Check computed styles
+            if (element) {
+                const computed = window.getComputedStyle(element);
+                console.log(`   Computed display: ${computed.display}`);
+                console.log(`   Computed visibility: ${computed.visibility}`);
+                console.log(`   Computed opacity: ${computed.opacity}`);
+            }
         } else {
             console.error(`❌ ${name}: Not found`);
         }
@@ -1317,6 +1478,18 @@ window.testUserDropdown = function() {
     // Try to toggle dropdown
     console.log('🔧 Attempting to toggle dropdown...');
     toggleUserDropdown();
+    
+    // Check dropdown state after toggle
+    setTimeout(() => {
+        const dropdown = elements['user-dropdown'];
+        if (dropdown) {
+            console.log('Dropdown after toggle:');
+            console.log(`  Style display: ${dropdown.style.display}`);
+            console.log(`  Computed display: ${window.getComputedStyle(dropdown).display}`);
+            console.log(`  Computed visibility: ${window.getComputedStyle(dropdown).visibility}`);
+            console.log(`  Computed opacity: ${window.getComputedStyle(dropdown).opacity}`);
+        }
+    }, 100);
 };
 
 // Start when DOM is ready
