@@ -421,7 +421,7 @@ function handleInvalidAuth() {
 }
 
 function showUserProfile(userData) {
-    console.log('showUserProfile called with:', userData);
+    console.log('🔄 showUserProfile called with:', userData);
     console.log('userLogin element:', userLogin);
     console.log('userProfile element:', userProfile);
 
@@ -437,7 +437,14 @@ function showUserProfile(userData) {
 
     if (userProfile) {
         userProfile.style.display = 'block';
-        console.log('✅ Shown user profile dropdown');
+        console.log('✅ Shown user profile container');
+        
+        // Ensure the dropdown is initially hidden
+        const dropdown = document.getElementById('user-dropdown');
+        if (dropdown) {
+            dropdown.style.display = 'none';
+            console.log('✅ Reset dropdown to hidden state');
+        }
     } else {
         console.error('❌ userProfile element not found');
     }
@@ -445,15 +452,23 @@ function showUserProfile(userData) {
     // Set profile trigger data
     if (userAvatar && userData.avatar_url) {
         userAvatar.src = userData.avatar_url;
-        console.log('Set user avatar');
+        console.log('✅ Set user avatar:', userData.avatar_url);
+    } else {
+        console.error('❌ Could not set user avatar');
     }
-    if (userName && userData.name) {
+    
+    if (userName && (userData.name || userData.username)) {
         userName.textContent = userData.name || userData.username;
-        console.log('Set name:', userData.name || userData.username);
+        console.log('✅ Set user name:', userData.name || userData.username);
+    } else {
+        console.error('❌ Could not set user name');
     }
+    
     if (userHandle && userData.username) {
         userHandle.textContent = `@${userData.username}`;
-        console.log('Set user handle');
+        console.log('✅ Set user handle:', userData.username);
+    } else {
+        console.error('❌ Could not set user handle');
     }
 
     // Set dropdown header data
@@ -464,19 +479,26 @@ function showUserProfile(userData) {
 
     if (dropdownAvatar && userData.avatar_url) {
         dropdownAvatar.src = userData.avatar_url;
+        console.log('✅ Set dropdown avatar');
     }
     if (dropdownName) {
         dropdownName.textContent = userData.name || userData.username;
+        console.log('✅ Set dropdown name');
     }
     if (dropdownHandle && userData.username) {
         dropdownHandle.textContent = `@${userData.username}`;
+        console.log('✅ Set dropdown handle');
     }
     if (dropdownEmail && userData.email) {
         dropdownEmail.textContent = userData.email;
+        dropdownEmail.style.display = 'block';
+        console.log('✅ Set dropdown email');
     } else if (dropdownEmail) {
         dropdownEmail.style.display = 'none';
+        console.log('✅ Hidden dropdown email (not available)');
     }
 
+    console.log('🎉 User profile setup completed');
 }
 
 function showLoginButton() {
@@ -1256,6 +1278,45 @@ window.testLogin = function() {
     
     showUserProfile(mockUser);
     console.log('✅ Mock login completed');
+    
+    // Test the dropdown after a short delay
+    setTimeout(() => {
+        console.log('🧪 Testing user dropdown...');
+        toggleUserDropdown();
+    }, 1000);
+};
+
+// Test function specifically for user dropdown
+window.testUserDropdown = function() {
+    console.log('🧪 Testing user dropdown functionality...');
+    
+    const elements = {
+        'user-profile': document.getElementById('user-profile'),
+        'user-dropdown': document.getElementById('user-dropdown'),
+        'user-profile-trigger': document.querySelector('.user-profile-trigger'),
+        'user-avatar': document.getElementById('user-avatar'),
+        'user-name': document.getElementById('user-name')
+    };
+    
+    console.log('Elements check:', elements);
+    
+    Object.entries(elements).forEach(([name, element]) => {
+        if (element) {
+            console.log(`✅ ${name}: Found`, element.style.display || 'default');
+        } else {
+            console.error(`❌ ${name}: Not found`);
+        }
+    });
+    
+    // Force show profile if hidden
+    if (elements['user-profile']) {
+        elements['user-profile'].style.display = 'block';
+        console.log('🔧 Forced user profile to show');
+    }
+    
+    // Try to toggle dropdown
+    console.log('🔧 Attempting to toggle dropdown...');
+    toggleUserDropdown();
 };
 
 // Start when DOM is ready
@@ -1263,19 +1324,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(initialize, 100);
 });
 
-// Dropdown toggle functionality
-function toggleUserDropdown() {
-    const dropdown = document.getElementById('user-dropdown');
-    const trigger = document.querySelector('.user-profile-trigger');
-
-    if (dropdown.style.display === 'none' || !dropdown.style.display) {
-        dropdown.style.display = 'block';
-        trigger.classList.add('active');
-    } else {
-        dropdown.style.display = 'none';
-        trigger.classList.remove('active');
-    }
-}
+// Removed duplicate - using enhanced version above
 
 // Close dropdown when clicking outside
 document.addEventListener('click', (e) => {
