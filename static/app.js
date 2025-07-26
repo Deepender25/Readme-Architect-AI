@@ -355,11 +355,47 @@ async function validateUserToken(userData) {
         showUserProfile(userData);
         console.log('✅ User profile should now be visible');
         
+        // Handle post-login actions
+        handlePostLoginAction();
+        
     } catch (error) {
         console.log('⚠️ Could not validate token, assuming valid:', error);
         // If we can't validate, assume it's valid (network issues, etc.)
         currentUser = userData;
         showUserProfile(userData);
+        
+        // Handle post-login actions
+        handlePostLoginAction();
+    }
+}
+
+// Handle actions that were requested before login
+function handlePostLoginAction() {
+    const postLoginAction = sessionStorage.getItem('postLoginAction');
+    
+    if (postLoginAction) {
+        console.log('🎯 Executing post-login action:', postLoginAction);
+        
+        // Clear the stored action
+        sessionStorage.removeItem('postLoginAction');
+        
+        // Execute the requested action
+        switch (postLoginAction) {
+            case 'repositories':
+                setTimeout(() => showRepositories(), 500);
+                break;
+            case 'history':
+                setTimeout(() => showHistory(), 500);
+                break;
+            case 'profile':
+                setTimeout(() => openGitHubProfile(), 500);
+                break;
+            case 'settings':
+                setTimeout(() => showSettings(), 500);
+                break;
+            default:
+                console.log('Unknown post-login action:', postLoginAction);
+        }
     }
 }
 
@@ -876,6 +912,32 @@ function toggleUserDropdown() {
     }
 }
 
+// Login dropdown functionality
+function toggleLoginDropdown() {
+    console.log('🔽 toggleLoginDropdown called');
+    
+    const dropdown = document.getElementById('login-dropdown');
+    const trigger = document.querySelector('.login-btn');
+    
+    if (!dropdown || !trigger) {
+        console.error('❌ Login dropdown elements not found!');
+        return;
+    }
+
+    const isOpen = dropdown.style.display === 'block';
+    console.log('Current login dropdown state - isOpen:', isOpen);
+    
+    if (isOpen) {
+        dropdown.style.display = 'none';
+        trigger.classList.remove('active');
+        console.log('✅ Login dropdown closed');
+    } else {
+        dropdown.style.display = 'block';
+        trigger.classList.add('active');
+        console.log('✅ Login dropdown opened');
+    }
+}
+
 // Professional dropdown functions
 function showRepositories() {
     toggleUserDropdown(); // Close dropdown
@@ -931,6 +993,59 @@ function showHelp() {
     toggleUserDropdown(); // Close dropdown
     console.log('❓ Help feature coming soon!');
     alert('❓ Help & Support coming soon!');
+}
+
+// Login dropdown menu functions
+function loginAndShowRepositories() {
+    console.log('📚 Login and show repositories...');
+    toggleLoginDropdown(); // Close dropdown
+    
+    // Store the intended action
+    sessionStorage.setItem('postLoginAction', 'repositories');
+    
+    // Proceed to GitHub OAuth
+    window.location.href = '/auth/github';
+}
+
+function loginAndShowHistory() {
+    console.log('📜 Login and show history...');
+    toggleLoginDropdown(); // Close dropdown
+    
+    // Store the intended action
+    sessionStorage.setItem('postLoginAction', 'history');
+    
+    // Proceed to GitHub OAuth
+    window.location.href = '/auth/github';
+}
+
+function loginAndShowProfile() {
+    console.log('👤 Login and show profile...');
+    toggleLoginDropdown(); // Close dropdown
+    
+    // Store the intended action
+    sessionStorage.setItem('postLoginAction', 'profile');
+    
+    // Proceed to GitHub OAuth
+    window.location.href = '/auth/github';
+}
+
+function loginAndShowSettings() {
+    console.log('⚙️ Login and show settings...');
+    toggleLoginDropdown(); // Close dropdown
+    
+    // Store the intended action
+    sessionStorage.setItem('postLoginAction', 'settings');
+    
+    // Proceed to GitHub OAuth
+    window.location.href = '/auth/github';
+}
+
+function proceedToLogin() {
+    console.log('🚀 Proceeding to GitHub login...');
+    toggleLoginDropdown(); // Close dropdown
+    
+    // Direct login without specific action
+    window.location.href = '/auth/github';
 }
 
 function showSettings() {
@@ -1032,6 +1147,14 @@ window.showHelp = showHelp;
 window.handleLogout = handleLogout;
 window.toggleUserDropdown = toggleUserDropdown;
 
+// Login dropdown functions
+window.toggleLoginDropdown = toggleLoginDropdown;
+window.loginAndShowRepositories = loginAndShowRepositories;
+window.loginAndShowHistory = loginAndShowHistory;
+window.loginAndShowProfile = loginAndShowProfile;
+window.loginAndShowSettings = loginAndShowSettings;
+window.proceedToLogin = proceedToLogin;
+
 // Close dropdown when clicking outside
 document.addEventListener('click', (e) => {
     const userSection = document.getElementById('user-section');
@@ -1044,17 +1167,39 @@ document.addEventListener('click', (e) => {
             if (trigger) trigger.classList.remove('active');
         }
     }
+    
+    // Close login dropdown when clicking outside
+    const loginDropdownContainer = document.querySelector('.login-dropdown-container');
+    const loginDropdown = document.getElementById('login-dropdown');
+    const loginTrigger = document.querySelector('.login-btn');
+
+    if (loginDropdownContainer && !loginDropdownContainer.contains(e.target)) {
+        if (loginDropdown && loginDropdown.style.display === 'block') {
+            loginDropdown.style.display = 'none';
+            if (loginTrigger) loginTrigger.classList.remove('active');
+        }
+    }
 });
 
 // Close dropdown on escape key
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
+        // Close user dropdown
         const dropdown = document.getElementById('user-dropdown');
         const trigger = document.querySelector('.user-profile-trigger');
         
         if (dropdown && dropdown.style.display === 'block') {
             dropdown.style.display = 'none';
             if (trigger) trigger.classList.remove('active');
+        }
+        
+        // Close login dropdown
+        const loginDropdown = document.getElementById('login-dropdown');
+        const loginTrigger = document.querySelector('.login-btn');
+        
+        if (loginDropdown && loginDropdown.style.display === 'block') {
+            loginDropdown.style.display = 'none';
+            if (loginTrigger) loginTrigger.classList.remove('active');
         }
     }
 });
