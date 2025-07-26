@@ -1492,9 +1492,131 @@ window.testUserDropdown = function() {
     }, 100);
 };
 
+// IMMEDIATE FIX FOR DROPDOWN ISSUE
+window.fixDropdownNow = function() {
+    console.log('🚀 FIXING DROPDOWN IMMEDIATELY');
+    
+    // Step 1: Ensure user profile is visible
+    const userLogin = document.getElementById('user-login');
+    const userProfile = document.getElementById('user-profile');
+    
+    if (userLogin) {
+        userLogin.style.display = 'none';
+        console.log('✅ Login hidden');
+    }
+    
+    if (userProfile) {
+        userProfile.style.display = 'block';
+        userProfile.style.visibility = 'visible';
+        userProfile.style.opacity = '1';
+        console.log('✅ Profile shown');
+    }
+    
+    // Step 2: Set up user data if missing
+    if (!currentUser) {
+        currentUser = {
+            username: 'user',
+            name: 'User',
+            avatar_url: 'https://github.com/github.png',
+            html_url: 'https://github.com/user'
+        };
+    }
+    
+    // Step 3: Set profile elements
+    const avatar = document.getElementById('user-avatar');
+    const name = document.getElementById('user-name');
+    const handle = document.getElementById('user-handle');
+    
+    if (avatar) {
+        avatar.src = currentUser.avatar_url;
+        avatar.style.display = 'block';
+    }
+    if (name) {
+        name.textContent = currentUser.name;
+        name.style.display = 'block';
+    }
+    if (handle) {
+        handle.textContent = `@${currentUser.username}`;
+        handle.style.display = 'block';
+    }
+    
+    // Step 4: Fix dropdown CSS and make it work
+    const dropdown = document.getElementById('user-dropdown');
+    const trigger = document.querySelector('.user-profile-trigger');
+    
+    if (dropdown) {
+        // Reset dropdown styles
+        dropdown.style.position = 'absolute';
+        dropdown.style.top = 'calc(100% + 8px)';
+        dropdown.style.right = '0';
+        dropdown.style.zIndex = '10000';
+        dropdown.style.background = 'rgba(16, 16, 24, 0.95)';
+        dropdown.style.backdropFilter = 'blur(20px)';
+        dropdown.style.borderRadius = '12px';
+        dropdown.style.border = '1px solid rgba(255, 255, 255, 0.1)';
+        dropdown.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3)';
+        dropdown.style.minWidth = '280px';
+        dropdown.style.display = 'none'; // Initially hidden
+        console.log('✅ Dropdown styles fixed');
+    }
+    
+    if (trigger) {
+        // Remove any existing click handlers and add new one
+        trigger.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('🖱️ Profile clicked!');
+            
+            if (dropdown) {
+                const isVisible = dropdown.style.display === 'block';
+                if (isVisible) {
+                    dropdown.style.display = 'none';
+                    trigger.classList.remove('active');
+                    console.log('✅ Dropdown closed');
+                } else {
+                    dropdown.style.display = 'block';
+                    trigger.classList.add('active');
+                    console.log('✅ Dropdown opened');
+                }
+            }
+        };
+        
+        trigger.style.cursor = 'pointer';
+        trigger.style.display = 'flex';
+        console.log('✅ Click handler attached');
+    }
+    
+    // Step 5: Test the dropdown
+    console.log('🧪 Testing dropdown...');
+    if (trigger && dropdown) {
+        trigger.click();
+        setTimeout(() => {
+            console.log('Dropdown should be visible now. Check the top-right corner!');
+        }, 100);
+    }
+    
+    console.log('🎉 DROPDOWN FIX COMPLETED!');
+    console.log('👆 Click your avatar in the top-right corner to test');
+};
+
+// Auto-fix dropdown when page loads if user is logged in
+function autoFixDropdown() {
+    setTimeout(() => {
+        const userProfile = document.getElementById('user-profile');
+        const userDropdown = document.getElementById('user-dropdown');
+        
+        // If profile exists but dropdown doesn't work, auto-fix it
+        if (userProfile && userProfile.style.display === 'block' && userDropdown) {
+            console.log('🔧 Auto-fixing dropdown on page load...');
+            fixDropdownNow();
+        }
+    }, 2000); // Wait 2 seconds after page load
+}
+
 // Start when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(initialize, 100);
+    autoFixDropdown(); // Auto-fix dropdown
 });
 
 // Removed duplicate - using enhanced version above

@@ -3038,4 +3038,42 @@ rofessional User Profile Dropdown */
         min-width: 140px;
         font-size: 13px;
     }
+}/* DROPDO
+WN FIX - Ensure dropdown is always visible when shown */
+#user-dropdown {
+    position: absolute !important;
+    top: calc(100% + 8px) !important;
+    right: 0 !important;
+    z-index: 10000 !important;
+    background: rgba(16, 16, 24, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+    min-width: 280px !important;
+    max-width: 320px !important;
+    overflow: visible !important;
+}
+
+#user-dropdown[style*="display: block"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.user-profile-container {
+    position: relative !important;
+}
+
+.user-profile-trigger {
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+/* Ensure dropdown items are clickable */
+.dropdown-item {
+    pointer-events: auto !important;
+    cursor: pointer !important;
 }
