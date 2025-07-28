@@ -45,6 +45,11 @@ class handler(BaseHTTPRequestHandler):
             self.handle_repositories()
         elif parsed_url.path == '/api/generate':
             self.handle_generate(query_params)
+        elif parsed_url.path == '/api/history':
+            self.handle_history()
+        elif parsed_url.path.startswith('/api/history/'):
+            history_id = parsed_url.path.split('/')[-1]
+            self.handle_history_item(history_id)
         else:
             self.send_response(404)
             self.end_headers()
@@ -191,6 +196,31 @@ class handler(BaseHTTPRequestHandler):
             
             if repo_path and os.path.exists(repo_path):
                 shutil.rmtree(os.path.dirname(repo_path), ignore_errors=True)
+            
+            # Save to history if user is authenticated
+            user_data = self.get_user_from_cookie()
+            if user_data and readme_content:
+                from .database import save_readme_history
+                try:
+                    # Extract repository name from URL
+                    repo_name = repo_url.split('/')[-2:] if '/' in repo_url else [repo_url]
+                    repo_name = '/'.join(repo_name).replace('.git', '')
+                    
+                    save_readme_history(
+                        user_id=str(user_data.get('github_id', '')),
+                        username=user_data.get('username', ''),
+                        repository_url=repo_url,
+                        repository_name=repo_name,
+                        readme_content=readme_content,
+                        project_name=project_name if project_name else None,
+                        generation_params={
+                            'include_demo': include_demo,
+                            'num_screenshots': num_screenshots,
+                            'num_videos': num_videos
+                        }
+                    )
+                except Exception as e:
+                    print(f"⚠️ Failed to save history: {e}")
             
             self.send_json_response({"readme": readme_content})
             
@@ -443,3 +473,60 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
             
         except Exception as e:
             return None, str(e)
+
+    def handle_history(self):
+        """Handle history requests"""
+        user_data = self.get_user_from_cookie()
+        
+        if not user_data:
+            self.send_json_response({'error': 'Authentication required.'}, 401)
+            return
+        
+        if self.command == 'GET':
+            # Get user history
+            from .database import get_user_history
+            try:
+                history = get_user_history(str(user_data.get('github_id', '')))
+                self.send_json_response({'history': history})
+            except Exception as e:
+                self.send_json_response({'error': f'Failed to retrieve history: {str(e)}'}, 500)
+        
+        else:
+            self.send_json_response({'error': 'Method not allowed'}, 405)
+
+    def handle_history_item(self, history_id):
+        """Handle individual history item requests"""
+        user_data = self.get_user_from_cookie()
+        
+        if not user_data:
+            self.send_json_response({'error': 'Authentication required.'}, 401)
+            return
+        
+        user_id = str(user_data.get('github_id', ''))
+        
+        if self.command == 'GET':
+            # Get specific history item
+            from .database import get_history_item
+            try:
+                item = get_history_item(history_id, user_id)
+                if item:
+                    self.send_json_response({'item': item})
+                else:
+                    self.send_json_response({'error': 'History item not found'}, 404)
+            except Exception as e:
+                self.send_json_response({'error': f'Failed to retrieve history item: {str(e)}'}, 500)
+        
+        elif self.command == 'DELETE':
+            # Delete history item
+            from .database import delete_history_item
+            try:
+                success = delete_history_item(history_id, user_id)
+                if success:
+                    self.send_json_response({'message': 'History item deleted successfully'})
+                else:
+                    self.send_json_response({'error': 'Failed to delete history item'}, 400)
+            except Exception as e:
+                self.send_json_response({'error': f'Failed to delete history item: {str(e)}'}, 500)
+        
+        else:
+            self.send_json_response({'error': 'Method not allowed'}, 405)

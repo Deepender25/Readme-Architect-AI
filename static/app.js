@@ -681,6 +681,157 @@ function displayRepositories(repositories) {
     repositoriesGrid.innerHTML = repoCards;
 }
 
+// History functionality
+async function loadHistory() {
+    const historyList = document.getElementById('history-list');
+    if (!historyList) {
+        console.error('History list element not found');
+        return;
+    }
+
+    historyList.innerHTML = '<div class="loading-state">Loading history...</div>';
+
+    try {
+        const githubUserCookie = getCookie('github_user');
+        const response = await fetch('/api/history', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-GitHub-User': githubUserCookie || ''
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to load history');
+        }
+
+        const data = await response.json();
+        displayHistory(data.history || []);
+    } catch (error) {
+        console.error('Error loading history:', error);
+        historyList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">❌</div>
+                <h3>Failed to Load History</h3>
+                <p>Error: ${error.message}</p>
+            </div>
+        `;
+    }
+}
+
+function displayHistory(historyItems) {
+    const historyList = document.getElementById('history-list');
+    
+    if (historyItems.length === 0) {
+        historyList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📝</div>
+                <h3>No History Found</h3>
+                <p>Generate your first README to see it here!</p>
+            </div>
+        `;
+        return;
+    }
+
+    const historyCards = historyItems.map(item => `
+        <div class="history-item">
+            <div class="history-header">
+                <h3>${item.project_name || item.repository_name}</h3>
+                <div class="history-actions">
+                    <button class="history-btn view-btn" onclick="viewHistoryItem('${item.id}')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        </svg>
+                        View
+                    </button>
+                    <button class="history-btn regenerate-btn" onclick="regenerateFromHistory('${item.repository_url}', '${item.project_name || ''}')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                        </svg>
+                        Regenerate
+                    </button>
+                    <button class="history-btn delete-btn" onclick="deleteHistoryItem('${item.id}')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                        Delete
+                    </button>
+                </div>
+            </div>
+            <div class="history-meta">
+                <span class="repo-url">${item.repository_url}</span>
+                <span class="created-date">Generated ${new Date(item.created_at).toLocaleDateString()}</span>
+            </div>
+            <div class="history-params">
+                ${item.generation_params?.include_demo ? '<span class="param-tag">Demo Included</span>' : ''}
+                ${item.generation_params?.num_screenshots > 0 ? `<span class="param-tag">${item.generation_params.num_screenshots} Screenshots</span>` : ''}
+                ${item.generation_params?.num_videos > 0 ? `<span class="param-tag">${item.generation_params.num_videos} Videos</span>` : ''}
+            </div>
+        </div>
+    `).join('');
+
+    historyList.innerHTML = historyCards;
+}
+
+function viewHistoryItem(historyId) {
+    // Find the history item and display its README content
+    fetch(`/api/history/${historyId}`, {
+        method: 'GET',
+        credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.item) {
+            // Display the README content in the output view
+            codeView.textContent = data.item.readme_content;
+            previewContent.innerHTML = marked.parse(data.item.readme_content);
+            hljs.highlightAll();
+            setView('output');
+        } else {
+            alert('Failed to load history item');
+        }
+    })
+    .catch(error => {
+        console.error('Error loading history item:', error);
+        alert('Failed to load history item');
+    });
+}
+
+function regenerateFromHistory(repoUrl, projectName) {
+    // Pre-fill the form with historical data and switch to input view
+    repoUrlInput.value = repoUrl;
+    if (projectName) {
+        projectNameInput.value = projectName;
+    }
+    setView('input');
+    repoUrlInput.focus();
+}
+
+function deleteHistoryItem(historyId) {
+    if (!confirm('Are you sure you want to delete this history item?')) {
+        return;
+    }
+
+    fetch(`/api/history/${historyId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            // Reload history to reflect the deletion
+            loadHistory();
+        } else {
+            alert('Failed to delete history item');
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting history item:', error);
+        alert('Failed to delete history item');
+    });
+}
+
 function selectRepository(repoUrl) {
     repoUrlInput.value = repoUrl;
     setView('input');
@@ -1070,9 +1221,42 @@ function proceedToLogin() {
     window.location.href = '/auth/github';
 }
 
-function showSettings() {
-    alert('Settings feature coming soon!');
+// Login dropdown action functions
+function loginAndShowRepositories() {
+    sessionStorage.setItem('postLoginAction', 'repositories');
+    proceedToLogin();
+}
+
+function loginAndShowHistory() {
+    sessionStorage.setItem('postLoginAction', 'history');
+    proceedToLogin();
+}
+
+function loginAndShowProfile() {
+    sessionStorage.setItem('postLoginAction', 'profile');
+    proceedToLogin();
+}
+
+function loginAndShowSettings() {
+    sessionStorage.setItem('postLoginAction', 'settings');
+    proceedToLogin();
+}
+
+function proceedToLogin() {
+    toggleLoginDropdown();
+    handleGitHubLogin();
+}
+
+function openGitHubProfile() {
+    if (currentUser && currentUser.html_url) {
+        window.open(currentUser.html_url, '_blank');
+    }
     toggleUserDropdown();
+}
+
+function handleGitHubLogin() {
+    console.log('🔐 Initiating GitHub login...');
+    window.location.href = '/auth/github';
 }
 
 // Close dropdown when clicking outside
@@ -1635,8 +1819,13 @@ document.addEventListener('click', (e) => {
 
 // Additional dropdown functions
 function showHistory() {
-    toggleUserDropdown();
-    alert('README History feature coming soon!');
+    toggleUserDropdown(); // Close dropdown
+    if (!currentUser) {
+        alert('Please log in first');
+        return;
+    }
+    setView('history');
+    loadHistory();
 }
 
 // Duplicate functions removed

@@ -44,9 +44,6 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
             # Serve static files
             if path == '/':
                 self.path = '/index.html'
-            elif not path.startswith('/static/'):
-                # Redirect to static directory
-                self.path = f'/static{path}' if not path.startswith('/') else f'/static{path}'
             
             print(f"📁 Serving static file: {self.path}")
             super().do_GET()
@@ -67,7 +64,7 @@ class DevHandler(http.server.SimpleHTTPRequestHandler):
             self.send_error(500, f"Internal server error: {str(e)}")
 
 def main():
-    PORT = 8000
+    PORT = 8001
     
     print(f"🚀 Starting development server on http://localhost:{PORT}")
     print("📁 Serving static files from ./static/")
