@@ -115,8 +115,59 @@ class handler(BaseHTTPRequestHandler):
             
             print(f"✅ README generated successfully ({len(readme_content)} chars)")
             
-            # Save to history (optional - no authentication required for generate.py)
-            # This is handled in index.py for authenticated users
+            # Save to history if user is authenticated
+            try:
+                # Check for user authentication via cookie
+                cookie_header = self.headers.get('Cookie', '')
+                user_data = None
+                
+                if 'github_user=' in cookie_header:
+                    for cookie in cookie_header.split(';'):
+                        if cookie.strip().startswith('github_user='):
+                            try:
+                                import base64
+                                import json
+                                cookie_value = cookie.split('=')[1].strip()
+                                user_data = json.loads(base64.b64decode(cookie_value).decode())
+                                break
+                            except Exception:
+                                pass
+                
+                if user_data and readme_content:
+                    from .database import save_readme_history
+                    try:
+                        # Extract repository name from URL
+                        repo_name = repo_url.split('/')[-2:] if '/' in repo_url else [repo_url]
+                        repo_name = '/'.join(repo_name).replace('.git', '')
+                        
+                        print(f"💾 Saving history for user: {user_data.get('username', 'unknown')}")
+                        
+                        success = save_readme_history(
+                            user_id=str(user_data.get('github_id', '')),
+                            username=user_data.get('username', ''),
+                            repository_url=repo_url,
+                            repository_name=repo_name,
+                            readme_content=readme_content,
+                            project_name=project_name if project_name else None,
+                            generation_params={
+                                'include_demo': include_demo,
+                                'num_screenshots': num_screenshots,
+                                'num_videos': num_videos
+                            }
+                        )
+                        
+                        if success:
+                            print("✅ History saved successfully in generate.py")
+                        else:
+                            print("❌ History save failed in generate.py")
+                            
+                    except Exception as e:
+                        print(f"⚠️ Failed to save history in generate.py: {e}")
+                else:
+                    print("⚠️ No user authentication or content - history not saved in generate.py")
+                        
+            except Exception as e:
+                print(f"⚠️ Error checking user authentication in generate.py: {e}")
             
             self.send_json_response({"readme": readme_content})
             

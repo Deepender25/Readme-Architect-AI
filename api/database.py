@@ -35,36 +35,47 @@ def get_user_file_path(user_id: str) -> str:
 def get_file_from_github(file_path: str) -> Optional[Dict]:
     """Get a file from GitHub repository"""
     if not validate_github_config():
+        print("❌ GitHub config validation failed in get_file_from_github")
         return None
     
     try:
         url = f"https://api.github.com/repos/{GITHUB_DATA_REPO_OWNER}/{GITHUB_DATA_REPO_NAME}/contents/{file_path}"
+        print(f"🌐 GitHub API URL: {url}")
+        
         response = requests.get(url, headers=get_github_headers())
+        print(f"📡 GitHub API response: {response.status_code}")
         
         if response.status_code == 200:
             file_data = response.json()
             content = base64.b64decode(file_data['content']).decode('utf-8')
+            parsed_content = json.loads(content)
+            print(f"✅ Successfully retrieved file with {len(parsed_content)} items")
             return {
-                'content': json.loads(content),
+                'content': parsed_content,
                 'sha': file_data['sha']
             }
         elif response.status_code == 404:
-            # File doesn't exist yet
+            # File doesn't exist yet - create empty history
+            print("📝 File doesn't exist yet, creating empty history")
             return {'content': [], 'sha': None}
         else:
-            print(f"❌ GitHub API error: {response.status_code}")
+            print(f"❌ GitHub API error: {response.status_code} - {response.text}")
             return None
     except Exception as e:
         print(f"❌ Error getting file from GitHub: {e}")
+        import traceback
+        traceback.print_exc()
         return None
 
 def save_file_to_github(file_path: str, content: str, sha: Optional[str] = None, commit_message: str = "Update history") -> bool:
     """Save a file to GitHub repository"""
     if not validate_github_config():
+        print("❌ GitHub config validation failed in save_file_to_github")
         return False
     
     try:
         url = f"https://api.github.com/repos/{GITHUB_DATA_REPO_OWNER}/{GITHUB_DATA_REPO_NAME}/contents/{file_path}"
+        print(f"🌐 Saving to GitHub URL: {url}")
         
         data = {
             'message': commit_message,
@@ -73,8 +84,12 @@ def save_file_to_github(file_path: str, content: str, sha: Optional[str] = None,
         
         if sha:
             data['sha'] = sha
+            print(f"📝 Using existing SHA: {sha}")
+        else:
+            print("📝 Creating new file (no SHA)")
         
         response = requests.put(url, headers=get_github_headers(), json=data)
+        print(f"📡 GitHub save response: {response.status_code}")
         
         if response.status_code in [200, 201]:
             print(f"✅ Successfully saved file to GitHub: {file_path}")
@@ -84,6 +99,8 @@ def save_file_to_github(file_path: str, content: str, sha: Optional[str] = None,
             return False
     except Exception as e:
         print(f"❌ Error saving file to GitHub: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 def create_history_repository():
@@ -116,18 +133,25 @@ def save_readme_history(
     generation_params: Optional[Dict] = None
 ) -> bool:
     """Save README generation to history"""
+    print(f"🔄 Starting to save history for user {user_id}")
+    
     if not validate_github_config():
+        print("❌ GitHub configuration validation failed")
         return False
     
     try:
         # Get existing user history
         file_path = get_user_file_path(user_id)
+        print(f"📁 File path: {file_path}")
+        
         file_data = get_file_from_github(file_path)
         
         if file_data is None:
+            print("❌ Failed to get file data from GitHub")
             return False
         
         history_list = file_data['content']
+        print(f"📊 Current history count: {len(history_list)}")
         
         # Create new history entry
         new_entry = {
@@ -143,6 +167,8 @@ def save_readme_history(
             "updated_at": datetime.utcnow().isoformat()
         }
         
+        print(f"📝 Created new entry with ID: {new_entry['id']}")
+        
         # Add to beginning of list (most recent first)
         history_list.insert(0, new_entry)
         
@@ -150,6 +176,7 @@ def save_readme_history(
         history_list = history_list[:50]
         
         # Save back to GitHub
+        print(f"💾 Saving to GitHub with SHA: {file_data.get('sha', 'None')}")
         success = save_file_to_github(
             file_path,
             json.dumps(history_list, indent=2),
@@ -159,11 +186,15 @@ def save_readme_history(
         
         if success:
             print(f"✅ Saved README history for {username}/{repository_name}")
+        else:
+            print(f"❌ Failed to save to GitHub for {username}/{repository_name}")
         
         return success
             
     except Exception as e:
         print(f"❌ Error saving README history: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 def get_user_history(user_id: str, limit: int = 50) -> List[Dict]:
