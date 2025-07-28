@@ -685,14 +685,18 @@ function displayRepositories(repositories) {
 async function loadHistory() {
     const historyList = document.getElementById('history-list');
     if (!historyList) {
-        console.error('History list element not found');
+        console.error('❌ History list element not found');
         return;
     }
 
+    console.log('🔄 Loading history...');
     historyList.innerHTML = '<div class="loading-state">Loading history...</div>';
 
     try {
         const githubUserCookie = getCookie('github_user');
+        console.log('🍪 GitHub user cookie:', githubUserCookie ? 'Found' : 'Not found');
+        console.log('👤 Current user:', currentUser);
+
         const response = await fetch('/api/history', {
             method: 'GET',
             credentials: 'include',
@@ -702,19 +706,26 @@ async function loadHistory() {
             }
         });
 
+        console.log('📡 History API response status:', response.status);
+
         if (!response.ok) {
-            throw new Error('Failed to load history');
+            const errorText = await response.text();
+            console.error('❌ History API error:', response.status, errorText);
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
         }
 
         const data = await response.json();
+        console.log('📊 History data received:', data);
+        
         displayHistory(data.history || []);
     } catch (error) {
-        console.error('Error loading history:', error);
+        console.error('❌ Error loading history:', error);
         historyList.innerHTML = `
             <div class="empty-state">
                 <div class="empty-icon">❌</div>
                 <h3>Failed to Load History</h3>
                 <p>Error: ${error.message}</p>
+                <button onclick="loadHistory()" style="margin-top: 10px; padding: 8px 16px; background: #a8b2ff; color: white; border: none; border-radius: 6px; cursor: pointer;">Retry</button>
             </div>
         `;
     }
@@ -723,12 +734,16 @@ async function loadHistory() {
 function displayHistory(historyItems) {
     const historyList = document.getElementById('history-list');
     
+    console.log('📋 Displaying history items:', historyItems.length, historyItems);
+    
     if (historyItems.length === 0) {
+        console.log('📝 No history items found');
         historyList.innerHTML = `
             <div class="empty-state">
                 <div class="empty-icon">📝</div>
                 <h3>No History Found</h3>
                 <p>Generate your first README to see it here!</p>
+                <p style="font-size: 0.9rem; color: #888; margin-top: 10px;">Make sure you're logged in when generating READMEs</p>
             </div>
         `;
         return;
