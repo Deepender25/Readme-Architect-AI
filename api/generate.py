@@ -114,6 +114,10 @@ class handler(BaseHTTPRequestHandler):
                     pass
             
             print(f"✅ README generated successfully ({len(readme_content)} chars)")
+            
+            # Save to history (optional - no authentication required for generate.py)
+            # This is handled in index.py for authenticated users
+            
             self.send_json_response({"readme": readme_content})
             
         except Exception as e:
