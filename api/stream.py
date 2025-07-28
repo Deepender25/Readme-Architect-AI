@@ -7,6 +7,7 @@ import shutil
 import requests
 import zipfile
 import ast
+import time
 
 # Google AI Configuration
 try:
@@ -26,17 +27,17 @@ except Exception as e:
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
-            self.handle_generate()
+            self.handle_stream()
         except Exception as e:
             print(f"ERROR in do_GET: {str(e)}")
-            self.send_json_response({"error": f"Server error: {str(e)}"}, 500)
+            self.send_error_event(f"Server error: {str(e)}")
 
     def do_POST(self):
         try:
-            self.handle_generate()
+            self.handle_stream()
         except Exception as e:
             print(f"ERROR in do_POST: {str(e)}")
-            self.send_json_response({"error": f"Server error: {str(e)}"}, 500)
+            self.send_error_event(f"Server error: {str(e)}")
     
     def do_OPTIONS(self):
         self.send_response(200)
@@ -45,22 +46,12 @@ class handler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
         self.end_headers()
 
-    def handle_generate(self):
+    def handle_stream(self):
         # Parse query parameters
         parsed_url = urllib.parse.urlparse(self.path)
         query_params = urllib.parse.parse_qs(parsed_url.query)
         
-        print(f"📝 Generate request: {self.path}")
-        print(f"📝 Query params: {query_params}")
-        
-        # Health check endpoint
-        if query_params.get('health'):
-            self.send_json_response({
-                "status": "ok", 
-                "ai_available": AI_AVAILABLE,
-                "message": "README Generator API is running"
-            })
-            return
+        print(f"📡 Stream request: {self.path}")
         
         # Extract parameters
         repo_url = query_params.get('repo_url', [''])[0]
@@ -76,46 +67,56 @@ class handler(BaseHTTPRequestHandler):
         
         # Validate required parameters
         if not repo_url:
-            self.send_json_response({"error": "Repository URL is required"}, 400)
+            self.send_error_event("Repository URL is required")
             return
             
         if not ("github.com" in repo_url):
-            self.send_json_response({"error": "Only GitHub repositories are supported"}, 400)
+            self.send_error_event("Only GitHub repositories are supported")
             return
         
-        print(f"🔄 Processing: {repo_url}")
+        # Setup Server-Sent Events
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/event-stream')
+        self.send_header('Cache-Control', 'no-cache')
+        self.send_header('Connection', 'keep-alive')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        self.end_headers()
         
+        repo_path = None
         try:
-            # Download repository
+            # Step 1: Cloning
+            self.send_status_event("Cloning repository...")
+            time.sleep(0.5)  # Small delay for better UX
             repo_path, error = self.download_repo(repo_url)
             if error:
-                self.send_json_response({"error": error}, 400)
+                self.send_error_event(error)
                 return
             
-            # Analyze codebase
+            # Step 2: Analyzing
+            self.send_status_event("Analyzing codebase...")
+            time.sleep(0.5)
             analysis, error = self.analyze_codebase(repo_path)
             if error:
-                self.send_json_response({"error": error}, 500)
+                self.send_error_event(error)
                 return
             
-            # Generate README
+            # Step 3: Building prompt
+            self.send_status_event("Building prompt for AI...")
+            time.sleep(0.5)
+            
+            # Step 4: Generating
+            self.send_status_event("Generating README with Gemini...")
+            time.sleep(0.5)
             readme_content, error = self.generate_readme_with_gemini(
                 analysis, project_name, include_demo, num_screenshots, num_videos
             )
             if error:
-                self.send_json_response({"error": error}, 500)
+                self.send_error_event(error)
                 return
             
-            # Clean up temporary files
-            if repo_path and os.path.exists(repo_path):
-                try:
-                    shutil.rmtree(os.path.dirname(repo_path), ignore_errors=True)
-                except:
-                    pass
-            
-            print(f"✅ README generated successfully ({len(readme_content)} chars)")
-            
-            # Save to history if user is authenticated
+            # Step 5: Save to history and send success
             try:
                 # Check for user authentication via cookie
                 cookie_header = self.headers.get('Cookie', '')
@@ -157,32 +158,48 @@ class handler(BaseHTTPRequestHandler):
                         )
                         
                         if success:
-                            print("✅ History saved successfully in generate.py")
+                            print("✅ History saved successfully in stream.py")
                         else:
-                            print("❌ History save failed in generate.py")
+                            print("❌ History save failed in stream.py")
                             
                     except Exception as e:
-                        print(f"⚠️ Failed to save history in generate.py: {e}")
+                        print(f"⚠️ Failed to save history in stream.py: {e}")
                 else:
-                    print("⚠️ No user authentication or content - history not saved in generate.py")
+                    print("⚠️ No user authentication or content - history not saved in stream.py")
                         
             except Exception as e:
-                print(f"⚠️ Error checking user authentication in generate.py: {e}")
+                print(f"⚠️ Error checking user authentication in stream.py: {e}")
             
-            self.send_json_response({"readme": readme_content})
+            self.send_success_event(readme_content)
             
         except Exception as e:
-            print(f"❌ Error: {str(e)}")
-            self.send_json_response({"error": str(e)}, 500)
+            print(f"❌ Stream error: {str(e)}")
+            self.send_error_event(str(e))
+        finally:
+            # Clean up temporary files
+            if repo_path and os.path.exists(repo_path):
+                try:
+                    shutil.rmtree(os.path.dirname(repo_path), ignore_errors=True)
+                except:
+                    pass
 
-    def send_json_response(self, data, status_code=200):
-        self.send_response(status_code)
-        self.send_header('Content-type', 'application/json')
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-        self.end_headers()
-        self.wfile.write(json.dumps(data).encode())
+    def send_status_event(self, status):
+        """Send a status update event"""
+        data = json.dumps({"status": status})
+        self.wfile.write(f"data: {data}\n\n".encode())
+        self.wfile.flush()
+
+    def send_success_event(self, readme_content):
+        """Send the final success event with README content"""
+        data = json.dumps({"readme": readme_content})
+        self.wfile.write(f"data: {data}\n\n".encode())
+        self.wfile.flush()
+
+    def send_error_event(self, error_message):
+        """Send an error event"""
+        data = json.dumps({"error": error_message})
+        self.wfile.write(f"data: {data}\n\n".encode())
+        self.wfile.flush()
 
     def download_repo(self, repo_url: str):
         try:
@@ -394,26 +411,6 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
     -   State the license (e.g., "Distributed under the MIT License. See `LICENSE` for more information.").
 
 **Final Instruction:** The output MUST be ONLY the raw Markdown content. Do not add any commentary, greetings, or explanations before or after the Markdown. Adhere strictly to the requested format and quality bar.
-"""
-
-            # Create a fallback README in case the API fails
-            fallback_readme = f"""# {project_name or "Project README"}
-
-## Overview
-This is an auto-generated README for your project.
-
-## Features
-- Feature 1
-- Feature 2
-- Feature 3
-
-## Getting Started
-1. Clone the repository
-2. Install dependencies
-3. Run the application
-
-## License
-MIT
 """
             
             try:

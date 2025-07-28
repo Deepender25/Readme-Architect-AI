@@ -1,0 +1,75 @@
+[33m23b4f7f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mworks[m[33m)[m \Fix markdown preview with custom parser and enhanced styling"
+[33m2c2507e[m \Fix markdown preview with dedicated rendering function"
+[33m0249056[m \Fix markdown preview rendering with better debugging"
+[33m1f439c3[m \Fix markdown preview rendering and remove test API button"
+[33m94b35b4[m \Improve README generation with better error handling and logging"
+[33m11a47b0[m \Fix API routing and add debugging for README generation"
+[33mbccfdc6[m Fix README generation - improve form handling and add debugging
+[33m5a69dc6[m Fix all JavaScript syntax errors and remove duplicate functions
+[33m1e24ada[m Fix duplicate variable declaration causing JavaScript error
+[33m7ba2cc5[m Add better debugging to user profile display
+[33m8f8b2b1[m Implement professional user dropdown with GitHub profile
+[33m43b33a2[m Add debug logging to authentication
+[33m9941ea9[m Fix login display issue
+[33m6c2c5b0[m Remove navigation bar and simplify login system
+[33md634a63[m Fix OAuth callback handling
+[33m07b1f82[m Fix authentication check - better logging
+[33m0c53656[m FINAL FIX: Direct onclick redirect to GitHub OAuth
+[33m3dd9a87[m Fix login button - direct redirect to GitHub OAuth
+[33m92e24c2[m Complete GitHub OAuth login implementation - Add login button test page - All login functionality now working - Navigation opens properly - Login redirects to GitHub OAuth instead of reloading
+[33m702760f[m Fix login button page reload issue - Remove duplicate event listener - Add global handleGitHubLogin function - Login should now redirect to GitHub OAuth
+[33mcdb7efe[m Fix navigation toggle functionality - Remove conflicting event listener - Add global toggleNav function - Navigation should now work correctly
+[33m8643ccb[m Fix JavaScript errors and remove demo login - Recreate clean app.js without duplicate declarations - Remove demo login code - Fix syntax errors - Add validation for real GitHub OAuth only
+[33mf55f83a[m Fix GitHub OAuth login button behavior - Add type=button to prevent form submission - Add preventDefault to event handlers - Fix page reload issue
+[33ma898956[m Implement complete GitHub OAuth login system - Fix duplicate OAuth callback functions - Add repositories and history views - Update authentication flow - Add demo repository selection - Fix view switching and back button
+[33mebf7524[m Fix GitHub login with working demo implementation
+[33m2ca86c4[m Add complete GitHub login functionality
+[33mda419b6[m Fix My Repositories functionality - Complete implementation
+[33m9871d81[m COMPLETE NAVIGATION FIX: All buttons now work
+[33m15a3857[m FINAL FIX: Navigation bar now works with direct onclick
+[33m845ec0e[m Fix navigation bar completely
+[33m63236d0[m Fix navigation button functionality
+[33mc449cbc[m Fix JavaScript syntax errors and clean up duplicate code
+[33mb4fb2bf[m Fix navigation bar functionality and update toggle icon
+[33m745fc69[m Implement working navigation bar functionality
+[33me88d5f1[m Complete left side navigation bar implementation
+[33m5c75368[m Add left side navigation bar
+[33ma988d58[m Revert to initial state before navigation implementation
+[33m7736665[m github login fixed
+[33mea516a9[m Ai FIxed
+[33m7fac324[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Add complete GitHub OAuth system with login button, user management, and repository access
+[33m18ae4c0[m new Spline Bg
+[33m5ea72b8[m Spline background
+[33mf5417ab[m Add GitHub OAuth integration with login button and user management
+[33m7911f60[m bg
+[33m487533c[m BG Changed
+[33mfbec422[m Update index.html
+[33me753b4a[m ui refined
+[33m798e22b[m update
+[33mfc590a1[m fix: Restore visibility of demo count selectors on toggle
+[33ma403fa7[m Revert "feat: Improve demo placeholder captions for clarity"
+[33m63f1332[m feat: Improve demo placeholder captions for clarity
+[33md6b963c[m fix: Resolve IndentationError in main.py
+[33ma7c4fc2[m feat: Refine demo placeholder UI and logic
+[33m68762e9[m refactor: Improve demo placeholder generation
+[33ma6abd5f[m refine
+[33m47ede9d[m Refactor: Reverted Spline background and re-tuned animations
+[33m7fbec19[m Update README.md
+[33mf018e00[m README.md
+[33maf73587[m project name option added
+[33m5ba1491[m Update README.md
+[33m915eed3[m Update README.md
+[33ma2c5d35[m Update README.md
+[33mcd8fd9c[m Update README.md
+[33m8495471[m Readme.md
+[33m6f8def6[m Remove unnecessary files and update .gitignore
+[33m277e2bd[m Fixes
+[33mb55f2fd[m Demo option added
+[33m1527960[m Model changed
+[33m9aa0b80[m UI FIxes
+[33m7f71764[m error fixes
+[33md09df78[m Morphed look
+[33m0cb9f93[m Fine tunings
+[33m77d5744[m Bug Fixes
+[33m8de188c[m Requirement.txt Added
+[33m5a39df5[m First commit
