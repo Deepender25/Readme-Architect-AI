@@ -206,7 +206,10 @@ class handler(BaseHTTPRequestHandler):
                     repo_name = repo_url.split('/')[-2:] if '/' in repo_url else [repo_url]
                     repo_name = '/'.join(repo_name).replace('.git', '')
                     
-                    save_readme_history(
+                    print(f"💾 Saving history for user: {user_data.get('username', 'unknown')}")
+                    print(f"📁 Repository: {repo_name}")
+                    
+                    success = save_readme_history(
                         user_id=str(user_data.get('github_id', '')),
                         username=user_data.get('username', ''),
                         repository_url=repo_url,
@@ -219,8 +222,19 @@ class handler(BaseHTTPRequestHandler):
                             'num_videos': num_videos
                         }
                     )
+                    
+                    if success:
+                        print("✅ History saved successfully")
+                    else:
+                        print("❌ History save failed")
+                        
                 except Exception as e:
                     print(f"⚠️ Failed to save history: {e}")
+            else:
+                if not user_data:
+                    print("⚠️ No user authentication - history not saved")
+                if not readme_content:
+                    print("⚠️ No README content - history not saved")
             
             self.send_json_response({"readme": readme_content})
             
@@ -476,19 +490,29 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
 
     def handle_history(self):
         """Handle history requests"""
+        print("🔄 History request received")
         user_data = self.get_user_from_cookie()
         
         if not user_data:
+            print("❌ No user authentication found")
             self.send_json_response({'error': 'Authentication required.'}, 401)
             return
+        
+        print(f"👤 User authenticated: {user_data.get('username', 'unknown')}")
         
         if self.command == 'GET':
             # Get user history
             from .database import get_user_history
             try:
-                history = get_user_history(str(user_data.get('github_id', '')))
+                user_id = str(user_data.get('github_id', ''))
+                print(f"🔍 Getting history for user ID: {user_id}")
+                
+                history = get_user_history(user_id)
+                print(f"📊 Retrieved {len(history)} history items")
+                
                 self.send_json_response({'history': history})
             except Exception as e:
+                print(f"❌ Error retrieving history: {str(e)}")
                 self.send_json_response({'error': f'Failed to retrieve history: {str(e)}'}, 500)
         
         else:
