@@ -2,6 +2,10 @@
   "version": 2,
   "builds": [
     {
+      "src": "package.json",
+      "use": "@vercel/next"
+    },
+    {
       "src": "api/index.py",
       "use": "@vercel/python"
     },
@@ -10,30 +14,30 @@
       "use": "@vercel/python"
     },
     {
-      "src": "static/**",
-      "use": "@vercel/static"
+      "src": "api/stream.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
     {
-      "src": "/static/(.*)",
-      "dest": "/static/$1"
-    },
-    {
-      "src": "/",
-      "dest": "/static/index.html"
-    },
-    {
-      "src": "/api/generate",
+      "src": "/api/python/generate",
       "dest": "/api/generate.py"
     },
     {
-      "src": "/api/(.*)",
+      "src": "/api/python/stream",
+      "dest": "/api/stream.py"
+    },
+    {
+      "src": "/api/python/(.*)",
       "dest": "/api/index.py"
     },
     {
       "src": "/auth/(.*)",
       "dest": "/api/index.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
     }
   ]
 }
