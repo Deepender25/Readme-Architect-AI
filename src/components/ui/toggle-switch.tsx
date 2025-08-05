@@ -73,8 +73,9 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
           position: relative;
           z-index: 10;
           width: fit-content;
-          height: 50px;
+          height: 32px;
           border-radius: 9999px;
+          transform: scale(0.7);
         }
 
         .toggle-cont .toggle-input {
@@ -82,13 +83,13 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
         }
 
         .toggle-cont .toggle-label {
-          --gap: 5px;
-          --width: 50px;
+          --gap: 3px;
+          --width: 32px;
 
           cursor: pointer;
           position: relative;
           display: inline-block;
-          padding: 0.5rem;
+          padding: 0.3rem;
           width: calc((var(--width) + var(--gap)) * 2);
           height: 100%;
           background-color: var(--dark);
@@ -138,7 +139,7 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
           justify-content: center;
           align-items: center;
           width: var(--width);
-          height: 50px;
+          height: 32px;
           background-image: radial-gradient(
             circle at 50% 0%,
             #666666 0%,

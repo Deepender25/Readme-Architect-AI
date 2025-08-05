@@ -42,21 +42,21 @@ export const NumberInput: React.FC<NumberInputProps> = ({
       {label && (
         <label className="text-xs font-medium text-gray-300">{label}</label>
       )}
-      <div className="relative flex items-center max-w-[8rem]">
+      <div className="relative flex items-center w-20">
         <button 
           type="button" 
           onClick={handleDecrement}
           disabled={value <= min}
-          className="bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] disabled:opacity-50 disabled:cursor-not-allowed border border-[rgba(255,255,255,0.1)] rounded-l-lg p-3 h-11 focus:ring-green-500 focus:ring-2 focus:outline-none transition-all"
+          className="bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] disabled:opacity-50 disabled:cursor-not-allowed border border-[rgba(255,255,255,0.1)] rounded-l-md p-1.5 h-8 focus:ring-green-500 focus:ring-1 focus:outline-none transition-all"
         >
-          <Minus className="w-3 h-3 text-white" />
+          <Minus className="w-2.5 h-2.5 text-white" />
         </button>
         
         <input 
           type="text" 
           value={value}
           onChange={handleInputChange}
-          className="bg-[rgba(255,255,255,0.05)] border-x-0 border-[rgba(255,255,255,0.1)] h-11 text-center text-white text-sm focus:ring-green-500 focus:border-green-500 block w-full py-2.5 transition-all"
+          className="bg-[rgba(255,255,255,0.05)] border-x-0 border-[rgba(255,255,255,0.1)] h-8 text-center text-white text-xs focus:ring-green-500 focus:border-green-500 block w-full py-1 transition-all"
           min={min}
           max={max}
         />
@@ -65,9 +65,9 @@ export const NumberInput: React.FC<NumberInputProps> = ({
           type="button" 
           onClick={handleIncrement}
           disabled={value >= max}
-          className="bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] disabled:opacity-50 disabled:cursor-not-allowed border border-[rgba(255,255,255,0.1)] rounded-r-lg p-3 h-11 focus:ring-green-500 focus:ring-2 focus:outline-none transition-all"
+          className="bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] disabled:opacity-50 disabled:cursor-not-allowed border border-[rgba(255,255,255,0.1)] rounded-r-md p-1.5 h-8 focus:ring-green-500 focus:ring-1 focus:outline-none transition-all"
         >
-          <Plus className="w-3 h-3 text-white" />
+          <Plus className="w-2.5 h-2.5 text-white" />
         </button>
       </div>
     </div>

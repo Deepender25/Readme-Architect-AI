@@ -239,23 +239,25 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
               
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-3 rounded-lg border border-[rgba(255,255,255,0.1)] hover:border-green-400/50 transition-colors">
-                  <span className="text-white">Include demo section with placeholders</span>
-                  <ToggleSwitch
-                    checked={includeDemo}
-                    onChange={setIncludeDemo}
-                  />
+                  <span className="text-white text-sm">Include demo section with placeholders</span>
+                  <div className="flex-shrink-0">
+                    <ToggleSwitch
+                      checked={includeDemo}
+                      onChange={setIncludeDemo}
+                    />
+                  </div>
                 </div>
                 
                 {includeDemo && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
-                    className="space-y-4 pl-4 border-l-2 border-green-500/30"
+                    className="space-y-3 pl-4 border-l-2 border-green-500/30"
                   >
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Image className="w-4 h-4 text-green-400" />
-                        <span className="text-sm text-gray-300">Screenshots:</span>
+                        <Image className="w-3.5 h-3.5 text-green-400" />
+                        <span className="text-xs text-gray-300">Screenshots:</span>
                       </div>
                       <NumberInput
                         value={numScreenshots}
@@ -265,10 +267,10 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                       />
                     </div>
                     
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Video className="w-4 h-4 text-green-400" />
-                        <span className="text-sm text-gray-300">Videos:</span>
+                        <Video className="w-3.5 h-3.5 text-green-400" />
+                        <span className="text-xs text-gray-300">Videos:</span>
                       </div>
                       <NumberInput
                         value={numVideos}
