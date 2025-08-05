@@ -1,11 +1,15 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Code, GitBranch, Star, Zap } from 'lucide-react';
+import ReadmeGeneratorFlow from '@/components/readme-generator-flow';
+import GitHubReadmeEditor from '@/components/github-readme-editor';
 
 export default function SimpleCentered() {
-  const [repositoryUrl, setRepositoryUrl] = useState('');
+  const [showGenerator, setShowGenerator] = useState(false);
+  const [showEditor, setShowEditor] = useState(false);
+  const [generatedReadme, setGeneratedReadme] = useState('');
   const mouseRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -19,10 +23,19 @@ export default function SimpleCentered() {
     }
   };
 
-  const handleGenerateReadme = () => {
-    if (repositoryUrl.trim()) {
-      window.location.href = '?editor=true';
-    }
+  const handleStartGeneration = () => {
+    setShowGenerator(true);
+  };
+
+  const handleGenerationComplete = (readme: string) => {
+    setGeneratedReadme(readme);
+    setShowEditor(true);
+  };
+
+  const handleEditorClose = () => {
+    setShowEditor(false);
+    setShowGenerator(false);
+    setGeneratedReadme('');
   };
 
   return (
@@ -261,58 +274,78 @@ export default function SimpleCentered() {
         </div>
 
         <div className="mx-auto max-w-2xl py-8 sm:py-12 lg:py-16">
-          <div className="text-center !w-full !h-full">
-            <motion.h1
-              className="text-5xl font-bold tracking-tight text-white sm:text-7xl !w-full !h-[257px]"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              style={{
-                textShadow: '0 0 20px rgba(0, 255, 136, 0.3), 0 0 40px rgba(0, 255, 136, 0.2), 0 0 60px rgba(0, 255, 136, 0.1)'
-              }}>
-              Generate Perfect READMEs in Seconds
-            </motion.h1>
-            
-            <motion.p
-              className="mt-6 text-lg font-medium text-gray-400 sm:text-xl/8 max-w-2xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}>
-              Transform your repositories with AI-powered README generation. Just paste your GitHub URL and watch the magic happen.
-            </motion.p>
-            
-            <motion.div
-              className="mt-8 max-w-md mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}>
-              {/* Glassmorphism card */}
-              <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity" />
-                <div className="relative bg-[rgba(26,26,26,0.7)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] rounded-xl p-6">
-                  <div className="space-y-4">
-                    <input
-                      type="url"
-                      placeholder="https://github.com/username/repository"
-                      value={repositoryUrl}
-                      onChange={(e) => setRepositoryUrl(e.target.value)}
-                      className="w-full px-4 py-3 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-lg text-white placeholder-gray-500 text-sm transition-all focus:outline-none focus:border-green-400 focus:bg-[rgba(255,255,255,0.08)] !font-(family-name:--font-inter)" />
-  
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={handleGenerateReadme}
-                      className="w-full px-4 py-3 bg-green-400 text-black font-semibold rounded-lg transition-all duration-300 hover:bg-green-300 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-black"
-                      style={{
-                        boxShadow: '0 0 20px rgba(0, 255, 136, 0.4), 0 0 40px rgba(0, 255, 136, 0.2)'
-                      }}>
-                      Generate README
-                    </motion.button>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
+          <AnimatePresence mode="wait">
+            {!showEditor ? (
+              <motion.div
+                key="hero-content"
+                initial={{ opacity: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                className="text-center !w-full !h-full"
+              >
+                <motion.h1
+                  className="text-5xl font-bold tracking-tight text-white sm:text-7xl"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8 }}
+                  style={{
+                    textShadow: '0 0 20px rgba(0, 255, 136, 0.3), 0 0 40px rgba(0, 255, 136, 0.2), 0 0 60px rgba(0, 255, 136, 0.1)'
+                  }}>
+                  Generate Perfect READMEs in Seconds
+                </motion.h1>
+                
+                <motion.p
+                  className="mt-6 text-lg font-medium text-gray-400 sm:text-xl/8 max-w-2xl mx-auto"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}>
+                  Transform your repositories with AI-powered README generation. Just paste your GitHub URL and watch the magic happen.
+                </motion.p>
+                
+                <motion.div
+                  className="mt-8"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}>
+                  
+                  {!showGenerator ? (
+                    <div className="max-w-md mx-auto">
+                      <div className="relative group">
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity" />
+                        <div className="relative bg-[rgba(26,26,26,0.7)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] rounded-xl p-6">
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={handleStartGeneration}
+                            className="w-full px-6 py-4 bg-green-400 text-black font-semibold rounded-lg transition-all duration-300 hover:bg-green-300 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-black text-lg"
+                            style={{
+                              boxShadow: '0 0 20px rgba(0, 255, 136, 0.4), 0 0 40px rgba(0, 255, 136, 0.2)'
+                            }}>
+                            Start README Generation
+                          </motion.button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <ReadmeGeneratorFlow onComplete={handleGenerationComplete} />
+                  )}
+                </motion.div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="editor-content"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                className="fixed inset-0 z-50 bg-black"
+              >
+                <GitHubReadmeEditor 
+                  initialContent={generatedReadme}
+                  onClose={handleEditorClose}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>

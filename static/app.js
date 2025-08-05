@@ -67,11 +67,11 @@ function setupFormSubmission() {
         console.error('Form element not found!');
         return;
     }
-    
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         console.log('Form submitted!');
-        
+
         const repoUrl = repoUrlInput?.value;
         if (!repoUrl || isAnimating) {
             console.log('No repo URL or animation in progress');
@@ -95,15 +95,15 @@ function setupFormSubmission() {
         try {
             // Try streaming first, fallback to regular API
             const useStreaming = true; // You can make this configurable
-            
+
             if (useStreaming && typeof EventSource !== 'undefined') {
                 console.log('🚀 Using streaming API for real-time updates');
-                
+
                 const eventSource = new EventSource(`/api/stream?${params.toString()}`);
-                
-                eventSource.onmessage = function(event) {
+
+                eventSource.onmessage = function (event) {
                     const data = JSON.parse(event.data);
-                    
+
                     if (data.status) {
                         console.log('📡 Status update:', data.status);
                         loaderText.textContent = data.status;
@@ -112,13 +112,13 @@ function setupFormSubmission() {
                         if (animationTimeout) {
                             clearInterval(animationTimeout);
                         }
-                        
+
                         codeView.textContent = data.readme;
-                        
+
                         // Simple and clean preview rendering like temp app.js
                         previewContent.innerHTML = marked.parse(data.readme);
                         hljs.highlightAll();
-                        
+
                         setView('output');
                         if (typeof animateOutputIn === 'function') {
                             animateOutputIn(); // Animate output when content is ready
@@ -129,7 +129,7 @@ function setupFormSubmission() {
                         if (animationTimeout) {
                             clearInterval(animationTimeout);
                         }
-                        
+
                         previewContent.innerHTML = `<div style="color: #ff8a8a; padding: 20px;"><h3>Generation Failed</h3><p>${data.error}</p></div>`;
                         codeView.textContent = `/*\n  Error: ${data.error}\n*/`;
                         hljs.highlightAll();
@@ -137,24 +137,24 @@ function setupFormSubmission() {
                         eventSource.close();
                     }
                 };
-                
-                eventSource.onerror = function(err) {
+
+                eventSource.onerror = function (err) {
                     console.error('❌ EventSource failed, falling back to regular API:', err);
                     eventSource.close();
-                    
+
                     // Fallback to regular API
                     handleRegularAPI();
                 };
-                
+
             } else {
                 console.log('📡 Using regular API (streaming not available)');
                 handleRegularAPI();
             }
-            
+
             async function handleRegularAPI() {
                 const response = await fetch(`/api/generate?${params.toString()}`);
                 console.log('API response status:', response.status);
-                
+
                 const data = await response.json();
                 console.log('API response data:', data);
 
@@ -165,11 +165,11 @@ function setupFormSubmission() {
                 if (data.readme) {
                     console.log('README generated successfully');
                     codeView.textContent = data.readme;
-                    
+
                     // Simple and clean preview rendering like temp app.js
                     previewContent.innerHTML = marked.parse(data.readme);
                     hljs.highlightAll();
-                    
+
                     setView('output');
                     if (typeof animateOutputIn === 'function') {
                         animateOutputIn(); // Animate output when content is ready
@@ -188,7 +188,7 @@ function setupFormSubmission() {
                     setView('output');
                 }
             }
-            
+
         } catch (error) {
             if (animationTimeout) {
                 clearInterval(animationTimeout);
@@ -200,7 +200,7 @@ function setupFormSubmission() {
             setView('output');
         }
     });
-    
+
     console.log('Form submission handler attached successfully');
 }
 
@@ -252,7 +252,7 @@ function setupEventListeners() {
         });
         console.log('✓ Demo checkbox event listener attached');
     }
-    
+
     // Copy button
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
@@ -269,7 +269,7 @@ function setupEventListeners() {
         });
         console.log('✓ Copy button event listener attached');
     }
-    
+
     console.log('All event listeners setup complete');
 }
 
@@ -285,14 +285,14 @@ function deleteCookie(name) {
     // Delete cookie with multiple path variations to ensure complete removal
     const paths = ['/', '/auth', '/api'];
     const domains = [window.location.hostname, `.${window.location.hostname}`];
-    
+
     paths.forEach(path => {
         domains.forEach(domain => {
             document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=${domain};`;
             document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path};`;
         });
     });
-    
+
     // Also try without domain
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     console.log(`🗑️ Deleted cookie: ${name}`);
@@ -354,16 +354,16 @@ async function validateUserToken(userData) {
         currentUser = userData;
         showUserProfile(userData);
         console.log('✅ User profile should now be visible');
-        
+
         // Handle post-login actions
         handlePostLoginAction();
-        
+
     } catch (error) {
         console.log('⚠️ Could not validate token, assuming valid:', error);
         // If we can't validate, assume it's valid (network issues, etc.)
         currentUser = userData;
         showUserProfile(userData);
-        
+
         // Handle post-login actions
         handlePostLoginAction();
     }
@@ -372,13 +372,13 @@ async function validateUserToken(userData) {
 // Handle actions that were requested before login
 function handlePostLoginAction() {
     const postLoginAction = sessionStorage.getItem('postLoginAction');
-    
+
     if (postLoginAction) {
         console.log('🎯 Executing post-login action:', postLoginAction);
-        
+
         // Clear the stored action
         sessionStorage.removeItem('postLoginAction');
-        
+
         // Execute the requested action
         switch (postLoginAction) {
             case 'repositories':
@@ -402,12 +402,12 @@ function handlePostLoginAction() {
 // Handle invalid authentication (revoked OAuth, expired tokens, etc.)
 function handleInvalidAuth() {
     console.log('🚫 Invalid authentication detected, clearing user data...');
-    
+
     // Clear all stored data
     currentUser = null;
     deleteCookie('github_user');
     clearUserProfileData();
-    
+
     // Clear storage
     try {
         localStorage.removeItem('github_user');
@@ -415,7 +415,7 @@ function handleInvalidAuth() {
     } catch (e) {
         console.log('Could not clear storage:', e);
     }
-    
+
     // Show login button
     showLoginButton();
 }
@@ -438,7 +438,7 @@ function showUserProfile(userData) {
     if (userProfile) {
         userProfile.style.display = 'block';
         console.log('✅ Shown user profile container');
-        
+
         // Ensure the dropdown is initially hidden
         const dropdown = document.getElementById('user-dropdown');
         if (dropdown) {
@@ -456,14 +456,14 @@ function showUserProfile(userData) {
     } else {
         console.error('❌ Could not set user avatar');
     }
-    
+
     if (userName && (userData.name || userData.username)) {
         userName.textContent = userData.name || userData.username;
         console.log('✅ Set user name:', userData.name || userData.username);
     } else {
         console.error('❌ Could not set user name');
     }
-    
+
     if (userHandle && userData.username) {
         userHandle.textContent = `@${userData.username}`;
         console.log('✅ Set user handle:', userData.username);
@@ -509,7 +509,7 @@ function showLoginButton() {
 
 function handleLogout() {
     console.log('🚪 Logging out user...');
-    
+
     // Close dropdown if open
     const dropdown = document.getElementById('user-dropdown');
     const trigger = document.querySelector('.user-profile-trigger');
@@ -517,15 +517,15 @@ function handleLogout() {
         dropdown.style.display = 'none';
         if (trigger) trigger.classList.remove('active');
     }
-    
+
     // Clear all user data
     currentUser = null;
-    
+
     // Delete all possible cookies
     deleteCookie('github_user');
     deleteCookie('session');
     deleteCookie('auth_token');
-    
+
     // Clear localStorage and sessionStorage
     try {
         localStorage.removeItem('github_user');
@@ -536,21 +536,21 @@ function handleLogout() {
     } catch (e) {
         console.log('⚠️ Could not clear storage:', e);
     }
-    
+
     // Reset UI to login state
     showLoginButton();
-    
+
     // Clear user profile data
     clearUserProfileData();
-    
+
     // Return to input view if in user-specific views
     if (currentView === 'repositories' || currentView === 'history') {
         setView('input');
     }
-    
+
     // Show confirmation
     console.log('✅ User logged out successfully');
-    
+
     // Optional: Redirect to clear any URL parameters
     if (window.location.search) {
         window.history.replaceState({}, document.title, window.location.pathname);
@@ -560,7 +560,7 @@ function handleLogout() {
 // Clear all user profile data from UI
 function clearUserProfileData() {
     console.log('🧹 Clearing user profile data from UI...');
-    
+
     // Clear profile trigger elements
     if (userAvatar) {
         userAvatar.src = '';
@@ -572,13 +572,13 @@ function clearUserProfileData() {
     if (userHandle) {
         userHandle.textContent = '';
     }
-    
+
     // Clear dropdown header elements
     const dropdownAvatar = document.getElementById('dropdown-avatar');
     const dropdownName = document.getElementById('dropdown-name');
     const dropdownHandle = document.getElementById('dropdown-handle');
     const dropdownEmail = document.getElementById('dropdown-email');
-    
+
     if (dropdownAvatar) {
         dropdownAvatar.src = '';
         dropdownAvatar.alt = 'User Avatar';
@@ -593,7 +593,7 @@ function clearUserProfileData() {
         dropdownEmail.textContent = '';
         dropdownEmail.style.display = 'none';
     }
-    
+
     console.log('✅ User profile data cleared');
 }
 
@@ -716,7 +716,7 @@ async function loadHistory() {
 
         const data = await response.json();
         console.log('📊 History data received:', data);
-        
+
         displayHistory(data.history || []);
     } catch (error) {
         console.error('❌ Error loading history:', error);
@@ -733,9 +733,9 @@ async function loadHistory() {
 
 function displayHistory(historyItems) {
     const historyList = document.getElementById('history-list');
-    
+
     console.log('📋 Displaying history items:', historyItems.length, historyItems);
-    
+
     if (historyItems.length === 0) {
         console.log('📝 No history items found');
         historyList.innerHTML = `
@@ -795,22 +795,22 @@ function viewHistoryItem(historyId) {
         method: 'GET',
         credentials: 'include'
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.item) {
-            // Display the README content in the output view
-            codeView.textContent = data.item.readme_content;
-            previewContent.innerHTML = marked.parse(data.item.readme_content);
-            hljs.highlightAll();
-            setView('output');
-        } else {
+        .then(response => response.json())
+        .then(data => {
+            if (data.item) {
+                // Display the README content in the output view
+                codeView.textContent = data.item.readme_content;
+                previewContent.innerHTML = marked.parse(data.item.readme_content);
+                hljs.highlightAll();
+                setView('output');
+            } else {
+                alert('Failed to load history item');
+            }
+        })
+        .catch(error => {
+            console.error('Error loading history item:', error);
             alert('Failed to load history item');
-        }
-    })
-    .catch(error => {
-        console.error('Error loading history item:', error);
-        alert('Failed to load history item');
-    });
+        });
 }
 
 function regenerateFromHistory(repoUrl, projectName) {
@@ -832,19 +832,19 @@ function deleteHistoryItem(historyId) {
         method: 'DELETE',
         credentials: 'include'
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) {
-            // Reload history to reflect the deletion
-            loadHistory();
-        } else {
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                // Reload history to reflect the deletion
+                loadHistory();
+            } else {
+                alert('Failed to delete history item');
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting history item:', error);
             alert('Failed to delete history item');
-        }
-    })
-    .catch(error => {
-        console.error('Error deleting history item:', error);
-        alert('Failed to delete history item');
-    });
+        });
 }
 
 function selectRepository(repoUrl) {
@@ -920,13 +920,13 @@ function setView(viewName) {
         }
         nextViewEl.style.display = 'flex';
         currentView = viewName;
-        
+
         if (viewName === 'input') {
             backBtn.classList.remove('visible');
         } else {
             backBtn.classList.add('visible');
         }
-        
+
         isAnimating = false;
     }
 }
@@ -998,12 +998,12 @@ function showCopySuccessAnimation() {
                 });
             }
         })
-        .add({
-            targets: slider,
-            translateX: ['100%', '0%'],
-            opacity: [0, 1],
-            duration: 300
-        });
+            .add({
+                targets: slider,
+                translateX: ['100%', '0%'],
+                opacity: [0, 1],
+                duration: 300
+            });
     } else {
         // Fallback without animation
         copyBtn.innerHTML = '✓ Copied!';
@@ -1016,7 +1016,7 @@ function showCopySuccessAnimation() {
 // Initialize
 function initialize() {
     console.log('Initializing application...');
-    
+
     // Check if all required elements exist
     const requiredElements = {
         'form': form,
@@ -1028,7 +1028,7 @@ function initialize() {
         'codeView': codeView,
         'previewContent': previewContent
     };
-    
+
     for (const [name, element] of Object.entries(requiredElements)) {
         if (!element) {
             console.error(`Required element '${name}' not found!`);
@@ -1036,13 +1036,13 @@ function initialize() {
             console.log(`✓ Element '${name}' found`);
         }
     }
-    
+
     // Setup form submission
     setupFormSubmission();
-    
+
     // Setup other event listeners
     setupEventListeners();
-    
+
     // Handle OAuth callback and check auth status
     handleOAuthCallback();
     checkAuthStatus();
@@ -1060,7 +1060,7 @@ function initialize() {
     if (outputView) {
         outputView.style.display = 'none';
     }
-    
+
     console.log('Application initialized successfully');
     loaderView.style.display = 'none';
     repositoriesView.style.display = 'none';
@@ -1069,10 +1069,10 @@ function initialize() {
 // Enhanced dropdown functionality with proper error handling
 function toggleUserDropdown() {
     console.log('🔽 toggleUserDropdown called');
-    
+
     const dropdown = document.getElementById('user-dropdown');
     const trigger = document.querySelector('.user-profile-trigger');
-    
+
     console.log('Dropdown element:', dropdown);
     console.log('Trigger element:', trigger);
 
@@ -1080,7 +1080,7 @@ function toggleUserDropdown() {
         console.error('❌ Dropdown element not found!');
         return;
     }
-    
+
     if (!trigger) {
         console.error('❌ Trigger element not found!');
         return;
@@ -1088,7 +1088,7 @@ function toggleUserDropdown() {
 
     const isOpen = dropdown.style.display === 'block';
     console.log('Current dropdown state - isOpen:', isOpen);
-    
+
     if (isOpen) {
         dropdown.style.display = 'none';
         trigger.classList.remove('active');
@@ -1103,10 +1103,10 @@ function toggleUserDropdown() {
 // Login dropdown functionality
 function toggleLoginDropdown() {
     console.log('🔽 toggleLoginDropdown called');
-    
+
     const dropdown = document.getElementById('login-dropdown');
     const trigger = document.querySelector('.login-btn');
-    
+
     if (!dropdown || !trigger) {
         console.error('❌ Login dropdown elements not found!');
         return;
@@ -1114,7 +1114,7 @@ function toggleLoginDropdown() {
 
     const isOpen = dropdown.style.display === 'block';
     console.log('Current login dropdown state - isOpen:', isOpen);
-    
+
     if (isOpen) {
         dropdown.style.display = 'none';
         trigger.classList.remove('active');
@@ -1155,7 +1155,7 @@ function openGitHubProfile() {
         alert('Please log in first');
         return;
     }
-    
+
     const profileUrl = currentUser.html_url || `https://github.com/${currentUser.username}`;
     console.log('🔗 Opening GitHub profile:', profileUrl);
     window.open(profileUrl, '_blank');
@@ -1187,10 +1187,10 @@ function showHelp() {
 function loginAndShowRepositories() {
     console.log('📚 Login and show repositories...');
     toggleLoginDropdown(); // Close dropdown
-    
+
     // Store the intended action
     sessionStorage.setItem('postLoginAction', 'repositories');
-    
+
     // Proceed to GitHub OAuth
     window.location.href = '/auth/github';
 }
@@ -1198,10 +1198,10 @@ function loginAndShowRepositories() {
 function loginAndShowHistory() {
     console.log('📜 Login and show history...');
     toggleLoginDropdown(); // Close dropdown
-    
+
     // Store the intended action
     sessionStorage.setItem('postLoginAction', 'history');
-    
+
     // Proceed to GitHub OAuth
     window.location.href = '/auth/github';
 }
@@ -1209,10 +1209,10 @@ function loginAndShowHistory() {
 function loginAndShowProfile() {
     console.log('👤 Login and show profile...');
     toggleLoginDropdown(); // Close dropdown
-    
+
     // Store the intended action
     sessionStorage.setItem('postLoginAction', 'profile');
-    
+
     // Proceed to GitHub OAuth
     window.location.href = '/auth/github';
 }
@@ -1220,10 +1220,10 @@ function loginAndShowProfile() {
 function loginAndShowSettings() {
     console.log('⚙️ Login and show settings...');
     toggleLoginDropdown(); // Close dropdown
-    
+
     // Store the intended action
     sessionStorage.setItem('postLoginAction', 'settings');
-    
+
     // Proceed to GitHub OAuth
     window.location.href = '/auth/github';
 }
@@ -1231,7 +1231,7 @@ function loginAndShowSettings() {
 function proceedToLogin() {
     console.log('🚀 Proceeding to GitHub login...');
     toggleLoginDropdown(); // Close dropdown
-    
+
     // Direct login without specific action
     window.location.href = '/auth/github';
 }
@@ -1288,12 +1288,12 @@ document.addEventListener('click', (e) => {
 // Simple and clean markdown preview function (like temp app.js)
 function renderMarkdownPreview(markdownContent) {
     console.log('🔄 Rendering markdown preview with marked.js');
-    
+
     if (!previewContent) {
         console.error('❌ Preview content element not found');
         return;
     }
-    
+
     try {
         // Use marked library for clean, simple rendering
         if (typeof marked !== 'undefined') {
@@ -1317,7 +1317,7 @@ function renderMarkdownPreview(markdownContent) {
 }
 
 // Test function for markdown preview (simplified like temp app.js)
-window.testPreview = function() {
+window.testPreview = function () {
     const testMarkdown = `# Test README
 
 ## Overview
@@ -1346,7 +1346,7 @@ This preview should show \`inline code\` and **bold text** properly.
 
 > This is a blockquote example with enhanced styling.
 `;
-    
+
     console.log('🧪 Testing simple preview with sample README...');
     codeView.textContent = testMarkdown;
     previewContent.innerHTML = marked.parse(testMarkdown);
@@ -1388,7 +1388,7 @@ document.addEventListener('click', (e) => {
             if (trigger) trigger.classList.remove('active');
         }
     }
-    
+
     // Close login dropdown when clicking outside
     const loginDropdownContainer = document.querySelector('.login-dropdown-container');
     const loginDropdown = document.getElementById('login-dropdown');
@@ -1408,16 +1408,16 @@ document.addEventListener('keydown', (e) => {
         // Close user dropdown
         const dropdown = document.getElementById('user-dropdown');
         const trigger = document.querySelector('.user-profile-trigger');
-        
+
         if (dropdown && dropdown.style.display === 'block') {
             dropdown.style.display = 'none';
             if (trigger) trigger.classList.remove('active');
         }
-        
+
         // Close login dropdown
         const loginDropdown = document.getElementById('login-dropdown');
         const loginTrigger = document.querySelector('.login-btn');
-        
+
         if (loginDropdown && loginDropdown.style.display === 'block') {
             loginDropdown.style.display = 'none';
             if (loginTrigger) loginTrigger.classList.remove('active');
@@ -1426,15 +1426,15 @@ document.addEventListener('keydown', (e) => {
 });
 
 // Force logout function - can be called manually to clear all user data
-window.forceLogout = function() {
+window.forceLogout = function () {
     console.log('🔧 Force logout initiated...');
     handleLogout();
-    
+
     // Additional cleanup - clear ALL cookies
-    document.cookie.split(";").forEach(function(c) { 
-        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+    document.cookie.split(";").forEach(function (c) {
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
     });
-    
+
     // Clear all storage
     try {
         localStorage.clear();
@@ -1442,10 +1442,10 @@ window.forceLogout = function() {
     } catch (e) {
         console.log('Could not clear all storage:', e);
     }
-    
+
     console.log('✅ Force logout completed');
     alert('✅ All user data cleared! The page will reload to ensure clean state.');
-    
+
     // Reload page to ensure completely clean state
     setTimeout(() => {
         window.location.reload();
@@ -1453,10 +1453,10 @@ window.forceLogout = function() {
 };
 
 // Comprehensive dropdown diagnostic and fix function
-window.fixDropdown = function() {
+window.fixDropdown = function () {
     console.log('🔧 DROPDOWN DIAGNOSTIC AND FIX');
     console.log('================================');
-    
+
     // Step 1: Check all required elements
     const elements = {
         userLogin: document.getElementById('user-login'),
@@ -1467,7 +1467,7 @@ window.fixDropdown = function() {
         userName: document.getElementById('user-name'),
         userHandle: document.getElementById('user-handle')
     };
-    
+
     console.log('📋 ELEMENT CHECK:');
     Object.entries(elements).forEach(([name, element]) => {
         if (element) {
@@ -1476,12 +1476,12 @@ window.fixDropdown = function() {
             console.error(`❌ ${name}: NOT FOUND`);
         }
     });
-    
+
     // Step 2: Check current user state
     console.log('\n👤 USER STATE:');
     console.log('Current user:', currentUser);
     console.log('Cookies:', document.cookie);
-    
+
     // Step 3: Force setup if user exists but profile not shown
     if (!currentUser) {
         console.log('\n🧪 SIMULATING LOGIN (no user found):');
@@ -1492,59 +1492,59 @@ window.fixDropdown = function() {
             html_url: 'https://github.com/testuser',
             access_token: 'mock_token'
         };
-        
+
         currentUser = mockUser;
         showUserProfile(mockUser);
     }
-    
+
     // Step 4: Force show profile elements
     console.log('\n🔧 FORCING PROFILE VISIBILITY:');
     if (elements.userLogin) {
         elements.userLogin.style.display = 'none';
         console.log('✅ Hidden login button');
     }
-    
+
     if (elements.userProfile) {
         elements.userProfile.style.display = 'block';
         console.log('✅ Shown user profile');
     }
-    
+
     if (elements.userDropdown) {
         elements.userDropdown.style.display = 'none';
         console.log('✅ Reset dropdown to hidden');
     }
-    
+
     // Step 5: Set up profile data
     if (currentUser && elements.userAvatar) {
         elements.userAvatar.src = currentUser.avatar_url || 'https://github.com/github.png';
         console.log('✅ Set avatar');
     }
-    
+
     if (currentUser && elements.userName) {
         elements.userName.textContent = currentUser.name || currentUser.username || 'Test User';
         console.log('✅ Set name');
     }
-    
+
     if (currentUser && elements.userHandle) {
         elements.userHandle.textContent = `@${currentUser.username || 'testuser'}`;
         console.log('✅ Set handle');
     }
-    
+
     // Step 6: Test dropdown toggle
     console.log('\n🧪 TESTING DROPDOWN TOGGLE:');
     if (elements.userDropdown && elements.userProfileTrigger) {
         console.log('Attempting to toggle dropdown...');
         toggleUserDropdown();
-        
+
         setTimeout(() => {
             const isVisible = elements.userDropdown.style.display === 'block';
             console.log(`Dropdown visible: ${isVisible}`);
-            
+
             if (isVisible) {
                 console.log('🎉 SUCCESS: Dropdown is working!');
             } else {
                 console.log('❌ FAILED: Dropdown still not working');
-                
+
                 // Force show dropdown for testing
                 elements.userDropdown.style.display = 'block';
                 elements.userProfileTrigger.classList.add('active');
@@ -1552,7 +1552,7 @@ window.fixDropdown = function() {
             }
         }, 100);
     }
-    
+
     console.log('\n📝 SUMMARY:');
     console.log('- Run this function to diagnose dropdown issues');
     console.log('- Check console output for specific problems');
@@ -1561,34 +1561,34 @@ window.fixDropdown = function() {
 };
 
 // Check authentication status manually
-window.checkAuth = function() {
+window.checkAuth = function () {
     console.log('🔍 Manual auth check...');
     console.log('Current user:', currentUser);
     console.log('All cookies:', document.cookie);
     console.log('Profile display:', document.getElementById('user-profile')?.style.display);
     console.log('Login display:', document.getElementById('user-login')?.style.display);
-    
+
     checkAuthStatus();
 };
 
 // Quick fix for dropdown - run this if dropdown not working
-window.quickFixDropdown = function() {
+window.quickFixDropdown = function () {
     console.log('⚡ QUICK DROPDOWN FIX');
-    
+
     // Ensure user profile is visible
     const userProfile = document.getElementById('user-profile');
     const userLogin = document.getElementById('user-login');
-    
+
     if (userProfile) {
         userProfile.style.display = 'block';
         console.log('✅ Profile container shown');
     }
-    
+
     if (userLogin) {
         userLogin.style.display = 'none';
         console.log('✅ Login button hidden');
     }
-    
+
     // Set mock user if none exists
     if (!currentUser) {
         currentUser = {
@@ -1596,30 +1596,30 @@ window.quickFixDropdown = function() {
             name: 'Test User',
             avatar_url: 'https://github.com/github.png'
         };
-        
+
         // Set profile data
         const avatar = document.getElementById('user-avatar');
         const name = document.getElementById('user-name');
         const handle = document.getElementById('user-handle');
-        
+
         if (avatar) avatar.src = currentUser.avatar_url;
         if (name) name.textContent = currentUser.name;
         if (handle) handle.textContent = `@${currentUser.username}`;
-        
+
         console.log('✅ Mock user data set');
     }
-    
+
     // Test dropdown
     console.log('🧪 Testing dropdown...');
     toggleUserDropdown();
-    
+
     console.log('✅ Quick fix completed - try clicking your avatar now!');
 };
 
 // Test function to simulate login
-window.testLogin = function() {
+window.testLogin = function () {
     console.log('🧪 Simulating user login...');
-    
+
     const mockUser = {
         username: 'testuser',
         name: 'Test User',
@@ -1627,10 +1627,10 @@ window.testLogin = function() {
         html_url: 'https://github.com/testuser',
         access_token: 'mock_token'
     };
-    
+
     showUserProfile(mockUser);
     console.log('✅ Mock login completed');
-    
+
     // Test the dropdown after a short delay
     setTimeout(() => {
         console.log('🧪 Testing user dropdown...');
@@ -1639,9 +1639,9 @@ window.testLogin = function() {
 };
 
 // Test function specifically for user dropdown
-window.testUserDropdown = function() {
+window.testUserDropdown = function () {
     console.log('🧪 Testing user dropdown functionality...');
-    
+
     const elements = {
         'user-profile': document.getElementById('user-profile'),
         'user-dropdown': document.getElementById('user-dropdown'),
@@ -1649,13 +1649,13 @@ window.testUserDropdown = function() {
         'user-avatar': document.getElementById('user-avatar'),
         'user-name': document.getElementById('user-name')
     };
-    
+
     console.log('Elements check:', elements);
-    
+
     Object.entries(elements).forEach(([name, element]) => {
         if (element) {
             console.log(`✅ ${name}: Found`, element.style.display || 'default');
-            
+
             // Check computed styles
             if (element) {
                 const computed = window.getComputedStyle(element);
@@ -1667,17 +1667,17 @@ window.testUserDropdown = function() {
             console.error(`❌ ${name}: Not found`);
         }
     });
-    
+
     // Force show profile if hidden
     if (elements['user-profile']) {
         elements['user-profile'].style.display = 'block';
         console.log('🔧 Forced user profile to show');
     }
-    
+
     // Try to toggle dropdown
     console.log('🔧 Attempting to toggle dropdown...');
     toggleUserDropdown();
-    
+
     // Check dropdown state after toggle
     setTimeout(() => {
         const dropdown = elements['user-dropdown'];
@@ -1692,25 +1692,25 @@ window.testUserDropdown = function() {
 };
 
 // IMMEDIATE FIX FOR DROPDOWN ISSUE
-window.fixDropdownNow = function() {
+window.fixDropdownNow = function () {
     console.log('🚀 FIXING DROPDOWN IMMEDIATELY');
-    
+
     // Step 1: Ensure user profile is visible
     const userLogin = document.getElementById('user-login');
     const userProfile = document.getElementById('user-profile');
-    
+
     if (userLogin) {
         userLogin.style.display = 'none';
         console.log('✅ Login hidden');
     }
-    
+
     if (userProfile) {
         userProfile.style.display = 'block';
         userProfile.style.visibility = 'visible';
         userProfile.style.opacity = '1';
         console.log('✅ Profile shown');
     }
-    
+
     // Step 2: Set up user data if missing
     if (!currentUser) {
         currentUser = {
@@ -1720,12 +1720,12 @@ window.fixDropdownNow = function() {
             html_url: 'https://github.com/user'
         };
     }
-    
+
     // Step 3: Set profile elements
     const avatar = document.getElementById('user-avatar');
     const name = document.getElementById('user-name');
     const handle = document.getElementById('user-handle');
-    
+
     if (avatar) {
         avatar.src = currentUser.avatar_url;
         avatar.style.display = 'block';
@@ -1738,11 +1738,11 @@ window.fixDropdownNow = function() {
         handle.textContent = `@${currentUser.username}`;
         handle.style.display = 'block';
     }
-    
+
     // Step 4: Fix dropdown CSS and make it work
     const dropdown = document.getElementById('user-dropdown');
     const trigger = document.querySelector('.user-profile-trigger');
-    
+
     if (dropdown) {
         // Reset dropdown styles
         dropdown.style.position = 'absolute';
@@ -1758,14 +1758,14 @@ window.fixDropdownNow = function() {
         dropdown.style.display = 'none'; // Initially hidden
         console.log('✅ Dropdown styles fixed');
     }
-    
+
     if (trigger) {
         // Remove any existing click handlers and add new one
-        trigger.onclick = function(e) {
+        trigger.onclick = function (e) {
             e.preventDefault();
             e.stopPropagation();
             console.log('🖱️ Profile clicked!');
-            
+
             if (dropdown) {
                 const isVisible = dropdown.style.display === 'block';
                 if (isVisible) {
@@ -1779,12 +1779,12 @@ window.fixDropdownNow = function() {
                 }
             }
         };
-        
+
         trigger.style.cursor = 'pointer';
         trigger.style.display = 'flex';
         console.log('✅ Click handler attached');
     }
-    
+
     // Step 5: Test the dropdown
     console.log('🧪 Testing dropdown...');
     if (trigger && dropdown) {
@@ -1793,7 +1793,7 @@ window.fixDropdownNow = function() {
             console.log('Dropdown should be visible now. Check the top-right corner!');
         }, 100);
     }
-    
+
     console.log('🎉 DROPDOWN FIX COMPLETED!');
     console.log('👆 Click your avatar in the top-right corner to test');
 };
@@ -1803,7 +1803,7 @@ function autoFixDropdown() {
     setTimeout(() => {
         const userProfile = document.getElementById('user-profile');
         const userDropdown = document.getElementById('user-dropdown');
-        
+
         // If profile exists but dropdown doesn't work, auto-fix it
         if (userProfile && userProfile.style.display === 'block' && userDropdown) {
             console.log('🔧 Auto-fixing dropdown on page load...');
