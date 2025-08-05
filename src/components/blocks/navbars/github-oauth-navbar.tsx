@@ -3,21 +3,14 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Menu, X, User, Settings, FileText, LogOut, ChevronDown } from 'lucide-react';
+import { useAuth } from '@/lib/auth';
 
 interface GitHubOAuthNavbarProps {
-  isAuthenticated?: boolean;
-  user?: {
-    name: string;
-    avatar: string;
-  };
-  onAuthAction?: () => void;
+  // Props are now optional since we use the auth hook
 }
 
-export default function GitHubOAuthNavbar({
-  isAuthenticated = false,
-  user = { name: 'John Doe', avatar: 'https://github.com/placeholder.png' },
-  onAuthAction = () => console.log('GitHub OAuth triggered')
-}: GitHubOAuthNavbarProps) {
+export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
+  const { user, isAuthenticated, isLoading, login, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -110,11 +103,14 @@ export default function GitHubOAuthNavbar({
                   exit={{ opacity: 0, scale: 0.95 }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={onAuthAction}
-                  className="relative flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-500 border border-green-500/50 rounded-lg overflow-hidden group hover:border-green-500/80 transition-all duration-200">
+                  onClick={login}
+                  disabled={isLoading}
+                  className="relative flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-500 border border-green-500/50 rounded-lg overflow-hidden group hover:border-green-500/80 transition-all duration-200 disabled:opacity-50">
                   
                   <Github className="w-4 h-4" />
-                  <span className="relative z-10">Sign in with GitHub</span>
+                  <span className="relative z-10">
+                    {isLoading ? 'Loading...' : 'Sign in with GitHub'}
+                  </span>
                   
                   {/* Subtle glow effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-green-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -151,7 +147,7 @@ export default function GitHubOAuthNavbar({
                     }}>
                     
                     <img
-                      src={user.avatar}
+                      src={user.avatar_url}
                       alt={user.name}
                       className="w-7 h-7 rounded-full border border-green-500/60 shadow-sm shadow-green-500/20" />
                     
@@ -180,7 +176,9 @@ export default function GitHubOAuthNavbar({
                           Settings
                         </button>
                         <hr className="border-border my-2" />
-                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500/80 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                        <button 
+                          onClick={logout}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500/80 hover:text-red-400 hover:bg-red-500/10 transition-colors">
                           <LogOut className="w-4 h-4" />
                           Sign Out
                         </button>
@@ -255,20 +253,22 @@ export default function GitHubOAuthNavbar({
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.15 }}
-                      onClick={onAuthAction}
-                      className="flex items-center gap-2 w-full px-4 py-3 text-sm font-medium text-green-500 border border-green-500/50 rounded-lg hover:bg-green-500/10 transition-colors">
+                      onClick={login}
+                      disabled={isLoading}
+                      className="flex items-center gap-2 w-full px-4 py-3 text-sm font-medium text-green-500 border border-green-500/50 rounded-lg hover:bg-green-500/10 transition-colors disabled:opacity-50">
                       <Github className="w-4 h-4" />
-                      Sign in with GitHub
+                      {isLoading ? 'Loading...' : 'Sign in with GitHub'}
                     </motion.button>
                   ) : (
                     <div className="space-y-1">
                       <div className="flex items-center gap-3 px-2 py-3">
                         <img
-                          src={user.avatar}
+                          src={user.avatar_url}
                           alt={user.name}
                           className="w-8 h-8 rounded-full border border-green-500/50" />
                         <div>
                           <div className="font-medium text-sm">{user.name}</div>
+                          <div className="text-xs text-muted-foreground">@{user.username}</div>
                         </div>
                       </div>
                       <button className="w-full text-left px-3 py-2.5 text-sm text-foreground/70 hover:text-green-400 hover:bg-green-500/5 transition-colors rounded-lg flex items-center gap-3">
@@ -279,7 +279,9 @@ export default function GitHubOAuthNavbar({
                         <Settings className="w-4 h-4" />
                         Settings
                       </button>
-                      <button className="w-full text-left px-3 py-2.5 text-sm text-red-500/80 hover:text-red-400 hover:bg-red-500/10 transition-colors rounded-lg flex items-center gap-3">
+                      <button 
+                        onClick={logout}
+                        className="w-full text-left px-3 py-2.5 text-sm text-red-500/80 hover:text-red-400 hover:bg-red-500/10 transition-colors rounded-lg flex items-center gap-3">
                         <LogOut className="w-4 h-4" />
                         Sign Out
                       </button>

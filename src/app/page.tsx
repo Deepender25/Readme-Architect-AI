@@ -10,9 +10,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useSearchParams, useRouter } from 'next/navigation'
 
 function HomeContent() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [showEditor, setShowEditor] = useState(false)
-  const [user, setUser] = useState({ name: 'Dev User', avatar: 'https://github.com/shadcn.png' })
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -22,22 +20,8 @@ function HomeContent() {
     setShowEditor(shouldShowEditor)
   }, [searchParams])
 
-  const handleAuthAction = () => {
-    // Simulate GitHub OAuth login
-    console.log('Authenticating with GitHub...')
-    setIsAuthenticated(!isAuthenticated)
-    // In a real app, you'd handle actual OAuth flow and set user data
-    if (!isAuthenticated) {
-      setUser({ name: 'Authenticated User', avatar: 'https://avatars.githubusercontent.com/u/59146197?v=4' })
-      setShowEditor(true)
-    } else {
-      setShowEditor(false)
-    }
-  }
-
   const handleEditorClose = () => {
     setShowEditor(false)
-    setIsAuthenticated(false)
     // Remove the editor parameter from URL
     router.push('/')
   }
@@ -51,11 +35,7 @@ function HomeContent() {
       
       {/* Navbar - positioned above background, always visible */}
       <div className="fixed top-0 left-0 right-0 z-50">
-        <GitHubOAuthNavbar 
-          isAuthenticated={isAuthenticated} 
-          user={user}
-          onAuthAction={handleAuthAction} 
-        />
+        <GitHubOAuthNavbar />
       </div>
 
       {/* Main Content Area */}

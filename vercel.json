@@ -32,7 +32,23 @@
       "dest": "/api/index.py"
     },
     {
-      "src": "/auth/(.*)",
+      "src": "/auth/github",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/auth/callback",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/api/repositories",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/api/history",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/api/history/(.*)",
       "dest": "/api/index.py"
     },
     {

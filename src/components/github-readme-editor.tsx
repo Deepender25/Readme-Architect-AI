@@ -7,6 +7,9 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { marked } from 'marked';
 import DOMPurify from 'isomorphic-dompurify';
+import { useAuth } from '@/lib/auth';
+import RepositoriesList from '@/components/repositories-list';
+import HistoryList from '@/components/history-list';
 
 interface GitHubReadmeEditorProps {
   initialContent?: string;
@@ -111,6 +114,7 @@ export default function GitHubReadmeEditor({
   initialContent = templates[0].content, 
   onClose 
 }: GitHubReadmeEditorProps) {
+  const { user, isAuthenticated } = useAuth();
   const [content, setContent] = useState(initialContent);
   const [selectedTemplate, setSelectedTemplate] = useState(templates[0]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -125,6 +129,8 @@ export default function GitHubReadmeEditor({
   const [numScreenshots, setNumScreenshots] = useState(0);
   const [numVideos, setNumVideos] = useState(0);
   const [error, setError] = useState('');
+  const [showRepositories, setShowRepositories] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   
   const editorRef = useRef<HTMLTextAreaElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
@@ -200,6 +206,22 @@ export default function GitHubReadmeEditor({
       setGenerationStatus('');
       setIsGenerating(false);
     }
+  };
+
+  const handleSelectRepository = (repoUrl: string, repoName: string) => {
+    setRepositoryUrl(repoUrl);
+    setProjectName(repoName);
+    setShowRepositories(false);
+  };
+
+  const handleSelectHistory = (item: any) => {
+    setContent(item.readme_content);
+    setRepositoryUrl(item.repository_url);
+    setProjectName(item.project_name || item.repository_name);
+    setIncludeDemo(item.generation_params.include_demo);
+    setNumScreenshots(item.generation_params.num_screenshots);
+    setNumVideos(item.generation_params.num_videos);
+    setShowHistory(false);
   };
 
   const handleDownload = () => {
@@ -319,20 +341,70 @@ export default function GitHubReadmeEditor({
 
           {/* AI Generation Controls */}
           <div className="flex flex-col gap-4 p-4 bg-surface/50 rounded-lg border border-border">
-            <h3 className="text-sm font-semibold text-green-400">AI README Generation</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-green-400">AI README Generation</h3>
+              {isAuthenticated && (
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowHistory(!showHistory)}
+                    className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+                  >
+                    {showHistory ? 'Hide' : 'Show'} History
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowRepositories(!showRepositories)}
+                    className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+                  >
+                    {showRepositories ? 'Hide' : 'Show'} Repositories
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {/* History List */}
+            {isAuthenticated && showHistory && (
+              <div className="border border-border rounded-lg p-4 bg-surface/30">
+                <HistoryList onSelectHistory={handleSelectHistory} />
+              </div>
+            )}
+
+            {/* Repositories List */}
+            {isAuthenticated && showRepositories && (
+              <div className="border border-border rounded-lg p-4 bg-surface/30">
+                <RepositoriesList onSelectRepository={handleSelectRepository} />
+              </div>
+            )}
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">
                   Repository URL *
                 </label>
-                <input
-                  type="url"
-                  value={repositoryUrl}
-                  onChange={(e) => setRepositoryUrl(e.target.value)}
-                  placeholder="https://github.com/username/repository"
-                  className="w-full px-3 py-2 bg-input border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
+                <div className="relative">
+                  <input
+                    type="url"
+                    value={repositoryUrl}
+                    onChange={(e) => setRepositoryUrl(e.target.value)}
+                    placeholder="https://github.com/username/repository"
+                    className="w-full px-3 py-2 bg-input border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  />
+                  {isAuthenticated && (
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowRepositories(!showRepositories)}
+                        className="h-6 px-2 text-xs text-green-400 hover:bg-green-500/10"
+                      >
+                        Browse
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
               
               <div>
