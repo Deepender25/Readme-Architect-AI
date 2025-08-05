@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowLeft, Github, Settings, Image, Video, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { LoadingAnimation } from '@/components/ui/loading-animation';
+import { ToggleSwitch } from '@/components/ui/toggle-switch';
+import { NumberInput } from '@/components/ui/number-input';
 import { createStreamingGenerator } from '@/lib/readme-generator';
 
 interface ReadmeGeneratorFlowProps {
@@ -18,8 +20,8 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
   const [repositoryUrl, setRepositoryUrl] = useState('');
   const [projectName, setProjectName] = useState('');
   const [includeDemo, setIncludeDemo] = useState(false);
-  const [numScreenshots, setNumScreenshots] = useState(0);
-  const [numVideos, setNumVideos] = useState(0);
+  const [numScreenshots, setNumScreenshots] = useState(2);
+  const [numVideos, setNumVideos] = useState(1);
   const [error, setError] = useState('');
   const [generationStatus, setGenerationStatus] = useState('');
 
@@ -236,15 +238,13 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
               </div>
               
               <div className="space-y-4">
-                <label className="flex items-center gap-3 p-3 rounded-lg border border-[rgba(255,255,255,0.1)] hover:border-green-400/50 transition-colors cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={includeDemo}
-                    onChange={(e) => setIncludeDemo(e.target.checked)}
-                    className="rounded border-border text-green-500 focus:ring-green-500"
-                  />
+                <div className="flex items-center justify-between p-3 rounded-lg border border-[rgba(255,255,255,0.1)] hover:border-green-400/50 transition-colors">
                   <span className="text-white">Include demo section with placeholders</span>
-                </label>
+                  <ToggleSwitch
+                    checked={includeDemo}
+                    onChange={setIncludeDemo}
+                  />
+                </div>
                 
                 {includeDemo && (
                   <motion.div
@@ -252,33 +252,29 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                     animate={{ opacity: 1, height: 'auto' }}
                     className="space-y-4 pl-4 border-l-2 border-green-500/30"
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-6">
                       <div className="flex items-center gap-2">
                         <Image className="w-4 h-4 text-green-400" />
-                        <label className="text-sm text-gray-300">Screenshots:</label>
+                        <span className="text-sm text-gray-300">Screenshots:</span>
                       </div>
-                      <input
-                        type="number"
-                        min="0"
-                        max="10"
+                      <NumberInput
                         value={numScreenshots}
-                        onChange={(e) => setNumScreenshots(parseInt(e.target.value) || 0)}
-                        className="w-20 px-2 py-1 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded text-white text-sm"
+                        onChange={setNumScreenshots}
+                        min={1}
+                        max={10}
                       />
                     </div>
                     
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-6">
                       <div className="flex items-center gap-2">
                         <Video className="w-4 h-4 text-green-400" />
-                        <label className="text-sm text-gray-300">Videos:</label>
+                        <span className="text-sm text-gray-300">Videos:</span>
                       </div>
-                      <input
-                        type="number"
-                        min="0"
-                        max="5"
+                      <NumberInput
                         value={numVideos}
-                        onChange={(e) => setNumVideos(parseInt(e.target.value) || 0)}
-                        className="w-20 px-2 py-1 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded text-white text-sm"
+                        onChange={setNumVideos}
+                        min={1}
+                        max={10}
                       />
                     </div>
                   </motion.div>

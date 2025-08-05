@@ -54,8 +54,8 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
           --background: linear-gradient(135deg, #00ff88, #00cc6a);
           --shadow: rgba(0, 255, 136, 0.28);
           --text: #888888;
-          --page: rgba(0, 255, 136, 0.36);
-          --page-fold: rgba(0, 255, 136, 0.52);
+          --page: rgba(255, 255, 255, 0.8);
+          --page-fold: rgba(255, 255, 255, 0.9);
           --duration: 3s;
           width: 200px;
           height: 140px;
