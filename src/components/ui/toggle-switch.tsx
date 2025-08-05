@@ -47,7 +47,7 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
           position: absolute;
           cursor: pointer;
           inset: 0;
-          background: #d4acfb;
+          background: #bbf7d0;
           border-radius: 50px;
           transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
         }
