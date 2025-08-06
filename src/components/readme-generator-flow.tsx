@@ -8,6 +8,7 @@ import { LoadingAnimation } from '@/components/ui/loading-animation';
 import { ToggleSwitch } from '@/components/ui/toggle-switch';
 import { NumberInput } from '@/components/ui/number-input';
 import { createStreamingGenerator } from '@/lib/readme-generator';
+import { ScrollAnimatedDiv } from '@/components/ui/scroll-animated-div';
 
 interface ReadmeGeneratorFlowProps {
   onComplete: (readme: string) => void;
@@ -101,7 +102,12 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
   };
 
   return (
-    <div className="max-w-md mx-auto">
+    <ScrollAnimatedDiv
+      delay={0.6}
+      duration={0.8}
+      yOffset={40}
+      className="max-w-md mx-auto"
+    >
       <AnimatePresence mode="wait">
         {/* Step 1: Repository URL */}
         {currentStep === 'url' && (
@@ -339,6 +345,6 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </ScrollAnimatedDiv>
   );
 }

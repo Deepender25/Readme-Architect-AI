@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Code, GitBranch, Star, Zap } from 'lucide-react';
 import ReadmeGeneratorFlow from '@/components/readme-generator-flow';
 import GitHubReadmeEditor from '@/components/github-readme-editor';
+import { ScrollAnimatedDiv } from '@/components/ui/scroll-animated-div';
 
 export default function SimpleCentered() {
   const [showGenerator, setShowGenerator] = useState(false);
@@ -256,30 +257,43 @@ export default function SimpleCentered() {
                 transition={{ duration: 0.3 }}
                 className="text-center !w-full !h-full"
               >
-                <motion.h1
-                  className="text-5xl font-bold tracking-tight text-white sm:text-7xl"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8 }}
-                  style={{
-                    textShadow: '0 0 20px rgba(0, 255, 136, 0.3), 0 0 40px rgba(0, 255, 136, 0.2), 0 0 60px rgba(0, 255, 136, 0.1)'
-                  }}>
-                  Generate Perfect READMEs in Seconds
-                </motion.h1>
+                <ScrollAnimatedDiv
+                  delay={0}
+                  duration={0.8}
+                  yOffset={60}
+                >
+                  <motion.h1
+                    className="text-5xl font-bold tracking-tight text-white sm:text-7xl"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8 }}
+                    style={{
+                      textShadow: '0 0 20px rgba(0, 255, 136, 0.3), 0 0 40px rgba(0, 255, 136, 0.2), 0 0 60px rgba(0, 255, 136, 0.1)'
+                    }}>
+                    Generate Perfect READMEs in Seconds
+                  </motion.h1>
+                </ScrollAnimatedDiv>
                 
-                <motion.p
-                  className="mt-6 text-lg font-medium text-gray-400 sm:text-xl/8 max-w-2xl mx-auto"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}>
-                  Transform your repositories with AI-powered README generation. Just paste your GitHub URL and watch the magic happen.
-                </motion.p>
+                <ScrollAnimatedDiv
+                  delay={0.2}
+                  duration={0.8}
+                  yOffset={40}
+                >
+                  <motion.p
+                    className="mt-6 text-lg font-medium text-gray-400 sm:text-xl/8 max-w-2xl mx-auto"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}>
+                    Transform your repositories with AI-powered README generation. Just paste your GitHub URL and watch the magic happen.
+                  </motion.p>
+                </ScrollAnimatedDiv>
                 
-                <motion.div
+                <ScrollAnimatedDiv
+                  delay={0.4}
+                  duration={0.8}
+                  yOffset={30}
                   className="mt-8"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.4 }}>
+                >
                   
                   {!showGenerator ? (
                     <div className="max-w-md mx-auto">
@@ -302,7 +316,7 @@ export default function SimpleCentered() {
                   ) : (
                     <ReadmeGeneratorFlow onComplete={handleGenerationComplete} />
                   )}
-                </motion.div>
+                </ScrollAnimatedDiv>
               </motion.div>
             ) : (
               <motion.div
