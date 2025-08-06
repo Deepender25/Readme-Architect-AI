@@ -575,13 +575,157 @@ export default function GitHubReadmeEditor({
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <div className="p-8">
-              <div className="prose prose-invert max-w-none">
+              <div className="prose prose-invert max-w-none github-readme-preview">
                 <div 
                   ref={previewRef}
                   className="prose prose-invert max-w-none"
                   dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                 />
               </div>
+              
+              <style jsx global>{`
+                .github-readme-preview {
+                  color: #e6edf3;
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+                  font-size: 16px;
+                  line-height: 1.6;
+                }
+                
+                .github-readme-preview h1 {
+                  color: #f0f6fc;
+                  font-size: 2em;
+                  font-weight: 600;
+                  margin-bottom: 16px;
+                  padding-bottom: 0.3em;
+                  border-bottom: 1px solid #30363d;
+                }
+                
+                .github-readme-preview h2 {
+                  color: #f0f6fc;
+                  font-size: 1.5em;
+                  font-weight: 600;
+                  margin-top: 24px;
+                  margin-bottom: 16px;
+                  padding-bottom: 0.3em;
+                  border-bottom: 1px solid #30363d;
+                }
+                
+                .github-readme-preview h3 {
+                  color: #f0f6fc;
+                  font-size: 1.25em;
+                  font-weight: 600;
+                  margin-top: 24px;
+                  margin-bottom: 16px;
+                }
+                
+                .github-readme-preview h4, .github-readme-preview h5, .github-readme-preview h6 {
+                  color: #f0f6fc;
+                  font-weight: 600;
+                  margin-top: 24px;
+                  margin-bottom: 16px;
+                }
+                
+                .github-readme-preview p {
+                  margin-bottom: 16px;
+                  color: #e6edf3;
+                }
+                
+                .github-readme-preview blockquote {
+                  padding: 0 1em;
+                  color: #8d96a0;
+                  border-left: 0.25em solid #30363d;
+                  margin: 0 0 16px 0;
+                }
+                
+                .github-readme-preview ul, .github-readme-preview ol {
+                  padding-left: 2em;
+                  margin-bottom: 16px;
+                }
+                
+                .github-readme-preview li {
+                  margin-bottom: 0.25em;
+                  color: #e6edf3;
+                }
+                
+                .github-readme-preview code {
+                  background-color: rgba(110, 118, 129, 0.4);
+                  padding: 0.2em 0.4em;
+                  border-radius: 6px;
+                  font-size: 85%;
+                  color: #f0f6fc;
+                  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+                }
+                
+                .github-readme-preview pre {
+                  background-color: #161b22;
+                  padding: 16px;
+                  border-radius: 6px;
+                  overflow: auto;
+                  margin-bottom: 16px;
+                  border: 1px solid #30363d;
+                }
+                
+                .github-readme-preview pre code {
+                  background-color: transparent;
+                  padding: 0;
+                  border-radius: 0;
+                  color: #f0f6fc;
+                }
+                
+                .github-readme-preview table {
+                  border-collapse: collapse;
+                  margin-bottom: 16px;
+                  width: 100%;
+                }
+                
+                .github-readme-preview th, .github-readme-preview td {
+                  padding: 6px 13px;
+                  border: 1px solid #30363d;
+                  text-align: left;
+                }
+                
+                .github-readme-preview th {
+                  background-color: #21262d;
+                  font-weight: 600;
+                  color: #f0f6fc;
+                }
+                
+                .github-readme-preview td {
+                  color: #e6edf3;
+                }
+                
+                .github-readme-preview a {
+                  color: #58a6ff;
+                  text-decoration: none;
+                }
+                
+                .github-readme-preview a:hover {
+                  text-decoration: underline;
+                }
+                
+                .github-readme-preview img {
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 6px;
+                  margin: 8px 0;
+                }
+                
+                .github-readme-preview hr {
+                  border: none;
+                  border-top: 1px solid #30363d;
+                  margin: 24px 0;
+                }
+                
+                .github-readme-preview strong {
+                  color: #f0f6fc;
+                  font-weight: 600;
+                }
+                
+                .github-readme-preview em {
+                  color: #e6edf3;
+                  font-style: italic;
+                }
+              `}</style>
             </div>
           </motion.div>
         </div>
