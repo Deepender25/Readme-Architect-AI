@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Github, Twitter, Mail, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { ScrollAnimatedDiv } from "@/components/ui/scroll-animated-div";
 
 export function CenteredWithLogo() {
   const pages = [
@@ -52,7 +53,12 @@ export function CenteredWithLogo() {
       </div>
       
       <div className="max-w-7xl mx-auto text-sm text-[var(--color-muted-foreground)] justify-between items-start md:px-8 relative z-10">
-        <div className="flex flex-col items-center justify-center w-full relative">
+        <ScrollAnimatedDiv
+          delay={0}
+          duration={0.8}
+          yOffset={50}
+          className="flex flex-col items-center justify-center w-full relative"
+        >
           <div className="mr-0 md:mr-4 md:flex mb-4">
             <Logo />
           </div>
@@ -76,8 +82,14 @@ export function CenteredWithLogo() {
           </ul>
 
           <GridLineHorizontal className="max-w-7xl mx-auto mt-8" />
-        </div>
-        <div className="flex sm:flex-row flex-col justify-between mt-8 items-center w-full">
+        </ScrollAnimatedDiv>
+        
+        <ScrollAnimatedDiv
+          delay={0.2}
+          duration={0.8}
+          yOffset={30}
+          className="flex sm:flex-row flex-col justify-between mt-8 items-center w-full"
+        >
           <p className="text-[var(--color-muted-foreground)] mb-8 sm:mb-0">
             © 2024 AutoDoc AI. Built for developers, by developers.
           </p>
@@ -110,7 +122,7 @@ export function CenteredWithLogo() {
               </Link>
             </motion.div>
           </div>
-        </div>
+        </ScrollAnimatedDiv>
       </div>
     </div>
   );
