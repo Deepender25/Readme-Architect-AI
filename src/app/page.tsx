@@ -23,8 +23,8 @@ function HomeContent() {
 
   return (
     <div className="min-h-screen bg-black text-foreground relative overflow-hidden">
-      {/* Background - positioned behind everything */}
-      <div className="absolute inset-0 z-0">
+      {/* Background - positioned behind everything, covering full viewport */}
+      <div className="fixed inset-0 z-0 w-full h-full">
         <MinimalGridBackground />
       </div>
       

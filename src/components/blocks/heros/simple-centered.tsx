@@ -41,12 +41,12 @@ export default function SimpleCentered() {
   return (
     <div className="bg-[#0a0a0a] min-h-screen font-sans">
       <div 
-        className="relative isolate px-6 pt-0 lg:px-8 overflow-hidden"
+        className="relative isolate px-6 pt-0 lg:px-8 overflow-hidden min-h-screen"
         ref={mouseRef}
         onMouseMove={handleMouseMove}
       >
         {/* Enhanced Background with Geometric Grid */}
-        <div className="absolute inset-0 -z-10 overflow-hidden !w-full !h-full">
+        <div className="fixed inset-0 -z-10 overflow-hidden w-full h-full" style={{ minHeight: '100vh', minWidth: '100vw' }}>
           {/* Animated Geometric Grid */}
           <div className="absolute inset-0">
             {/* Grid Lines */}
