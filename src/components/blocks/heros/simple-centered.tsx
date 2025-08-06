@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Code, GitBranch, Star, Zap } from 'lucide-react';
 import ReadmeGeneratorFlow from '@/components/readme-generator-flow';
@@ -10,18 +10,6 @@ export default function SimpleCentered() {
   const [showGenerator, setShowGenerator] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [generatedReadme, setGeneratedReadme] = useState('');
-  const mouseRef = useRef<HTMLDivElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (mouseRef.current) {
-      const rect = mouseRef.current.getBoundingClientRect();
-      setMousePosition({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      });
-    }
-  };
 
   const handleStartGeneration = () => {
     setShowGenerator(true);
@@ -42,8 +30,6 @@ export default function SimpleCentered() {
     <div className="bg-[#0a0a0a] min-h-screen font-sans">
       <div 
         className="relative isolate px-6 pt-0 lg:px-8 overflow-hidden min-h-screen"
-        ref={mouseRef}
-        onMouseMove={handleMouseMove}
       >
         {/* Enhanced Background with Geometric Grid */}
         <div className="fixed inset-0 -z-10 overflow-hidden w-full h-full" style={{ minHeight: '100vh', minWidth: '100vw' }}>
@@ -225,20 +211,7 @@ export default function SimpleCentered() {
               <div className="absolute inset-12 border border-green-400/50 rounded-full" />
             </motion.div>
 
-            {/* Reactive Energy Waves */}
-            <motion.div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(0, 255, 136, 0.03) 0%, transparent 20%)`
-              }}
-              animate={{
-                opacity: [0, 0.3, 0]
-              }}
-              transition={{
-                duration: 3,
-                ease: "easeOut"
-              }}
-            />
+
 
             {/* Enhanced Glow Orbs */}
             <motion.div
