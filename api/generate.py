@@ -312,88 +312,218 @@ class handler(BaseHTTPRequestHandler):
                 `<h1 align="center"> [PROJECT TITLE] </h1>`
                 `<p align="center"> [TAGLINE] </p>`"""
 
-            # Enhanced prompt from main.py with superior structure
+            # Ultra-comprehensive prompt for maximum detail and quality
             prompt = f"""
-**Your Role:** You are a Principal Solutions Architect and a world-class technical copywriter. You are tasked with writing a stunning, comprehensive, and professional README.md file for a new open-source project. Your work must be impeccable.
+**Your Role:** You are a Senior Principal Solutions Architect, Technical Lead, and world-class technical copywriter with 15+ years of experience. You are tasked with writing an absolutely stunning, comprehensive, and professional README.md file for a new open-source project. Your work must be impeccable and industry-leading.
 
 **Source Analysis Provided:**
 1.  **Project File Structure:**
     ```
     {analysis_context['file_structure']}
     ```
-2.  **Dependencies:**
+2.  **Dependencies & Configuration:**
     ```
     {analysis_context['dependencies']}
     ```
-3.  **Python Code Semantic Summary:**
+3.  **Python Code Semantic Analysis:**
     ```
     {python_summary_str if python_summary_str else "No Python files were analyzed."}
     ```
 
 **Core Mandate:**
-Based *only* on the analysis above, generate a complete README.md. You MUST make intelligent, bold inferences about the project's purpose, architecture, and features. The tone must be professional, engaging, and polished. Use rich Markdown formatting, including emojis, tables, and blockquotes, to create a visually appealing document.
+Based *exclusively* on the analysis above, generate a complete, production-ready README.md. You MUST make intelligent, sophisticated inferences about the project's purpose, architecture, features, and implementation details. The tone must be professional, engaging, and polished. Use rich Markdown formatting, including emojis, tables, blockquotes, code blocks, and visual elements to create a visually stunning document that developers will love.
+
+**CRITICAL: Analyze the codebase deeply and provide specific, technical insights rather than generic descriptions.**
 
 **Strict README.md Structure (Follow this format precisely):**
 
-1.  **Project Title:** {title_instruction}
+1.  **Project Title & Branding:** {title_instruction}
 
-2.  **Badges:** Create a centered paragraph of **static placeholder badges**. These badges must look professional and use generic, positive text (e.g., "Build: Passing"). This prevents "repo not found" errors on first generation. CRUCIALLY, you MUST add an HTML comment `<!-- ... -->` right after the badges, instructing the user to replace them with their own live badges.
-    Example format to follow exactly:
+2.  **Professional Badge Section:** Create a centered paragraph of **static placeholder badges** with professional styling. Use shields.io format with for-the-badge style. Include build status, version, license, contributions, issues, and language-specific badges. CRUCIALLY, add an HTML comment instructing users to replace with live badges.
+    
+    Example format:
+    ```html
     <p align="center">
-      <img alt="Build" src="https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge">
-      <img alt="Issues" src="https://img.shields.io/badge/Issues-0%20Open-blue?style=for-the-badge">
-      <img alt="Contributions" src="https://img.shields.io/badge/Contributions-Welcome-orange?style=for-the-badge">
+      <img alt="Build Status" src="https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge&logo=github">
+      <img alt="Version" src="https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge">
       <img alt="License" src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge">
+      <img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-Welcome-orange?style=for-the-badge">
+      <img alt="Issues" src="https://img.shields.io/badge/Issues-0%20Open-green?style=for-the-badge">
     </p>
     <!-- 
-      **Note:** These are static placeholder badges. Replace them with your project's actual badges.
-      You can generate your own at https://shields.io
+      Replace these static badges with live ones from your repository.
+      Visit https://shields.io to generate badges for your specific repo.
     -->
+    ```
 
-3.  **Table of Contents:** Create a clickable table of contents with these sections:
-    - [Overview](#-overview)
-    - [Key Features](#-key-features)
-    - [Tech Stack & Architecture](#️-tech-stack--architecture)
-    {f"- [Demo & Screenshots](#-demo--screenshots)" if include_demo and (num_screenshots > 0 or num_videos > 0) else ""}
-    - [Getting Started](#-getting-started)
-    - [Usage](#-usage)
-    - [Contributing](#-contributing)
-    - [License](#-license)
+3.  **Comprehensive Table of Contents:** Create a detailed, clickable table of contents:
+    ```markdown
+    ## 📚 Table of Contents
+    - [⭐ Overview](#-overview)
+    - [🎯 Problem & Solution](#-problem--solution)
+    - [✨ Key Features](#-key-features)
+    - [🏗️ Architecture & Design](#️-architecture--design)
+    - [🛠️ Tech Stack](#️-tech-stack)
+    - [📋 Prerequisites](#-prerequisites)
+    {f"- [📸 Demo & Screenshots](#-demo--screenshots)" if include_demo and (num_screenshots > 0 or num_videos > 0) else ""}
+    - [🚀 Quick Start](#-quick-start)
+    - [⚙️ Installation](#️-installation)
+    - [🔧 Configuration](#-configuration)
+    - [💻 Usage](#-usage)
+    - [📖 API Documentation](#-api-documentation)
+    - [🧪 Testing](#-testing)
+    - [🚀 Deployment](#-deployment)
+    - [🤝 Contributing](#-contributing)
+    - [📝 License](#-license)
+    - [🙏 Acknowledgments](#-acknowledgments)
+    ```
 
-4.  **⭐ Overview:**
-    -   **Hook:** Start with a compelling, single-sentence summary of the project.
-    -   **The Problem:** In a blockquote, describe the problem this project solves.
-    -   **The Solution:** Describe how your project provides an elegant solution to that problem.
-    -   **Inferred Architecture:** Based on the file structure and dependencies, describe the high-level architecture (e.g., "This project is a FastAPI-based web service...").
+4.  **⭐ Overview Section:**
+    Write a compelling 2-3 paragraph overview that includes:
+    - A powerful opening sentence that immediately conveys the project's value
+    - The specific problem domain this project addresses
+    - What makes this solution unique or innovative
+    - Target audience (developers, businesses, etc.)
+    - Brief mention of key technologies used
 
-5.  **✨ Key Features:**
-    -   A detailed, bulleted list. For each feature, provide a brief but impactful explanation.
-    -   Infer at least 4-5 key features from the code and file structure.
-    -   Example: `- **Automated Analysis:** Leverages AST to perform deep static analysis of Python code.`
+5.  **🎯 Problem & Solution Section:**
+    ```markdown
+    ## 🎯 Problem & Solution
+    
+    ### The Challenge
+    > Describe the specific problem this project solves with a compelling blockquote
+    
+    ### Our Solution
+    Explain how this project elegantly addresses the challenge with specific technical approaches.
+    
+    ### Why This Matters
+    Articulate the broader impact and value proposition.
+    ```
 
-6.  **🛠️ Tech Stack & Architecture:**
-    -   Create a Markdown table listing the primary technologies, languages, and major libraries.
-    -   Include columns for "Technology", "Purpose", and "Why it was Chosen".
-    -   Example Row: `| FastAPI | API Framework | For its high performance, async support, and automatic docs generation. |`
+6.  **✨ Key Features Section:**
+    Create a detailed feature list with at least 6-8 features. Each feature should:
+    - Have a descriptive name with an emoji
+    - Include a 1-2 sentence explanation of the feature
+    - Mention specific technical implementation details when possible
+    - Use sub-bullets for feature details when appropriate
+    
+    Example format:
+    ```markdown
+    - 🚀 **High-Performance Architecture** - Built with [specific technology] for optimal performance
+      - Handles X requests per second
+      - Memory-efficient design
+      - Asynchronous processing capabilities
+    ```
+
+7.  **🏗️ Architecture & Design Section:**
+    Based on the file structure and dependencies, create:
+    - A high-level architecture description
+    - Component interaction explanation
+    - Design patterns used
+    - Scalability considerations
+    - Security measures implemented
+
+8.  **🛠️ Tech Stack Section:**
+    Create a comprehensive table with these columns:
+    | Category | Technology | Version | Purpose | Why Chosen |
+    
+    Include categories like:
+    - Backend Framework
+    - Database
+    - Frontend (if applicable)
+    - Authentication
+    - Testing
+    - Deployment
+    - Monitoring
+    - Development Tools
 
 {demo_section}
 
-7.  **🚀 Getting Started:**
-    -   **Prerequisites:** A bulleted list of software the user needs (e.g., Python 3.9+, Node.js v18+).
-    -   **Installation:** A numbered, step-by-step guide with explicit, copy-pastable commands in code blocks for different package managers if inferable (e.g., `pip install -r requirements.txt`).
+9.  **📋 Prerequisites Section:**
+    List all requirements with specific versions:
+    - Runtime requirements (Python 3.9+, Node.js 18+, etc.)
+    - System dependencies
+    - External services needed
+    - Development tools required
 
-8.  **🔧 Usage:**
-    -   Provide clear instructions on how to run the application (e.g., `uvicorn main:app --reload`).
-    -   If it's an API, provide a `curl` example. If it's a CLI, provide a command-line example.
+10. **🚀 Quick Start Section:**
+    Provide a rapid setup guide for users who want to get running immediately:
+    ```bash
+    # One-liner installation and setup
+    git clone [repo] && cd [repo] && [setup commands]
+    ```
 
-9.  **🤝 Contributing:**
-    -   A welcoming section encouraging contributions.
-    -   Briefly outline the fork -> branch -> pull request workflow.
+11. **⚙️ Installation Section:**
+    Detailed step-by-step installation with:
+    - Multiple installation methods (pip, npm, docker, etc.)
+    - Platform-specific instructions
+    - Troubleshooting common issues
+    - Verification steps
 
-10. **📝 License:**
-    -   State the license (e.g., "Distributed under the MIT License. See `LICENSE` for more information.").
+12. **🔧 Configuration Section:**
+    - Environment variables explanation
+    - Configuration file examples
+    - Security considerations
+    - Performance tuning options
 
-**Final Instruction:** The output MUST be ONLY the raw Markdown content. Do not add any commentary, greetings, or explanations before or after the Markdown. Adhere strictly to the requested format and quality bar.
+13. **💻 Usage Section:**
+    Provide comprehensive usage examples:
+    - Basic usage with code examples
+    - Advanced usage scenarios
+    - Command-line interface examples
+    - API usage examples with curl/code
+    - Integration examples
+
+14. **📖 API Documentation Section:**
+    If the project has an API, include:
+    - Endpoint overview
+    - Authentication methods
+    - Request/response examples
+    - Error handling
+    - Rate limiting information
+
+15. **🧪 Testing Section:**
+    - How to run tests
+    - Test coverage information
+    - Testing strategies used
+    - How to write new tests
+
+16. **🚀 Deployment Section:**
+    - Production deployment guide
+    - Docker deployment
+    - Cloud platform instructions
+    - Environment-specific configurations
+    - Monitoring and logging setup
+
+17. **🤝 Contributing Section:**
+    Create a welcoming and detailed contribution guide:
+    - Code of conduct reference
+    - Development setup
+    - Coding standards
+    - Pull request process
+    - Issue reporting guidelines
+    - Recognition for contributors
+
+18. **📝 License Section:**
+    - License type and link
+    - Copyright information
+    - Third-party licenses if applicable
+
+19. **🙏 Acknowledgments Section:**
+    - Credits to contributors
+    - Inspiration sources
+    - Third-party tools and libraries used
+    - Community thanks
+
+**CRITICAL REQUIREMENTS:**
+1. **Be Specific:** Use actual technical details from the analysis, not generic descriptions
+2. **Be Comprehensive:** This should be a complete, production-ready README
+3. **Be Professional:** Use proper technical terminology and industry best practices
+4. **Be Visual:** Use emojis, tables, code blocks, and formatting for visual appeal
+5. **Be Actionable:** Every instruction should be copy-pastable and executable
+6. **Be Accurate:** Only include information that can be inferred from the provided analysis
+
+**Final Instruction:** Output ONLY the raw Markdown content. No commentary, greetings, or explanations. The README should be immediately usable in a production repository.
 """
 
             # Create a fallback README in case the API fails
