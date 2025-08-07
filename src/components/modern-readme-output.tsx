@@ -18,6 +18,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { marked } from 'marked';
 import DOMPurify from 'isomorphic-dompurify';
+import MinimalGridBackground from '@/components/minimal-geometric-background';
+import GitHubOAuthNavbar from '@/components/blocks/navbars/github-oauth-navbar';
+import { CenteredWithLogo } from '@/components/blocks/footers/centered-with-logo';
 
 interface ModernReadmeOutputProps {
   content: string;
@@ -87,21 +90,15 @@ export default function ModernReadmeOutput({
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="fixed inset-0 -z-10">
-        {/* Grid Pattern */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `
-              linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px'
-          }} />
-        </div>
+      {/* Same Background as Main Site */}
+      <div className="fixed inset-0 z-0 w-full h-full">
+        <MinimalGridBackground />
+      </div>
 
+      {/* Enhanced Animated Background Elements */}
+      <div className="fixed inset-0 z-0">
         {/* Floating Particles */}
-        {Array.from({ length: 20 }).map((_, i) => (
+        {Array.from({ length: 15 }).map((_, i) => (
           <motion.div
             key={`particle-${i}`}
             className="absolute w-1 h-1 bg-green-400 rounded-full"
@@ -111,11 +108,11 @@ export default function ModernReadmeOutput({
             }}
             animate={{
               y: [0, -20, 0],
-              opacity: [0.2, 0.8, 0.2],
+              opacity: [0.1, 0.6, 0.1],
               scale: [1, 1.5, 1]
             }}
             transition={{
-              duration: 3 + Math.random() * 2,
+              duration: 4 + Math.random() * 3,
               repeat: Infinity,
               delay: Math.random() * 2
             }}
@@ -124,10 +121,10 @@ export default function ModernReadmeOutput({
 
         {/* Gradient Orbs */}
         <motion.div
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-400/5 rounded-full blur-3xl"
+          className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-400/3 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
+            opacity: [0.2, 0.4, 0.2],
             x: [-10, 10, -10],
             y: [-5, 5, -5]
           }}
@@ -139,10 +136,10 @@ export default function ModernReadmeOutput({
         />
         
         <motion.div
-          className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-green-400/3 rounded-full blur-2xl"
+          className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-green-400/2 rounded-full blur-2xl"
           animate={{
             scale: [1, 1.3, 1],
-            opacity: [0.2, 0.4, 0.2],
+            opacity: [0.1, 0.3, 0.1],
             x: [10, -10, 10],
             y: [5, -5, 5]
           }}
@@ -154,12 +151,17 @@ export default function ModernReadmeOutput({
         />
       </div>
 
-      {/* Header */}
+      {/* Navbar - positioned above background, always visible */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <GitHubOAuthNavbar />
+      </div>
+
+      {/* Secondary Header - positioned below navbar */}
       <motion.header
-        className="sticky top-0 z-50 backdrop-blur-xl bg-black/80 border-b border-green-400/20"
-        initial={{ y: -100, opacity: 0 }}
+        className="sticky top-16 z-40 backdrop-blur-xl bg-black/60 border-b border-green-400/20"
+        initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
       >
         {/* Progress Bar */}
         <motion.div
@@ -170,7 +172,7 @@ export default function ModernReadmeOutput({
           transition={{ duration: 0.3 }}
         />
 
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
             {/* Left Section */}
             <div className="flex items-center gap-6">
@@ -178,19 +180,19 @@ export default function ModernReadmeOutput({
                 className="flex items-center gap-3"
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
+                transition={{ delay: 0.4 }}
               >
                 <div className="relative">
                   <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur opacity-30" />
                   <div className="relative bg-black p-2 rounded-lg">
-                    <FileText className="w-5 h-5 text-green-400" />
+                    <FileText className="w-4 h-4 text-green-400" />
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold bg-gradient-to-r from-white to-green-400 bg-clip-text text-transparent">
+                  <h1 className="text-lg font-bold bg-gradient-to-r from-white to-green-400 bg-clip-text text-transparent">
                     README Generated
                   </h1>
-                  <p className="text-sm text-gray-400">Your documentation is ready</p>
+                  <p className="text-xs text-gray-400">Your documentation is ready</p>
                 </div>
               </motion.div>
 
@@ -199,7 +201,7 @@ export default function ModernReadmeOutput({
                 className="flex items-center bg-gray-900/50 rounded-lg p-1 border border-green-400/20"
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.5 }}
               >
                 <button
                   onClick={() => setViewMode('preview')}
@@ -227,17 +229,18 @@ export default function ModernReadmeOutput({
             </div>
 
             {/* Right Section */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <motion.div
                 className="flex items-center gap-2"
                 initial={{ x: 20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.4 }}
+                transition={{ delay: 0.6 }}
               >
                 {/* Copy Button */}
                 <Button
                   onClick={handleCopy}
                   variant="ghost"
+                  size="sm"
                   className="relative group bg-gray-900/50 border border-green-400/20 hover:border-green-400/40 hover:bg-green-400/10"
                 >
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur opacity-0 group-hover:opacity-20 transition-opacity" />
@@ -255,6 +258,7 @@ export default function ModernReadmeOutput({
                 <Button
                   onClick={handleDownload}
                   disabled={isDownloading}
+                  size="sm"
                   className="relative group bg-green-400 text-black hover:bg-green-300 font-medium"
                 >
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity" />
@@ -278,6 +282,7 @@ export default function ModernReadmeOutput({
                   <Button
                     onClick={onEdit}
                     variant="ghost"
+                    size="sm"
                     className="bg-gray-900/50 border border-green-400/20 hover:border-green-400/40 hover:bg-green-400/10"
                   >
                     <Sparkles className="w-4 h-4 mr-2" />
@@ -290,6 +295,7 @@ export default function ModernReadmeOutput({
                   <Button
                     onClick={onClose}
                     variant="ghost"
+                    size="sm"
                     className="bg-gray-900/50 border border-red-400/20 hover:border-red-400/40 hover:bg-red-400/10 text-red-400"
                   >
                     <X className="w-4 h-4" />
@@ -301,23 +307,24 @@ export default function ModernReadmeOutput({
         </div>
       </motion.header>
 
-      {/* Main Content */}
-      <main className="relative z-10">
+      {/* Main Content - with proper spacing for navbar and footer */}
+      <main className="relative z-10 pt-20 pb-32">
         <div className="container mx-auto px-6 py-8">
           <motion.div
             className="relative"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
           >
-            {/* Content Container */}
-            <div className="relative bg-gray-900/30 backdrop-blur-xl rounded-2xl border border-green-400/20 overflow-hidden">
-              {/* Glow Effect */}
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-2xl blur opacity-50" />
+            {/* Content Container with Enhanced Blur */}
+            <div className="relative bg-black/40 backdrop-blur-2xl rounded-2xl border border-green-400/30 overflow-hidden shadow-2xl shadow-green-400/10">
+              {/* Enhanced Glow Effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-green-400/30 to-green-600/30 rounded-2xl blur-xl opacity-60" />
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-2xl blur opacity-80" />
               
               <div 
                 ref={contentRef}
-                className="relative max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-green-400/20 scrollbar-track-transparent"
+                className="relative max-h-[calc(100vh-200px)] overflow-y-auto scrollbar-thin scrollbar-thumb-green-400/30 scrollbar-track-transparent"
               >
                 <AnimatePresence mode="wait">
                   {viewMode === 'preview' ? (
@@ -355,10 +362,10 @@ export default function ModernReadmeOutput({
 
             {/* Floating Action Hint */}
             <motion.div
-              className="absolute -bottom-4 right-4 bg-green-400 text-black px-4 py-2 rounded-full text-sm font-medium shadow-lg"
+              className="absolute -bottom-6 right-4 bg-green-400 text-black px-4 py-2 rounded-full text-sm font-medium shadow-lg shadow-green-400/50"
               initial={{ opacity: 0, y: 20, scale: 0.8 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 1, duration: 0.5 }}
+              transition={{ delay: 1.2, duration: 0.5 }}
             >
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4" />
@@ -368,6 +375,11 @@ export default function ModernReadmeOutput({
           </motion.div>
         </div>
       </main>
+
+      {/* Footer - positioned at bottom with proper spacing */}
+      <div className="relative z-10 mt-auto">
+        <CenteredWithLogo />
+      </div>
 
       {/* Custom Styles */}
       <style jsx global>{`
@@ -578,14 +590,19 @@ export default function ModernReadmeOutput({
           text-align: center;
         }
 
-        /* Scrollbar Styling */
+        /* Enhanced Scrollbar Styling */
         .scrollbar-thin {
           scrollbar-width: thin;
         }
         
-        .scrollbar-thumb-green-400\/20::-webkit-scrollbar-thumb {
-          background-color: rgba(0, 255, 136, 0.2);
-          border-radius: 4px;
+        .scrollbar-thumb-green-400\/30::-webkit-scrollbar-thumb {
+          background: linear-gradient(180deg, rgba(0, 255, 136, 0.4), rgba(0, 255, 136, 0.2));
+          border-radius: 6px;
+          border: 1px solid rgba(0, 255, 136, 0.1);
+        }
+        
+        .scrollbar-thumb-green-400\/30::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(180deg, rgba(0, 255, 136, 0.6), rgba(0, 255, 136, 0.3));
         }
         
         .scrollbar-track-transparent::-webkit-scrollbar-track {
@@ -593,7 +610,18 @@ export default function ModernReadmeOutput({
         }
         
         .scrollbar-thin::-webkit-scrollbar {
-          width: 6px;
+          width: 8px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-corner {
+          background: transparent;
+        }
+
+        /* Enhanced backdrop blur support */
+        @supports (backdrop-filter: blur(20px)) {
+          .backdrop-blur-2xl {
+            backdrop-filter: blur(20px);
+          }
         }
       `}</style>
     </div>
