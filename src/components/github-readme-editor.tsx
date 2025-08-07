@@ -11,6 +11,7 @@ import { useAuth } from '@/lib/auth';
 import RepositoriesList from '@/components/repositories-list';
 import HistoryList from '@/components/history-list';
 import ModernReadmeOutput from '@/components/modern-readme-output';
+import ModernReadmeEditor from '@/components/modern-readme-editor';
 
 interface GitHubReadmeEditorProps {
   initialContent?: string;
@@ -133,6 +134,7 @@ export default function GitHubReadmeEditor({
   const [showRepositories, setShowRepositories] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showModernOutput, setShowModernOutput] = useState(false);
+  const [showModernEditor, setShowModernEditor] = useState(false);
   
   const editorRef = useRef<HTMLTextAreaElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
@@ -283,7 +285,25 @@ export default function GitHubReadmeEditor({
       <ModernReadmeOutput
         content={content}
         onClose={() => setShowModernOutput(false)}
-        onEdit={() => setShowModernOutput(false)}
+        onEdit={() => {
+          setShowModernOutput(false);
+          setShowModernEditor(true);
+        }}
+      />
+    );
+  }
+
+  // Show modern editor if requested
+  if (showModernEditor) {
+    return (
+      <ModernReadmeEditor
+        initialContent={content}
+        onClose={() => setShowModernEditor(false)}
+        onSave={(newContent) => {
+          setContent(newContent);
+          setShowModernEditor(false);
+          setShowModernOutput(true);
+        }}
       />
     );
   }
@@ -325,6 +345,14 @@ export default function GitHubReadmeEditor({
               >
                 <Edit3 className="h-3.5 w-3.5" />
                 Modern View
+              </Button>
+              <Button 
+                onClick={() => setShowModernEditor(true)}
+                variant="outline"
+                className="gap-2 h-8 text-sm border-green-500/50 text-green-400 hover:bg-green-500/10"
+              >
+                <Edit3 className="h-3.5 w-3.5" />
+                Modern Editor
               </Button>
               <Button 
                 onClick={handleCopy}

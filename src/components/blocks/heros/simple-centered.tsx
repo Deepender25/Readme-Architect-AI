@@ -6,6 +6,7 @@ import { Github, Code, GitBranch, Star, Zap } from 'lucide-react';
 import ReadmeGeneratorFlow from '@/components/readme-generator-flow';
 import GitHubReadmeEditor from '@/components/github-readme-editor';
 import ModernReadmeOutput from '@/components/modern-readme-output';
+import ModernReadmeEditor from '@/components/modern-readme-editor';
 import { ScrollAnimatedDiv } from '@/components/ui/scroll-animated-div';
 
 export default function SimpleCentered() {
@@ -39,6 +40,12 @@ export default function SimpleCentered() {
   const handleEditFromModern = () => {
     setShowModernOutput(false);
     setShowEditor(true);
+  };
+
+  const handleSaveFromEditor = (newContent: string) => {
+    setGeneratedReadme(newContent);
+    setShowEditor(false);
+    setShowModernOutput(true);
   };
 
   return (
@@ -285,9 +292,10 @@ export default function SimpleCentered() {
                 transition={{ duration: 0.3 }}
                 className="fixed inset-0 z-50 bg-black"
               >
-                <GitHubReadmeEditor 
+                <ModernReadmeEditor 
                   initialContent={generatedReadme}
                   onClose={handleEditorClose}
+                  onSave={handleSaveFromEditor}
                 />
               </motion.div>
             ) : (
