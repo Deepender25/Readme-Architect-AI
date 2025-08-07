@@ -14,7 +14,12 @@ import {
   Zap,
   Github,
   GitBranch,
-  Star
+  Star,
+  Save,
+  Undo,
+  Redo,
+  Settings,
+  Palette
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { marked } from 'marked';
@@ -22,41 +27,42 @@ import DOMPurify from 'isomorphic-dompurify';
 import GitHubOAuthNavbar from '@/components/blocks/navbars/github-oauth-navbar';
 import { CenteredWithLogo } from '@/components/blocks/footers/centered-with-logo';
 
-interface ModernReadmeOutputProps {
-  content: string;
+interface ModernReadmeEditorProps {
+  initialContent: string;
   onClose?: () => void;
-  onEdit?: () => void;
+  onSave?: (content: string) => void;
 }
 
-export default function ModernReadmeOutput({ 
-  content, 
+export default function ModernReadmeEditor({ 
+  initialContent,
   onClose,
-  onEdit 
-}: ModernReadmeOutputProps) {
-  const [viewMode, setViewMode] = useState<'preview' | 'raw'>('preview');
+  onSave 
+}: ModernReadmeEditorProps) {
+  const [content, setContent] = useState(initialContent);
+  const [viewMode, setViewMode] = useState<'split' | 'edit' | 'preview'>('split');
   const [copySuccess, setCopySuccess] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
+  const [splitRatio, setSplitRatio] = useState(0.5);
+  const [isDragging, setIsDragging] = useState(false);
+  const [lineNumbers, setLineNumbers] = useState<string[]>([]);
   
+  const editorRef = useRef<HTMLTextAreaElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const splitContainerRef = useRef<HTMLDivElement>(null);
 
-  // Handle scroll progress for the animated progress bar
-  const handleScroll = useCallback(() => {
-    if (!contentRef.current) return;
-    
-    const { scrollTop, scrollHeight, clientHeight } = contentRef.current;
-    const progress = scrollTop / (scrollHeight - clientHeight);
-    setScrollProgress(Math.min(Math.max(progress, 0), 1));
+  const generateLineNumbers = useCallback((text: string) => {
+    const count = text.split('\n').length;
+    return Array.from({ length: count }, (_, i) => (i + 1).toString());
   }, []);
 
   useEffect(() => {
-    const element = contentRef.current;
-    if (element) {
-      element.addEventListener('scroll', handleScroll);
-      return () => element.removeEventListener('scroll', handleScroll);
-    }
-  }, [handleScroll]);
+    setLineNumbers(generateLineNumbers(content));
+  }, [content, generateLineNumbers]);
+
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
+  };
 
   const handleCopy = async () => {
     try {
@@ -70,8 +76,6 @@ export default function ModernReadmeOutput({
 
   const handleDownload = async () => {
     setIsDownloading(true);
-    
-    // Add a small delay for better UX
     await new Promise(resolve => setTimeout(resolve, 500));
     
     const blob = new Blob([content], { type: 'text/markdown' });
@@ -84,6 +88,41 @@ export default function ModernReadmeOutput({
     
     setIsDownloading(false);
   };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    await new Promise(resolve => setTimeout(resolve, 800));
+    onSave?.(content);
+    setIsSaving(false);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+  };
+
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isDragging || !splitContainerRef.current) return;
+    
+    const containerRect = splitContainerRef.current.getBoundingClientRect();
+    const newRatio = (e.clientX - containerRect.left) / containerRect.width;
+    
+    setSplitRatio(Math.max(0.2, Math.min(0.8, newRatio)));
+  }, [isDragging]);
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isDragging, handleMouseMove, handleMouseUp]);
 
   const processedContent = marked(content) as string;
   const sanitizedContent = DOMPurify.sanitize(processedContent);
@@ -133,22 +172,22 @@ export default function ModernReadmeOutput({
           </div>
 
           {/* Geometric Shapes */}
-          {Array.from({ length: 8 }).map((_, i) => (
+          {Array.from({ length: 6 }).map((_, i) => (
             <motion.div
               key={`hexagon-${i}`}
-              className="absolute w-16 h-16 border border-green-400/30"
+              className="absolute w-12 h-12 border border-green-400/20"
               style={{
-                left: `${15 + i * 12}%`,
-                top: `${20 + i * 8}%`,
+                left: `${20 + i * 15}%`,
+                top: `${25 + i * 10}%`,
                 clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
               }}
               animate={{
                 rotate: [0, 360],
-                scale: [1, 1.2, 1],
-                opacity: [0.2, 0.4, 0.2]
+                scale: [1, 1.1, 1],
+                opacity: [0.1, 0.3, 0.1]
               }}
               transition={{
-                duration: 12 + (i * 2),
+                duration: 15 + (i * 3),
                 repeat: Infinity,
                 ease: "linear"
               }}
@@ -157,45 +196,41 @@ export default function ModernReadmeOutput({
 
           {/* Floating Code Elements */}
           {[
-            { text: "const readme = '🚀 README.md'", top: '10%', left: '15%', delay: 0 },
-            { text: "function generate() { return magic }", top: '25%', left: '70%', delay: 1 },
-            { text: "export default Component", top: '60%', left: '20%', delay: 2 },
-            { text: "import { AI } from '@readme/gen'", top: '75%', left: '75%', delay: 3 },
-            { text: "// Powered by GPT-4", top: '40%', left: '85%', delay: 1.5 },
-            { text: "README.md ✨", top: '85%', left: '40%', delay: 2.5 }
+            { text: "# README.md", top: '15%', left: '10%', delay: 0 },
+            { text: "## Features", top: '30%', left: '80%', delay: 1 },
+            { text: "```bash", top: '70%', left: '15%', delay: 2 },
+            { text: "npm install", top: '85%', left: '70%', delay: 3 }
           ].map((item, index) => (
             <motion.div
               key={`code-${index}`}
-              className="absolute font-mono text-sm"
+              className="absolute font-mono text-xs"
               style={{ top: item.top, left: item.left }}
               animate={{
-                y: [0, -15, 0],
-                x: [0, 5, 0],
-                opacity: [0.3, 0.7, 0.3],
+                y: [0, -10, 0],
+                opacity: [0.2, 0.5, 0.2],
                 filter: [
-                  `drop-shadow(0 0 2px rgba(0, 255, 136, 0.3))`,
-                  `drop-shadow(0 0 8px rgba(0, 255, 136, 0.6))`,
-                  `drop-shadow(0 0 2px rgba(0, 255, 136, 0.3))`
+                  `drop-shadow(0 0 2px rgba(0, 255, 136, 0.2))`,
+                  `drop-shadow(0 0 6px rgba(0, 255, 136, 0.4))`,
+                  `drop-shadow(0 0 2px rgba(0, 255, 136, 0.2))`
                 ]
               }}
               transition={{
-                duration: 4 + (index % 2),
+                duration: 5 + (index % 2),
                 repeat: Infinity,
                 ease: "easeInOut",
                 delay: item.delay
               }}
             >
-              <span className="text-green-400/50">{item.text}</span>
+              <span className="text-green-400/40">{item.text}</span>
             </motion.div>
           ))}
 
           {/* Floating Icons */}
           {[
-            { icon: Github, size: 24, top: '15%', left: '85%', delay: 0 },
-            { icon: Code, size: 20, top: '35%', left: '10%', delay: 1 },
-            { icon: GitBranch, size: 22, top: '65%', left: '90%', delay: 2 },
-            { icon: Star, size: 18, top: '80%', left: '15%', delay: 1.5 },
-            { icon: Zap, size: 16, top: '50%', left: '50%', delay: 0.5 }
+            { icon: Github, size: 20, top: '20%', left: '85%', delay: 0 },
+            { icon: Code, size: 18, top: '40%', left: '5%', delay: 1 },
+            { icon: FileText, size: 16, top: '60%', left: '90%', delay: 2 },
+            { icon: Star, size: 14, top: '80%', left: '10%', delay: 1.5 }
           ].map((item, index) => (
             <motion.div
               key={`icon-${index}`}
@@ -203,99 +238,52 @@ export default function ModernReadmeOutput({
               style={{ top: item.top, left: item.left }}
               animate={{
                 rotate: [0, 360],
-                scale: [1, 1.3, 1],
-                opacity: [0.2, 0.6, 0.2]
+                scale: [1, 1.2, 1],
+                opacity: [0.1, 0.4, 0.1]
               }}
               transition={{
-                duration: 8 + (index * 2),
+                duration: 10 + (index * 2),
                 repeat: Infinity,
                 ease: "linear",
                 delay: item.delay
               }}
             >
               <item.icon 
-                className="text-green-400/40" 
+                className="text-green-400/30" 
                 size={item.size}
                 style={{
-                  filter: 'drop-shadow(0 0 4px rgba(0, 255, 136, 0.5))'
+                  filter: 'drop-shadow(0 0 3px rgba(0, 255, 136, 0.3))'
                 }}
               />
             </motion.div>
           ))}
 
-          {/* Reactive Energy Nodes */}
-          {Array.from({ length: 12 }).map((_, i) => (
-            <motion.div
-              key={`node-${i}`}
-              className="absolute w-2 h-2 bg-green-400 rounded-full"
-              style={{
-                left: `${Math.random() * 90}%`,
-                top: `${Math.random() * 90}%`
-              }}
-              animate={{
-                scale: [0.5, 1.5, 0.5],
-                opacity: [0.1, 1, 0.1],
-                boxShadow: [
-                  '0 0 5px rgba(0, 255, 136, 0.5)',
-                  '0 0 20px rgba(0, 255, 136, 1)',
-                  '0 0 5px rgba(0, 255, 136, 0.5)'
-                ]
-              }}
-              transition={{
-                duration: 2 + Math.random() * 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: Math.random() * 3
-              }}
-            />
-          ))}
-
-          {/* Central Geometric Mandala */}
-          <motion.div
-            className="absolute top-1/2 left-1/2 w-64 h-64 -translate-x-1/2 -translate-y-1/2"
-            animate={{
-              rotate: [0, 180, 360],
-              scale: [1, 1.1, 1],
-              opacity: [0.1, 0.3, 0.1]
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-          >
-            <div className="absolute inset-0 border border-green-400/20 rounded-full" />
-            <div className="absolute inset-4 border border-green-400/30 rounded-full rotate-45" />
-            <div className="absolute inset-8 border border-green-400/40 rounded-full -rotate-45" />
-            <div className="absolute inset-12 border border-green-400/50 rounded-full" />
-          </motion.div>
-
           {/* Enhanced Glow Orbs */}
           <motion.div
-            className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-400/10 rounded-full blur-3xl"
+            className="absolute top-1/3 left-1/3 w-80 h-80 bg-green-400/5 rounded-full blur-3xl"
             animate={{
-              scale: [1, 1.3, 1],
-              opacity: [0.1, 0.3, 0.1],
-              x: [-20, 20, -20],
-              y: [-10, 10, -10]
+              scale: [1, 1.2, 1],
+              opacity: [0.1, 0.2, 0.1],
+              x: [-15, 15, -15],
+              y: [-8, 8, -8]
             }}
             transition={{
-              duration: 8,
+              duration: 12,
               repeat: Infinity,
               ease: "easeInOut"
             }}
           />
 
           <motion.div
-            className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-green-400/5 rounded-full blur-2xl"
+            className="absolute bottom-1/3 right-1/3 w-60 h-60 bg-green-400/3 rounded-full blur-2xl"
             animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.05, 0.2, 0.05],
-              x: [20, -20, 20],
-              y: [10, -10, 10]
+              scale: [1, 1.3, 1],
+              opacity: [0.05, 0.15, 0.05],
+              x: [15, -15, 15],
+              y: [8, -8, 8]
             }}
             transition={{
-              duration: 10,
+              duration: 14,
               repeat: Infinity,
               ease: "easeInOut"
             }}
@@ -303,27 +291,18 @@ export default function ModernReadmeOutput({
         </div>
       </div>
 
-      {/* Navbar - positioned above background, always visible */}
+      {/* Navbar */}
       <div className="fixed top-0 left-0 right-0 z-50">
         <GitHubOAuthNavbar />
       </div>
 
-      {/* Secondary Header - positioned below navbar */}
+      {/* Editor Header */}
       <motion.header
         className="sticky top-16 z-40 backdrop-blur-xl bg-black/60 border-b border-green-400/20"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
       >
-        {/* Progress Bar */}
-        <motion.div
-          className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-green-400 to-green-600"
-          style={{ width: `${scrollProgress * 100}%` }}
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 0.3 }}
-        />
-
         <div className="container mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
             {/* Left Section */}
@@ -337,14 +316,14 @@ export default function ModernReadmeOutput({
                 <div className="relative">
                   <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur opacity-30" />
                   <div className="relative bg-black p-2 rounded-lg">
-                    <FileText className="w-4 h-4 text-green-400" />
+                    <Code className="w-4 h-4 text-green-400" />
                   </div>
                 </div>
                 <div>
                   <h1 className="text-lg font-bold bg-gradient-to-r from-white to-green-400 bg-clip-text text-transparent">
-                    README Generated
+                    README Editor
                   </h1>
-                  <p className="text-xs text-gray-400">Your documentation is ready</p>
+                  <p className="text-xs text-gray-400">Edit and preview your documentation</p>
                 </div>
               </motion.div>
 
@@ -356,6 +335,28 @@ export default function ModernReadmeOutput({
                 transition={{ delay: 0.5 }}
               >
                 <button
+                  onClick={() => setViewMode('edit')}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                    viewMode === 'edit'
+                      ? 'bg-green-400 text-black shadow-lg'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  <Code className="w-4 h-4" />
+                  Edit
+                </button>
+                <button
+                  onClick={() => setViewMode('split')}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                    viewMode === 'split'
+                      ? 'bg-green-400 text-black shadow-lg'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  <Settings className="w-4 h-4" />
+                  Split
+                </button>
+                <button
                   onClick={() => setViewMode('preview')}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
                     viewMode === 'preview'
@@ -365,17 +366,6 @@ export default function ModernReadmeOutput({
                 >
                   <Eye className="w-4 h-4" />
                   Preview
-                </button>
-                <button
-                  onClick={() => setViewMode('raw')}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
-                    viewMode === 'raw'
-                      ? 'bg-green-400 text-black shadow-lg'
-                      : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  <Code className="w-4 h-4" />
-                  Raw
                 </button>
               </motion.div>
             </div>
@@ -388,6 +378,29 @@ export default function ModernReadmeOutput({
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.6 }}
               >
+                {/* Save Button */}
+                <Button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  size="sm"
+                  className="relative group bg-green-400 text-black hover:bg-green-300 font-medium"
+                >
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity" />
+                  <div className="relative flex items-center gap-2">
+                    {isSaving ? (
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      >
+                        <Zap className="w-4 h-4" />
+                      </motion.div>
+                    ) : (
+                      <Save className="w-4 h-4" />
+                    )}
+                    {isSaving ? 'Saving...' : 'Save'}
+                  </div>
+                </Button>
+
                 {/* Copy Button */}
                 <Button
                   onClick={handleCopy}
@@ -410,11 +423,11 @@ export default function ModernReadmeOutput({
                 <Button
                   onClick={handleDownload}
                   disabled={isDownloading}
+                  variant="ghost"
                   size="sm"
-                  className="relative group bg-green-400 text-black hover:bg-green-300 font-medium"
+                  className="bg-gray-900/50 border border-green-400/20 hover:border-green-400/40 hover:bg-green-400/10"
                 >
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity" />
-                  <div className="relative flex items-center gap-2">
+                  <div className="flex items-center gap-2">
                     {isDownloading ? (
                       <motion.div
                         animate={{ rotate: 360 }}
@@ -428,19 +441,6 @@ export default function ModernReadmeOutput({
                     {isDownloading ? 'Downloading...' : 'Download'}
                   </div>
                 </Button>
-
-                {/* Edit Button */}
-                {onEdit && (
-                  <Button
-                    onClick={onEdit}
-                    variant="ghost"
-                    size="sm"
-                    className="bg-gray-900/50 border border-green-400/20 hover:border-green-400/40 hover:bg-green-400/10"
-                  >
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Edit
-                  </Button>
-                )}
 
                 {/* Close Button */}
                 {onClose && (
@@ -459,77 +459,140 @@ export default function ModernReadmeOutput({
         </div>
       </motion.header>
 
-      {/* Main Content Area - Flex layout to push footer to bottom */}
+      {/* Main Editor Area */}
       <div className="relative z-10 min-h-screen pt-16 flex flex-col">
-        {/* Content Section */}
-        <main className="flex-1 px-6 py-8">
-          <div className="container mx-auto max-w-6xl">
+        <main className="flex-1 px-6 py-4">
+          <div className="container mx-auto max-w-7xl h-full">
             <motion.div
-              className="relative"
+              className="relative h-[calc(100vh-200px)]"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              {/* Content Container with Enhanced Blur */}
-              <div className="relative bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden shadow-2xl shadow-green-400/10">
-                {/* Enhanced Glow Effect */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
-                
-                <div 
-                  ref={contentRef}
-                  className="relative max-h-[calc(100vh-300px)] overflow-y-auto scrollbar-thin scrollbar-thumb-green-400/30 scrollbar-track-transparent"
-                >
-                  <AnimatePresence mode="wait">
-                    {viewMode === 'preview' ? (
-                      <motion.div
-                        key="preview"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        transition={{ duration: 0.3 }}
-                        className="p-8"
-                      >
+              {viewMode === 'split' ? (
+                /* Split View */
+                <div ref={splitContainerRef} className="flex h-full gap-4">
+                  {/* Editor Panel */}
+                  <div style={{ width: `${splitRatio * 100}%` }} className="relative">
+                    <div className="h-full bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden shadow-2xl shadow-green-400/10">
+                      <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
+                      <div className="relative h-full flex">
+                        {/* Line Numbers */}
+                        <div className="bg-black/20 text-gray-500 text-right pr-4 pl-4 py-4 font-mono text-sm select-none border-r border-green-400/20">
+                          <AnimatePresence mode="sync">
+                            {lineNumbers.map((num, index) => (
+                              <motion.div
+                                key={num}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 0.5, x: 0 }}
+                                exit={{ opacity: 0, x: 10 }}
+                                transition={{ duration: 0.2, delay: index * 0.01 }}
+                                className="leading-6"
+                              >
+                                {num}
+                              </motion.div>
+                            ))}
+                          </AnimatePresence>
+                        </div>
+                        
+                        {/* Editor */}
+                        <div className="flex-1 relative">
+                          <textarea
+                            ref={editorRef}
+                            value={content}
+                            onChange={handleContentChange}
+                            className="w-full h-full bg-transparent text-white font-mono text-sm p-4 resize-none focus:outline-none leading-6 placeholder-gray-500"
+                            placeholder="# Your README.md content here..."
+                            spellCheck={false}
+                            style={{
+                              tabSize: 2,
+                              MozTabSize: 2
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Resizer */}
+                  <div 
+                    className="w-1 bg-green-400/20 cursor-col-resize hover:bg-green-400/40 transition-colors rounded-full"
+                    onMouseDown={handleMouseDown}
+                    style={{ cursor: isDragging ? 'col-resize' : 'default' }}
+                  />
+                  
+                  {/* Preview Panel */}
+                  <div style={{ width: `${(1 - splitRatio) * 100}%` }}>
+                    <div className="h-full bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden shadow-2xl shadow-green-400/10">
+                      <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
+                      <div className="relative h-full overflow-y-auto scrollbar-thin scrollbar-thumb-green-400/30 scrollbar-track-transparent p-8">
                         <div 
                           ref={previewRef}
                           className="prose prose-invert prose-green max-w-none modern-readme-preview"
                           dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                         />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="raw"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
-                        transition={{ duration: 0.3 }}
-                        className="p-8"
-                      >
-                        <pre className="font-mono text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
-                          {content}
-                        </pre>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-
-              {/* Floating Action Hint */}
-              <motion.div
-                className="absolute -bottom-6 right-4 bg-green-400 text-black px-4 py-2 rounded-full text-sm font-medium shadow-lg shadow-green-400/50"
-                initial={{ opacity: 0, y: 20, scale: 0.8 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ delay: 1.2, duration: 0.5 }}
-              >
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4" />
-                  README ready to use!
+              ) : viewMode === 'edit' ? (
+                /* Edit Only View */
+                <div className="h-full bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden shadow-2xl shadow-green-400/10">
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
+                  <div className="relative h-full flex">
+                    {/* Line Numbers */}
+                    <div className="bg-black/20 text-gray-500 text-right pr-4 pl-4 py-4 font-mono text-sm select-none border-r border-green-400/20">
+                      <AnimatePresence mode="sync">
+                        {lineNumbers.map((num, index) => (
+                          <motion.div
+                            key={num}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 0.5, x: 0 }}
+                            exit={{ opacity: 0, x: 10 }}
+                            transition={{ duration: 0.2, delay: index * 0.01 }}
+                            className="leading-6"
+                          >
+                            {num}
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </div>
+                    
+                    {/* Editor */}
+                    <div className="flex-1 relative">
+                      <textarea
+                        ref={editorRef}
+                        value={content}
+                        onChange={handleContentChange}
+                        className="w-full h-full bg-transparent text-white font-mono text-sm p-4 resize-none focus:outline-none leading-6 placeholder-gray-500"
+                        placeholder="# Your README.md content here..."
+                        spellCheck={false}
+                        style={{
+                          tabSize: 2,
+                          MozTabSize: 2
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
-              </motion.div>
+              ) : (
+                /* Preview Only View */
+                <div className="h-full bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden shadow-2xl shadow-green-400/10">
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
+                  <div className="relative h-full overflow-y-auto scrollbar-thin scrollbar-thumb-green-400/30 scrollbar-track-transparent p-8">
+                    <div 
+                      ref={previewRef}
+                      className="prose prose-invert prose-green max-w-none modern-readme-preview"
+                      dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+                    />
+                  </div>
+                </div>
+              )}
             </motion.div>
           </div>
         </main>
 
-        {/* Footer - positioned at bottom naturally */}
+        {/* Footer */}
         <footer className="relative z-10 mt-auto">
           <CenteredWithLogo />
         </footer>
@@ -773,7 +836,7 @@ export default function ModernReadmeOutput({
 
         /* Enhanced backdrop blur support */
         @supports (backdrop-filter: blur(20px)) {
-          .backdrop-blur-2xl {
+          .backdrop-blur-xl {
             backdrop-filter: blur(20px);
           }
         }
