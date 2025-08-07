@@ -15,11 +15,7 @@ import {
   Github,
   GitBranch,
   Star,
-  Save,
-  Undo,
-  Redo,
-  Settings,
-  Palette
+  Settings
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { marked } from 'marked';
@@ -28,21 +24,20 @@ import GitHubOAuthNavbar from '@/components/blocks/navbars/github-oauth-navbar';
 import { CenteredWithLogo } from '@/components/blocks/footers/centered-with-logo';
 
 interface ModernReadmeEditorProps {
-  initialContent: string;
+  content: string;
   onClose?: () => void;
-  onSave?: (content: string) => void;
+  onEdit?: () => void;
 }
 
 export default function ModernReadmeEditor({ 
-  initialContent,
+  content: initialContent,
   onClose,
-  onSave 
+  onEdit 
 }: ModernReadmeEditorProps) {
   const [content, setContent] = useState(initialContent);
-  const [viewMode, setViewMode] = useState<'split' | 'edit' | 'preview'>('split');
+  const [viewMode, setViewMode] = useState<'preview' | 'split' | 'raw'>('preview');
   const [copySuccess, setCopySuccess] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const [splitRatio, setSplitRatio] = useState(0.5);
   const [isDragging, setIsDragging] = useState(false);
   const [lineNumbers, setLineNumbers] = useState<string[]>([]);
@@ -89,12 +84,7 @@ export default function ModernReadmeEditor({
     setIsDownloading(false);
   };
 
-  const handleSave = async () => {
-    setIsSaving(true);
-    await new Promise(resolve => setTimeout(resolve, 800));
-    onSave?.(content);
-    setIsSaving(false);
-  };
+
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
@@ -321,9 +311,9 @@ export default function ModernReadmeEditor({
                 </div>
                 <div>
                   <h1 className="text-lg font-bold bg-gradient-to-r from-white to-green-400 bg-clip-text text-transparent">
-                    README Editor
+                    README Generated
                   </h1>
-                  <p className="text-xs text-gray-400">Edit and preview your documentation</p>
+                  <p className="text-xs text-gray-400">Your documentation is ready</p>
                 </div>
               </motion.div>
 
@@ -335,15 +325,15 @@ export default function ModernReadmeEditor({
                 transition={{ delay: 0.5 }}
               >
                 <button
-                  onClick={() => setViewMode('edit')}
+                  onClick={() => setViewMode('preview')}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
-                    viewMode === 'edit'
+                    viewMode === 'preview'
                       ? 'bg-green-400 text-black shadow-lg'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
-                  <Code className="w-4 h-4" />
-                  Edit
+                  <Eye className="w-4 h-4" />
+                  Preview
                 </button>
                 <button
                   onClick={() => setViewMode('split')}
@@ -357,15 +347,15 @@ export default function ModernReadmeEditor({
                   Split
                 </button>
                 <button
-                  onClick={() => setViewMode('preview')}
+                  onClick={() => setViewMode('raw')}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
-                    viewMode === 'preview'
+                    viewMode === 'raw'
                       ? 'bg-green-400 text-black shadow-lg'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
-                  <Eye className="w-4 h-4" />
-                  Preview
+                  <Code className="w-4 h-4" />
+                  Raw
                 </button>
               </motion.div>
             </div>
@@ -378,28 +368,20 @@ export default function ModernReadmeEditor({
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.6 }}
               >
-                {/* Save Button */}
-                <Button
-                  onClick={handleSave}
-                  disabled={isSaving}
-                  size="sm"
-                  className="relative group bg-green-400 text-black hover:bg-green-300 font-medium"
-                >
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity" />
-                  <div className="relative flex items-center gap-2">
-                    {isSaving ? (
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      >
-                        <Zap className="w-4 h-4" />
-                      </motion.div>
-                    ) : (
-                      <Save className="w-4 h-4" />
-                    )}
-                    {isSaving ? 'Saving...' : 'Save'}
-                  </div>
-                </Button>
+                {/* Edit Button */}
+                {onEdit && (
+                  <Button
+                    onClick={onEdit}
+                    size="sm"
+                    className="relative group bg-green-400 text-black hover:bg-green-300 font-medium"
+                  >
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity" />
+                    <div className="relative flex items-center gap-2">
+                      <Sparkles className="w-4 h-4" />
+                      Edit
+                    </div>
+                  </Button>
+                )}
 
                 {/* Copy Button */}
                 <Button
@@ -469,125 +451,131 @@ export default function ModernReadmeEditor({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              {viewMode === 'split' ? (
-                /* Split View */
-                <div ref={splitContainerRef} className="flex h-full gap-4">
-                  {/* Editor Panel */}
-                  <div style={{ width: `${splitRatio * 100}%` }} className="relative">
-                    <div className="h-full bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden shadow-2xl shadow-green-400/10">
-                      <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
-                      <div className="relative h-full flex">
-                        {/* Line Numbers */}
-                        <div className="bg-black/20 text-gray-500 text-right pr-4 pl-4 py-4 font-mono text-sm select-none border-r border-green-400/20">
-                          <AnimatePresence mode="sync">
-                            {lineNumbers.map((num, index) => (
-                              <motion.div
-                                key={num}
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 0.5, x: 0 }}
-                                exit={{ opacity: 0, x: 10 }}
-                                transition={{ duration: 0.2, delay: index * 0.01 }}
-                                className="leading-6"
-                              >
-                                {num}
-                              </motion.div>
-                            ))}
-                          </AnimatePresence>
+              <AnimatePresence mode="wait">
+                {viewMode === 'preview' ? (
+                  /* Preview Only View */
+                  <motion.div
+                    key="preview"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="h-full bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden shadow-2xl shadow-green-400/10"
+                  >
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
+                    <div className="relative h-full overflow-y-auto scrollbar-thin scrollbar-thumb-green-400/30 scrollbar-track-transparent p-8">
+                      <div 
+                        ref={previewRef}
+                        className="prose prose-invert prose-green max-w-none modern-readme-preview"
+                        dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+                      />
+                    </div>
+                  </motion.div>
+                ) : viewMode === 'split' ? (
+                  /* Split View */
+                  <motion.div
+                    key="split"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                    ref={splitContainerRef} 
+                    className="flex h-full gap-4"
+                  >
+                    {/* Editor Panel */}
+                    <div style={{ width: `${splitRatio * 100}%` }} className="relative">
+                      <div className="h-full bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden shadow-2xl shadow-green-400/10">
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
+                        <div className="relative h-full flex">
+                          {/* Line Numbers */}
+                          <div className="bg-black/20 text-gray-500 text-right pr-4 pl-4 py-4 font-mono text-sm select-none border-r border-green-400/20">
+                            <AnimatePresence mode="sync">
+                              {lineNumbers.map((num, index) => (
+                                <motion.div
+                                  key={num}
+                                  initial={{ opacity: 0, x: -10 }}
+                                  animate={{ opacity: 0.5, x: 0 }}
+                                  exit={{ opacity: 0, x: 10 }}
+                                  transition={{ duration: 0.2, delay: index * 0.01 }}
+                                  className="leading-6"
+                                >
+                                  {num}
+                                </motion.div>
+                              ))}
+                            </AnimatePresence>
+                          </div>
+                          
+                          {/* Editor */}
+                          <div className="flex-1 relative">
+                            <textarea
+                              ref={editorRef}
+                              value={content}
+                              onChange={handleContentChange}
+                              className="w-full h-full bg-transparent text-white font-mono text-sm p-4 resize-none focus:outline-none leading-6 placeholder-gray-500"
+                              placeholder="# Your README.md content here..."
+                              spellCheck={false}
+                              style={{
+                                tabSize: 2,
+                                MozTabSize: 2
+                              }}
+                            />
+                          </div>
                         </div>
-                        
-                        {/* Editor */}
-                        <div className="flex-1 relative">
-                          <textarea
-                            ref={editorRef}
-                            value={content}
-                            onChange={handleContentChange}
-                            className="w-full h-full bg-transparent text-white font-mono text-sm p-4 resize-none focus:outline-none leading-6 placeholder-gray-500"
-                            placeholder="# Your README.md content here..."
-                            spellCheck={false}
-                            style={{
-                              tabSize: 2,
-                              MozTabSize: 2
-                            }}
+                      </div>
+                    </div>
+
+                    {/* Resizer */}
+                    <div 
+                      className="w-1 bg-green-400/20 cursor-col-resize hover:bg-green-400/40 transition-colors rounded-full"
+                      onMouseDown={handleMouseDown}
+                      style={{ cursor: isDragging ? 'col-resize' : 'default' }}
+                    />
+                    
+                    {/* Preview Panel */}
+                    <div style={{ width: `${(1 - splitRatio) * 100}%` }}>
+                      <div className="h-full bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden shadow-2xl shadow-green-400/10">
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
+                        <div className="relative h-full overflow-y-auto scrollbar-thin scrollbar-thumb-green-400/30 scrollbar-track-transparent p-8">
+                          <div 
+                            ref={previewRef}
+                            className="prose prose-invert prose-green max-w-none modern-readme-preview"
+                            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                           />
                         </div>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Resizer */}
-                  <div 
-                    className="w-1 bg-green-400/20 cursor-col-resize hover:bg-green-400/40 transition-colors rounded-full"
-                    onMouseDown={handleMouseDown}
-                    style={{ cursor: isDragging ? 'col-resize' : 'default' }}
-                  />
-                  
-                  {/* Preview Panel */}
-                  <div style={{ width: `${(1 - splitRatio) * 100}%` }}>
-                    <div className="h-full bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden shadow-2xl shadow-green-400/10">
-                      <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
-                      <div className="relative h-full overflow-y-auto scrollbar-thin scrollbar-thumb-green-400/30 scrollbar-track-transparent p-8">
-                        <div 
-                          ref={previewRef}
-                          className="prose prose-invert prose-green max-w-none modern-readme-preview"
-                          dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-                        />
-                      </div>
+                  </motion.div>
+                ) : (
+                  /* Raw View */
+                  <motion.div
+                    key="raw"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.3 }}
+                    className="h-full bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden shadow-2xl shadow-green-400/10"
+                  >
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
+                    <div className="relative h-full overflow-y-auto scrollbar-thin scrollbar-thumb-green-400/30 scrollbar-track-transparent p-8">
+                      <pre className="font-mono text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
+                        {content}
+                      </pre>
                     </div>
-                  </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              {/* Floating Action Hint */}
+              <motion.div
+                className="absolute -bottom-6 right-4 bg-green-400 text-black px-4 py-2 rounded-full text-sm font-medium shadow-lg shadow-green-400/50"
+                initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: 1.2, duration: 0.5 }}
+              >
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4" />
+                  README ready to use!
                 </div>
-              ) : viewMode === 'edit' ? (
-                /* Edit Only View */
-                <div className="h-full bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden shadow-2xl shadow-green-400/10">
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
-                  <div className="relative h-full flex">
-                    {/* Line Numbers */}
-                    <div className="bg-black/20 text-gray-500 text-right pr-4 pl-4 py-4 font-mono text-sm select-none border-r border-green-400/20">
-                      <AnimatePresence mode="sync">
-                        {lineNumbers.map((num, index) => (
-                          <motion.div
-                            key={num}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 0.5, x: 0 }}
-                            exit={{ opacity: 0, x: 10 }}
-                            transition={{ duration: 0.2, delay: index * 0.01 }}
-                            className="leading-6"
-                          >
-                            {num}
-                          </motion.div>
-                        ))}
-                      </AnimatePresence>
-                    </div>
-                    
-                    {/* Editor */}
-                    <div className="flex-1 relative">
-                      <textarea
-                        ref={editorRef}
-                        value={content}
-                        onChange={handleContentChange}
-                        className="w-full h-full bg-transparent text-white font-mono text-sm p-4 resize-none focus:outline-none leading-6 placeholder-gray-500"
-                        placeholder="# Your README.md content here..."
-                        spellCheck={false}
-                        style={{
-                          tabSize: 2,
-                          MozTabSize: 2
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                /* Preview Only View */
-                <div className="h-full bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden shadow-2xl shadow-green-400/10">
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
-                  <div className="relative h-full overflow-y-auto scrollbar-thin scrollbar-thumb-green-400/30 scrollbar-track-transparent p-8">
-                    <div 
-                      ref={previewRef}
-                      className="prose prose-invert prose-green max-w-none modern-readme-preview"
-                      dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-                    />
-                  </div>
-                </div>
-              )}
+              </motion.div>
             </motion.div>
           </div>
         </main>
