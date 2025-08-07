@@ -5,11 +5,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Code, GitBranch, Star, Zap } from 'lucide-react';
 import ReadmeGeneratorFlow from '@/components/readme-generator-flow';
 import GitHubReadmeEditor from '@/components/github-readme-editor';
+import ModernReadmeOutput from '@/components/modern-readme-output';
 import { ScrollAnimatedDiv } from '@/components/ui/scroll-animated-div';
 
 export default function SimpleCentered() {
   const [showGenerator, setShowGenerator] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
+  const [showModernOutput, setShowModernOutput] = useState(false);
   const [generatedReadme, setGeneratedReadme] = useState('');
 
   const handleStartGeneration = () => {
@@ -18,13 +20,25 @@ export default function SimpleCentered() {
 
   const handleGenerationComplete = (readme: string) => {
     setGeneratedReadme(readme);
-    setShowEditor(true);
+    setShowModernOutput(true);
   };
 
   const handleEditorClose = () => {
     setShowEditor(false);
     setShowGenerator(false);
+    setShowModernOutput(false);
     setGeneratedReadme('');
+  };
+
+  const handleModernOutputClose = () => {
+    setShowModernOutput(false);
+    setShowGenerator(false);
+    setGeneratedReadme('');
+  };
+
+  const handleEditFromModern = () => {
+    setShowModernOutput(false);
+    setShowEditor(true);
   };
 
   return (
@@ -249,7 +263,34 @@ export default function SimpleCentered() {
 
         <div className="mx-auto max-w-2xl py-8 sm:py-12 lg:py-16">
           <AnimatePresence mode="wait">
-            {!showEditor ? (
+            {showModernOutput ? (
+              <motion.div
+                key="modern-output"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                className="fixed inset-0 z-50 bg-black"
+              >
+                <ModernReadmeOutput 
+                  content={generatedReadme}
+                  onClose={handleModernOutputClose}
+                  onEdit={handleEditFromModern}
+                />
+              </motion.div>
+            ) : showEditor ? (
+              <motion.div
+                key="editor-content"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                className="fixed inset-0 z-50 bg-black"
+              >
+                <GitHubReadmeEditor 
+                  initialContent={generatedReadme}
+                  onClose={handleEditorClose}
+                />
+              </motion.div>
+            ) : (
               <motion.div
                 key="hero-content"
                 initial={{ opacity: 1 }}
@@ -317,19 +358,6 @@ export default function SimpleCentered() {
                     <ReadmeGeneratorFlow onComplete={handleGenerationComplete} />
                   )}
                 </ScrollAnimatedDiv>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="editor-content"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-                className="fixed inset-0 z-50 bg-black"
-              >
-                <GitHubReadmeEditor 
-                  initialContent={generatedReadme}
-                  onClose={handleEditorClose}
-                />
               </motion.div>
             )}
           </AnimatePresence>
