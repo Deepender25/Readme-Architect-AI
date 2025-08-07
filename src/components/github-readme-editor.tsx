@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Download, Copy, GitBranch, Loader2, Check, X, AlertCircle } from 'lucide-react';
+import { ChevronDown, Download, Copy, GitBranch, Loader2, Check, X, AlertCircle, Edit3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { marked } from 'marked';
@@ -10,6 +10,7 @@ import DOMPurify from 'isomorphic-dompurify';
 import { useAuth } from '@/lib/auth';
 import RepositoriesList from '@/components/repositories-list';
 import HistoryList from '@/components/history-list';
+import ModernReadmeOutput from '@/components/modern-readme-output';
 
 interface GitHubReadmeEditorProps {
   initialContent?: string;
@@ -131,6 +132,7 @@ export default function GitHubReadmeEditor({
   const [error, setError] = useState('');
   const [showRepositories, setShowRepositories] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [showModernOutput, setShowModernOutput] = useState(false);
   
   const editorRef = useRef<HTMLTextAreaElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
@@ -275,6 +277,17 @@ export default function GitHubReadmeEditor({
   const processedContent = marked(content) as string;
   const sanitizedContent = DOMPurify.sanitize(processedContent);
 
+  // Show modern output if requested
+  if (showModernOutput) {
+    return (
+      <ModernReadmeOutput
+        content={content}
+        onClose={() => setShowModernOutput(false)}
+        onEdit={() => setShowModernOutput(false)}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black text-foreground">
       {/* Header */}
@@ -306,6 +319,13 @@ export default function GitHubReadmeEditor({
             </div>
             
             <div className="flex items-center gap-2">
+              <Button 
+                onClick={() => setShowModernOutput(true)}
+                className="gap-2 h-8 text-sm bg-green-600 hover:bg-green-700 text-white"
+              >
+                <Edit3 className="h-3.5 w-3.5" />
+                Modern View
+              </Button>
               <Button 
                 onClick={handleCopy}
                 variant="ghost"
