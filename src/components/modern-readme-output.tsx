@@ -161,7 +161,7 @@ export default function ModernReadmeOutput({
             { text: "function generate() { return magic }", top: '25%', left: '70%', delay: 1 },
             { text: "export default Component", top: '60%', left: '20%', delay: 2 },
             { text: "import { AI } from '@readme/gen'", top: '75%', left: '75%', delay: 3 },
-            { text: "// Powered by GPT-4", top: '40%', left: '85%', delay: 1.5 },
+            { text: "// Powered by Gemini", top: '40%', left: '85%', delay: 1.5 },
             { text: "README.md ✨", top: '85%', left: '40%', delay: 2.5 }
           ].map((item, index) => (
             <motion.div

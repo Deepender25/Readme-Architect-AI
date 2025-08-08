@@ -121,7 +121,7 @@ export function CenteredWithLogo() {
               </p>
               <div className="flex items-center gap-2 text-xs text-green-400">
                 <Zap className="w-3 h-3 animate-pulse" />
-                <span>Powered by GPT-4</span>
+                <span>Powered by Gemini</span>
               </div>
             </div>
           </ScrollAnimatedDiv>
