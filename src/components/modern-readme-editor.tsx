@@ -21,7 +21,6 @@ import { Button } from '@/components/ui/button';
 import { marked } from 'marked';
 import DOMPurify from 'isomorphic-dompurify';
 import GitHubOAuthNavbar from '@/components/blocks/navbars/github-oauth-navbar';
-import { CenteredWithLogo } from '@/components/blocks/footers/centered-with-logo';
 
 interface ModernReadmeEditorProps {
   content: string;
@@ -189,7 +188,8 @@ export default function ModernReadmeEditor({
             { text: "# README.md", top: '15%', left: '10%', delay: 0 },
             { text: "## Features", top: '30%', left: '80%', delay: 1 },
             { text: "```bash", top: '70%', left: '15%', delay: 2 },
-            { text: "npm install", top: '85%', left: '70%', delay: 3 }
+            { text: "npm install", top: '85%', left: '70%', delay: 3 },
+            { text: "// Powered by Gemini", top: '40%', left: '85%', delay: 1.5 }
           ].map((item, index) => (
             <motion.div
               key={`code-${index}`}
@@ -442,11 +442,11 @@ export default function ModernReadmeEditor({
       </motion.header>
 
       {/* Main Editor Area */}
-      <div className="relative z-10 min-h-screen pt-16 flex flex-col">
-        <main className="flex-1 px-6 py-4">
-          <div className="container mx-auto max-w-7xl h-full">
+      <div className="relative z-10 min-h-screen pt-16">
+        <main className="px-6 py-8 min-h-[calc(100vh-64px)]">
+          <div className="container mx-auto max-w-7xl">
             <motion.div
-              className="relative h-[calc(100vh-200px)]"
+              className="relative h-[calc(100vh-160px)]"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -580,10 +580,7 @@ export default function ModernReadmeEditor({
           </div>
         </main>
 
-        {/* Footer */}
-        <footer className="relative z-10 mt-auto">
-          <CenteredWithLogo />
-        </footer>
+
       </div>
 
       {/* Custom Styles */}

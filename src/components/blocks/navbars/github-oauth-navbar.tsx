@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Github, Menu, X, User, Settings, FileText, LogOut, ChevronDown } from 'lucide-react';
+import { Github, Menu, X, User, Settings, FileText, LogOut, ChevronDown, FolderGit2, History } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 
 interface GitHubOAuthNavbarProps {
@@ -167,9 +167,25 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
                         transition={{ type: "spring", stiffness: 350, damping: 22 }}
                         className="absolute right-0 top-full mt-2 w-56 bg-card/95 backdrop-blur-xl border border-green-500/20 rounded-lg shadow-xl shadow-green-500/20 py-2">
                         
-                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-500/10 transition-colors">
-                          <FileText className="w-4 h-4" />
-                          My READMEs
+                        <button 
+                          onClick={() => {
+                            setDropdownOpen(false);
+                            // Navigate to repositories page
+                            window.location.href = '/repositories';
+                          }}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-500/10 transition-colors">
+                          <FolderGit2 className="w-4 h-4" />
+                          My Repositories
+                        </button>
+                        <button 
+                          onClick={() => {
+                            setDropdownOpen(false);
+                            // Navigate to history page
+                            window.location.href = '/history';
+                          }}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-500/10 transition-colors">
+                          <History className="w-4 h-4" />
+                          History
                         </button>
                         <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-500/10 transition-colors">
                           <Settings className="w-4 h-4" />
@@ -271,9 +287,23 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
                           <div className="text-xs text-muted-foreground">@{user.username}</div>
                         </div>
                       </div>
-                      <button className="w-full text-left px-3 py-2.5 text-sm text-foreground/70 hover:text-green-400 hover:bg-green-500/5 transition-colors rounded-lg flex items-center gap-3">
-                        <FileText className="w-4 h-4" />
-                        My READMEs
+                      <button 
+                        onClick={() => {
+                          setIsOpen(false);
+                          window.location.href = '/repositories';
+                        }}
+                        className="w-full text-left px-3 py-2.5 text-sm text-foreground/70 hover:text-green-400 hover:bg-green-500/5 transition-colors rounded-lg flex items-center gap-3">
+                        <FolderGit2 className="w-4 h-4" />
+                        My Repositories
+                      </button>
+                      <button 
+                        onClick={() => {
+                          setIsOpen(false);
+                          window.location.href = '/history';
+                        }}
+                        className="w-full text-left px-3 py-2.5 text-sm text-foreground/70 hover:text-green-400 hover:bg-green-500/5 transition-colors rounded-lg flex items-center gap-3">
+                        <History className="w-4 h-4" />
+                        History
                       </button>
                       <button className="w-full text-left px-3 py-2.5 text-sm text-foreground/70 hover:text-green-400 hover:bg-green-500/5 transition-colors rounded-lg flex items-center gap-3">
                         <Settings className="w-4 h-4" />
