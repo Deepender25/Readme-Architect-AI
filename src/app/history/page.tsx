@@ -29,7 +29,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
-import CustomDropdown from '@/components/ui/custom-dropdown'
+import SimpleDropdown from '@/components/ui/simple-dropdown'
 import ModernReadmeEditor from '@/components/modern-readme-editor'
 
 interface HistoryItem {
@@ -354,26 +354,26 @@ function HistoryContent() {
                   </div>
 
                   {/* Demo Filter */}
-                  <CustomDropdown
+                  <SimpleDropdown
                     options={[
-                      { value: 'all', label: 'All READMEs' },
-                      { value: 'with', label: 'With Demo' },
-                      { value: 'without', label: 'Without Demo' }
+                      { value: 'all', label: 'All READMEs', icon: <FileText className="w-4 h-4" /> },
+                      { value: 'with', label: 'With Demo', icon: <BarChart3 className="w-4 h-4" /> },
+                      { value: 'without', label: 'Without Demo', icon: <FileText className="w-4 h-4" /> }
                     ]}
                     value={filterDemo}
                     onChange={(value) => setFilterDemo(value as 'all' | 'with' | 'without')}
-                    placeholder="Filter by Demo"
+                    placeholder="Demo Filter"
                     className="min-w-[160px]"
                   />
                 </div>
 
                 <div className="flex gap-2">
                   {/* Sort Controls */}
-                  <CustomDropdown
+                  <SimpleDropdown
                     options={[
-                      { value: 'created', label: 'Date Created' },
-                      { value: 'updated', label: 'Last Updated' },
-                      { value: 'name', label: 'Name' }
+                      { value: 'created', label: 'Date Created', icon: <Calendar className="w-4 h-4" /> },
+                      { value: 'updated', label: 'Last Updated', icon: <Clock className="w-4 h-4" /> },
+                      { value: 'name', label: 'Name', icon: <FileText className="w-4 h-4" /> }
                     ]}
                     value={sortBy}
                     onChange={(value) => setSortBy(value as 'created' | 'updated' | 'name')}
