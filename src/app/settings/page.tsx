@@ -8,7 +8,8 @@ import {
   User, 
   LogOut,
   Download,
-  Trash2
+  Trash2,
+  Github
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
@@ -78,6 +79,12 @@ function SettingsContent() {
     } catch (error) {
       console.error('Error removing data:', error);
       alert('Failed to remove data. Please try again.');
+    }
+  };
+
+  const handleVisitGitHub = () => {
+    if (user?.html_url) {
+      window.open(user.html_url, '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -179,7 +186,16 @@ function SettingsContent() {
                     <h2 className="text-2xl font-bold text-white">Account Actions</h2>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <Button
+                      onClick={handleVisitGitHub}
+                      variant="outline"
+                      className="flex items-center gap-2 border-green-400/50 text-green-400 hover:bg-green-400/10"
+                    >
+                      <Github className="w-4 h-4" />
+                      Visit GitHub
+                    </Button>
+
                     <Button
                       onClick={handleDownloadData}
                       variant="outline"
