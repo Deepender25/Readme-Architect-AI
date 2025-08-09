@@ -6,13 +6,80 @@ import MinimalGridBackground from '@/components/minimal-geometric-background'
 import { motion } from 'framer-motion'
 import { 
   User, 
-  LogOut
+  LogOut,
+  Download,
+  Trash2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 
 function SettingsContent() {
   const { user, isAuthenticated, logout } = useAuth();
+
+  const handleDownloadData = async () => {
+    try {
+      // Fetch user's history data
+      const historyResponse = await fetch('/api/history');
+      const historyData = historyResponse.ok ? await historyResponse.json() : [];
+      
+      // Fetch user's repositories data
+      const reposResponse = await fetch('/api/repositories');
+      const reposData = reposResponse.ok ? await reposResponse.json() : [];
+      
+      // Create export data
+      const exportData = {
+        user: {
+          name: user?.name,
+          username: user?.username,
+          avatar_url: user?.avatar_url
+        },
+        history: historyData,
+        repositories: reposData,
+        exportDate: new Date().toISOString(),
+        version: '1.0'
+      };
+      
+      // Create and download file
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `autodoc-ai-data-${user?.username}-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading data:', error);
+      alert('Failed to download data. Please try again.');
+    }
+  };
+
+  const handleRemoveData = async () => {
+    const confirmed = confirm(
+      'Are you sure you want to remove all your data? This will delete your history and cannot be undone.'
+    );
+    
+    if (!confirmed) return;
+    
+    try {
+      // Delete history data
+      const response = await fetch('/api/history', {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        alert('Your data has been successfully removed.');
+        // Optionally refresh the page or redirect
+        window.location.reload();
+      } else {
+        throw new Error('Failed to remove data');
+      }
+    } catch (error) {
+      console.error('Error removing data:', error);
+      alert('Failed to remove data. Please try again.');
+    }
+  };
 
   if (!isAuthenticated) {
     return (
@@ -108,18 +175,38 @@ function SettingsContent() {
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
                 <div className="relative">
                   <div className="flex items-center gap-3 mb-6">
-                    <LogOut className="w-6 h-6 text-green-400" />
-                    <h2 className="text-2xl font-bold text-white">Account</h2>
+                    <User className="w-6 h-6 text-green-400" />
+                    <h2 className="text-2xl font-bold text-white">Account Actions</h2>
                   </div>
                   
-                  <Button
-                    onClick={logout}
-                    variant="outline"
-                    className="flex items-center gap-2 border-red-400/50 text-red-400 hover:bg-red-400/10"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    Sign Out
-                  </Button>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Button
+                      onClick={handleDownloadData}
+                      variant="outline"
+                      className="flex items-center gap-2 border-blue-400/50 text-blue-400 hover:bg-blue-400/10"
+                    >
+                      <Download className="w-4 h-4" />
+                      Download Data
+                    </Button>
+
+                    <Button
+                      onClick={handleRemoveData}
+                      variant="outline"
+                      className="flex items-center gap-2 border-orange-400/50 text-orange-400 hover:bg-orange-400/10"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Remove Data
+                    </Button>
+
+                    <Button
+                      onClick={logout}
+                      variant="outline"
+                      className="flex items-center gap-2 border-red-400/50 text-red-400 hover:bg-red-400/10"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
+                    </Button>
+                  </div>
                 </div>
               </motion.div>
             </div>
