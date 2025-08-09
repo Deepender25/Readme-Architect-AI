@@ -24,6 +24,10 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
       const repoParam = urlParams.get('repo');
       const nameParam = urlParams.get('name');
       
+      // Debug logging
+      console.log('URL Parameters:', { repoParam, nameParam });
+      console.log('Current URL:', window.location.href);
+      
       return {
         repositoryUrl: repoParam || '',
         projectName: nameParam || '',
@@ -49,9 +53,20 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
   const [error, setError] = useState('');
   const [generationStatus, setGenerationStatus] = useState('');
 
+  // Debug effect to monitor component state
+  useEffect(() => {
+    console.log('ReadmeGeneratorFlow mounted with:', {
+      currentStep,
+      repositoryUrl,
+      projectName,
+      initialValues
+    });
+  }, []);
+
   // Clear URL parameters after they're used to avoid confusion
   useEffect(() => {
     if (typeof window !== 'undefined' && (initialValues.repositoryUrl || initialValues.projectName)) {
+      console.log('Clearing URL parameters...');
       const url = new URL(window.location.href);
       url.searchParams.delete('repo');
       url.searchParams.delete('name');

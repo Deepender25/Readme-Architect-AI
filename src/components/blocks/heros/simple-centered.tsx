@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Code, GitBranch, Star, Zap } from 'lucide-react';
 import ReadmeGeneratorFlow from '@/components/readme-generator-flow';
@@ -11,6 +11,19 @@ export default function SimpleCentered() {
   const [showGenerator, setShowGenerator] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [generatedReadme, setGeneratedReadme] = useState('');
+
+  // Check for URL parameters and auto-start generator
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const repoParam = urlParams.get('repo');
+      
+      if (repoParam) {
+        console.log('Auto-starting generator due to repo parameter:', repoParam);
+        setShowGenerator(true);
+      }
+    }
+  }, []);
 
   const handleStartGeneration = () => {
     setShowGenerator(true);
