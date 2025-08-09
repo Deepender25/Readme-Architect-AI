@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { ChevronDown } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+
 import { createPortal } from 'react-dom'
 
 interface DropdownOption {
@@ -49,33 +49,56 @@ export default function CustomDropdown({
     };
 
     if (isOpen) {
+      // Update position immediately
       updatePosition();
-      window.addEventListener('scroll', updatePosition);
-      window.addEventListener('resize', updatePosition);
+      
+      // Add event listeners
+      window.addEventListener('scroll', updatePosition, { passive: true });
+      window.addEventListener('resize', updatePosition, { passive: true });
+      
+      // Prevent body scroll when dropdown is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Restore body scroll
+      document.body.style.overflow = '';
     }
 
     return () => {
       window.removeEventListener('scroll', updatePosition);
       window.removeEventListener('resize', updatePosition);
+      document.body.style.overflow = '';
     };
   }, [isOpen]);
 
-  // Portal content for dropdown
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
+  // Portal content for dropdown - simplified without AnimatePresence to prevent glitching
   const dropdownPortal = mounted && isOpen && typeof window !== 'undefined' ? createPortal(
-    <AnimatePresence>
+    <>
       {/* Backdrop to close dropdown */}
       <div
-        className="fixed inset-0 z-[999998] bg-black/10"
+        className="fixed inset-0 z-[999998]"
         onClick={() => setIsOpen(false)}
       />
       
       {/* Dropdown content */}
-      <motion.div
-        initial={{ opacity: 0, y: -10, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: -10, scale: 0.95 }}
-        transition={{ duration: 0.15 }}
-        className="fixed z-[999999] bg-[rgba(26,26,26,0.95)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] rounded-lg shadow-xl overflow-hidden"
+      <div
+        className="fixed z-[999999] bg-[rgba(26,26,26,0.95)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] rounded-lg shadow-xl overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200"
         style={{
           top: position.top,
           left: position.left,
@@ -101,8 +124,8 @@ export default function CustomDropdown({
             </div>
           ))}
         </div>
-      </motion.div>
-    </AnimatePresence>,
+      </div>
+    </>,
     document.body
   ) : null;
 
