@@ -31,7 +31,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
-import CustomDropdown from '@/components/ui/custom-dropdown'
+import SimpleDropdown from '@/components/ui/simple-dropdown'
 
 interface Repository {
   name: string;
@@ -345,39 +345,43 @@ function RepositoriesContent() {
                   </div>
 
                   {/* Language Filter */}
-                  <CustomDropdown
+                  <SimpleDropdown
                     options={[
-                      { value: 'all', label: 'All Languages' },
-                      ...getUniqueLanguages().map(lang => ({ value: lang, label: lang }))
+                      { value: 'all', label: 'All Languages', icon: <Code className="w-4 h-4" /> },
+                      ...getUniqueLanguages().map(lang => ({ 
+                        value: lang, 
+                        label: lang,
+                        icon: <div className="w-3 h-3 rounded-full" style={{ backgroundColor: getLanguageColor(lang) }} />
+                      }))
                     ]}
                     value={filterLanguage}
                     onChange={setFilterLanguage}
-                    placeholder="Select Language"
+                    placeholder="Language"
                     className="min-w-[160px]"
                   />
 
                   {/* Visibility Filter */}
-                  <CustomDropdown
+                  <SimpleDropdown
                     options={[
-                      { value: 'all', label: 'All Repositories' },
-                      { value: 'public', label: 'Public Only' },
-                      { value: 'private', label: 'Private Only' }
+                      { value: 'all', label: 'All Repositories', icon: <Github className="w-4 h-4" /> },
+                      { value: 'public', label: 'Public Only', icon: <Unlock className="w-4 h-4" /> },
+                      { value: 'private', label: 'Private Only', icon: <Lock className="w-4 h-4" /> }
                     ]}
                     value={filterVisibility}
                     onChange={(value) => setFilterVisibility(value as 'all' | 'public' | 'private')}
-                    placeholder="Select Visibility"
+                    placeholder="Visibility"
                     className="min-w-[160px]"
                   />
                 </div>
 
                 <div className="flex gap-2">
                   {/* Sort Controls */}
-                  <CustomDropdown
+                  <SimpleDropdown
                     options={[
-                      { value: 'updated', label: 'Last Updated' },
-                      { value: 'name', label: 'Name' },
-                      { value: 'stars', label: 'Stars' },
-                      { value: 'size', label: 'Size' }
+                      { value: 'updated', label: 'Last Updated', icon: <Clock className="w-4 h-4" /> },
+                      { value: 'name', label: 'Name', icon: <FileText className="w-4 h-4" /> },
+                      { value: 'stars', label: 'Stars', icon: <Star className="w-4 h-4" /> },
+                      { value: 'size', label: 'Size', icon: <Activity className="w-4 h-4" /> }
                     ]}
                     value={sortBy}
                     onChange={(value) => setSortBy(value as 'name' | 'updated' | 'stars' | 'size')}
