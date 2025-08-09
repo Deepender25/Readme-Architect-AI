@@ -31,6 +31,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
+import CustomDropdown from '@/components/ui/custom-dropdown'
 
 interface Repository {
   name: string;
@@ -160,13 +161,25 @@ function RepositoriesContent() {
     return languages as string[];
   };
 
-  const handleGenerateReadme = (repoUrl: string, repoName: string) => {
-    setSelectedRepo(repoName);
-    showToast(`Redirecting to generate README for ${repoName}...`, 'info');
-    
-    // Navigate to main page with repository pre-filled
-    const encodedUrl = encodeURIComponent(repoUrl);
-    router.push(`/?repo=${encodedUrl}&name=${encodeURIComponent(repoName)}`);
+  const handleGenerateReadme = async (repoUrl: string, repoName: string) => {
+    try {
+      setSelectedRepo(repoName);
+      showToast(`Preparing to generate README for ${repoName}...`, 'info');
+      
+      // Small delay to show the loading state
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Navigate to main page with repository pre-filled
+      const url = new URL(window.location.origin);
+      url.searchParams.set('repo', repoUrl);
+      url.searchParams.set('name', repoName);
+      
+      window.location.href = url.toString();
+    } catch (error) {
+      console.error('Error navigating to README generator:', error);
+      showToast('Failed to navigate to README generator. Please try again.', 'error');
+      setSelectedRepo(null);
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -332,41 +345,45 @@ function RepositoriesContent() {
                   </div>
 
                   {/* Language Filter */}
-                  <select
+                  <CustomDropdown
+                    options={[
+                      { value: 'all', label: 'All Languages' },
+                      ...getUniqueLanguages().map(lang => ({ value: lang, label: lang }))
+                    ]}
                     value={filterLanguage}
-                    onChange={(e) => setFilterLanguage(e.target.value)}
-                    className="px-4 py-2 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-lg text-white focus:outline-none focus:border-green-400/50"
-                  >
-                    <option value="all">All Languages</option>
-                    {getUniqueLanguages().map(lang => (
-                      <option key={lang} value={lang}>{lang}</option>
-                    ))}
-                  </select>
+                    onChange={setFilterLanguage}
+                    placeholder="Select Language"
+                    className="min-w-[160px]"
+                  />
 
                   {/* Visibility Filter */}
-                  <select
+                  <CustomDropdown
+                    options={[
+                      { value: 'all', label: 'All Repositories' },
+                      { value: 'public', label: 'Public Only' },
+                      { value: 'private', label: 'Private Only' }
+                    ]}
                     value={filterVisibility}
-                    onChange={(e) => setFilterVisibility(e.target.value as 'all' | 'public' | 'private')}
-                    className="px-4 py-2 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-lg text-white focus:outline-none focus:border-green-400/50"
-                  >
-                    <option value="all">All Repositories</option>
-                    <option value="public">Public Only</option>
-                    <option value="private">Private Only</option>
-                  </select>
+                    onChange={(value) => setFilterVisibility(value as 'all' | 'public' | 'private')}
+                    placeholder="Select Visibility"
+                    className="min-w-[160px]"
+                  />
                 </div>
 
                 <div className="flex gap-2">
                   {/* Sort Controls */}
-                  <select
+                  <CustomDropdown
+                    options={[
+                      { value: 'updated', label: 'Last Updated' },
+                      { value: 'name', label: 'Name' },
+                      { value: 'stars', label: 'Stars' },
+                      { value: 'size', label: 'Size' }
+                    ]}
                     value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as 'name' | 'updated' | 'stars' | 'size')}
-                    className="px-4 py-2 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-lg text-white focus:outline-none focus:border-green-400/50"
-                  >
-                    <option value="updated">Last Updated</option>
-                    <option value="name">Name</option>
-                    <option value="stars">Stars</option>
-                    <option value="size">Size</option>
-                  </select>
+                    onChange={(value) => setSortBy(value as 'name' | 'updated' | 'stars' | 'size')}
+                    placeholder="Sort By"
+                    className="min-w-[140px]"
+                  />
 
                   <Button
                     onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
