@@ -33,7 +33,22 @@ export default function SimpleDropdown({
 
   useEffect(() => {
     if (isOpen && buttonRef.current) {
-      setButtonRect(buttonRef.current.getBoundingClientRect());
+      const updatePosition = () => {
+        if (buttonRef.current) {
+          setButtonRect(buttonRef.current.getBoundingClientRect());
+        }
+      };
+      
+      updatePosition();
+      
+      // Update position on scroll
+      window.addEventListener('scroll', updatePosition);
+      window.addEventListener('resize', updatePosition);
+      
+      return () => {
+        window.removeEventListener('scroll', updatePosition);
+        window.removeEventListener('resize', updatePosition);
+      };
     }
   }, [isOpen]);
 
@@ -65,7 +80,8 @@ export default function SimpleDropdown({
             <>
               {/* Backdrop */}
               <div
-                className="fixed inset-0 z-[9998]"
+                className="fixed inset-0"
+                style={{ zIndex: 999998 }}
                 onClick={() => setIsOpen(false)}
               />
               
@@ -75,12 +91,14 @@ export default function SimpleDropdown({
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -8, scale: 0.95 }}
                 transition={{ duration: 0.15, ease: "easeOut" }}
-                className="fixed z-[9999] bg-gray-800/95 backdrop-blur-xl border border-gray-600/50 rounded-lg shadow-2xl overflow-hidden"
+                className="fixed bg-gray-800/95 backdrop-blur-xl border border-gray-600/50 rounded-lg shadow-2xl overflow-hidden"
                 style={{
                   top: buttonRect.bottom + 8,
                   left: buttonRect.left,
                   width: buttonRect.width,
+                  zIndex: 999999,
                 }}
+
               >
                 <div className="py-1 max-h-64 overflow-y-auto">
                   {options.map((option, index) => (
