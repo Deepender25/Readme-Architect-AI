@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button';
 import { marked } from 'marked';
 import DOMPurify from 'isomorphic-dompurify';
 import GitHubOAuthNavbar from '@/components/blocks/navbars/github-oauth-navbar';
+import MinimalGridBackground from '@/components/minimal-geometric-background';
 
 interface ModernReadmeEditorProps {
   content: string;
@@ -117,168 +118,10 @@ export default function ModernReadmeEditor({
   const sanitizedContent = DOMPurify.sanitize(processedContent);
 
   return (
-    <div className="bg-[#0a0a0a] min-h-screen font-sans text-white relative overflow-hidden">
-      {/* Exact Same Background as Landing Page */}
-      <div className="fixed inset-0 -z-10 overflow-hidden w-full h-full" style={{ minHeight: '100vh', minWidth: '100vw' }}>
-        {/* Animated Geometric Grid */}
-        <div className="absolute inset-0">
-          {/* Grid Lines */}
-          <div className="absolute inset-0">
-            {Array.from({ length: 20 }).map((_, i) => (
-              <motion.div
-                key={`h-line-${i}`}
-                className="absolute w-full h-px bg-gradient-to-r from-transparent via-green-400/20 to-transparent"
-                style={{ top: `${i * 5}%` }}
-                animate={{
-                  opacity: [0.1, 0.3, 0.1],
-                  scaleX: [0.8, 1, 0.8]
-                }}
-                transition={{
-                  duration: 3 + (i % 3),
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: i * 0.2
-                }}
-              />
-            ))}
-            {Array.from({ length: 20 }).map((_, i) => (
-              <motion.div
-                key={`v-line-${i}`}
-                className="absolute h-full w-px bg-gradient-to-b from-transparent via-green-400/20 to-transparent"
-                style={{ left: `${i * 5}%` }}
-                animate={{
-                  opacity: [0.1, 0.3, 0.1],
-                  scaleY: [0.8, 1, 0.8]
-                }}
-                transition={{
-                  duration: 4 + (i % 3),
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: i * 0.15
-                }}
-              />
-            ))}
-          </div>
-
-          {/* Geometric Shapes */}
-          {Array.from({ length: 6 }).map((_, i) => (
-            <motion.div
-              key={`hexagon-${i}`}
-              className="absolute w-12 h-12 border border-green-400/20"
-              style={{
-                left: `${20 + i * 15}%`,
-                top: `${25 + i * 10}%`,
-                clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
-              }}
-              animate={{
-                rotate: [0, 360],
-                scale: [1, 1.1, 1],
-                opacity: [0.1, 0.3, 0.1]
-              }}
-              transition={{
-                duration: 15 + (i * 3),
-                repeat: Infinity,
-                ease: "linear"
-              }}
-            />
-          ))}
-
-          {/* Floating Code Elements */}
-          {[
-            { text: "# README.md", top: '15%', left: '10%', delay: 0 },
-            { text: "## Features", top: '30%', left: '80%', delay: 1 },
-            { text: "```bash", top: '70%', left: '15%', delay: 2 },
-            { text: "npm install", top: '85%', left: '70%', delay: 3 },
-            { text: "// Powered by Gemini", top: '40%', left: '85%', delay: 1.5 }
-          ].map((item, index) => (
-            <motion.div
-              key={`code-${index}`}
-              className="absolute font-mono text-xs"
-              style={{ top: item.top, left: item.left }}
-              animate={{
-                y: [0, -10, 0],
-                opacity: [0.2, 0.5, 0.2],
-                filter: [
-                  `drop-shadow(0 0 2px rgba(0, 255, 136, 0.2))`,
-                  `drop-shadow(0 0 6px rgba(0, 255, 136, 0.4))`,
-                  `drop-shadow(0 0 2px rgba(0, 255, 136, 0.2))`
-                ]
-              }}
-              transition={{
-                duration: 5 + (index % 2),
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: item.delay
-              }}
-            >
-              <span className="text-green-400/40">{item.text}</span>
-            </motion.div>
-          ))}
-
-          {/* Floating Icons */}
-          {[
-            { icon: Github, size: 20, top: '20%', left: '85%', delay: 0 },
-            { icon: Code, size: 18, top: '40%', left: '5%', delay: 1 },
-            { icon: FileText, size: 16, top: '60%', left: '90%', delay: 2 },
-            { icon: Star, size: 14, top: '80%', left: '10%', delay: 1.5 }
-          ].map((item, index) => (
-            <motion.div
-              key={`icon-${index}`}
-              className="absolute"
-              style={{ top: item.top, left: item.left }}
-              animate={{
-                rotate: [0, 360],
-                scale: [1, 1.2, 1],
-                opacity: [0.1, 0.4, 0.1]
-              }}
-              transition={{
-                duration: 10 + (index * 2),
-                repeat: Infinity,
-                ease: "linear",
-                delay: item.delay
-              }}
-            >
-              <item.icon 
-                className="text-green-400/30" 
-                size={item.size}
-                style={{
-                  filter: 'drop-shadow(0 0 3px rgba(0, 255, 136, 0.3))'
-                }}
-              />
-            </motion.div>
-          ))}
-
-          {/* Enhanced Glow Orbs */}
-          <motion.div
-            className="absolute top-1/3 left-1/3 w-80 h-80 bg-green-400/5 rounded-full blur-3xl"
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.1, 0.2, 0.1],
-              x: [-15, 15, -15],
-              y: [-8, 8, -8]
-            }}
-            transition={{
-              duration: 12,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-
-          <motion.div
-            className="absolute bottom-1/3 right-1/3 w-60 h-60 bg-green-400/3 rounded-full blur-2xl"
-            animate={{
-              scale: [1, 1.3, 1],
-              opacity: [0.05, 0.15, 0.05],
-              x: [15, -15, 15],
-              y: [8, -8, 8]
-            }}
-            transition={{
-              duration: 14,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-        </div>
+    <div className="min-h-screen bg-black text-foreground relative overflow-hidden">
+      {/* Background */}
+      <div className="fixed inset-0 z-0 w-full h-full">
+        <MinimalGridBackground />
       </div>
 
       {/* Navbar */}
