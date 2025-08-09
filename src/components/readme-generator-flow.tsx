@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowLeft, Github, Settings, Image, Video, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,14 +17,47 @@ interface ReadmeGeneratorFlowProps {
 type Step = 'url' | 'name' | 'demo' | 'generating' | 'complete';
 
 export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowProps) {
-  const [currentStep, setCurrentStep] = useState<Step>('url');
-  const [repositoryUrl, setRepositoryUrl] = useState('');
-  const [projectName, setProjectName] = useState('');
+  // Check for URL parameters on component mount
+  const getInitialValues = () => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const repoParam = urlParams.get('repo');
+      const nameParam = urlParams.get('name');
+      
+      return {
+        repositoryUrl: repoParam || '',
+        projectName: nameParam || '',
+        // If we have a repo URL from parameters, skip to the name step
+        initialStep: repoParam ? 'name' as Step : 'url' as Step
+      };
+    }
+    return {
+      repositoryUrl: '',
+      projectName: '',
+      initialStep: 'url' as Step
+    };
+  };
+
+  const initialValues = getInitialValues();
+  
+  const [currentStep, setCurrentStep] = useState<Step>(initialValues.initialStep);
+  const [repositoryUrl, setRepositoryUrl] = useState(initialValues.repositoryUrl);
+  const [projectName, setProjectName] = useState(initialValues.projectName);
   const [includeDemo, setIncludeDemo] = useState(false);
   const [numScreenshots, setNumScreenshots] = useState(2);
   const [numVideos, setNumVideos] = useState(1);
   const [error, setError] = useState('');
   const [generationStatus, setGenerationStatus] = useState('');
+
+  // Clear URL parameters after they're used to avoid confusion
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (initialValues.repositoryUrl || initialValues.projectName)) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('repo');
+      url.searchParams.delete('name');
+      window.history.replaceState({}, '', url.toString());
+    }
+  }, [initialValues.repositoryUrl, initialValues.projectName]);
 
   const validateGitHubUrl = (url: string) => {
     const githubRegex = /^https?:\/\/(www\.)?github\.com\/[\w\-\.]+\/[\w\-\.]+\/?$/;
