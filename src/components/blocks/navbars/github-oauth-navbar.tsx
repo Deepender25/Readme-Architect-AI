@@ -188,7 +188,12 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
                           <History className="w-4 h-4" />
                           History
                         </button>
-                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-500/10 transition-colors">
+                        <button 
+                          onClick={() => {
+                            setDropdownOpen(false);
+                            window.location.href = '/settings';
+                          }}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-500/10 transition-colors">
                           <Settings className="w-4 h-4" />
                           Settings
                         </button>
@@ -306,7 +311,12 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
                         <History className="w-4 h-4" />
                         History
                       </button>
-                      <button className="w-full text-left px-3 py-2.5 text-sm text-foreground/70 hover:text-green-400 hover:bg-green-500/5 transition-colors rounded-lg flex items-center gap-3">
+                      <button 
+                        onClick={() => {
+                          setIsOpen(false);
+                          window.location.href = '/settings';
+                        }}
+                        className="w-full text-left px-3 py-2.5 text-sm text-foreground/70 hover:text-green-400 hover:bg-green-500/5 transition-colors rounded-lg flex items-center gap-3">
                         <Settings className="w-4 h-4" />
                         Settings
                       </button>
