@@ -337,3 +337,36 @@ def update_history_item(
     except Exception as e:
         print(f"❌ Error updating history item: {e}")
         return False
+
+def delete_all_user_history(user_id: str) -> bool:
+    """Delete all history for a user"""
+    if not validate_github_config():
+        return False
+    
+    try:
+        file_path = get_user_file_path(user_id)
+        file_data = get_file_from_github(file_path)
+        
+        if file_data is None:
+            # No history exists, consider it successful
+            print(f"✅ No history found for user {user_id}, nothing to delete")
+            return True
+        
+        # Clear the history by saving an empty list
+        success = save_file_to_github(
+            file_path,
+            json.dumps([], indent=2),
+            file_data['sha'],
+            f"Delete all history for user {user_id}"
+        )
+        
+        if success:
+            print(f"✅ Deleted all history for user {user_id}")
+        else:
+            print(f"❌ Failed to delete history for user {user_id}")
+        
+        return success
+            
+    except Exception as e:
+        print(f"❌ Error deleting all user history: {e}")
+        return False

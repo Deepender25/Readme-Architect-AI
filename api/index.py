@@ -32,6 +32,9 @@ class handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         self.do_request()
+    
+    def do_DELETE(self):
+        self.do_request()
 
     def do_request(self):
         parsed_url = urllib.parse.urlparse(self.path)
@@ -514,6 +517,24 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
             except Exception as e:
                 print(f"❌ Error retrieving history: {str(e)}")
                 self.send_json_response({'error': f'Failed to retrieve history: {str(e)}'}, 500)
+        
+        elif self.command == 'DELETE':
+            # Delete all user history
+            from .database import delete_all_user_history
+            try:
+                user_id = str(user_data.get('github_id', ''))
+                print(f"🗑️ Deleting all history for user ID: {user_id}")
+                
+                success = delete_all_user_history(user_id)
+                if success:
+                    print("✅ All user history deleted successfully")
+                    self.send_json_response({'message': 'All history deleted successfully'})
+                else:
+                    print("❌ Failed to delete user history")
+                    self.send_json_response({'error': 'Failed to delete history'}, 400)
+            except Exception as e:
+                print(f"❌ Error deleting history: {str(e)}")
+                self.send_json_response({'error': f'Failed to delete history: {str(e)}'}, 500)
         
         else:
             self.send_json_response({'error': 'Method not allowed'}, 405)
