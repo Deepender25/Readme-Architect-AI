@@ -1,9 +1,8 @@
 "use client"
 
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { createPortal } from 'react-dom'
 
 interface DropdownOption {
   value: string;
@@ -26,75 +25,12 @@ export default function CustomDropdown({
   className = ""
 }: CustomDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
-  const buttonRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
 
   const selectedOption = options.find(option => option.value === value);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (isOpen && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      setDropdownPosition({
-        top: rect.bottom + window.scrollY + 8,
-        left: rect.left + window.scrollX,
-        width: rect.width
-      });
-    }
-  }, [isOpen]);
-
-  const dropdownContent = mounted && isOpen ? (
-    <>
-      {/* Backdrop to close dropdown */}
-      <div
-        className="fixed inset-0 z-[999998]"
-        onClick={() => setIsOpen(false)}
-      />
-      
-      {/* Dropdown menu */}
-      <motion.div
-        initial={{ opacity: 0, y: -10, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: -10, scale: 0.95 }}
-        transition={{ duration: 0.15 }}
-        className="fixed z-[999999] bg-[rgba(26,26,26,0.95)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] rounded-lg shadow-xl overflow-hidden"
-        style={{
-          top: dropdownPosition.top,
-          left: dropdownPosition.left,
-          width: dropdownPosition.width,
-          minWidth: '160px'
-        }}
-      >
-        <div className="py-1 max-h-60 overflow-y-auto">
-          {options.map((option) => (
-            <div
-              key={option.value}
-              className={`px-4 py-2.5 text-sm cursor-pointer transition-colors duration-150 ${
-                value === option.value
-                  ? 'bg-green-400/20 text-green-400 font-medium'
-                  : 'text-gray-300 hover:bg-[rgba(255,255,255,0.05)] hover:text-white'
-              }`}
-              onClick={() => {
-                onChange(option.value);
-                setIsOpen(false);
-              }}
-            >
-              {option.label}
-            </div>
-          ))}
-        </div>
-      </motion.div>
-    </>
-  ) : null;
-
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${className}`} style={{ zIndex: isOpen ? 9999 : 'auto' }}>
       <div
-        ref={buttonRef}
         className="relative group rounded-lg bg-[rgba(26,26,26,0.7)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] overflow-hidden cursor-pointer hover:border-green-400/50 transition-all duration-200"
         onClick={() => setIsOpen(!isOpen)}
       >
@@ -114,9 +50,46 @@ export default function CustomDropdown({
         </div>
       </div>
 
-      {/* Portal the dropdown to document.body to ensure it's on top */}
+      {/* Dropdown menu */}
       <AnimatePresence>
-        {mounted && typeof document !== 'undefined' && createPortal(dropdownContent, document.body)}
+        {isOpen && (
+          <>
+            {/* Backdrop to close dropdown */}
+            <div
+              className="fixed inset-0 z-[9998]"
+              onClick={() => setIsOpen(false)}
+            />
+            
+            {/* Dropdown content */}
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              transition={{ duration: 0.15 }}
+              className="absolute top-full left-0 right-0 mt-2 z-[9999] bg-[rgba(26,26,26,0.95)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] rounded-lg shadow-xl overflow-hidden"
+              style={{ minWidth: '160px' }}
+            >
+              <div className="py-1 max-h-60 overflow-y-auto">
+                {options.map((option) => (
+                  <div
+                    key={option.value}
+                    className={`px-4 py-2.5 text-sm cursor-pointer transition-colors duration-150 ${
+                      value === option.value
+                        ? 'bg-green-400/20 text-green-400 font-medium'
+                        : 'text-gray-300 hover:bg-[rgba(255,255,255,0.05)] hover:text-white'
+                    }`}
+                    onClick={() => {
+                      onChange(option.value);
+                      setIsOpen(false);
+                    }}
+                  >
+                    {option.label}
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </>
+        )}
       </AnimatePresence>
     </div>
   );
