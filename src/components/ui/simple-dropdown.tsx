@@ -54,7 +54,7 @@ export default function SimpleDropdown({
           <>
             {/* Backdrop */}
             <div
-              className="fixed inset-0 z-40"
+              className="fixed inset-0 z-[9998]"
               onClick={() => setIsOpen(false)}
             />
             
@@ -64,7 +64,7 @@ export default function SimpleDropdown({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.95 }}
               transition={{ duration: 0.15, ease: "easeOut" }}
-              className="absolute top-full left-0 right-0 mt-2 z-50 bg-gray-800/95 backdrop-blur-xl border border-gray-600/50 rounded-lg shadow-2xl overflow-hidden"
+              className="absolute top-full left-0 right-0 mt-2 z-[9999] bg-gray-800/95 backdrop-blur-xl border border-gray-600/50 rounded-lg shadow-2xl overflow-hidden"
             >
               <div className="py-1 max-h-64 overflow-y-auto">
                 {options.map((option, index) => (
