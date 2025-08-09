@@ -42,7 +42,8 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
           <motion.div
             className="flex items-center gap-3 cursor-pointer shrink-0"
             whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}>
+            whileTap={{ scale: 0.98 }}
+            onClick={() => window.location.href = '/'}>
             
             <motion.div
               className="w-7 h-7 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-lg shadow-green-500/30"
