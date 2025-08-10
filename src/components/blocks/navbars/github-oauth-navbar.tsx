@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Menu, X, User, Settings, FileText, LogOut, ChevronDown, FolderGit2, History } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
@@ -14,6 +15,7 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,6 +32,13 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
     { name: 'Documentation', href: '/documentation' }
   ];
 
+  // Function to check if a link is active
+  const isActiveLink = (href: string) => {
+    if (href === '/' && pathname === '/') return true;
+    if (href !== '/' && pathname.startsWith(href)) return true;
+    return false;
+  };
+
   return (
     <motion.nav
       initial={{ y: -100, opacity: 0 }}
@@ -44,7 +53,9 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
         <div className="flex items-center justify-between h-full">
           {/* Logo - properly aligned and animated */}
           <motion.div
-            className="flex items-center gap-3 cursor-pointer shrink-0"
+            className={`flex items-center gap-3 cursor-pointer shrink-0 relative ${
+              pathname === '/' ? 'scale-105' : ''
+            }`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => window.location.href = '/'}>
@@ -52,7 +63,13 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
             <motion.div
               className="w-7 h-7 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-lg shadow-green-500/30"
               animate={{
-                boxShadow: [
+                boxShadow: pathname === '/' ? [
+                  '0 0 8px rgba(0, 255, 136, 0.4)',
+                  '0 0 16px rgba(0, 255, 136, 0.8)',
+                  '0 0 24px rgba(0, 255, 136, 1)',
+                  '0 0 16px rgba(0, 255, 136, 0.8)',
+                  '0 0 8px rgba(0, 255, 136, 0.4)'
+                ] : [
                   '0 0 0px rgba(0, 255, 136, 0.2)',
                   '0 0 8px rgba(0, 255, 136, 0.4)',
                   '0 0 16px rgba(0, 255, 136, 0.6)',
@@ -61,40 +78,91 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
                 ]
               }}
               transition={{
-                duration: 3,
+                duration: pathname === '/' ? 2 : 3,
                 repeat: Infinity,
                 ease: "easeInOut"
               }}>
               <FileText className="w-4 h-4 text-white" />
             </motion.div>
             
-            <span className="font-bold text-green-400 text-2xl tracking-tight">
+            <span className={`font-bold text-2xl tracking-tight transition-all duration-300 ${
+              pathname === '/' ? 'text-green-300' : 'text-green-400'
+            }`}>
               AutoDoc AI
             </span>
+            
+            {/* Home page active indicator */}
+            {pathname === '/' && (
+              <motion.div
+                className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-green-400 to-transparent rounded-full"
+                initial={{ opacity: 0, scaleX: 0 }}
+                animate={{ opacity: 1, scaleX: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              />
+            )}
           </motion.div>
 
           {/* Desktop Navigation Links - centered and balanced */}
           <div className="hidden md:flex items-center gap-6 lg:gap-8 flex-1 justify-center">
-            {navLinks.map((link) => (
-              <motion.a
-                key={link.name}
-                href={link.href}
-                className="relative text-sm font-medium text-foreground/70 hover:text-green-400 transition-colors px-3 py-2 group"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}>
-                
-                {link.name}
-                <motion.div
-                  className="absolute bottom-0.5 left-0 right-0 h-0.5 bg-gradient-to-r from-green-500 to-green-400"
-                  initial={{ scaleX: 0, opacity: 0 }}
-                  whileHover={{ scaleX: 1, opacity: 1 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                  style={{
-                    transformOrigin: 'center',
-                    boxShadow: '0 0 8px rgba(0, 255, 136, 0.6)'
-                  }} />
-              </motion.a>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = isActiveLink(link.href);
+              return (
+                <motion.a
+                  key={link.name}
+                  href={link.href}
+                  className={`relative text-sm font-medium transition-all duration-300 px-3 py-2 group ${
+                    isActive 
+                      ? 'text-green-400 font-semibold' 
+                      : 'text-foreground/70 hover:text-green-400'
+                  }`}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}>
+                  
+                  {link.name}
+                  
+                  {/* Active state indicator */}
+                  <motion.div
+                    className="absolute bottom-0.5 left-0 right-0 h-0.5 bg-gradient-to-r from-green-500 to-green-400 rounded-full"
+                    initial={{ scaleX: 0, opacity: 0 }}
+                    animate={{ 
+                      scaleX: isActive ? 1 : 0, 
+                      opacity: isActive ? 1 : 0 
+                    }}
+                    whileHover={{ scaleX: 1, opacity: 1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                    style={{
+                      transformOrigin: 'center',
+                      boxShadow: isActive ? '0 0 12px rgba(0, 255, 136, 0.8)' : '0 0 8px rgba(0, 255, 136, 0.6)'
+                    }} />
+                  
+                  {/* Active state background glow */}
+                  {isActive && (
+                    <motion.div
+                      className="absolute inset-0 bg-green-400/10 rounded-lg -z-10"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  )}
+                  
+                  {/* Pulsing effect for active state */}
+                  {isActive && (
+                    <motion.div
+                      className="absolute inset-0 bg-green-400/5 rounded-lg -z-20"
+                      animate={{
+                        scale: [1, 1.05, 1],
+                        opacity: [0.3, 0.6, 0.3]
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    />
+                  )}
+                </motion.a>
+              );
+            })}
           </div>
 
           {/* Desktop Auth Section - properly spaced */}
@@ -260,18 +328,51 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
               className="md:hidden border-t border-border/50 overflow-hidden">
               
               <div className="py-4 space-y-1">
-                {navLinks.map((link, index) => (
-                  <motion.a
-                    key={link.name}
-                    href={link.href}
-                    initial={{ opacity: 0, x: -16 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.03 }}
-                    className="block px-4 py-3 text-foreground/70 hover:text-green-400 hover:bg-green-500/5 transition-colors rounded-lg"
-                    onClick={() => setIsOpen(false)}>
-                    {link.name}
-                  </motion.a>
-                ))}
+                {navLinks.map((link, index) => {
+                  const isActive = isActiveLink(link.href);
+                  return (
+                    <motion.a
+                      key={link.name}
+                      href={link.href}
+                      initial={{ opacity: 0, x: -16 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.03 }}
+                      className={`relative block px-4 py-3 transition-all duration-300 rounded-lg ${
+                        isActive 
+                          ? 'text-green-400 bg-green-500/10 font-semibold border-l-2 border-green-400' 
+                          : 'text-foreground/70 hover:text-green-400 hover:bg-green-500/5'
+                      }`}
+                      onClick={() => setIsOpen(false)}>
+                      
+                      {link.name}
+                      
+                      {/* Active state indicator for mobile */}
+                      {isActive && (
+                        <motion.div
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-green-400 rounded-full"
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 0.2 }}
+                        />
+                      )}
+                      
+                      {/* Pulsing effect for active mobile item */}
+                      {isActive && (
+                        <motion.div
+                          className="absolute inset-0 bg-green-400/5 rounded-lg -z-10"
+                          animate={{
+                            opacity: [0.2, 0.4, 0.2]
+                          }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }}
+                        />
+                      )}
+                    </motion.a>
+                  );
+                })}
                 
                 <div className="px-4 pt-4">
                   {!isAuthenticated ? (
