@@ -41,9 +41,9 @@ function FeaturesContent() {
     {
       icon: Brain,
       title: "AI-Powered Generation",
-      description: "Advanced AI analyzes your codebase and generates comprehensive, contextual documentation that perfectly matches your project.",
+      description: "Advanced AI analyzes your codebase and generates comprehensive, contextual documentation in under 30 seconds with 95% accuracy.",
       color: "from-purple-400 to-pink-600",
-      features: ["Code Analysis", "Context Understanding", "Smart Suggestions", "Auto-formatting"]
+      features: ["Instant Code Analysis", "Context Understanding", "Smart Suggestions", "Professional Formatting"]
     },
     {
       icon: Github,
@@ -55,9 +55,9 @@ function FeaturesContent() {
     {
       icon: Rocket,
       title: "Lightning Fast",
-      description: "Generate professional documentation in seconds, not hours. Our optimized AI processes your code faster than ever.",
+      description: "Generate professional documentation in under 30 seconds with 24/7 uptime. Save hours of manual work with our optimized AI.",
       color: "from-green-400 to-emerald-600",
-      features: ["Instant Generation", "Real-time Preview", "Quick Edits", "Fast Deployment"]
+      features: ["< 30s Generation", "Real-time Preview", "Instant Edits", "24/7 Availability"]
     },
     {
       icon: Palette,
@@ -131,10 +131,10 @@ function FeaturesContent() {
   ]
 
   const stats = [
-    { number: "50K+", label: "READMEs Generated", icon: FileText },
-    { number: "10K+", label: "Happy Developers", icon: Users },
-    { number: "99.9%", label: "Uptime", icon: Clock },
-    { number: "4.9/5", label: "User Rating", icon: Star }
+    { number: "1,000+", label: "READMEs Created", icon: FileText },
+    { number: "< 30s", label: "Generation Time", icon: Clock },
+    { number: "24/7", label: "Uptime", icon: Shield },
+    { number: "500+", label: "Active Users", icon: Users }
   ]
 
   return (
@@ -182,7 +182,7 @@ function FeaturesContent() {
               
               <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
                 AutoDoc AI combines cutting-edge artificial intelligence with developer-friendly tools 
-                to create the most comprehensive README generation platform available.
+                to create professional documentation in under 30 seconds. Trusted by developers worldwide.
               </p>
             </motion.div>
 

@@ -27,7 +27,7 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
   const navLinks = [
     { name: 'Features', href: '/features' },
     { name: 'Examples', href: '/examples' },
-    { name: 'Showcase', href: '/showcase' }
+    { name: 'Documentation', href: '/documentation' }
   ];
 
   return (
