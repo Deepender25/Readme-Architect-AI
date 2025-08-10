@@ -503,10 +503,12 @@ export default function ModernReadmeOutput({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              {/* Content Container with Enhanced Blur */}
-              <div className="relative bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden shadow-2xl shadow-green-400/10">
-                {/* Enhanced Glow Effect */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
+              {/* Content Container with Enhanced Glass Effect */}
+              <div className="relative bg-[rgba(15,15,15,0.4)] backdrop-blur-2xl rounded-3xl border border-[rgba(255,255,255,0.15)] overflow-hidden shadow-2xl shadow-green-400/20">
+                {/* Multi-layered Glass Effect */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-green-400/30 to-green-600/30 rounded-3xl blur-xl opacity-40" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.08)] via-transparent to-[rgba(0,255,100,0.05)] rounded-3xl" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,255,100,0.1),transparent_50%)]" />
                 
                 <div 
                   ref={contentRef}
@@ -550,7 +552,7 @@ export default function ModernReadmeOutput({
               {/* GitHub Save Success Message */}
               {githubSaveResult && githubSaveResult.success && (
                 <motion.div
-                  className="absolute -bottom-20 left-4 right-4 bg-green-500/10 backdrop-blur-md border border-green-400/30 rounded-lg p-4"
+                  className="absolute -bottom-20 left-4 right-4 bg-[rgba(0,255,100,0.08)] backdrop-blur-xl border border-[rgba(0,255,100,0.3)] rounded-2xl p-4 shadow-lg shadow-green-400/20"
                   initial={{ opacity: 0, y: 20, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -20, scale: 0.95 }}
@@ -601,7 +603,7 @@ export default function ModernReadmeOutput({
               {/* Save Error Message */}
               {saveError && (
                 <motion.div
-                  className="absolute -bottom-16 left-4 right-4 bg-red-500/10 backdrop-blur-md border border-red-400/30 rounded-lg p-3"
+                  className="absolute -bottom-16 left-4 right-4 bg-[rgba(255,0,0,0.08)] backdrop-blur-xl border border-[rgba(255,0,0,0.3)] rounded-2xl p-3 shadow-lg shadow-red-400/20"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
@@ -616,7 +618,7 @@ export default function ModernReadmeOutput({
               {/* Authentication Notice */}
               {!isAuthenticated && repositoryUrl && !githubSaveResult && (
                 <motion.div
-                  className="absolute -bottom-12 left-4 right-4 bg-blue-500/10 border border-blue-500/20 rounded-lg p-3"
+                  className="absolute -bottom-12 left-4 right-4 bg-[rgba(0,100,255,0.08)] backdrop-blur-xl border border-[rgba(0,100,255,0.25)] rounded-2xl p-3 shadow-lg shadow-blue-400/20"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.0 }}
@@ -631,7 +633,7 @@ export default function ModernReadmeOutput({
               {/* Repository Ownership Notice */}
               {isAuthenticated && repositoryUrl && !canSaveToRepo() && !githubSaveResult && (
                 <motion.div
-                  className="absolute -bottom-12 left-4 right-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3"
+                  className="absolute -bottom-12 left-4 right-4 bg-[rgba(255,200,0,0.08)] backdrop-blur-xl border border-[rgba(255,200,0,0.25)] rounded-2xl p-3 shadow-lg shadow-yellow-400/20"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.0 }}
@@ -646,7 +648,7 @@ export default function ModernReadmeOutput({
               {/* Auto-save Status */}
               {isAuthenticated && autoSaved && !githubSaveResult && (
                 <motion.div
-                  className="absolute -bottom-12 left-4 bg-green-500/20 border border-green-400/30 rounded-lg px-3 py-2"
+                  className="absolute -bottom-12 left-4 bg-[rgba(0,255,100,0.15)] backdrop-blur-xl border border-[rgba(0,255,100,0.4)] rounded-2xl px-3 py-2 shadow-lg shadow-green-400/25"
                   initial={{ opacity: 0, y: 20, scale: 0.8 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ delay: 1.5, duration: 0.5 }}
@@ -691,8 +693,9 @@ export default function ModernReadmeOutput({
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
             className="fixed top-20 right-6 z-[100] max-w-md w-full"
           >
-            <div className="bg-black/95 backdrop-blur-xl border border-green-400/30 rounded-xl p-4 shadow-2xl shadow-green-400/20">
-              <div className="flex items-start gap-3 mb-3">
+            <div className="relative bg-[rgba(15,15,15,0.6)] backdrop-blur-2xl border border-[rgba(255,255,255,0.2)] rounded-2xl p-4 shadow-2xl shadow-green-400/30 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.1)] via-transparent to-[rgba(0,255,100,0.08)] rounded-2xl pointer-events-none" />
+              <div className="relative flex items-start gap-3 mb-3">
                 <motion.div
                   animate={{ rotate: [0, 360] }}
                   transition={{ duration: 0.6, ease: "easeInOut" }}
@@ -744,8 +747,9 @@ export default function ModernReadmeOutput({
               showGithubPopup ? 'top-44' : 'top-20'
             }`}
           >
-            <div className="bg-black/95 backdrop-blur-xl border border-green-400/30 rounded-xl p-4 shadow-2xl shadow-green-400/20">
-              <div className="flex items-center gap-3">
+            <div className="relative bg-[rgba(15,15,15,0.6)] backdrop-blur-2xl border border-[rgba(255,255,255,0.2)] rounded-2xl p-4 shadow-2xl shadow-green-400/30 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.1)] via-transparent to-[rgba(0,255,100,0.08)] rounded-2xl pointer-events-none" />
+              <div className="relative flex items-center gap-3">
                 <motion.div
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 0.6, ease: "easeInOut" }}
@@ -774,8 +778,9 @@ export default function ModernReadmeOutput({
               showGithubPopup || showCopyPopup ? 'top-44' : 'top-20'
             }`}
           >
-            <div className="bg-black/95 backdrop-blur-xl border border-green-400/30 rounded-xl p-4 shadow-2xl shadow-green-400/20">
-              <div className="flex items-center gap-3">
+            <div className="relative bg-[rgba(15,15,15,0.6)] backdrop-blur-2xl border border-[rgba(255,255,255,0.2)] rounded-2xl p-4 shadow-2xl shadow-green-400/30 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.1)] via-transparent to-[rgba(0,255,100,0.08)] rounded-2xl pointer-events-none" />
+              <div className="relative flex items-center gap-3">
                 <motion.div
                   animate={{ y: [0, -10, 0] }}
                   transition={{ duration: 0.6, ease: "easeInOut" }}
