@@ -4,13 +4,16 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Code, GitBranch, Star, Zap } from 'lucide-react';
 import ReadmeGeneratorFlow from '@/components/readme-generator-flow';
-import ModernReadmeEditor from '@/components/modern-readme-editor';
+import ModernReadmeOutput from '@/components/modern-readme-output';
 import { ScrollAnimatedDiv } from '@/components/ui/scroll-animated-div';
 
 export default function SimpleCentered() {
   const [showGenerator, setShowGenerator] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [generatedReadme, setGeneratedReadme] = useState('');
+  const [repositoryUrl, setRepositoryUrl] = useState('');
+  const [projectName, setProjectName] = useState('');
+  const [generationParams, setGenerationParams] = useState({});
 
   // Check for URL parameters and auto-start generator
   useEffect(() => {
@@ -29,8 +32,11 @@ export default function SimpleCentered() {
     setShowGenerator(true);
   };
 
-  const handleGenerationComplete = (readme: string) => {
+  const handleGenerationComplete = (readme: string, repoUrl: string, projName: string, genParams: any) => {
     setGeneratedReadme(readme);
+    setRepositoryUrl(repoUrl);
+    setProjectName(projName);
+    setGenerationParams(genParams);
     setShowEditor(true);
   };
 
@@ -38,6 +44,9 @@ export default function SimpleCentered() {
     setShowEditor(false);
     setShowGenerator(false);
     setGeneratedReadme('');
+    setRepositoryUrl('');
+    setProjectName('');
+    setGenerationParams({});
   };
 
   return (
@@ -270,8 +279,11 @@ export default function SimpleCentered() {
                 transition={{ duration: 0.3 }}
                 className="fixed inset-0 z-50 bg-black"
               >
-                <ModernReadmeEditor 
+                <ModernReadmeOutput 
                   content={generatedReadme}
+                  repositoryUrl={repositoryUrl}
+                  projectName={projectName}
+                  generationParams={generationParams}
                   onClose={handleEditorClose}
                 />
               </motion.div>

@@ -14,7 +14,9 @@ import {
   Zap,
   Github,
   GitBranch,
-  Star
+  Star,
+  Save,
+  AlertCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { marked } from 'marked';
@@ -22,25 +24,39 @@ import DOMPurify from 'isomorphic-dompurify';
 import GitHubOAuthNavbar from '@/components/blocks/navbars/github-oauth-navbar';
 import { CenteredWithLogo } from '@/components/blocks/footers/centered-with-logo';
 import MinimalGridBackground from '@/components/minimal-geometric-background';
+import { useAuth, authenticatedFetch } from '@/lib/auth';
 
 interface ModernReadmeOutputProps {
   content: string;
+  repositoryUrl?: string;
+  projectName?: string;
+  generationParams?: any;
   onClose?: () => void;
   onEdit?: () => void;
 }
 
 export default function ModernReadmeOutput({ 
   content, 
+  repositoryUrl,
+  projectName,
+  generationParams,
   onClose,
   onEdit 
 }: ModernReadmeOutputProps) {
   const [viewMode, setViewMode] = useState<'preview' | 'raw'>('preview');
   const [copySuccess, setCopySuccess] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [autoSaved, setAutoSaved] = useState(false);
+  const [copyAnimation, setCopyAnimation] = useState(false);
   
   const previewRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  
+  const { user, isAuthenticated } = useAuth();
 
   // Handle scroll progress for the animated progress bar
   const handleScroll = useCallback(() => {
@@ -59,13 +75,64 @@ export default function ModernReadmeOutput({
     }
   }, [handleScroll]);
 
+  // Auto-save to database when component mounts
+  useEffect(() => {
+    const autoSaveToDatabase = async () => {
+      if (!isAuthenticated || !user || !repositoryUrl || autoSaved) return;
+
+      try {
+        const repositoryName = repositoryUrl.split('/').pop()?.replace('.git', '') || 'Unknown';
+        
+        // Use regular fetch instead of authenticatedFetch to avoid automatic redirects
+        const response = await fetch('/api/save-history', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            repository_url: repositoryUrl,
+            repository_name: repositoryName,
+            project_name: projectName || repositoryName,
+            readme_content: content,
+            generation_params: generationParams || {}
+          })
+        });
+
+        if (response.ok) {
+          setAutoSaved(true);
+          console.log('README automatically saved to history');
+        } else {
+          // Don't trigger redirects for auto-save failures
+          console.warn('Failed to auto-save to history:', response.status);
+        }
+      } catch (error) {
+        // Silently handle auto-save errors to avoid disrupting user experience
+        console.warn('Auto-save error (non-critical):', error);
+      }
+    };
+
+    // Delay auto-save slightly to ensure component is fully mounted
+    const timer = setTimeout(autoSaveToDatabase, 1000);
+    return () => clearTimeout(timer);
+  }, [isAuthenticated, user, repositoryUrl, content, projectName, generationParams, autoSaved]);
+
   const handleCopy = async () => {
     try {
+      setCopyAnimation(true);
       await navigator.clipboard.writeText(content);
-      setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 2000);
+      
+      // Trigger success animation
+      setTimeout(() => {
+        setCopySuccess(true);
+        setCopyAnimation(false);
+      }, 300);
+      
+      // Reset success state
+      setTimeout(() => setCopySuccess(false), 2500);
     } catch (err) {
       console.error('Failed to copy: ', err);
+      setCopyAnimation(false);
     }
   };
 
@@ -84,6 +151,62 @@ export default function ModernReadmeOutput({
     URL.revokeObjectURL(url);
     
     setIsDownloading(false);
+  };
+
+  const handleSaveToGitHub = async () => {
+    if (!isAuthenticated || !user) {
+      setSaveError('Please sign in to save to GitHub');
+      return;
+    }
+
+    if (!repositoryUrl) {
+      setSaveError('Repository URL is required to save to GitHub');
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveError('');
+    setSaveSuccess(false);
+
+    try {
+      const response = await authenticatedFetch('/api/save-readme', {
+        method: 'POST',
+        body: JSON.stringify({
+          repositoryUrl,
+          readmeContent: content
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save README');
+      }
+
+      const result = await response.json();
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+      
+      // Optionally show success message with commit URL
+      console.log('README saved successfully:', result);
+      
+    } catch (error) {
+      console.error('Error saving README:', error);
+      setSaveError(error instanceof Error ? error.message : 'Failed to save README to GitHub');
+      setTimeout(() => setSaveError(''), 5000);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Check if user owns the repository
+  const canSaveToRepo = () => {
+    if (!isAuthenticated || !user || !repositoryUrl) return false;
+    
+    const urlMatch = repositoryUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+    if (!urlMatch) return false;
+    
+    const [, owner] = urlMatch;
+    return owner === user.username;
   };
 
   const processedContent = marked(content) as string;
@@ -186,18 +309,101 @@ export default function ModernReadmeOutput({
                   onClick={handleCopy}
                   variant="ghost"
                   size="sm"
-                  className="relative group bg-gray-900/50 border border-green-400/20 hover:border-green-400/40 hover:bg-green-400/10"
+                  className={`relative group transition-all duration-300 ${
+                    copySuccess 
+                      ? 'bg-green-500/20 border-green-400/60 text-green-400' 
+                      : 'bg-gray-900/50 border-green-400/20 hover:border-green-400/40 hover:bg-green-400/10'
+                  }`}
                 >
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur opacity-0 group-hover:opacity-20 transition-opacity" />
+                  <div className={`absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur transition-opacity duration-300 ${
+                    copySuccess ? 'opacity-40' : 'opacity-0 group-hover:opacity-20'
+                  }`} />
                   <div className="relative flex items-center gap-2">
-                    {copySuccess ? (
-                      <Check className="w-4 h-4 text-green-400" />
-                    ) : (
-                      <Copy className="w-4 h-4" />
-                    )}
-                    {copySuccess ? 'Copied!' : 'Copy'}
+                    <AnimatePresence mode="wait">
+                      {copyAnimation ? (
+                        <motion.div
+                          key="copying"
+                          initial={{ scale: 0.8, rotate: -180 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          exit={{ scale: 0.8, rotate: 180 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 0.6, ease: "easeInOut" }}
+                          >
+                            <Copy className="w-4 h-4" />
+                          </motion.div>
+                        </motion.div>
+                      ) : copySuccess ? (
+                        <motion.div
+                          key="success"
+                          initial={{ scale: 0.5, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0.5, opacity: 0 }}
+                          transition={{ duration: 0.3, type: "spring", stiffness: 200 }}
+                        >
+                          <Check className="w-4 h-4 text-green-400" />
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="default"
+                          initial={{ scale: 0.8 }}
+                          animate={{ scale: 1 }}
+                          exit={{ scale: 0.8 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <Copy className="w-4 h-4" />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                    <motion.span
+                      key={copySuccess ? 'copied' : 'copy'}
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {copySuccess ? 'Copied!' : 'Copy'}
+                    </motion.span>
                   </div>
+                  
+                  {/* Success ripple effect */}
+                  {copySuccess && (
+                    <motion.div
+                      className="absolute inset-0 bg-green-400/20 rounded-lg"
+                      initial={{ scale: 0.8, opacity: 0.8 }}
+                      animate={{ scale: 1.2, opacity: 0 }}
+                      transition={{ duration: 0.6, ease: "easeOut" }}
+                    />
+                  )}
                 </Button>
+
+                {/* Save to GitHub Button */}
+                {canSaveToRepo() && (
+                  <Button
+                    onClick={handleSaveToGitHub}
+                    disabled={isSaving}
+                    size="sm"
+                    className="relative group bg-blue-600 text-white hover:bg-blue-700 font-medium"
+                  >
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-blue-600 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity" />
+                    <div className="relative flex items-center gap-2">
+                      {isSaving ? (
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        >
+                          <Zap className="w-4 h-4" />
+                        </motion.div>
+                      ) : saveSuccess ? (
+                        <Check className="w-4 h-4" />
+                      ) : (
+                        <Save className="w-4 h-4" />
+                      )}
+                      {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save to GitHub'}
+                    </div>
+                  </Button>
+                )}
 
                 {/* Download Button */}
                 <Button
@@ -305,6 +511,71 @@ export default function ModernReadmeOutput({
                   </AnimatePresence>
                 </div>
               </div>
+
+              {/* Save Error Message */}
+              {saveError && (
+                <motion.div
+                  className="absolute -bottom-16 left-4 right-4 bg-red-500/10 border border-red-500/20 rounded-lg p-3"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                >
+                  <div className="flex items-center gap-2 text-red-400 text-sm">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                    <span>{saveError}</span>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Authentication Notice */}
+              {!isAuthenticated && repositoryUrl && (
+                <motion.div
+                  className="absolute -bottom-12 left-4 right-4 bg-blue-500/10 border border-blue-500/20 rounded-lg p-3"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.0 }}
+                >
+                  <div className="flex items-center gap-2 text-blue-400 text-sm">
+                    <Github className="w-4 h-4 flex-shrink-0" />
+                    <span>Sign in to save README directly to your GitHub repository</span>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Repository Ownership Notice */}
+              {isAuthenticated && repositoryUrl && !canSaveToRepo() && (
+                <motion.div
+                  className="absolute -bottom-12 left-4 right-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.0 }}
+                >
+                  <div className="flex items-center gap-2 text-yellow-400 text-sm">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                    <span>You can only save README files to your own repositories</span>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Auto-save Status */}
+              {isAuthenticated && autoSaved && (
+                <motion.div
+                  className="absolute -bottom-12 left-4 bg-green-500/20 border border-green-400/30 rounded-lg px-3 py-2"
+                  initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: 1.5, duration: 0.5 }}
+                >
+                  <div className="flex items-center gap-2 text-green-400 text-xs">
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      <Check className="w-3 h-3" />
+                    </motion.div>
+                    <span>Automatically saved to history</span>
+                  </div>
+                </motion.div>
+              )}
 
               {/* Floating Action Hint */}
               <motion.div

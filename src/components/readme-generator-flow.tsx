@@ -11,7 +11,7 @@ import { createStreamingGenerator } from '@/lib/readme-generator';
 import { ScrollAnimatedDiv } from '@/components/ui/scroll-animated-div';
 
 interface ReadmeGeneratorFlowProps {
-  onComplete: (readme: string) => void;
+  onComplete: (readme: string, repositoryUrl: string, projectName: string, generationParams: any) => void;
 }
 
 type Step = 'url' | 'name' | 'demo' | 'generating' | 'complete';
@@ -119,7 +119,12 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
           setGenerationStatus(event.status);
         } else if (event.readme) {
           setCurrentStep('complete');
-          onComplete(event.readme);
+          const generationParams = {
+            include_demo: includeDemo,
+            num_screenshots: numScreenshots,
+            num_videos: numVideos
+          };
+          onComplete(event.readme, repositoryUrl, projectName, generationParams);
         } else if (event.error) {
           setError(event.error);
           setCurrentStep('url');
