@@ -51,6 +51,13 @@ export default function ModernReadmeOutput({
   const [scrollProgress, setScrollProgress] = useState(0);
   const [autoSaved, setAutoSaved] = useState(false);
   const [copyAnimation, setCopyAnimation] = useState(false);
+  const [githubSaveResult, setGithubSaveResult] = useState<{
+    success: boolean;
+    message: string;
+    commitUrl?: string;
+    fileUrl?: string;
+    isUpdate?: boolean;
+  } | null>(null);
   
   const previewRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -183,9 +190,22 @@ export default function ModernReadmeOutput({
 
       const result = await response.json();
       setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000);
       
-      // Optionally show success message with commit URL
+      // Set detailed GitHub save result
+      setGithubSaveResult({
+        success: true,
+        message: result.message || 'README saved successfully',
+        commitUrl: result.commit_url,
+        fileUrl: result.file_url,
+        isUpdate: result.message?.includes('updated')
+      });
+      
+      // Reset success state after longer duration to show the detailed message
+      setTimeout(() => {
+        setSaveSuccess(false);
+        setGithubSaveResult(null);
+      }, 8000);
+      
       console.log('README saved successfully:', result);
       
     } catch (error) {
@@ -225,14 +245,14 @@ export default function ModernReadmeOutput({
 
       {/* Secondary Header - positioned below navbar */}
       <motion.header
-        className="sticky top-16 z-40 backdrop-blur-xl bg-black/60 border-b border-white/10"
+        className="sticky top-16 z-40 backdrop-blur-xl bg-black/60 border-b border-green-400/20"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
       >
         {/* Progress Bar */}
         <motion.div
-          className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-blue-400/60 via-purple-400/60 to-cyan-400/60"
+          className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-green-400 to-green-600"
           style={{ width: `${scrollProgress * 100}%` }}
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
@@ -250,13 +270,13 @@ export default function ModernReadmeOutput({
                 transition={{ delay: 0.4 }}
               >
                 <div className="relative">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-400/30 via-purple-400/30 to-cyan-400/30 rounded-lg blur opacity-50" />
-                  <div className="relative bg-black/50 backdrop-blur-sm p-2 rounded-lg border border-white/10">
-                    <FileText className="w-4 h-4 text-blue-400" />
+                  <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur opacity-30" />
+                  <div className="relative bg-black p-2 rounded-lg">
+                    <FileText className="w-4 h-4 text-green-400" />
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent">
+                  <h1 className="text-lg font-bold bg-gradient-to-r from-white to-green-400 bg-clip-text text-transparent">
                     README Generated
                   </h1>
                   <p className="text-xs text-gray-400">Your documentation is ready</p>
@@ -265,7 +285,7 @@ export default function ModernReadmeOutput({
 
               {/* View Mode Toggle */}
               <motion.div
-                className="flex items-center bg-black/30 backdrop-blur-md rounded-lg p-1 border border-white/10"
+                className="flex items-center bg-gray-900/50 rounded-lg p-1 border border-green-400/20"
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.5 }}
@@ -274,8 +294,8 @@ export default function ModernReadmeOutput({
                   onClick={() => setViewMode('preview')}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
                     viewMode === 'preview'
-                      ? 'bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white shadow-lg backdrop-blur-sm'
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
+                      ? 'bg-green-400 text-black shadow-lg'
+                      : 'text-gray-400 hover:text-white'
                   }`}
                 >
                   <Eye className="w-4 h-4" />
@@ -285,8 +305,8 @@ export default function ModernReadmeOutput({
                   onClick={() => setViewMode('raw')}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
                     viewMode === 'raw'
-                      ? 'bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white shadow-lg backdrop-blur-sm'
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
+                      ? 'bg-green-400 text-black shadow-lg'
+                      : 'text-gray-400 hover:text-white'
                   }`}
                 >
                   <Code className="w-4 h-4" />
@@ -308,14 +328,14 @@ export default function ModernReadmeOutput({
                   onClick={handleCopy}
                   variant="ghost"
                   size="sm"
-                  className={`relative group transition-all duration-300 backdrop-blur-md ${
+                  className={`relative group transition-all duration-300 ${
                     copySuccess 
-                      ? 'bg-blue-500/20 border-blue-400/60 text-blue-400' 
-                      : 'bg-black/30 border-white/20 hover:border-blue-400/40 hover:bg-blue-400/10'
+                      ? 'bg-green-500/20 border-green-400/60 text-green-400' 
+                      : 'bg-gray-900/50 border-green-400/20 hover:border-green-400/40 hover:bg-green-400/10'
                   }`}
                 >
-                  <div className={`absolute -inset-0.5 bg-gradient-to-r from-blue-400/30 via-purple-400/30 to-cyan-400/30 rounded-lg blur transition-opacity duration-300 ${
-                    copySuccess ? 'opacity-60' : 'opacity-0 group-hover:opacity-40'
+                  <div className={`absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur transition-opacity duration-300 ${
+                    copySuccess ? 'opacity-40' : 'opacity-0 group-hover:opacity-20'
                   }`} />
                   <div className="relative flex items-center gap-2">
                     <AnimatePresence mode="wait">
@@ -342,7 +362,7 @@ export default function ModernReadmeOutput({
                           exit={{ scale: 0.5, opacity: 0 }}
                           transition={{ duration: 0.3, type: "spring", stiffness: 200 }}
                         >
-                          <Check className="w-4 h-4 text-blue-400" />
+                          <Check className="w-4 h-4 text-green-400" />
                         </motion.div>
                       ) : (
                         <motion.div
@@ -369,7 +389,7 @@ export default function ModernReadmeOutput({
                   {/* Success ripple effect */}
                   {copySuccess && (
                     <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-cyan-400/20 rounded-lg"
+                      className="absolute inset-0 bg-green-400/20 rounded-lg"
                       initial={{ scale: 0.8, opacity: 0.8 }}
                       animate={{ scale: 1.2, opacity: 0 }}
                       transition={{ duration: 0.6, ease: "easeOut" }}
@@ -383,9 +403,9 @@ export default function ModernReadmeOutput({
                     onClick={handleSaveToGitHub}
                     disabled={isSaving}
                     size="sm"
-                    className="relative group bg-gradient-to-r from-purple-500/80 to-pink-500/80 text-white hover:from-purple-600/80 hover:to-pink-600/80 font-medium backdrop-blur-md"
+                    className="relative group bg-blue-600 text-white hover:bg-blue-700 font-medium"
                   >
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-400/30 to-pink-400/30 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity" />
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-blue-600 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity" />
                     <div className="relative flex items-center gap-2">
                       {isSaving ? (
                         <motion.div
@@ -409,9 +429,9 @@ export default function ModernReadmeOutput({
                   onClick={handleDownload}
                   disabled={isDownloading}
                   size="sm"
-                  className="relative group bg-gradient-to-r from-cyan-500/80 to-blue-500/80 text-white hover:from-cyan-600/80 hover:to-blue-600/80 font-medium backdrop-blur-md"
+                  className="relative group bg-green-400 text-black hover:bg-green-300 font-medium"
                 >
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-400/30 to-blue-400/30 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity" />
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity" />
                   <div className="relative flex items-center gap-2">
                     {isDownloading ? (
                       <motion.div
@@ -433,7 +453,7 @@ export default function ModernReadmeOutput({
                     onClick={onEdit}
                     variant="ghost"
                     size="sm"
-                    className="bg-black/30 backdrop-blur-md border border-white/20 hover:border-purple-400/40 hover:bg-purple-400/10"
+                    className="bg-gray-900/50 border border-green-400/20 hover:border-green-400/40 hover:bg-green-400/10"
                   >
                     <Sparkles className="w-4 h-4 mr-2" />
                     Edit
@@ -446,7 +466,7 @@ export default function ModernReadmeOutput({
                     onClick={onClose}
                     variant="ghost"
                     size="sm"
-                    className="bg-black/30 backdrop-blur-md border border-white/20 hover:border-red-400/40 hover:bg-red-400/10 text-red-400"
+                    className="bg-gray-900/50 border border-red-400/20 hover:border-red-400/40 hover:bg-red-400/10 text-red-400"
                   >
                     <X className="w-4 h-4" />
                   </Button>
@@ -469,9 +489,9 @@ export default function ModernReadmeOutput({
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               {/* Content Container with Enhanced Blur */}
-              <div className="relative bg-black/20 backdrop-blur-2xl rounded-2xl border border-white/10 overflow-hidden shadow-2xl shadow-blue-400/5">
+              <div className="relative bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden shadow-2xl shadow-green-400/10">
                 {/* Enhanced Glow Effect */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-cyan-400/20 rounded-2xl blur-lg opacity-30" />
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
                 
                 <div 
                   ref={contentRef}
@@ -511,6 +531,57 @@ export default function ModernReadmeOutput({
                 </div>
               </div>
 
+              {/* GitHub Save Success Message */}
+              {githubSaveResult && githubSaveResult.success && (
+                <motion.div
+                  className="absolute -bottom-20 left-4 right-4 bg-green-500/10 backdrop-blur-md border border-green-400/30 rounded-lg p-4"
+                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                  transition={{ duration: 0.4, type: "spring" }}
+                >
+                  <div className="flex items-start gap-3">
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 0.6, repeat: 2 }}
+                      className="flex-shrink-0 w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center"
+                    >
+                      <Check className="w-4 h-4 text-green-400" />
+                    </motion.div>
+                    <div className="flex-1">
+                      <h4 className="text-green-400 font-medium text-sm mb-1">
+                        {githubSaveResult.isUpdate ? '📝 README Updated!' : '✨ README Created!'}
+                      </h4>
+                      <p className="text-gray-300 text-xs mb-2">{githubSaveResult.message}</p>
+                      <div className="flex gap-2">
+                        {githubSaveResult.commitUrl && (
+                          <a
+                            href={githubSaveResult.commitUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-green-500/20 hover:bg-green-500/30 border border-green-400/30 rounded text-xs text-green-400 transition-colors"
+                          >
+                            <GitBranch className="w-3 h-3" />
+                            View Commit
+                          </a>
+                        )}
+                        {githubSaveResult.fileUrl && (
+                          <a
+                            href={githubSaveResult.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-green-500/20 hover:bg-green-500/30 border border-green-400/30 rounded text-xs text-green-400 transition-colors"
+                          >
+                            <Github className="w-3 h-3" />
+                            View File
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
               {/* Save Error Message */}
               {saveError && (
                 <motion.div
@@ -527,9 +598,9 @@ export default function ModernReadmeOutput({
               )}
 
               {/* Authentication Notice */}
-              {!isAuthenticated && repositoryUrl && (
+              {!isAuthenticated && repositoryUrl && !githubSaveResult && (
                 <motion.div
-                  className="absolute -bottom-12 left-4 right-4 bg-blue-500/10 backdrop-blur-md border border-blue-400/30 rounded-lg p-3"
+                  className="absolute -bottom-12 left-4 right-4 bg-blue-500/10 border border-blue-500/20 rounded-lg p-3"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.0 }}
@@ -542,14 +613,14 @@ export default function ModernReadmeOutput({
               )}
 
               {/* Repository Ownership Notice */}
-              {isAuthenticated && repositoryUrl && !canSaveToRepo() && (
+              {isAuthenticated && repositoryUrl && !canSaveToRepo() && !githubSaveResult && (
                 <motion.div
-                  className="absolute -bottom-12 left-4 right-4 bg-amber-500/10 backdrop-blur-md border border-amber-400/30 rounded-lg p-3"
+                  className="absolute -bottom-12 left-4 right-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.0 }}
                 >
-                  <div className="flex items-center gap-2 text-amber-400 text-sm">
+                  <div className="flex items-center gap-2 text-yellow-400 text-sm">
                     <AlertCircle className="w-4 h-4 flex-shrink-0" />
                     <span>You can only save README files to your own repositories</span>
                   </div>
@@ -557,14 +628,14 @@ export default function ModernReadmeOutput({
               )}
 
               {/* Auto-save Status */}
-              {isAuthenticated && autoSaved && (
+              {isAuthenticated && autoSaved && !githubSaveResult && (
                 <motion.div
-                  className="absolute -bottom-12 left-4 bg-emerald-500/10 backdrop-blur-md border border-emerald-400/30 rounded-lg px-3 py-2"
+                  className="absolute -bottom-12 left-4 bg-green-500/20 border border-green-400/30 rounded-lg px-3 py-2"
                   initial={{ opacity: 0, y: 20, scale: 0.8 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ delay: 1.5, duration: 0.5 }}
                 >
-                  <div className="flex items-center gap-2 text-emerald-400 text-xs">
+                  <div className="flex items-center gap-2 text-green-400 text-xs">
                     <motion.div
                       animate={{ scale: [1, 1.2, 1] }}
                       transition={{ duration: 2, repeat: Infinity }}
@@ -578,7 +649,7 @@ export default function ModernReadmeOutput({
 
               {/* Floating Action Hint */}
               <motion.div
-                className="absolute -bottom-6 right-4 bg-gradient-to-r from-blue-500/80 to-purple-500/80 backdrop-blur-md text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg shadow-blue-400/30 border border-white/10"
+                className="absolute -bottom-6 right-4 bg-green-400 text-black px-4 py-2 rounded-full text-sm font-medium shadow-lg shadow-green-400/50"
                 initial={{ opacity: 0, y: 20, scale: 0.8 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 1.2, duration: 0.5 }}
@@ -610,8 +681,8 @@ export default function ModernReadmeOutput({
           font-weight: 700;
           margin-bottom: 24px;
           padding-bottom: 0.3em;
-          border-bottom: 2px solid rgba(96, 165, 250, 0.6);
-          background: linear-gradient(135deg, #f0f6fc 0%, #60a5fa 50%, #a78bfa 100%);
+          border-bottom: 2px solid #00ff88;
+          background: linear-gradient(135deg, #f0f6fc 0%, #00ff88 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -625,7 +696,7 @@ export default function ModernReadmeOutput({
           margin-top: 32px;
           margin-bottom: 20px;
           padding-bottom: 0.3em;
-          border-bottom: 1px solid rgba(96, 165, 250, 0.4);
+          border-bottom: 1px solid #00ff88;
           position: relative;
         }
         
@@ -636,11 +707,11 @@ export default function ModernReadmeOutput({
           bottom: -1px;
           width: 60px;
           height: 2px;
-          background: linear-gradient(90deg, rgba(96, 165, 250, 0.6), transparent);
+          background: linear-gradient(90deg, #00ff88, transparent);
         }
         
         .modern-readme-preview h3 {
-          color: #60a5fa;
+          color: #00ff88;
           font-size: 1.4em;
           font-weight: 600;
           margin-top: 28px;
@@ -665,9 +736,9 @@ export default function ModernReadmeOutput({
         .modern-readme-preview blockquote {
           padding: 16px 20px;
           color: #8d96a0;
-          border-left: 4px solid rgba(96, 165, 250, 0.6);
+          border-left: 4px solid #00ff88;
           margin: 20px 0;
-          background: rgba(96, 165, 250, 0.05);
+          background: rgba(0, 255, 136, 0.05);
           border-radius: 0 8px 8px 0;
         }
         
@@ -684,27 +755,26 @@ export default function ModernReadmeOutput({
         }
         
         .modern-readme-preview li::marker {
-          color: #60a5fa;
+          color: #00ff88;
         }
         
         .modern-readme-preview code {
-          background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(168, 139, 250, 0.05));
+          background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
           padding: 4px 8px;
           border-radius: 6px;
           font-size: 0.9em;
-          color: #60a5fa;
+          color: #00ff88;
           font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
-          border: 1px solid rgba(96, 165, 250, 0.2);
+          border: 1px solid rgba(0, 255, 136, 0.2);
         }
         
         .modern-readme-preview pre {
-          background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(17, 17, 17, 0.6));
-          backdrop-filter: blur(10px);
+          background: linear-gradient(135deg, #0a0a0a, #111111);
           padding: 20px;
           border-radius: 12px;
           overflow-x: auto;
           margin: 20px 0;
-          border: 1px solid rgba(96, 165, 250, 0.2);
+          border: 1px solid rgba(0, 255, 136, 0.2);
           position: relative;
         }
         
@@ -715,7 +785,7 @@ export default function ModernReadmeOutput({
           left: 0;
           right: 0;
           height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.6), transparent);
+          background: linear-gradient(90deg, transparent, #00ff88, transparent);
         }
         
         .modern-readme-preview pre code {
@@ -732,21 +802,20 @@ export default function ModernReadmeOutput({
           width: 100%;
           border-radius: 8px;
           overflow: hidden;
-          border: 1px solid rgba(96, 165, 250, 0.2);
-          backdrop-filter: blur(5px);
+          border: 1px solid rgba(0, 255, 136, 0.2);
         }
         
         .modern-readme-preview th, 
         .modern-readme-preview td {
           padding: 12px 16px;
           text-align: left;
-          border-bottom: 1px solid rgba(96, 165, 250, 0.1);
+          border-bottom: 1px solid rgba(0, 255, 136, 0.1);
         }
         
         .modern-readme-preview th {
-          background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(168, 139, 250, 0.05));
+          background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
           font-weight: 600;
-          color: #60a5fa;
+          color: #00ff88;
         }
         
         .modern-readme-preview td {
@@ -754,15 +823,15 @@ export default function ModernReadmeOutput({
         }
         
         .modern-readme-preview a {
-          color: #60a5fa;
+          color: #00ff88;
           text-decoration: none;
           border-bottom: 1px solid transparent;
           transition: all 0.2s ease;
         }
         
         .modern-readme-preview a:hover {
-          border-bottom-color: #60a5fa;
-          text-shadow: 0 0 8px rgba(96, 165, 250, 0.5);
+          border-bottom-color: #00ff88;
+          text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
         }
         
         .modern-readme-preview img {
@@ -770,18 +839,18 @@ export default function ModernReadmeOutput({
           height: auto;
           border-radius: 12px;
           margin: 16px 0;
-          border: 1px solid rgba(96, 165, 250, 0.2);
+          border: 1px solid rgba(0, 255, 136, 0.2);
         }
         
         .modern-readme-preview hr {
           border: none;
           height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.6), transparent);
+          background: linear-gradient(90deg, transparent, #00ff88, transparent);
           margin: 32px 0;
         }
         
         .modern-readme-preview strong {
-          color: #60a5fa;
+          color: #00ff88;
           font-weight: 600;
         }
         
@@ -812,13 +881,13 @@ export default function ModernReadmeOutput({
         }
         
         .scrollbar-thumb-green-400\/30::-webkit-scrollbar-thumb {
-          background: linear-gradient(180deg, rgba(96, 165, 250, 0.4), rgba(168, 139, 250, 0.2));
+          background: linear-gradient(180deg, rgba(0, 255, 136, 0.4), rgba(0, 255, 136, 0.2));
           border-radius: 6px;
-          border: 1px solid rgba(96, 165, 250, 0.1);
+          border: 1px solid rgba(0, 255, 136, 0.1);
         }
         
         .scrollbar-thumb-green-400\/30::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(180deg, rgba(96, 165, 250, 0.6), rgba(168, 139, 250, 0.3));
+          background: linear-gradient(180deg, rgba(0, 255, 136, 0.6), rgba(0, 255, 136, 0.3));
         }
         
         .scrollbar-track-transparent::-webkit-scrollbar-track {
