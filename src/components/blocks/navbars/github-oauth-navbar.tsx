@@ -238,7 +238,7 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -8, scale: 0.95 }}
                         transition={{ type: "spring", stiffness: 350, damping: 22 }}
-                        className="absolute right-0 top-full mt-2 w-56 bg-card/95 backdrop-blur-xl border border-green-500/20 rounded-lg shadow-xl shadow-green-500/20 py-2">
+                        className="absolute right-0 top-full mt-2 w-56 bg-card/95 backdrop-blur-xl border border-green-500/20 rounded-lg shadow-xl shadow-green-500/20 py-2 z-[9999]">
                         
                         <button 
                           onClick={() => {

@@ -16,12 +16,13 @@ import {
   GitBranch,
   Star,
   Save,
-  AlertCircle
+  AlertCircle,
+  ArrowLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { marked } from 'marked';
 import DOMPurify from 'isomorphic-dompurify';
-import GitHubOAuthNavbar from '@/components/blocks/navbars/github-oauth-navbar';
+
 import MinimalGridBackground from '@/components/minimal-geometric-background';
 import { useAuth, authenticatedFetch } from '@/lib/auth';
 
@@ -253,14 +254,9 @@ export default function ModernReadmeOutput({
         <MinimalGridBackground />
       </div>
 
-      {/* Navbar - positioned above background, always visible */}
-      <div className="fixed top-0 left-0 right-0 z-50">
-        <GitHubOAuthNavbar />
-      </div>
-
-      {/* Secondary Header - positioned below navbar */}
+      {/* Main Header - positioned at top */}
       <motion.header
-        className="sticky top-16 z-40 glass-navbar border-b border-green-400/20 no-lag"
+        className="sticky top-0 z-50 glass-navbar border-b border-green-400/20 no-lag"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
@@ -278,6 +274,20 @@ export default function ModernReadmeOutput({
           <div className="flex items-center justify-between">
             {/* Left Section */}
             <div className="flex items-center gap-6">
+              {/* Back Button */}
+              <motion.button
+                onClick={() => window.history.back()}
+                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-400 hover:text-green-400 transition-colors rounded-lg hover:bg-green-400/10"
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span className="hidden sm:inline">Back</span>
+              </motion.button>
+
               <motion.div
                 className="flex items-center gap-3"
                 initial={{ x: -20, opacity: 0 }}
@@ -493,7 +503,7 @@ export default function ModernReadmeOutput({
       </motion.header>
 
       {/* Main Content Area */}
-      <div className="relative z-10 min-h-screen pt-16">
+      <div className="relative z-10 min-h-screen">
         {/* Content Section */}
         <main className="px-6 py-8">
           <div className="container mx-auto max-w-6xl">
