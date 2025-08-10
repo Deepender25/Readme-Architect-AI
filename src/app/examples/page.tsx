@@ -381,6 +381,10 @@ cargo test
                         <Button
                           variant="outline"
                           className="border-green-400/50 text-green-400 hover:bg-green-400/10 rounded-lg"
+                          onClick={() => {
+                            // Create a modal or expand the preview
+                            console.log('View full README for', example.title)
+                          }}
                         >
                           <Eye className="w-4 h-4 mr-2" />
                           View Full
@@ -388,6 +392,9 @@ cargo test
                         <Button
                           variant="outline"
                           className="border-gray-600 text-gray-400 hover:bg-gray-600/10 rounded-lg"
+                          onClick={() => {
+                            navigator.clipboard.writeText(example.preview)
+                          }}
                         >
                           <Copy className="w-4 h-4" />
                         </Button>
