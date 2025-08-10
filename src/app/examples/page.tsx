@@ -36,6 +36,9 @@ function ExamplesContent() {
       forks: "312",
       color: "from-blue-400 to-blue-600",
       repo: "react-typescript-starter",
+      author: "Sarah Chen",
+      company: "TechCorp",
+      generatedIn: "28s",
       features: ["Component Documentation", "API Reference", "Testing Guide", "Deployment Instructions"],
       preview: `# React TypeScript Starter 🚀
 
@@ -69,6 +72,9 @@ Visit our [documentation](./docs) for detailed guides and API references.`
       forks: "245",
       color: "from-yellow-400 to-orange-600",
       repo: "python-data-science",
+      author: "Dr. Maria Rodriguez",
+      company: "DataLab",
+      generatedIn: "22s",
       features: ["Jupyter Notebooks", "Data Visualization", "ML Models", "API Documentation"],
       preview: `# Data Science Toolkit 📊
 
@@ -102,6 +108,9 @@ jupyter notebook
       forks: "428",
       color: "from-green-400 to-emerald-600",
       repo: "nodejs-rest-api",
+      author: "Alex Thompson",
+      company: "DevStudio",
+      generatedIn: "31s",
       features: ["Authentication", "Database Integration", "API Documentation", "Testing Suite"],
       preview: `# Node.js REST API 🌐
 
@@ -138,6 +147,9 @@ npm run dev
       forks: "189",
       color: "from-cyan-400 to-blue-600",
       repo: "flutter-mobile-app",
+      author: "Emily Watson",
+      company: "MobileFirst",
+      generatedIn: "26s",
       features: ["State Management", "API Integration", "Native Features", "Testing"],
       preview: `# Flutter Mobile App 📱
 
@@ -173,6 +185,9 @@ flutter run
       forks: "156",
       color: "from-indigo-400 to-purple-600",
       repo: "go-microservice",
+      author: "David Kim",
+      company: "CloudTech",
+      generatedIn: "19s",
       features: ["gRPC API", "Docker", "Kubernetes", "Monitoring"],
       preview: `# Go Microservice 🐹
 
@@ -208,6 +223,9 @@ docker run -p 8080:8080 go-microservice
       forks: "87",
       color: "from-orange-400 to-red-600",
       repo: "rust-cli-tool",
+      author: "James Wilson",
+      company: "SystemsLab",
+      generatedIn: "24s",
       features: ["Async Operations", "Error Handling", "Cross-platform", "Performance"],
       preview: `# Rust CLI Tool ⚡
 
@@ -317,7 +335,7 @@ cargo test
                             </div>
                             <div>
                               <h3 className="text-xl font-bold text-white">{example.title}</h3>
-                              <div className="flex items-center gap-4 text-sm text-gray-400">
+                              <div className="flex items-center gap-4 text-sm text-gray-400 mb-1">
                                 <span className="flex items-center gap-1">
                                   <Code className="w-4 h-4" />
                                   {example.language}
@@ -329,6 +347,13 @@ cargo test
                                 <span className="flex items-center gap-1">
                                   <GitBranch className="w-4 h-4" />
                                   {example.forks}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-4 text-xs text-green-400">
+                                <span>by {example.author} • {example.company}</span>
+                                <span className="flex items-center gap-1">
+                                  <Zap className="w-3 h-3" />
+                                  Generated in {example.generatedIn}
                                 </span>
                               </div>
                             </div>
