@@ -447,4 +447,18 @@
       min-height: 100vh;
     }
   }
+
+  /* Force dropdown to be on top of everything */
+  .navbar-dropdown {
+    z-index: 999999 !important;
+    position: absolute !important;
+    background: rgba(0, 0, 0, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+  }
+
+  /* Ensure all dropdowns are visible */
+  [data-dropdown="true"] {
+    z-index: 999999 !important;
+  }
 }
