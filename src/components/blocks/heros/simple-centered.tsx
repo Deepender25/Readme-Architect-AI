@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Github, Code, GitBranch, Star, Zap, BrainCircuit, Bot, Wand2 } from 'lucide-react';
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
+import { Github, Code, GitBranch, Star, Zap } from 'lucide-react';
 import ReadmeGeneratorFlow from '@/components/readme-generator-flow';
 import ModernReadmeOutput from '@/components/modern-readme-output';
 import { ScrollAnimatedDiv } from '@/components/ui/scroll-animated-div';
@@ -14,6 +14,22 @@ export default function SimpleCentered() {
   const [repositoryUrl, setRepositoryUrl] = useState('');
   const [projectName, setProjectName] = useState('');
   const [generationParams, setGenerationParams] = useState({});
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const springX = useSpring(mouseX, { stiffness: 100, damping: 20 });
+  const springY = useSpring(mouseY, { stiffness: 100, damping: 20 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [mouseX, mouseY]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -44,31 +60,37 @@ export default function SimpleCentered() {
     setGenerationParams({});
   };
 
-  const features = [
-    {
-      icon: <BrainCircuit size={28} className="text-green-400" />,
-      title: 'AI-Powered Analysis',
-      description: 'Our AI delves deep into your codebase to understand its structure, dependencies, and purpose.',
-    },
-    {
-      icon: <Bot size={28} className="text-green-400" />,
-      title: 'Automated Generation',
-      description: 'Generate a complete, professional README.md file in seconds, saving you time and effort.',
-    },
-    {
-      icon: <Wand2 size={28} className="text-green-400" />,
-      title: 'Glassmorphism UI',
-      description: 'A beautiful, modern interface with a glassmorphism design that is both intuitive and visually stunning.',
-    },
-  ];
-
   return (
     <div className="bg-[#0a0a0a] min-h-screen font-sans text-white">
-      <div className="fixed inset-0 -z-20 h-full w-full bg-black bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
-      <div className="fixed inset-0 -z-10 h-full w-full bg-gradient-to-b from-black via-transparent to-black"></div>
-      
+      <motion.div
+        className="fixed top-0 left-0 w-32 h-32 bg-green-400/30 rounded-full blur-3xl pointer-events-none"
+        style={{ x: springX, y: springY, translateX: '-50%', translateY: '-50%' }}
+      />
       <div className="relative isolate px-6 pt-0 lg:px-8 overflow-hidden min-h-screen">
-        <div className="mx-auto max-w-4xl py-12 sm:py-16 lg:py-20">
+        <div className="fixed inset-0 -z-10 overflow-hidden w-full h-full">
+          <div className="absolute inset-0">
+            {Array.from({ length: 20 }).map((_, i) => (
+              <motion.div
+                key={`h-line-${i}`}
+                className="absolute w-full h-px bg-gradient-to-r from-transparent via-green-400/20 to-transparent"
+                style={{ top: `${i * 5}%` }}
+                animate={{ opacity: [0.1, 0.3, 0.1], scaleX: [0.8, 1, 0.8] }}
+                transition={{ duration: 3 + (i % 3), repeat: Infinity, ease: "easeInOut", delay: i * 0.2 }}
+              />
+            ))}
+            {Array.from({ length: 20 }).map((_, i) => (
+              <motion.div
+                key={`v-line-${i}`}
+                className="absolute h-full w-px bg-gradient-to-b from-transparent via-green-400/20 to-transparent"
+                style={{ left: `${i * 5}%` }}
+                animate={{ opacity: [0.1, 0.3, 0.1], scaleY: [0.8, 1, 0.8] }}
+                transition={{ duration: 4 + (i % 3), repeat: Infinity, ease: "easeInOut", delay: i * 0.15 }}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="mx-auto max-w-2xl py-8 sm:py-12 lg:py-16">
           <AnimatePresence mode="wait">
             {showEditor ? (
               <motion.div
@@ -128,33 +150,9 @@ export default function SimpleCentered() {
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl p-6">
-                      <ReadmeGeneratorFlow onComplete={handleGenerationComplete} />
-                    </div>
+                    <ReadmeGeneratorFlow onComplete={handleGenerationComplete} />
                   )}
                 </ScrollAnimatedDiv>
-
-                {!showGenerator && (
-                  <ScrollAnimatedDiv delay={0.6} duration={0.8} yOffset={50} className="mt-20">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                      {features.map((feature, index) => (
-                        <motion.div
-                          key={index}
-                          className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 text-left"
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
-                        >
-                          <div className="flex items-center justify-center h-12 w-12 rounded-full bg-green-500/10 mb-4">
-                            {feature.icon}
-                          </div>
-                          <h3 className="text-xl font-semibold text-white mb-2">{feature.title}</h3>
-                          <p className="text-gray-400">{feature.description}</p>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </ScrollAnimatedDiv>
-                )}
               </motion.div>
             )}
           </AnimatePresence>
