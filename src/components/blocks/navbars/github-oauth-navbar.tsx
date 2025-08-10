@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Menu, X, User, Settings, FileText, LogOut, ChevronDown, FolderGit2, History } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
@@ -17,6 +17,7 @@ export default function GitHubOAuthNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const dropdownTriggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -31,7 +32,11 @@ export default function GitHubOAuthNavbar() {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownTriggerRef.current && !dropdownTriggerRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const isClickInsideTrigger = dropdownTriggerRef.current?.contains(target);
+      const isClickInsideDropdown = target && (target as Element).closest('[data-dropdown-portal="true"]');
+      
+      if (!isClickInsideTrigger && !isClickInsideDropdown) {
         setDropdownOpen(false);
       }
     };
@@ -56,10 +61,7 @@ export default function GitHubOAuthNavbar() {
   };
 
   return (
-    <motion.nav
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 }}
+    <nav
       className={`fixed top-0 w-full z-[9998] smooth-transition h-16 no-lag hardware-accelerated ${
         isScrolled
           ? 'glass-navbar shadow-lg shadow-green-500/20'
@@ -75,7 +77,7 @@ export default function GitHubOAuthNavbar() {
             }`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => window.location.href = '/'}
+            onClick={() => router.push('/')}
           >
             <motion.div
               className="w-7 h-7 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-lg shadow-green-500/30"
@@ -265,7 +267,7 @@ export default function GitHubOAuthNavbar() {
                       <button 
                         onClick={() => {
                           setDropdownOpen(false);
-                          window.location.href = '/repositories';
+                          router.push('/repositories');
                         }}
                         className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-500/10 transition-colors"
                       >
@@ -275,7 +277,7 @@ export default function GitHubOAuthNavbar() {
                       <button 
                         onClick={() => {
                           setDropdownOpen(false);
-                          window.location.href = '/history';
+                          router.push('/history');
                         }}
                         className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-500/10 transition-colors"
                       >
@@ -285,7 +287,7 @@ export default function GitHubOAuthNavbar() {
                       <button 
                         onClick={() => {
                           setDropdownOpen(false);
-                          window.location.href = '/settings';
+                          router.push('/settings');
                         }}
                         className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-500/10 transition-colors"
                       >
@@ -428,7 +430,7 @@ export default function GitHubOAuthNavbar() {
                       <button 
                         onClick={() => {
                           setIsOpen(false);
-                          window.location.href = '/repositories';
+                          router.push('/repositories');
                         }}
                         className="w-full text-left px-3 py-2.5 text-sm text-foreground/70 hover:text-green-400 hover:bg-green-500/5 transition-colors rounded-lg flex items-center gap-3"
                       >
@@ -438,7 +440,7 @@ export default function GitHubOAuthNavbar() {
                       <button 
                         onClick={() => {
                           setIsOpen(false);
-                          window.location.href = '/history';
+                          router.push('/history');
                         }}
                         className="w-full text-left px-3 py-2.5 text-sm text-foreground/70 hover:text-green-400 hover:bg-green-500/5 transition-colors rounded-lg flex items-center gap-3"
                       >
@@ -448,7 +450,7 @@ export default function GitHubOAuthNavbar() {
                       <button 
                         onClick={() => {
                           setIsOpen(false);
-                          window.location.href = '/settings';
+                          router.push('/settings');
                         }}
                         className="w-full text-left px-3 py-2.5 text-sm text-foreground/70 hover:text-green-400 hover:bg-green-500/5 transition-colors rounded-lg flex items-center gap-3"
                       >
@@ -470,6 +472,6 @@ export default function GitHubOAuthNavbar() {
           )}
         </AnimatePresence>
       </div>
-    </motion.nav>
+    </nav>
   );
 }
