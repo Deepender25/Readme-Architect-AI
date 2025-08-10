@@ -2,91 +2,60 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Github, Code, GitBranch, Star, Zap, BrainCircuit, Bot, Wand2 } from 'lucide-react';
+import { Github, GitBranch, BrainCircuit, Bot, Wand2, Code } from 'lucide-react';
 import ReadmeGeneratorFlow from '@/components/readme-generator-flow';
 import ModernReadmeOutput from '@/components/modern-readme-output';
 import { ScrollAnimatedDiv } from '@/components/ui/scroll-animated-div';
 
-const PlexusBackground = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+const TechLogo = ({ icon, initialAngle, radius }: { icon: React.ReactNode, initialAngle: number, radius: number }) => {
+  const [angle, setAngle] = useState(initialAngle);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    const particles: any[] = [];
-    const particleCount = 60;
-
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    const initParticles = () => {
-      for (let i = 0; i < particleCount; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: Math.random() * 0.4 - 0.2,
-          vy: Math.random() * 0.4 - 0.2,
-          radius: 1.5,
-        });
-      }
-    };
-
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = 0; i < particleCount; i++) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < 0 || p.x > canvas.width) p.vx = -p.vx;
-        if (p.y < 0 || p.y > canvas.height) p.vy = -p.vy;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(0, 255, 136, 0.5)';
-        ctx.fill();
-      }
-
-      for (let i = 0; i < particleCount; i++) {
-        for (let j = i + 1; j < particleCount; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 120) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(0, 255, 136, ${1 - dist / 120})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
-      }
-
-      animationFrameId = requestAnimationFrame(animate);
+      setAngle(prevAngle => prevAngle + 0.005);
+      requestAnimationFrame(animate);
     };
-
-    resizeCanvas();
-    initParticles();
-    animate();
-
-    window.addEventListener('resize', resizeCanvas);
-
-    return () => {
-      window.removeEventListener('resize', resizeCanvas);
-      cancelAnimationFrame(animationFrameId);
-    };
+    const animationFrameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
-  return <canvas ref={canvasRef} className="fixed top-0 left-0 -z-10" />;
+  const x = Math.cos(angle) * radius;
+  const y = Math.sin(angle) * radius;
+
+  return (
+    <motion.div
+      className="absolute"
+      style={{ 
+        x,
+        y,
+        color: '#00ff88',
+      }}
+    >
+      {icon}
+    </motion.div>
+  );
+};
+
+const MovingGrid = () => {
+  return (
+    <div className="absolute inset-0 z-0">
+      <div 
+        className="absolute inset-0 bg-repeat"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2300ff881a' stroke-width='2' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e")`,
+          animation: 'moveGrid 120s linear infinite'
+        }}
+      />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="relative flex items-center justify-center w-64 h-64">
+          <TechLogo icon={<Github size={32} />} initialAngle={0} radius={100} />
+          <TechLogo icon={<GitBranch size={32} />} initialAngle={Math.PI / 2} radius={100} />
+          <TechLogo icon={<Code size={32} />} initialAngle={Math.PI} radius={100} />
+          <TechLogo icon={<Bot size={32} />} initialAngle={3 * Math.PI / 2} radius={100} />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default function SimpleCentered() {
@@ -126,30 +95,11 @@ export default function SimpleCentered() {
     setGenerationParams({});
   };
 
-  const features = [
-    {
-      icon: <BrainCircuit size={28} className="text-green-400" />,
-      title: 'AI-Powered Analysis',
-      description: 'Our AI delves deep into your codebase to understand its structure, dependencies, and purpose.',
-      image: 'https://placehold.co/600x400/0a0a0a/00ff88?text=Code+Analysis',
-    },
-    {
-      icon: <Bot size={28} className="text-green-400" />,
-      title: 'Automated Generation',
-      description: 'Generate a complete, professional README.md file in seconds, saving you time and effort.',
-      image: 'https://placehold.co/600x400/0a0a0a/00ff88?text=README+Generation',
-    },
-    {
-      icon: <Wand2 size={28} className="text-green-400" />,
-      title: 'Live Editor',
-      description: 'A beautiful, modern interface with a live editor to tweak and perfect your generated README.',
-      image: 'https://placehold.co/600x400/0a0a0a/00ff88?text=Live+Editor',
-    },
-  ];
-
   return (
-    <div className="bg-[#0a0a0a] min-h-screen font-sans text-white">
-      <PlexusBackground />
+    <div className="bg-[#0a0a0a] min-h-screen font-sans text-white overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <MovingGrid />
+      </div>
       <div className="relative isolate px-6 pt-0 lg:px-8 min-h-screen flex flex-col justify-center">
         <div className="mx-auto max-w-4xl py-12 sm:py-16 lg:py-20">
           <AnimatePresence mode="wait">
@@ -218,33 +168,6 @@ export default function SimpleCentered() {
             )}
           </AnimatePresence>
         </div>
-
-        {!showGenerator && !showEditor && (
-          <div className="w-full max-w-6xl mx-auto mt-20 mb-10">
-            <ScrollAnimatedDiv delay={0.6} duration={0.8} yOffset={50}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {features.map((feature, index) => (
-                  <motion.div
-                    key={index}
-                    className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 text-left overflow-hidden"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
-                  >
-                    <img src={feature.image} alt={feature.title} className="w-full h-40 object-cover rounded-lg mb-4" />
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">
-                        {feature.icon}
-                      </div>
-                      <h3 className="text-xl font-semibold text-white">{feature.title}</h3>
-                    </div>
-                    <p className="text-gray-400 text-sm">{feature.description}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </ScrollAnimatedDiv>
-          </div>
-        )}
       </div>
     </div>
   );

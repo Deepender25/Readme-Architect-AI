@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
@@ -115,9 +115,7 @@ export default function GitHubOAuthNavbar() {
             {pathname === '/' && (
               <motion.div
                 className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-green-400 to-transparent rounded-full"
-                initial={{ opacity: 0, scaleX: 0 }}
-                animate={{ opacity: 1, scaleX: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
+                layoutId="active-nav-link"
               />
             )}
           </motion.div>
@@ -140,45 +138,11 @@ export default function GitHubOAuthNavbar() {
                 >
                   {link.name}
                   
-                  {/* Active state indicator */}
-                  <motion.div
-                    className="absolute bottom-0.5 left-0 right-0 h-0.5 bg-gradient-to-r from-green-500 to-green-400 rounded-full"
-                    initial={{ scaleX: 0, opacity: 0 }}
-                    animate={{ 
-                      scaleX: isActive ? 1 : 0, 
-                      opacity: isActive ? 1 : 0 
-                    }}
-                    whileHover={{ scaleX: 1, opacity: 1 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                    style={{
-                      transformOrigin: 'center',
-                      boxShadow: isActive ? '0 0 12px rgba(0, 255, 136, 0.8)' : '0 0 8px rgba(0, 255, 136, 0.6)'
-                    }}
-                  />
-                  
-                  {/* Active state background glow */}
                   {isActive && (
                     <motion.div
-                      className="absolute inset-0 bg-green-400/10 rounded-lg -z-10"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  )}
-                  
-                  {/* Pulsing effect for active state */}
-                  {isActive && (
-                    <motion.div
-                      className="absolute inset-0 bg-green-400/5 rounded-lg -z-20"
-                      animate={{
-                        scale: [1, 1.05, 1],
-                        opacity: [0.3, 0.6, 0.3]
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }}
+                      className="absolute bottom-0.5 left-0 right-0 h-0.5 bg-gradient-to-r from-green-500 to-green-400 rounded-full"
+                      layoutId="active-nav-link"
+                      style={{ boxShadow: '0 0 12px rgba(0, 255, 136, 0.8)' }}
                     />
                   )}
                 </motion.a>
