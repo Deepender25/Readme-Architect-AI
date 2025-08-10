@@ -1,8 +1,7 @@
 "use client"
 
 import { Suspense } from 'react'
-import GitHubOAuthNavbar from '@/components/blocks/navbars/github-oauth-navbar'
-import MinimalGridBackground from '@/components/minimal-geometric-background'
+
 import { motion } from 'framer-motion'
 import { 
   Github, 
@@ -21,8 +20,8 @@ import {
   Heart
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { CenteredWithLogo } from '@/components/blocks/footers/centered-with-logo'
 import { useSmoothNavigation } from '@/hooks/use-smooth-navigation'
+import LayoutWrapper from '@/components/layout-wrapper'
 
 function ExamplesContent() {
   const { navigateWithPreload } = useSmoothNavigation()
@@ -263,19 +262,7 @@ cargo test
   ]
 
   return (
-    <div className="min-h-screen bg-black text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag">
-      {/* Background */}
-      <div className="fixed inset-0 z-0 w-full h-full">
-        <MinimalGridBackground />
-      </div>
-      
-      {/* Navbar */}
-      <div className="fixed top-0 left-0 right-0 z-50">
-        <GitHubOAuthNavbar />
-      </div>
-
-      {/* Main Content */}
-      <main className="relative z-10 min-h-screen pt-16">
+    <LayoutWrapper>
         <div className="container mx-auto px-6 py-12">
           <div className="max-w-7xl mx-auto">
             
@@ -472,13 +459,7 @@ cargo test
             </motion.div>
           </div>
         </div>
-      </main>
-
-      {/* Footer */}
-      <div className="relative z-10">
-        <CenteredWithLogo />
-      </div>
-    </div>
+    </LayoutWrapper>
   )
 }
 
