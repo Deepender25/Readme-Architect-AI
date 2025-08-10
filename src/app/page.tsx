@@ -22,7 +22,7 @@ function HomeContent() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-foreground relative overflow-hidden">
+    <div className="min-h-screen bg-black text-foreground relative overflow-hidden no-lag">
       {/* Background - positioned behind everything, covering full viewport */}
       <div className="fixed inset-0 z-0 w-full h-full">
         <MinimalGridBackground />
@@ -30,11 +30,7 @@ function HomeContent() {
       
       {/* Navbar - positioned above background, always visible */}
       <div className="fixed top-0 left-0 right-0 z-50">
-        <GitHubOAuthNavbar 
-          isAuthenticated={isAuthenticated} 
-          user={user}
-          onAuthAction={handleAuthAction} 
-        />
+        <GitHubOAuthNavbar />
       </div>
 
       {/* Main Content Area */}
@@ -43,6 +39,7 @@ function HomeContent() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
+          className="gpu-accelerated"
         >
           <SimpleCentered />
         </motion.div>
