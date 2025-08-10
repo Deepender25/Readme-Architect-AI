@@ -58,6 +58,9 @@ export default function ModernReadmeOutput({
     fileUrl?: string;
     isUpdate?: boolean;
   } | null>(null);
+  const [showGithubPopup, setShowGithubPopup] = useState(false);
+  const [showCopyPopup, setShowCopyPopup] = useState(false);
+  const [showDownloadPopup, setShowDownloadPopup] = useState(false);
   
   const previewRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -132,10 +135,14 @@ export default function ModernReadmeOutput({
       setTimeout(() => {
         setCopySuccess(true);
         setCopyAnimation(false);
+        setShowCopyPopup(true);
       }, 300);
       
-      // Reset success state
-      setTimeout(() => setCopySuccess(false), 2500);
+      // Reset success state and hide popup
+      setTimeout(() => {
+        setCopySuccess(false);
+        setShowCopyPopup(false);
+      }, 3000);
     } catch (err) {
       console.error('Failed to copy: ', err);
       setCopyAnimation(false);
@@ -157,6 +164,10 @@ export default function ModernReadmeOutput({
     URL.revokeObjectURL(url);
     
     setIsDownloading(false);
+    setShowDownloadPopup(true);
+    
+    // Hide download popup after 3 seconds
+    setTimeout(() => setShowDownloadPopup(false), 3000);
   };
 
   const handleSaveToGitHub = async () => {
@@ -200,10 +211,14 @@ export default function ModernReadmeOutput({
         isUpdate: result.message?.includes('updated')
       });
       
+      // Show GitHub popup
+      setShowGithubPopup(true);
+      
       // Reset success state after longer duration to show the detailed message
       setTimeout(() => {
         setSaveSuccess(false);
         setGithubSaveResult(null);
+        setShowGithubPopup(false);
       }, 8000);
       
       console.log('README saved successfully:', result);
@@ -232,7 +247,7 @@ export default function ModernReadmeOutput({
   const sanitizedContent = DOMPurify.sanitize(processedContent);
 
   return (
-    <div className="min-h-screen bg-black text-foreground relative overflow-hidden">
+    <div className="min-h-screen bg-black text-foreground relative overflow-hidden scroll-smooth">
       {/* Background */}
       <div className="fixed inset-0 z-0 w-full h-full">
         <MinimalGridBackground />
@@ -477,10 +492,10 @@ export default function ModernReadmeOutput({
         </div>
       </motion.header>
 
-      {/* Main Content Area - Flex layout to push footer to bottom */}
-      <div className="relative z-10 min-h-screen pt-16 flex flex-col">
+      {/* Main Content Area */}
+      <div className="relative z-10 min-h-screen pt-16">
         {/* Content Section */}
-        <main className="flex-1 px-6 py-8">
+        <main className="px-6 py-8">
           <div className="container mx-auto max-w-6xl">
             <motion.div
               className="relative"
@@ -495,7 +510,8 @@ export default function ModernReadmeOutput({
                 
                 <div 
                   ref={contentRef}
-                  className="relative max-h-[calc(100vh-300px)] overflow-y-auto scrollbar-thin scrollbar-thumb-green-400/30 scrollbar-track-transparent"
+                  className="relative max-h-[calc(100vh-300px)] overflow-y-auto scrollbar-thin scrollbar-thumb-green-400/40 scrollbar-track-green-900/20 scroll-smooth"
+                  style={{ scrollBehavior: 'smooth' }}
                 >
                   <AnimatePresence mode="wait">
                     {viewMode === 'preview' ? (
@@ -662,9 +678,107 @@ export default function ModernReadmeOutput({
             </motion.div>
           </div>
         </main>
-
-
       </div>
+
+      {/* Popup Notifications */}
+      <AnimatePresence>
+        {/* GitHub Save Success Popup */}
+        {showGithubPopup && githubSaveResult && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 50 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 50 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[100] max-w-md w-full mx-4"
+          >
+            <div className="bg-black/90 backdrop-blur-xl border border-green-400/30 rounded-2xl p-6 shadow-2xl shadow-green-400/20">
+              <div className="flex items-center gap-4 mb-4">
+                <motion.div
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center"
+                >
+                  <Github className="w-6 h-6 text-green-400" />
+                </motion.div>
+                <div>
+                  <h3 className="text-lg font-bold text-green-400">
+                    {githubSaveResult.isUpdate ? 'README Updated!' : 'README Created!'}
+                  </h3>
+                  <p className="text-gray-300 text-sm">{githubSaveResult.message}</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                {githubSaveResult.commitUrl && (
+                  <a
+                    href={githubSaveResult.commitUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 bg-green-500/20 hover:bg-green-500/30 border border-green-400/30 rounded-lg px-3 py-2 text-center text-sm text-green-400 transition-colors"
+                  >
+                    View Commit
+                  </a>
+                )}
+                {githubSaveResult.fileUrl && (
+                  <a
+                    href={githubSaveResult.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 bg-green-500/20 hover:bg-green-500/30 border border-green-400/30 rounded-lg px-3 py-2 text-center text-sm text-green-400 transition-colors"
+                  >
+                    View File
+                  </a>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Copy Success Popup */}
+        {showCopyPopup && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 50 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 50 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[100] max-w-sm w-full mx-4"
+          >
+            <div className="bg-black/90 backdrop-blur-xl border border-green-400/30 rounded-2xl p-6 shadow-2xl shadow-green-400/20 text-center">
+              <motion.div
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 0.6, ease: "easeInOut" }}
+                className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4"
+              >
+                <Copy className="w-8 h-8 text-green-400" />
+              </motion.div>
+              <h3 className="text-lg font-bold text-green-400 mb-2">Copied to Clipboard!</h3>
+              <p className="text-gray-300 text-sm">README content has been copied successfully</p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Download Success Popup */}
+        {showDownloadPopup && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 50 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 50 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[100] max-w-sm w-full mx-4"
+          >
+            <div className="bg-black/90 backdrop-blur-xl border border-green-400/30 rounded-2xl p-6 shadow-2xl shadow-green-400/20 text-center">
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 0.6, ease: "easeInOut" }}
+                className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4"
+              >
+                <Download className="w-8 h-8 text-green-400" />
+              </motion.div>
+              <h3 className="text-lg font-bold text-green-400 mb-2">Download Complete!</h3>
+              <p className="text-gray-300 text-sm">README.md has been downloaded to your device</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Custom Styles */}
       <style jsx global>{`
@@ -880,26 +994,37 @@ export default function ModernReadmeOutput({
           scrollbar-width: thin;
         }
         
-        .scrollbar-thumb-green-400\/30::-webkit-scrollbar-thumb {
-          background: linear-gradient(180deg, rgba(0, 255, 136, 0.4), rgba(0, 255, 136, 0.2));
-          border-radius: 6px;
-          border: 1px solid rgba(0, 255, 136, 0.1);
+        .scrollbar-thumb-green-400\/40::-webkit-scrollbar-thumb {
+          background: linear-gradient(180deg, rgba(0, 255, 136, 0.5), rgba(0, 255, 136, 0.3));
+          border-radius: 8px;
+          border: 1px solid rgba(0, 255, 136, 0.2);
         }
         
-        .scrollbar-thumb-green-400\/30::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(180deg, rgba(0, 255, 136, 0.6), rgba(0, 255, 136, 0.3));
+        .scrollbar-thumb-green-400\/40::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(180deg, rgba(0, 255, 136, 0.7), rgba(0, 255, 136, 0.4));
+          box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
         }
         
-        .scrollbar-track-transparent::-webkit-scrollbar-track {
-          background: transparent;
+        .scrollbar-track-green-900\/20::-webkit-scrollbar-track {
+          background: rgba(20, 83, 45, 0.2);
+          border-radius: 8px;
         }
         
         .scrollbar-thin::-webkit-scrollbar {
-          width: 8px;
+          width: 10px;
         }
 
         .scrollbar-thin::-webkit-scrollbar-corner {
           background: transparent;
+        }
+        
+        /* Smooth Scrolling */
+        .scroll-smooth {
+          scroll-behavior: smooth;
+        }
+        
+        html {
+          scroll-behavior: smooth;
         }
 
         /* Enhanced backdrop blur support */
