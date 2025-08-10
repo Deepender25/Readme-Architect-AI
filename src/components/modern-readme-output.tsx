@@ -685,26 +685,26 @@ export default function ModernReadmeOutput({
         {/* GitHub Save Success Popup */}
         {showGithubPopup && githubSaveResult && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 50 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 50 }}
+            initial={{ opacity: 0, x: 400, y: -20 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            exit={{ opacity: 0, x: 400, y: -20 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[100] max-w-md w-full mx-4"
+            className="fixed top-20 right-6 z-[100] max-w-md w-full"
           >
-            <div className="bg-black/90 backdrop-blur-xl border border-green-400/30 rounded-2xl p-6 shadow-2xl shadow-green-400/20">
-              <div className="flex items-center gap-4 mb-4">
+            <div className="bg-black/95 backdrop-blur-xl border border-green-400/30 rounded-xl p-4 shadow-2xl shadow-green-400/20">
+              <div className="flex items-start gap-3 mb-3">
                 <motion.div
                   animate={{ rotate: [0, 360] }}
                   transition={{ duration: 0.6, ease: "easeInOut" }}
-                  className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center"
+                  className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
                 >
-                  <Github className="w-6 h-6 text-green-400" />
+                  <Github className="w-4 h-4 text-green-400" />
                 </motion.div>
-                <div>
-                  <h3 className="text-lg font-bold text-green-400">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-bold text-green-400 mb-1">
                     {githubSaveResult.isUpdate ? 'README Updated!' : 'README Created!'}
                   </h3>
-                  <p className="text-gray-300 text-sm">{githubSaveResult.message}</p>
+                  <p className="text-gray-300 text-xs leading-relaxed">{githubSaveResult.message}</p>
                 </div>
               </div>
               <div className="flex gap-2">
@@ -713,7 +713,7 @@ export default function ModernReadmeOutput({
                     href={githubSaveResult.commitUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 bg-green-500/20 hover:bg-green-500/30 border border-green-400/30 rounded-lg px-3 py-2 text-center text-sm text-green-400 transition-colors"
+                    className="flex-1 bg-green-500/20 hover:bg-green-500/30 border border-green-400/30 rounded-lg px-2 py-1.5 text-center text-xs text-green-400 transition-colors"
                   >
                     View Commit
                   </a>
@@ -723,7 +723,7 @@ export default function ModernReadmeOutput({
                     href={githubSaveResult.fileUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 bg-green-500/20 hover:bg-green-500/30 border border-green-400/30 rounded-lg px-3 py-2 text-center text-sm text-green-400 transition-colors"
+                    className="flex-1 bg-green-500/20 hover:bg-green-500/30 border border-green-400/30 rounded-lg px-2 py-1.5 text-center text-xs text-green-400 transition-colors"
                   >
                     View File
                   </a>
@@ -736,22 +736,28 @@ export default function ModernReadmeOutput({
         {/* Copy Success Popup */}
         {showCopyPopup && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 50 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 50 }}
+            initial={{ opacity: 0, x: 400, y: -20 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            exit={{ opacity: 0, x: 400, y: -20 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[100] max-w-sm w-full mx-4"
+            className={`fixed right-6 z-[100] max-w-sm w-full ${
+              showGithubPopup ? 'top-44' : 'top-20'
+            }`}
           >
-            <div className="bg-black/90 backdrop-blur-xl border border-green-400/30 rounded-2xl p-6 shadow-2xl shadow-green-400/20 text-center">
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 0.6, ease: "easeInOut" }}
-                className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4"
-              >
-                <Copy className="w-8 h-8 text-green-400" />
-              </motion.div>
-              <h3 className="text-lg font-bold text-green-400 mb-2">Copied to Clipboard!</h3>
-              <p className="text-gray-300 text-sm">README content has been copied successfully</p>
+            <div className="bg-black/95 backdrop-blur-xl border border-green-400/30 rounded-xl p-4 shadow-2xl shadow-green-400/20">
+              <div className="flex items-center gap-3">
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <Copy className="w-4 h-4 text-green-400" />
+                </motion.div>
+                <div>
+                  <h3 className="text-sm font-bold text-green-400 mb-1">Copied to Clipboard!</h3>
+                  <p className="text-gray-300 text-xs">README content copied successfully</p>
+                </div>
+              </div>
             </div>
           </motion.div>
         )}
@@ -759,22 +765,29 @@ export default function ModernReadmeOutput({
         {/* Download Success Popup */}
         {showDownloadPopup && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 50 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 50 }}
+            initial={{ opacity: 0, x: 400, y: -20 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            exit={{ opacity: 0, x: 400, y: -20 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[100] max-w-sm w-full mx-4"
+            className={`fixed right-6 z-[100] max-w-sm w-full ${
+              showGithubPopup && showCopyPopup ? 'top-68' : 
+              showGithubPopup || showCopyPopup ? 'top-44' : 'top-20'
+            }`}
           >
-            <div className="bg-black/90 backdrop-blur-xl border border-green-400/30 rounded-2xl p-6 shadow-2xl shadow-green-400/20 text-center">
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 0.6, ease: "easeInOut" }}
-                className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4"
-              >
-                <Download className="w-8 h-8 text-green-400" />
-              </motion.div>
-              <h3 className="text-lg font-bold text-green-400 mb-2">Download Complete!</h3>
-              <p className="text-gray-300 text-sm">README.md has been downloaded to your device</p>
+            <div className="bg-black/95 backdrop-blur-xl border border-green-400/30 rounded-xl p-4 shadow-2xl shadow-green-400/20">
+              <div className="flex items-center gap-3">
+                <motion.div
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <Download className="w-4 h-4 text-green-400" />
+                </motion.div>
+                <div>
+                  <h3 className="text-sm font-bold text-green-400 mb-1">Download Complete!</h3>
+                  <p className="text-gray-300 text-xs">README.md downloaded to your device</p>
+                </div>
+              </div>
             </div>
           </motion.div>
         )}
