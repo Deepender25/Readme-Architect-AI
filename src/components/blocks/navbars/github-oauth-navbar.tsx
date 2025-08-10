@@ -24,7 +24,11 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = ['Features', 'Examples', 'Pricing'];
+  const navLinks = [
+    { name: 'Features', href: '/features' },
+    { name: 'Examples', href: '/examples' },
+    { name: 'Showcase', href: '/showcase' }
+  ];
 
   return (
     <motion.nav
@@ -73,13 +77,13 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
           <div className="hidden md:flex items-center gap-6 lg:gap-8 flex-1 justify-center">
             {navLinks.map((link) => (
               <motion.a
-                key={link}
-                href={`#${link.toLowerCase()}`}
+                key={link.name}
+                href={link.href}
                 className="relative text-sm font-medium text-foreground/70 hover:text-green-400 transition-colors px-3 py-2 group"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}>
                 
-                {link}
+                {link.name}
                 <motion.div
                   className="absolute bottom-0.5 left-0 right-0 h-0.5 bg-gradient-to-r from-green-500 to-green-400"
                   initial={{ scaleX: 0, opacity: 0 }}
@@ -258,14 +262,14 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
               <div className="py-4 space-y-1">
                 {navLinks.map((link, index) => (
                   <motion.a
-                    key={link}
-                    href={`#${link.toLowerCase()}`}
+                    key={link.name}
+                    href={link.href}
                     initial={{ opacity: 0, x: -16 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.03 }}
                     className="block px-4 py-3 text-foreground/70 hover:text-green-400 hover:bg-green-500/5 transition-colors rounded-lg"
                     onClick={() => setIsOpen(false)}>
-                    {link}
+                    {link.name}
                   </motion.a>
                 ))}
                 
