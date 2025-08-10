@@ -136,7 +136,7 @@ function DocumentationContent() {
   ]
 
   return (
-    <div className="min-h-screen bg-black text-foreground relative overflow-hidden">
+    <div className="min-h-screen bg-black text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag">
       {/* Background */}
       <div className="fixed inset-0 z-0 w-full h-full">
         <MinimalGridBackground />

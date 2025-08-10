@@ -44,12 +44,12 @@ export default function GitHubOAuthNavbar({}: GitHubOAuthNavbarProps) {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 }}
-      className={`fixed top-0 w-full z-50 smooth-transition h-16 no-lag ${
+      className={`fixed top-0 w-full z-50 smooth-transition h-16 no-lag hardware-accelerated ${
         isScrolled
           ? 'glass-navbar shadow-lg shadow-green-500/20'
           : 'glass-light border-b border-transparent'}`}>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl h-full">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl h-full performance-optimized">
         <div className="flex items-center justify-between h-full">
           {/* Logo - properly aligned and animated */}
           <motion.div

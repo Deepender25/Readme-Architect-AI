@@ -263,7 +263,7 @@ cargo test
   ]
 
   return (
-    <div className="min-h-screen bg-black text-foreground relative overflow-hidden">
+    <div className="min-h-screen bg-black text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag">
       {/* Background */}
       <div className="fixed inset-0 z-0 w-full h-full">
         <MinimalGridBackground />
@@ -312,7 +312,7 @@ cargo test
             </motion.div>
 
             {/* Examples Grid */}
-            <div className="grid lg:grid-cols-2 gap-8 mb-20">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-12 sm:mb-16 lg:mb-20">
               {examples.map((example, index) => (
                 <motion.div
                   key={example.repo}

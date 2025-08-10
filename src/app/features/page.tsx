@@ -138,7 +138,7 @@ function FeaturesContent() {
   ]
 
   return (
-    <div className="min-h-screen bg-black text-foreground relative overflow-hidden">
+    <div className="min-h-screen bg-black text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag">
       {/* Background */}
       <div className="fixed inset-0 z-0 w-full h-full">
         <MinimalGridBackground />
@@ -191,7 +191,7 @@ function FeaturesContent() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20"
+              className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-12 sm:mb-16 lg:mb-20"
             >
               {stats.map((stat, index) => (
                 <motion.div
@@ -209,7 +209,7 @@ function FeaturesContent() {
             </motion.div>
 
             {/* Main Features Grid */}
-            <div className="grid lg:grid-cols-2 gap-8 mb-20">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-12 sm:mb-16 lg:mb-20">
               {mainFeatures.map((feature, index) => (
                 <motion.div
                   key={feature.title}
@@ -267,7 +267,7 @@ function FeaturesContent() {
                 </p>
               </div>
               
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                 {additionalFeatures.map((feature, index) => (
                   <motion.div
                     key={feature.title}

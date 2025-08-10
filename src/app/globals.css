@@ -34,13 +34,41 @@
     font-family: "JetBrains Mono", monospace;
   }
 
-  /* Glass Morphism Utilities */
+  /* Responsive Glass Morphism Utilities */
   .glass {
     background: rgba(15, 15, 15, 0.4);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    contain: layout style paint;
+  }
+
+  /* Mobile-optimized glass with reduced blur for performance */
+  @media (max-width: 768px) {
+    .glass {
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+    
+    .glass-strong {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    
+    .glass-navbar {
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+    }
+  }
+
+  /* Ultra-low-end device optimizations */
+  @media (max-width: 480px) {
+    .glass, .glass-light, .glass-strong, .glass-navbar {
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
   }
 
   .glass-light {
@@ -143,16 +171,70 @@
     transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Performance Optimizations */
+  /* Advanced Performance Optimizations */
   .gpu-accelerated {
     transform: translateZ(0);
     will-change: transform;
+    contain: layout style paint;
   }
 
   .no-lag {
     backface-visibility: hidden;
     perspective: 1000px;
     transform: translate3d(0, 0, 0);
+    contain: layout style paint;
+  }
+
+  .performance-optimized {
+    contain: layout style paint;
+    content-visibility: auto;
+    contain-intrinsic-size: 0 500px;
+  }
+
+  .smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .hardware-accelerated {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  /* Responsive Performance Classes */
+  .mobile-optimized {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+  }
+
+  .reduce-motion {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Container Query Support */
+  .container-optimized {
+    container-type: inline-size;
+  }
+
+  /* Intersection Observer Optimization */
+  .lazy-load {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 200px;
   }
 
   /* Custom Scrollbar Classes */
@@ -311,5 +393,58 @@
   * {
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 255, 136, 0.6) rgba(0, 0, 0, 0.2);
+  }
+
+  /* Mobile-specific optimizations */
+  @media (max-width: 768px) {
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    
+    /* Reduce motion on mobile for better performance */
+    .glass-card:hover {
+      transform: none;
+    }
+    
+    /* Optimize touch interactions */
+    button, a, [role="button"] {
+      -webkit-tap-highlight-color: rgba(0, 255, 136, 0.2);
+      touch-action: manipulation;
+    }
+    
+    /* Improve text rendering on mobile */
+    body {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+  }
+
+  /* Ultra-small screens */
+  @media (max-width: 480px) {
+    .container {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+    
+    /* Further reduce animations */
+    * {
+      animation-duration: 0.2s !important;
+      transition-duration: 0.2s !important;
+    }
+  }
+
+  /* High DPI screens optimization */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .glass, .glass-card, .glass-navbar {
+      border-width: 0.5px;
+    }
+  }
+
+  /* Landscape mobile optimization */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .min-h-screen {
+      min-height: 100vh;
+    }
   }
 }
