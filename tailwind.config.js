@@ -67,10 +67,46 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "pulse-glow": {
+          "0%, 100%": {
+            opacity: "0.3",
+            transform: "scale(1)",
+          },
+          "50%": {
+            opacity: "0.6",
+            transform: "scale(1.05)",
+          },
+        },
+        "float": {
+          "0%, 100%": {
+            transform: "translateY(0px)",
+          },
+          "50%": {
+            transform: "translateY(-10px)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "pulse-glow": "pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "float": "float 3s ease-in-out infinite",
+      },
+      backdropBlur: {
+        'xs': '2px',
+        'sm': '4px',
+        'md': '8px',
+        'lg': '12px',
+        'xl': '16px',
+        '2xl': '24px',
+        '3xl': '32px',
+      },
+      boxShadow: {
+        'glass': '0 8px 32px rgba(0, 0, 0, 0.3)',
+        'glass-lg': '0 12px 40px rgba(0, 0, 0, 0.4)',
+        'glass-xl': '0 20px 60px rgba(0, 0, 0, 0.5)',
+        'glow': '0 0 20px rgba(0, 255, 136, 0.3)',
+        'glow-lg': '0 0 40px rgba(0, 255, 136, 0.4)',
       },
     },
   },

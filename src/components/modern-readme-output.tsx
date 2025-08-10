@@ -260,7 +260,7 @@ export default function ModernReadmeOutput({
 
       {/* Secondary Header - positioned below navbar */}
       <motion.header
-        className="sticky top-16 z-40 backdrop-blur-xl bg-black/60 border-b border-green-400/20"
+        className="sticky top-16 z-40 glass-navbar border-b border-green-400/20 no-lag"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
@@ -504,7 +504,7 @@ export default function ModernReadmeOutput({
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               {/* Content Container with Enhanced Glass Effect */}
-              <div className="relative bg-[rgba(15,15,15,0.4)] backdrop-blur-2xl rounded-3xl border border-[rgba(255,255,255,0.15)] overflow-hidden shadow-2xl shadow-green-400/20">
+              <div className="relative glass rounded-3xl overflow-hidden shadow-glass-lg shadow-green-400/20 no-lag">
                 {/* Multi-layered Glass Effect */}
                 <div className="absolute -inset-1 bg-gradient-to-r from-green-400/30 to-green-600/30 rounded-3xl blur-xl opacity-40" />
                 <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.08)] via-transparent to-[rgba(0,255,100,0.05)] rounded-3xl" />
@@ -512,7 +512,7 @@ export default function ModernReadmeOutput({
                 
                 <div 
                   ref={contentRef}
-                  className="relative max-h-[calc(100vh-300px)] overflow-y-auto scrollbar-thin scrollbar-thumb-green-400/40 scrollbar-track-green-900/20 scroll-smooth"
+                  className="relative max-h-[calc(100vh-300px)] overflow-y-auto scrollbar-thin scrollbar-green scroll-smooth gpu-accelerated"
                   style={{ scrollBehavior: 'smooth' }}
                 >
                   <AnimatePresence mode="wait">

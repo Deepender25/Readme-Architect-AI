@@ -176,7 +176,7 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
             <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity" />
             <div className="relative bg-[rgba(26,26,26,0.7)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] rounded-xl p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 glass-green rounded-lg flex items-center justify-center">
                   <Github className="w-5 h-5 text-green-400" />
                 </div>
                 <div>
