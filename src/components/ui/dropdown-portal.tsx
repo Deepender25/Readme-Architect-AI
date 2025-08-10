@@ -32,6 +32,7 @@ export default function DropdownPortal({ children, isOpen, triggerRef }: Dropdow
   return createPortal(
     <div
       className="fixed z-[999999] w-56"
+      data-dropdown-portal="true"
       style={{
         top: position.top,
         left: position.left,
