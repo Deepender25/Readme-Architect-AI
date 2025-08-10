@@ -22,7 +22,7 @@ function HomeContent() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-foreground relative overflow-hidden no-lag">
+    <div className="min-h-screen bg-black text-foreground relative overflow-hidden no-lag performance-optimized smooth-scroll">
       {/* Background - positioned behind everything, covering full viewport */}
       <div className="fixed inset-0 z-0 w-full h-full">
         <MinimalGridBackground />
@@ -39,7 +39,7 @@ function HomeContent() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="gpu-accelerated"
+          className="hardware-accelerated lazy-load"
         >
           <SimpleCentered />
         </motion.div>

@@ -247,7 +247,7 @@ export default function ModernReadmeOutput({
   const sanitizedContent = DOMPurify.sanitize(processedContent);
 
   return (
-    <div className="min-h-screen bg-black text-foreground relative overflow-hidden scroll-smooth">
+    <div className="min-h-screen bg-black text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag">
       {/* Background */}
       <div className="fixed inset-0 z-0 w-full h-full">
         <MinimalGridBackground />
