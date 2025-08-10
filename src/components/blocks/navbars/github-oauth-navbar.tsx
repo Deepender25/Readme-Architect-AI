@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Menu, X, User, Settings, FileText, LogOut, ChevronDown, FolderGit2, History } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
+import DropdownPortal from '@/components/ui/dropdown-portal';
 
 interface GitHubOAuthNavbarProps {
   // Props are now optional since we use the auth hook
@@ -16,6 +17,7 @@ export default function GitHubOAuthNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const pathname = usePathname();
+  const dropdownTriggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +27,20 @@ export default function GitHubOAuthNavbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownTriggerRef.current && !dropdownTriggerRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    if (dropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [dropdownOpen]);
 
   const navLinks = [
     { name: 'Features', href: '/features' },
@@ -215,6 +231,7 @@ export default function GitHubOAuthNavbar() {
                   exit={{ opacity: 0, scale: 0.95 }}
                 >
                   <motion.button
+                    ref={dropdownTriggerRef}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
                     onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -237,60 +254,54 @@ export default function GitHubOAuthNavbar() {
                     />
                   </motion.button>
                   
-                  <AnimatePresence>
-                    {dropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -8, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -8, scale: 0.95 }}
-                        transition={{ type: "spring", stiffness: 350, damping: 22 }}
-                        className="absolute right-0 top-full mt-2 w-56 bg-black/95 backdrop-blur-xl border border-green-500/20 rounded-lg shadow-xl shadow-green-500/20 py-2"
-                        style={{ 
-                          zIndex: 999999,
-                          position: 'absolute'
+                  <DropdownPortal isOpen={dropdownOpen} triggerRef={dropdownTriggerRef}>
+                    <motion.div
+                      initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 350, damping: 22 }}
+                      className="bg-black/95 backdrop-blur-xl border border-green-500/20 rounded-lg shadow-xl shadow-green-500/20 py-2"
+                    >
+                      <button 
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          window.location.href = '/repositories';
                         }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-500/10 transition-colors"
                       >
-                        <button 
-                          onClick={() => {
-                            setDropdownOpen(false);
-                            window.location.href = '/repositories';
-                          }}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-500/10 transition-colors"
-                        >
-                          <FolderGit2 className="w-4 h-4" />
-                          My Repositories
-                        </button>
-                        <button 
-                          onClick={() => {
-                            setDropdownOpen(false);
-                            window.location.href = '/history';
-                          }}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-500/10 transition-colors"
-                        >
-                          <History className="w-4 h-4" />
-                          History
-                        </button>
-                        <button 
-                          onClick={() => {
-                            setDropdownOpen(false);
-                            window.location.href = '/settings';
-                          }}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-500/10 transition-colors"
-                        >
-                          <Settings className="w-4 h-4" />
-                          Settings
-                        </button>
-                        <hr className="border-border my-2" />
-                        <button 
-                          onClick={logout}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500/80 hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                        >
-                          <LogOut className="w-4 h-4" />
-                          Sign Out
-                        </button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                        <FolderGit2 className="w-4 h-4" />
+                        My Repositories
+                      </button>
+                      <button 
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          window.location.href = '/history';
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-500/10 transition-colors"
+                      >
+                        <History className="w-4 h-4" />
+                        History
+                      </button>
+                      <button 
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          window.location.href = '/settings';
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-500/10 transition-colors"
+                      >
+                        <Settings className="w-4 h-4" />
+                        Settings
+                      </button>
+                      <hr className="border-border my-2" />
+                      <button 
+                        onClick={logout}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500/80 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                      </button>
+                    </motion.div>
+                  </DropdownPortal>
                 </motion.div>
               )}
             </AnimatePresence>
