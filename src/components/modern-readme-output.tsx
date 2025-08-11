@@ -503,10 +503,10 @@ export default function ModernReadmeOutput({
       </motion.header>
 
       {/* Main Content Area */}
-      <div className="relative z-10 min-h-screen">
+      <div className="relative z-10 min-h-screen pb-32">
         {/* Content Section */}
-        <main className="px-6 py-8">
-          <div className="container mx-auto max-w-6xl">
+        <main className="px-4 sm:px-6 py-6">
+          <div className="container mx-auto max-w-7xl">
             <motion.div
               className="relative"
               initial={{ opacity: 0, y: 20 }}
@@ -514,7 +514,7 @@ export default function ModernReadmeOutput({
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               {/* Content Container with Enhanced Glass Effect */}
-              <div className="relative glass rounded-3xl overflow-hidden shadow-glass-lg shadow-green-400/20 no-lag">
+              <div className="relative glass rounded-3xl overflow-hidden shadow-glass-lg shadow-green-400/20 no-lag min-h-[calc(100vh-200px)]">
                 {/* Multi-layered Glass Effect */}
                 <div className="absolute -inset-1 bg-gradient-to-r from-green-400/30 to-green-600/30 rounded-3xl blur-xl opacity-40" />
                 <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.08)] via-transparent to-[rgba(0,255,100,0.05)] rounded-3xl" />
@@ -522,7 +522,7 @@ export default function ModernReadmeOutput({
                 
                 <div 
                   ref={contentRef}
-                  className="relative max-h-[calc(100vh-300px)] overflow-y-auto scrollbar-thin scrollbar-green scroll-smooth gpu-accelerated"
+                  className="relative h-[calc(100vh-200px)] overflow-y-auto scrollbar-thin scrollbar-green scroll-smooth gpu-accelerated"
                   style={{ scrollBehavior: 'smooth' }}
                 >
                   <AnimatePresence mode="wait">
@@ -533,11 +533,11 @@ export default function ModernReadmeOutput({
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
                         transition={{ duration: 0.3 }}
-                        className="p-8"
+                        className="p-6 sm:p-8 lg:p-12"
                       >
                         <div 
                           ref={previewRef}
-                          className="prose prose-invert prose-green max-w-none modern-readme-preview"
+                          className="prose prose-invert prose-green max-w-none modern-readme-preview prose-lg"
                           dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                         />
                       </motion.div>
@@ -548,9 +548,9 @@ export default function ModernReadmeOutput({
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 20 }}
                         transition={{ duration: 0.3 }}
-                        className="p-8"
+                        className="p-6 sm:p-8 lg:p-12"
                       >
-                        <pre className="font-mono text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
+                        <pre className="font-mono text-sm text-gray-300 whitespace-pre-wrap leading-relaxed overflow-x-auto">
                           {content}
                         </pre>
                       </motion.div>

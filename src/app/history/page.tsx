@@ -31,6 +31,7 @@ import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import SimpleDropdown from '@/components/ui/simple-dropdown'
 import ModernReadmeEditor from '@/components/modern-readme-editor'
+import withAuth from '@/components/withAuth'
 
 interface HistoryItem {
   id: string;
@@ -227,22 +228,7 @@ function HistoryContent() {
     return { totalItems, withDemo, uniqueRepos, lastGenerated };
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-black text-foreground relative overflow-hidden flex items-center justify-center">
-        <div className="fixed inset-0 z-0 w-full h-full">
-          <MinimalGridBackground />
-        </div>
-        <div className="fixed top-0 left-0 right-0 z-50">
-          <GitHubOAuthNavbar />
-        </div>
-        <div className="relative z-10 text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Authentication Required</h1>
-          <p className="text-gray-400">Please sign in to view your README history.</p>
-        </div>
-      </div>
-    );
-  }
+  
 
   const stats = getHistoryStats();
 
@@ -594,10 +580,12 @@ function HistoryContent() {
   )
 }
 
-export default function HistoryPage() {
+const HistoryPage = withAuth(HistoryContent);
+
+export default function HistoryPageWrapper() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <HistoryContent />
+      <HistoryPage />
     </Suspense>
-  )
+  );
 }

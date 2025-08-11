@@ -500,4 +500,146 @@
       background-position: 200% 0;
     }
   }
+
+  /* Background Animation Keyframes */
+  @keyframes moveGrid {
+    0% {
+      transform: translate(0, 0);
+    }
+    25% {
+      transform: translate(-10px, -10px);
+    }
+    50% {
+      transform: translate(-20px, 0);
+    }
+    75% {
+      transform: translate(-10px, 10px);
+    }
+    100% {
+      transform: translate(0, 0);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(0, 255, 136, 1), 0 0 30px rgba(0, 255, 136, 0.5);
+    }
+  }
+
+  @keyframes rotate-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Utility classes for animations */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .animate-rotate-slow {
+    animation: rotate-slow 20s linear infinite;
+  }
+
+  /* Enhanced README Preview Styles */
+  .modern-readme-preview {
+    line-height: 1.7;
+  }
+
+  .modern-readme-preview h1 {
+    @apply text-4xl font-bold text-white mb-6 pb-3 border-b border-green-400/30;
+    background: linear-gradient(135deg, #ffffff 0%, #00ff88 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .modern-readme-preview h2 {
+    @apply text-2xl font-semibold text-green-400 mb-4 mt-8;
+  }
+
+  .modern-readme-preview h3 {
+    @apply text-xl font-semibold text-white mb-3 mt-6;
+  }
+
+  .modern-readme-preview h4 {
+    @apply text-lg font-medium text-gray-200 mb-2 mt-4;
+  }
+
+  .modern-readme-preview p {
+    @apply text-gray-300 mb-4 leading-relaxed;
+  }
+
+  .modern-readme-preview ul, .modern-readme-preview ol {
+    @apply text-gray-300 mb-4 pl-6;
+  }
+
+  .modern-readme-preview li {
+    @apply mb-2;
+  }
+
+  .modern-readme-preview code {
+    @apply bg-gray-800/60 text-green-400 px-2 py-1 rounded text-sm font-mono border border-green-400/20;
+  }
+
+  .modern-readme-preview pre {
+    @apply bg-gray-900/80 border border-green-400/20 rounded-lg p-4 mb-4 overflow-x-auto;
+  }
+
+  .modern-readme-preview pre code {
+    @apply bg-transparent border-none p-0 text-gray-300;
+  }
+
+  .modern-readme-preview blockquote {
+    @apply border-l-4 border-green-400 pl-4 italic text-gray-400 bg-green-400/5 py-2 rounded-r-lg mb-4;
+  }
+
+  .modern-readme-preview table {
+    @apply w-full border-collapse border border-green-400/20 rounded-lg overflow-hidden mb-4;
+  }
+
+  .modern-readme-preview th {
+    @apply bg-green-400/10 text-green-400 font-semibold p-3 border-b border-green-400/20;
+  }
+
+  .modern-readme-preview td {
+    @apply text-gray-300 p-3 border-b border-gray-700/50;
+  }
+
+  .modern-readme-preview a {
+    @apply text-green-400 hover:text-green-300 underline decoration-green-400/50 hover:decoration-green-300 transition-colors;
+  }
+
+  .modern-readme-preview img {
+    @apply rounded-lg border border-green-400/20 shadow-lg shadow-green-400/10 max-w-full h-auto;
+  }
+
+  .modern-readme-preview hr {
+    @apply border-green-400/30 my-8;
+  }
+
+  /* Badge styles for README */
+  .modern-readme-preview img[src*="shields.io"],
+  .modern-readme-preview img[src*="badge"] {
+    @apply inline-block mr-2 mb-2 border-none shadow-none;
+  }
 }
