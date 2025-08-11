@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Download, 
@@ -9,22 +9,36 @@ import {
   X, 
   Eye, 
   Code, 
-  Sparkles,
   FileText,
-  Zap,
   Github,
-  GitBranch,
-  Star,
-  Save,
+  ArrowLeft,
+  Settings,
+  Monitor,
+  Smartphone,
+  Tablet,
+  RefreshCw,
   AlertCircle,
-  ArrowLeft
+  Maximize2,
+  Minimize2,
+  Share2,
+  Star,
+  BookOpen,
+  Zap,
+  Sparkles,
+  ChevronDown,
+  ChevronUp,
+  Edit3,
+  Save,
+  ExternalLink,
+  GitBranch,
+  Clock,
+  User,
+  Calendar,
+  Hash,
+  Layers,
+  BarChart3
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { marked } from 'marked';
-import DOMPurify from 'isomorphic-dompurify';
-
-import MinimalGridBackground from '@/components/minimal-geometric-background';
-import { useAuth, authenticatedFetch } from '@/lib/auth';
 
 interface ModernReadmeOutputProps {
   content: string;
@@ -43,152 +57,95 @@ export default function ModernReadmeOutput({
   onClose,
   onEdit 
 }: ModernReadmeOutputProps) {
-  const [viewMode, setViewMode] = useState<'preview' | 'raw'>('preview');
+  const [viewMode, setViewMode] = useState<'preview' | 'raw' | 'split'>('preview');
   const [copySuccess, setCopySuccess] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState('');
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [autoSaved, setAutoSaved] = useState(false);
-  const [copyAnimation, setCopyAnimation] = useState(false);
-  const [githubSaveResult, setGithubSaveResult] = useState<{
-    success: boolean;
-    message: string;
-    commitUrl?: string;
-    fileUrl?: string;
-    isUpdate?: boolean;
-  } | null>(null);
-  const [showGithubPopup, setShowGithubPopup] = useState(false);
-  const [showCopyPopup, setShowCopyPopup] = useState(false);
-  const [showDownloadPopup, setShowDownloadPopup] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showStats, setShowStats] = useState(false);
+  const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+  const [processedContent, setProcessedContent] = useState('');
+  const [isClient, setIsClient] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [fontSize, setFontSize] = useState(16);
+  const [theme, setTheme] = useState<'dark' | 'github' | 'minimal'>('dark');
   
-  const previewRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  
-  const { user, isAuthenticated } = useAuth();
 
-  // Handle scroll progress for the animated progress bar
-  const handleScroll = useCallback(() => {
-    if (!contentRef.current) return;
+  // Client-side initialization
+  useEffect(() => {
+    setIsClient(true);
     
-    const { scrollTop, scrollHeight, clientHeight } = contentRef.current;
-    const progress = scrollTop / (scrollHeight - clientHeight);
-    setScrollProgress(Math.min(Math.max(progress, 0), 1));
-  }, []);
-
-  useEffect(() => {
-    const element = contentRef.current;
-    if (element) {
-      element.addEventListener('scroll', handleScroll);
-      return () => element.removeEventListener('scroll', handleScroll);
-    }
-  }, [handleScroll]);
-
-  // Auto-save to database when component mounts
-  useEffect(() => {
-    const autoSaveToDatabase = async () => {
-      if (!isAuthenticated || !user || !repositoryUrl || autoSaved) return;
-
+    const processContent = async () => {
       try {
-        const repositoryName = repositoryUrl.split('/').pop()?.replace('.git', '') || 'Unknown';
+        const { marked } = await import('marked');
+        const DOMPurify = (await import('isomorphic-dompurify')).default;
         
-        // Use regular fetch instead of authenticatedFetch to avoid automatic redirects
-        const response = await fetch('/api/save-history', {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            repository_url: repositoryUrl,
-            repository_name: repositoryName,
-            project_name: projectName || repositoryName,
-            readme_content: content,
-            generation_params: generationParams || {}
-          })
-        });
-
-        if (response.ok) {
-          setAutoSaved(true);
-          console.log('README automatically saved to history');
-        } else {
-          // Don't trigger redirects for auto-save failures
-          console.warn('Failed to auto-save to history:', response.status);
-        }
+        const processed = marked(content) as string;
+        const sanitized = DOMPurify.sanitize(processed);
+        setProcessedContent(sanitized);
       } catch (error) {
-        // Silently handle auto-save errors to avoid disrupting user experience
-        console.warn('Auto-save error (non-critical):', error);
+        console.error('Error processing content:', error);
+        setProcessedContent('<p>Error processing content</p>');
       }
     };
 
-    // Delay auto-save slightly to ensure component is fully mounted
-    const timer = setTimeout(autoSaveToDatabase, 1000);
-    return () => clearTimeout(timer);
-  }, [isAuthenticated, user, repositoryUrl, content, projectName, generationParams, autoSaved]);
+    if (content) {
+      processContent();
+    }
+  }, [content]);
+
+  // Calculate content stats
+  const contentStats = {
+    characters: content.length,
+    words: content.split(/\s+/).filter(word => word.length > 0).length,
+    lines: content.split('\n').length,
+    sections: (content.match(/^#+\s/gm) || []).length,
+    codeBlocks: (content.match(/```/g) || []).length / 2,
+    links: (content.match(/\[.*?\]\(.*?\)/g) || []).length
+  };
 
   const handleCopy = async () => {
     try {
-      setCopyAnimation(true);
       await navigator.clipboard.writeText(content);
-      
-      // Trigger success animation
-      setTimeout(() => {
-        setCopySuccess(true);
-        setCopyAnimation(false);
-        setShowCopyPopup(true);
-      }, 300);
-      
-      // Reset success state and hide popup
-      setTimeout(() => {
-        setCopySuccess(false);
-        setShowCopyPopup(false);
-      }, 3000);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
     } catch (err) {
-      console.error('Failed to copy: ', err);
-      setCopyAnimation(false);
+      console.error('Failed to copy:', err);
     }
   };
 
-  const handleDownload = async () => {
+  const handleDownload = () => {
     setIsDownloading(true);
     
-    // Add a small delay for better UX
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const blob = new Blob([content], { type: 'text/markdown' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'README.md';
-    a.click();
-    URL.revokeObjectURL(url);
-    
-    setIsDownloading(false);
-    setShowDownloadPopup(true);
-    
-    // Hide download popup after 3 seconds
-    setTimeout(() => setShowDownloadPopup(false), 3000);
+    setTimeout(() => {
+      const blob = new Blob([content], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${projectName || 'README'}.md`;
+      a.click();
+      URL.revokeObjectURL(url);
+      setIsDownloading(false);
+    }, 800);
   };
 
   const handleSaveToGitHub = async () => {
-    if (!isAuthenticated || !user) {
-      setSaveError('Please sign in to save to GitHub');
-      return;
-    }
-
     if (!repositoryUrl) {
-      setSaveError('Repository URL is required to save to GitHub');
+      setSaveError('Repository URL is required');
       return;
     }
 
     setIsSaving(true);
     setSaveError('');
-    setSaveSuccess(false);
 
     try {
-      const response = await authenticatedFetch('/api/save-readme', {
+      const response = await fetch('/api/save-readme', {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           repositoryUrl,
           readmeContent: content
@@ -200,578 +157,588 @@ export default function ModernReadmeOutput({
         throw new Error(errorData.error || 'Failed to save README');
       }
 
-      const result = await response.json();
       setSaveSuccess(true);
-      
-      // Set detailed GitHub save result
-      setGithubSaveResult({
-        success: true,
-        message: result.message || 'README saved successfully',
-        commitUrl: result.commit_url,
-        fileUrl: result.file_url,
-        isUpdate: result.message?.includes('updated')
-      });
-      
-      // Show GitHub popup
-      setShowGithubPopup(true);
-      
-      // Reset success state after longer duration to show the detailed message
-      setTimeout(() => {
-        setSaveSuccess(false);
-        setGithubSaveResult(null);
-        setShowGithubPopup(false);
-      }, 8000);
-      
-      console.log('README saved successfully:', result);
+      setTimeout(() => setSaveSuccess(false), 3000);
       
     } catch (error) {
       console.error('Error saving README:', error);
-      setSaveError(error instanceof Error ? error.message : 'Failed to save README to GitHub');
+      setSaveError(error instanceof Error ? error.message : 'Failed to save README');
       setTimeout(() => setSaveError(''), 5000);
     } finally {
       setIsSaving(false);
     }
   };
 
-  // Check if user owns the repository
-  const canSaveToRepo = () => {
-    if (!isAuthenticated || !user || !repositoryUrl) return false;
-    
-    const urlMatch = repositoryUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
-    if (!urlMatch) return false;
-    
-    const [, owner] = urlMatch;
-    return owner === user.username;
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${projectName || 'README'} - Generated by AutoDoc AI`,
+          text: 'Check out this AI-generated README!',
+          url: window.location.href
+        });
+      } catch (err) {
+        console.log('Share cancelled');
+      }
+    } else {
+      // Fallback to copying URL
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        // Could show a toast here
+      } catch (err) {
+        console.error('Failed to copy URL');
+      }
+    }
   };
 
-  const processedContent = marked(content) as string;
-  const sanitizedContent = DOMPurify.sanitize(processedContent);
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <div className="w-12 h-12 border-4 border-green-400/30 border-t-green-400 rounded-full animate-spin"></div>
+            <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-r-green-400/50 rounded-full animate-spin animate-reverse"></div>
+          </div>
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-green-400 mb-1">Loading README</h3>
+            <p className="text-gray-400 text-sm">Preparing your documentation...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const themeClasses = {
+    dark: 'bg-gradient-to-br from-gray-900 via-black to-gray-900',
+    github: 'bg-white text-gray-900',
+    minimal: 'bg-gray-50 text-gray-800'
+  };
 
   return (
-    <div className="fixed inset-0 bg-black text-foreground flex flex-col overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 z-0">
-        <MinimalGridBackground />
+    <div className={`min-h-screen ${themeClasses[theme]} text-white relative transition-all duration-500`}>
+      {/* Animated Background */}
+      <div className="fixed inset-0 z-0 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(0,255,136,0.15),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.1),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_40%,rgba(168,85,247,0.08),transparent_50%)]" />
+        
+        {/* Floating particles */}
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-green-400/30 rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, -30, 0],
+              opacity: [0.3, 0.8, 0.3],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 3 + Math.random() * 2,
+              repeat: Infinity,
+              delay: Math.random() * 2,
+            }}
+          />
+        ))}
       </div>
 
-      {/* Main Header - Fixed at top */}
+      {/* Header */}
       <motion.header
-        className="relative z-30 bg-black/95 backdrop-blur-xl border-b border-green-400/30 shadow-xl flex-shrink-0"
+        className={`sticky top-0 z-50 backdrop-blur-2xl border-b transition-all duration-300 ${
+          isFullscreen ? 'bg-black/95 border-green-400/30' : 'bg-black/80 border-green-400/20'
+        }`}
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
       >
-        {/* Progress Bar */}
-        <motion.div
-          className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-green-400 to-green-600 z-10"
-          style={{ width: `${scrollProgress * 100}%` }}
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 0.3 }}
-        />
-
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between gap-2">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
             {/* Left Section */}
-            <div className="flex items-center gap-3">
-              {/* Back Button */}
+            <div className="flex items-center gap-6">
               <motion.button
                 onClick={onClose || (() => window.history.back())}
-                className="flex items-center gap-1 px-2 py-1.5 text-sm font-medium text-gray-400 hover:text-green-400 transition-all rounded-lg hover:bg-green-400/10"
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.1 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                className="group flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-400 hover:text-green-400 transition-all duration-300 rounded-xl hover:bg-green-400/10 border border-transparent hover:border-green-400/30"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
                 <span className="hidden sm:inline">Back</span>
               </motion.button>
 
-              {/* Title */}
-              <motion.div
-                className="flex items-center gap-2"
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-              >
-                <FileText className="w-4 h-4 text-green-400" />
-                <h1 className="text-base font-bold text-white hidden sm:block">
-                  README Generated
-                </h1>
-              </motion.div>
+              <div className="flex items-center gap-4">
+                <motion.div 
+                  className="relative p-3 bg-gradient-to-br from-green-400/20 to-green-600/20 rounded-xl border border-green-400/30"
+                  whileHover={{ scale: 1.05 }}
+                  animate={{ 
+                    boxShadow: [
+                      '0 0 20px rgba(0, 255, 136, 0.3)',
+                      '0 0 30px rgba(0, 255, 136, 0.5)',
+                      '0 0 20px rgba(0, 255, 136, 0.3)'
+                    ]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <FileText className="w-6 h-6 text-green-400" />
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse" />
+                </motion.div>
+                
+                <div>
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-white to-green-400 bg-clip-text text-transparent">
+                    {projectName || 'README Generated'}
+                  </h1>
+                  <div className="flex items-center gap-2 text-xs text-gray-400">
+                    <Clock className="w-3 h-3" />
+                    <span>Generated {new Date().toLocaleTimeString()}</span>
+                    <span className="w-1 h-1 bg-gray-400 rounded-full" />
+                    <span>{contentStats.words} words</span>
+                  </div>
+                </div>
+              </div>
 
               {/* View Mode Toggle */}
-              <motion.div
-                className="flex items-center bg-gray-900/80 rounded-lg p-0.5 border border-green-400/20"
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
-                <button
-                  onClick={() => setViewMode('preview')}
-                  className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-all ${
-                    viewMode === 'preview'
-                      ? 'bg-green-400 text-black shadow-lg'
-                      : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  <Eye className="w-3 h-3" />
-                  <span className="hidden md:inline">Preview</span>
-                </button>
-                <button
-                  onClick={() => setViewMode('raw')}
-                  className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-all ${
-                    viewMode === 'raw'
-                      ? 'bg-green-400 text-black shadow-lg'
-                      : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  <Code className="w-3 h-3" />
-                  <span className="hidden md:inline">Raw</span>
-                </button>
-              </motion.div>
+              <div className="flex items-center bg-gray-900/50 backdrop-blur-sm rounded-xl p-1 border border-green-400/20">
+                {[
+                  { mode: 'preview', icon: Eye, label: 'Preview' },
+                  { mode: 'raw', icon: Code, label: 'Raw' },
+                  { mode: 'split', icon: Layers, label: 'Split' }
+                ].map(({ mode, icon: Icon, label }) => (
+                  <motion.button
+                    key={mode}
+                    onClick={() => setViewMode(mode as any)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      viewMode === mode
+                        ? 'bg-green-400 text-black shadow-lg'
+                        : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    }`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="hidden md:inline">{label}</span>
+                  </motion.button>
+                ))}
+              </div>
             </div>
 
-            {/* Right Section - Action Buttons */}
-            <div className="flex items-center gap-1">
-              <motion.div
-                className="flex items-center gap-1"
-                initial={{ x: 20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.4 }}
+            {/* Right Section - Actions */}
+            <div className="flex items-center gap-2">
+              {/* Stats Button */}
+              <motion.button
+                onClick={() => setShowStats(!showStats)}
+                className="p-2 text-gray-400 hover:text-green-400 hover:bg-green-400/10 rounded-lg transition-all"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
               >
-                {/* Copy Button */}
-                <Button
-                  onClick={handleCopy}
-                  variant="ghost"
-                  size="sm"
-                  className={`relative group transition-all duration-300 px-2 py-1.5 text-xs ${
-                    copySuccess 
-                      ? 'bg-green-500/20 border-green-400/60 text-green-400' 
-                      : 'bg-gray-900/80 border-green-400/20 hover:border-green-400/40 hover:bg-green-400/10'
-                  }`}
-                >
-                  <div className="relative flex items-center gap-1">
-                    <AnimatePresence mode="wait">
-                      {copyAnimation ? (
-                        <motion.div
-                          key="copying"
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 0.6, ease: "easeInOut" }}
-                        >
-                          <Copy className="w-3 h-3" />
-                        </motion.div>
-                      ) : copySuccess ? (
-                        <motion.div
-                          key="success"
-                          initial={{ scale: 0.5, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          exit={{ scale: 0.5, opacity: 0 }}
-                          transition={{ duration: 0.3, type: "spring", stiffness: 200 }}
-                        >
-                          <Check className="w-3 h-3 text-green-400" />
-                        </motion.div>
-                      ) : (
-                        <motion.div
-                          key="default"
-                          initial={{ scale: 0.8 }}
-                          animate={{ scale: 1 }}
-                          exit={{ scale: 0.8 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <Copy className="w-3 h-3" />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                    <span className="hidden sm:inline">
-                      {copySuccess ? 'Copied!' : 'Copy'}
-                    </span>
-                  </div>
-                </Button>
+                <BarChart3 className="w-4 h-4" />
+              </motion.button>
 
-                {/* Save to GitHub Button */}
-                {canSaveToRepo() && (
-                  <Button
-                    onClick={handleSaveToGitHub}
-                    disabled={isSaving}
-                    size="sm"
-                    className="relative group bg-blue-600 text-white hover:bg-blue-700 font-medium px-2 py-1.5 text-xs"
+              {/* Share Button */}
+              <motion.button
+                onClick={handleShare}
+                className="p-2 text-gray-400 hover:text-blue-400 hover:bg-blue-400/10 rounded-lg transition-all"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <Share2 className="w-4 h-4" />
+              </motion.button>
+
+              {/* Copy Button */}
+              <Button
+                onClick={handleCopy}
+                variant="ghost"
+                size="sm"
+                className={`transition-all duration-300 ${
+                  copySuccess 
+                    ? 'bg-green-500/20 text-green-400 border-green-400/50' 
+                    : 'bg-gray-900/50 hover:bg-green-400/10 text-gray-300 hover:text-green-400 border-green-400/20'
+                } border backdrop-blur-sm`}
+              >
+                <motion.div 
+                  className="flex items-center gap-2"
+                  animate={copySuccess ? { scale: [1, 1.1, 1] } : {}}
+                >
+                  {copySuccess ? (
+                    <Check className="w-4 h-4" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
+                  <span>{copySuccess ? 'Copied!' : 'Copy'}</span>
+                </motion.div>
+              </Button>
+
+              {/* GitHub Save Button */}
+              {repositoryUrl && (
+                <Button
+                  onClick={handleSaveToGitHub}
+                  disabled={isSaving}
+                  size="sm"
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 border-0 shadow-lg"
+                >
+                  <motion.div 
+                    className="flex items-center gap-2"
+                    animate={isSaving ? { rotate: 360 } : {}}
+                    transition={{ duration: 1, repeat: isSaving ? Infinity : 0 }}
                   >
-                    <div className="relative flex items-center gap-1">
-                      {isSaving ? (
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        >
-                          <Zap className="w-3 h-3" />
-                        </motion.div>
-                      ) : saveSuccess ? (
-                        <Check className="w-3 h-3" />
-                      ) : (
-                        <Save className="w-3 h-3" />
-                      )}
-                      <span className="hidden sm:inline">
-                        {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save'}
-                      </span>
-                    </div>
-                  </Button>
-                )}
-
-                {/* Download Button */}
-                <Button
-                  onClick={handleDownload}
-                  disabled={isDownloading}
-                  size="sm"
-                  className="relative group bg-green-400 text-black hover:bg-green-300 font-medium px-2 py-1.5 text-xs"
-                >
-                  <div className="relative flex items-center gap-1">
-                    {isDownloading ? (
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      >
-                        <Zap className="w-3 h-3" />
-                      </motion.div>
+                    {isSaving ? (
+                      <RefreshCw className="w-4 h-4" />
+                    ) : saveSuccess ? (
+                      <Check className="w-4 h-4" />
                     ) : (
-                      <Download className="w-3 h-3" />
+                      <Github className="w-4 h-4" />
                     )}
-                    <span className="hidden sm:inline">
-                      {isDownloading ? 'Downloading...' : 'Download'}
+                    <span>
+                      {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save to GitHub'}
                     </span>
-                  </div>
+                  </motion.div>
                 </Button>
+              )}
 
-                {/* Edit Button */}
-                {onEdit && (
-                  <Button
-                    onClick={onEdit}
-                    variant="ghost"
-                    size="sm"
-                    className="bg-gray-900/80 border border-green-400/20 hover:border-green-400/40 hover:bg-green-400/10 px-2 py-1.5 text-xs"
-                  >
-                    <div className="flex items-center gap-1">
-                      <Sparkles className="w-3 h-3" />
-                      <span className="hidden sm:inline">Edit</span>
-                    </div>
-                  </Button>
-                )}
+              {/* Download Button */}
+              <Button
+                onClick={handleDownload}
+                disabled={isDownloading}
+                size="sm"
+                className="bg-gradient-to-r from-green-500 to-green-600 text-black hover:from-green-400 hover:to-green-500 border-0 shadow-lg font-semibold"
+              >
+                <motion.div 
+                  className="flex items-center gap-2"
+                  animate={isDownloading ? { y: [0, -2, 0] } : {}}
+                  transition={{ duration: 0.5, repeat: isDownloading ? Infinity : 0 }}
+                >
+                  {isDownloading ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  <span>{isDownloading ? 'Downloading...' : 'Download'}</span>
+                </motion.div>
+              </Button>
 
-                {/* Close Button */}
-                {onClose && (
-                  <Button
-                    onClick={onClose}
-                    variant="ghost"
-                    size="sm"
-                    className="bg-gray-900/50 border border-red-400/20 hover:border-red-400/40 hover:bg-red-400/10 text-red-400"
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                )}
-              </motion.div>
+              {/* Fullscreen Toggle */}
+              <motion.button
+                onClick={() => setIsFullscreen(!isFullscreen)}
+                className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+              </motion.button>
+
+              {/* Settings Button */}
+              <motion.button
+                onClick={() => setShowSettings(!showSettings)}
+                className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <Settings className="w-4 h-4" />
+              </motion.button>
             </div>
           </div>
         </div>
       </motion.header>
 
-      {/* Main Content Area */}
-      <div className="relative z-10 flex-1 overflow-hidden">
-        {/* Content Section */}
-        <main className="h-full px-4 py-4">
-          <div className="container mx-auto max-w-6xl h-full">
-            <motion.div
-              className="relative h-full"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
-              {/* Content Container with Enhanced Glass Effect */}
-              <div className="relative glass rounded-2xl overflow-hidden shadow-2xl shadow-green-400/20 h-full flex flex-col">
-                {/* Multi-layered Glass Effect */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-green-400/15 to-green-600/15 rounded-2xl blur-xl opacity-50" />
-                <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.03)] via-transparent to-[rgba(0,255,100,0.02)] rounded-2xl" />
-                
-                <div 
-                  ref={contentRef}
-                  className="relative flex-1 overflow-y-auto scrollbar-thin scrollbar-green content-scroll"
-                  onScroll={handleScroll}
-                >
-                  <AnimatePresence mode="wait">
-                    {viewMode === 'preview' ? (
-                      <motion.div
-                        key="preview"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        transition={{ duration: 0.3 }}
-                        className="p-6 sm:p-8 pb-16"
-                      >
-                        <div 
-                          ref={previewRef}
-                          className="prose prose-invert prose-green max-w-none modern-readme-preview prose-lg"
-                          dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-                        />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="raw"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
-                        transition={{ duration: 0.3 }}
-                        className="p-6 sm:p-8 pb-16"
-                      >
-                        <pre className="font-mono text-sm text-gray-300 whitespace-pre-wrap leading-relaxed overflow-x-auto">
-                          {content}
-                        </pre>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </div>
-
-              {/* GitHub Save Success Message */}
-              {githubSaveResult && githubSaveResult.success && (
-                <motion.div
-                  className="absolute -bottom-20 left-4 right-4 bg-[rgba(0,255,100,0.08)] backdrop-blur-xl border border-[rgba(0,255,100,0.3)] rounded-2xl p-4 shadow-lg shadow-green-400/20"
-                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                  transition={{ duration: 0.4, type: "spring" }}
-                >
-                  <div className="flex items-start gap-3">
-                    <motion.div
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 0.6, repeat: 2 }}
-                      className="flex-shrink-0 w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center"
-                    >
-                      <Check className="w-4 h-4 text-green-400" />
-                    </motion.div>
-                    <div className="flex-1">
-                      <h4 className="text-green-400 font-medium text-sm mb-1">
-                        {githubSaveResult.isUpdate ? '📝 README Updated!' : '✨ README Created!'}
-                      </h4>
-                      <p className="text-gray-300 text-xs mb-2">{githubSaveResult.message}</p>
-                      <div className="flex gap-2">
-                        {githubSaveResult.commitUrl && (
-                          <a
-                            href={githubSaveResult.commitUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 px-2 py-1 bg-green-500/20 hover:bg-green-500/30 border border-green-400/30 rounded text-xs text-green-400 transition-colors"
-                          >
-                            <GitBranch className="w-3 h-3" />
-                            View Commit
-                          </a>
-                        )}
-                        {githubSaveResult.fileUrl && (
-                          <a
-                            href={githubSaveResult.fileUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 px-2 py-1 bg-green-500/20 hover:bg-green-500/30 border border-green-400/30 rounded text-xs text-green-400 transition-colors"
-                          >
-                            <Github className="w-3 h-3" />
-                            View File
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Save Error Message */}
-              {saveError && (
-                <motion.div
-                  className="absolute -bottom-16 left-4 right-4 bg-[rgba(255,0,0,0.08)] backdrop-blur-xl border border-[rgba(255,0,0,0.3)] rounded-2xl p-3 shadow-lg shadow-red-400/20"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                >
-                  <div className="flex items-center gap-2 text-red-400 text-sm">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                    <span>{saveError}</span>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Authentication Notice */}
-              {!isAuthenticated && repositoryUrl && !githubSaveResult && (
-                <motion.div
-                  className="absolute -bottom-12 left-4 right-4 bg-[rgba(0,100,255,0.08)] backdrop-blur-xl border border-[rgba(0,100,255,0.25)] rounded-2xl p-3 shadow-lg shadow-blue-400/20"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.0 }}
-                >
-                  <div className="flex items-center gap-2 text-blue-400 text-sm">
-                    <Github className="w-4 h-4 flex-shrink-0" />
-                    <span>Sign in to save README directly to your GitHub repository</span>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Repository Ownership Notice */}
-              {isAuthenticated && repositoryUrl && !canSaveToRepo() && !githubSaveResult && (
-                <motion.div
-                  className="absolute -bottom-12 left-4 right-4 bg-[rgba(255,200,0,0.08)] backdrop-blur-xl border border-[rgba(255,200,0,0.25)] rounded-2xl p-3 shadow-lg shadow-yellow-400/20"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.0 }}
-                >
-                  <div className="flex items-center gap-2 text-yellow-400 text-sm">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                    <span>You can only save README files to your own repositories</span>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Auto-save Status */}
-              {isAuthenticated && autoSaved && !githubSaveResult && (
-                <motion.div
-                  className="absolute -bottom-12 left-4 bg-[rgba(0,255,100,0.15)] backdrop-blur-xl border border-[rgba(0,255,100,0.4)] rounded-2xl px-3 py-2 shadow-lg shadow-green-400/25"
-                  initial={{ opacity: 0, y: 20, scale: 0.8 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ delay: 1.5, duration: 0.5 }}
-                >
-                  <div className="flex items-center gap-2 text-green-400 text-xs">
-                    <motion.div
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    >
-                      <Check className="w-3 h-3" />
-                    </motion.div>
-                    <span>Automatically saved to history</span>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Floating Action Hint */}
-              <motion.div
-                className="absolute -bottom-6 right-4 bg-green-400 text-black px-4 py-2 rounded-full text-sm font-medium shadow-lg shadow-green-400/50"
-                initial={{ opacity: 0, y: 20, scale: 0.8 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ delay: 1.2, duration: 0.5 }}
-              >
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4" />
-                  README ready to use!
-                </div>
-              </motion.div>
-            </motion.div>
-          </div>
-        </main>
-      </div>
-
-      {/* Popup Notifications */}
+      {/* Stats Panel */}
       <AnimatePresence>
-        {/* GitHub Save Success Popup */}
-        {showGithubPopup && githubSaveResult && (
+        {showStats && (
           <motion.div
-            initial={{ opacity: 0, x: 400, y: -20 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            exit={{ opacity: 0, x: 400, y: -20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed top-20 right-6 z-[100] max-w-md w-full"
+            className="fixed top-20 left-6 w-80 bg-black/90 backdrop-blur-xl border border-green-400/20 rounded-2xl p-6 z-60 shadow-2xl"
+            initial={{ opacity: 0, scale: 0.9, x: -20 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.9, x: -20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            <div className="relative bg-[rgba(15,15,15,0.6)] backdrop-blur-2xl border border-[rgba(255,255,255,0.2)] rounded-2xl p-4 shadow-2xl shadow-green-400/30 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.1)] via-transparent to-[rgba(0,255,100,0.08)] rounded-2xl pointer-events-none" />
-              <div className="relative flex items-start gap-3 mb-3">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-green-400" />
+                <h3 className="font-semibold text-green-400">Content Statistics</h3>
+              </div>
+              <button
+                onClick={() => setShowStats(false)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { label: 'Characters', value: contentStats.characters.toLocaleString(), icon: Hash },
+                { label: 'Words', value: contentStats.words.toLocaleString(), icon: BookOpen },
+                { label: 'Lines', value: contentStats.lines.toLocaleString(), icon: Layers },
+                { label: 'Sections', value: contentStats.sections.toString(), icon: FileText },
+                { label: 'Code Blocks', value: Math.floor(contentStats.codeBlocks).toString(), icon: Code },
+                { label: 'Links', value: contentStats.links.toString(), icon: ExternalLink }
+              ].map(({ label, value, icon: Icon }, index) => (
                 <motion.div
-                  animate={{ rotate: [0, 360] }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
-                  className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+                  key={label}
+                  className="bg-gray-800/50 rounded-lg p-3 border border-gray-700/50"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
                 >
-                  <Github className="w-4 h-4 text-green-400" />
+                  <div className="flex items-center gap-2 mb-1">
+                    <Icon className="w-4 h-4 text-gray-400" />
+                    <span className="text-xs text-gray-400">{label}</span>
+                  </div>
+                  <div className="text-lg font-bold text-white">{value}</div>
                 </motion.div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-bold text-green-400 mb-1">
-                    {githubSaveResult.isUpdate ? 'README Updated!' : 'README Created!'}
-                  </h3>
-                  <p className="text-gray-300 text-xs leading-relaxed">{githubSaveResult.message}</p>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                {githubSaveResult.commitUrl && (
-                  <a
-                    href={githubSaveResult.commitUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 bg-green-500/20 hover:bg-green-500/30 border border-green-400/30 rounded-lg px-2 py-1.5 text-center text-xs text-green-400 transition-colors"
-                  >
-                    View Commit
-                  </a>
-                )}
-                {githubSaveResult.fileUrl && (
-                  <a
-                    href={githubSaveResult.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 bg-green-500/20 hover:bg-green-500/30 border border-green-400/30 rounded-lg px-2 py-1.5 text-center text-xs text-green-400 transition-colors"
-                  >
-                    View File
-                  </a>
-                )}
-              </div>
+              ))}
             </div>
           </motion.div>
         )}
+      </AnimatePresence>
 
-        {/* Copy Success Popup */}
-        {showCopyPopup && (
+      {/* Main Content */}
+      <main className={`relative z-10 transition-all duration-300 ${isFullscreen ? 'px-0 py-0' : 'px-6 py-8'}`}>
+        <div className={`mx-auto transition-all duration-300 ${isFullscreen ? 'max-w-none' : 'container max-w-7xl'}`}>
           <motion.div
-            initial={{ opacity: 0, x: 400, y: -20 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            exit={{ opacity: 0, x: 400, y: -20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className={`fixed right-6 z-[100] max-w-sm w-full ${
-              showGithubPopup ? 'top-44' : 'top-20'
-            }`}
+            className="relative"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
           >
-            <div className="relative bg-[rgba(15,15,15,0.6)] backdrop-blur-2xl border border-[rgba(255,255,255,0.2)] rounded-2xl p-4 shadow-2xl shadow-green-400/30 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.1)] via-transparent to-[rgba(0,255,100,0.08)] rounded-2xl pointer-events-none" />
-              <div className="relative flex items-center gap-3">
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
-                  className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0"
-                >
-                  <Copy className="w-4 h-4 text-green-400" />
-                </motion.div>
-                <div>
-                  <h3 className="text-sm font-bold text-green-400 mb-1">Copied to Clipboard!</h3>
-                  <p className="text-gray-300 text-xs">README content copied successfully</p>
+            {/* Content Container */}
+            <div className={`relative bg-black/40 backdrop-blur-xl border border-green-400/20 overflow-hidden transition-all duration-300 ${
+              isFullscreen ? 'rounded-none min-h-screen' : 'rounded-2xl'
+            }`}>
+              {/* Content Header */}
+              <div className="flex items-center justify-between p-6 border-b border-green-400/20 bg-gradient-to-r from-transparent via-green-400/5 to-transparent">
+                <div className="flex items-center gap-3">
+                  {viewMode === 'preview' ? (
+                    <>
+                      <Eye className="w-5 h-5 text-green-400" />
+                      <span className="font-medium text-green-400">README Preview</span>
+                    </>
+                  ) : viewMode === 'raw' ? (
+                    <>
+                      <Code className="w-5 h-5 text-purple-400" />
+                      <span className="font-medium text-purple-400">Markdown Source</span>
+                    </>
+                  ) : (
+                    <>
+                      <Layers className="w-5 h-5 text-blue-400" />
+                      <span className="font-medium text-blue-400">Split View</span>
+                    </>
+                  )}
                 </div>
+                
+                {/* Device Preview Toggle */}
+                {(viewMode === 'preview' || viewMode === 'split') && (
+                  <div className="flex items-center gap-1 bg-gray-900/50 rounded-lg p-1">
+                    {[
+                      { device: 'desktop', icon: Monitor, label: 'Desktop' },
+                      { device: 'tablet', icon: Tablet, label: 'Tablet' },
+                      { device: 'mobile', icon: Smartphone, label: 'Mobile' }
+                    ].map(({ device, icon: Icon, label }) => (
+                      <motion.button
+                        key={device}
+                        onClick={() => setPreviewDevice(device as any)}
+                        className={`p-2 rounded-lg transition-all ${
+                          previewDevice === device
+                            ? 'bg-green-400 text-black'
+                            : 'text-gray-400 hover:text-green-400 hover:bg-green-400/10'
+                        }`}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        title={label}
+                      >
+                        <Icon className="w-4 h-4" />
+                      </motion.button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Content Area */}
+              <div 
+                ref={contentRef}
+                className={`overflow-y-auto transition-all duration-300 ${
+                  isFullscreen ? 'h-[calc(100vh-140px)]' : 'max-h-[calc(100vh-300px)]'
+                }`}
+                style={{ 
+                  scrollbarWidth: 'thin', 
+                  scrollbarColor: 'rgba(0, 255, 136, 0.6) rgba(0, 0, 0, 0.3)',
+                  fontSize: `${fontSize}px`
+                }}
+              >
+                <AnimatePresence mode="wait">
+                  {viewMode === 'preview' ? (
+                    <motion.div
+                      key="preview"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 20 }}
+                      transition={{ duration: 0.4, type: "spring" }}
+                      className="p-8"
+                    >
+                      <div 
+                        className={`prose prose-invert prose-green max-w-none transition-all duration-300 ${
+                          previewDevice === 'mobile' ? 'max-w-sm mx-auto' :
+                          previewDevice === 'tablet' ? 'max-w-2xl mx-auto' : ''
+                        }`}
+                        dangerouslySetInnerHTML={{ __html: processedContent }}
+                        style={{
+                          lineHeight: '1.7',
+                          color: theme === 'dark' ? '#e5e7eb' : '#374151'
+                        }}
+                      />
+                    </motion.div>
+                  ) : viewMode === 'raw' ? (
+                    <motion.div
+                      key="raw"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.4, type: "spring" }}
+                      className="p-8"
+                    >
+                      <pre className="font-mono text-sm text-gray-300 whitespace-pre-wrap leading-relaxed bg-gray-900/30 rounded-lg p-6 border border-gray-700/50">
+                        {content}
+                      </pre>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="split"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 1.05 }}
+                      transition={{ duration: 0.4, type: "spring" }}
+                      className="flex h-full"
+                    >
+                      {/* Raw Side */}
+                      <div className="w-1/2 border-r border-green-400/20">
+                        <div className="p-6">
+                          <div className="flex items-center gap-2 mb-4">
+                            <Code className="w-4 h-4 text-purple-400" />
+                            <span className="text-sm font-medium text-purple-400">Source</span>
+                          </div>
+                          <pre className="font-mono text-xs text-gray-300 whitespace-pre-wrap leading-relaxed bg-gray-900/30 rounded-lg p-4 border border-gray-700/50 max-h-full overflow-auto">
+                            {content}
+                          </pre>
+                        </div>
+                      </div>
+                      
+                      {/* Preview Side */}
+                      <div className="w-1/2">
+                        <div className="p-6">
+                          <div className="flex items-center gap-2 mb-4">
+                            <Eye className="w-4 h-4 text-green-400" />
+                            <span className="text-sm font-medium text-green-400">Preview</span>
+                          </div>
+                          <div 
+                            className={`prose prose-invert prose-green prose-sm max-w-none ${
+                              previewDevice === 'mobile' ? 'max-w-xs' :
+                              previewDevice === 'tablet' ? 'max-w-lg' : ''
+                            }`}
+                            dangerouslySetInnerHTML={{ __html: processedContent }}
+                            style={{ lineHeight: '1.6', color: '#e5e7eb' }}
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </motion.div>
-        )}
+        </div>
+      </main>
 
-        {/* Download Success Popup */}
-        {showDownloadPopup && (
+      {/* Settings Panel */}
+      <AnimatePresence>
+        {showSettings && (
           <motion.div
-            initial={{ opacity: 0, x: 400, y: -20 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            exit={{ opacity: 0, x: 400, y: -20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className={`fixed right-6 z-[100] max-w-sm w-full ${
-              showGithubPopup && showCopyPopup ? 'top-68' : 
-              showGithubPopup || showCopyPopup ? 'top-44' : 'top-20'
-            }`}
+            className="fixed top-20 right-6 w-80 bg-black/90 backdrop-blur-xl border border-green-400/20 rounded-2xl p-6 z-60 shadow-2xl"
+            initial={{ opacity: 0, scale: 0.9, x: 20 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.9, x: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            <div className="relative bg-[rgba(15,15,15,0.6)] backdrop-blur-2xl border border-[rgba(255,255,255,0.2)] rounded-2xl p-4 shadow-2xl shadow-green-400/30 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.1)] via-transparent to-[rgba(0,255,100,0.08)] rounded-2xl pointer-events-none" />
-              <div className="relative flex items-center gap-3">
-                <motion.div
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
-                  className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0"
-                >
-                  <Download className="w-4 h-4 text-green-400" />
-                </motion.div>
-                <div>
-                  <h3 className="text-sm font-bold text-green-400 mb-1">Download Complete!</h3>
-                  <p className="text-gray-300 text-xs">README.md downloaded to your device</p>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <Settings className="w-5 h-5 text-green-400" />
+                <h3 className="font-semibold text-green-400">Display Settings</h3>
+              </div>
+              <button
+                onClick={() => setShowSettings(false)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {/* Font Size */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-3">Font Size</label>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setFontSize(Math.max(12, fontSize - 2))}
+                    className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+                  >
+                    <Minimize2 className="w-4 h-4" />
+                  </button>
+                  <span className="text-sm text-gray-400 min-w-[3rem] text-center">{fontSize}px</span>
+                  <button
+                    onClick={() => setFontSize(Math.min(24, fontSize + 2))}
+                    className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+                  >
+                    <Maximize2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Theme */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-3">Theme</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { value: 'dark', label: 'Dark', color: 'bg-gray-900' },
+                    { value: 'github', label: 'GitHub', color: 'bg-white' },
+                    { value: 'minimal', label: 'Minimal', color: 'bg-gray-100' }
+                  ].map(({ value, label, color }) => (
+                    <button
+                      key={value}
+                      onClick={() => setTheme(value as any)}
+                      className={`p-3 rounded-lg border transition-all ${
+                        theme === value
+                          ? 'border-green-400 bg-green-400/10 text-green-400'
+                          : 'border-gray-600 text-gray-400 hover:border-gray-500'
+                      }`}
+                    >
+                      <div className={`w-4 h-4 ${color} rounded mx-auto mb-1 border border-gray-600`} />
+                      <div className="text-xs">{label}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Preview Device */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-3">Preview Device</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { value: 'desktop', label: 'Desktop', icon: Monitor },
+                    { value: 'tablet', label: 'Tablet', icon: Tablet },
+                    { value: 'mobile', label: 'Mobile', icon: Smartphone }
+                  ].map(({ value, label, icon: Icon }) => (
+                    <button
+                      key={value}
+                      onClick={() => setPreviewDevice(value as any)}
+                      className={`p-3 rounded-lg border transition-all ${
+                        previewDevice === value
+                          ? 'border-green-400 bg-green-400/10 text-green-400'
+                          : 'border-gray-600 text-gray-400 hover:border-gray-500'
+                      }`}
+                    >
+                      <Icon className="w-5 h-5 mx-auto mb-1" />
+                      <div className="text-xs">{label}</div>
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
@@ -779,260 +746,42 @@ export default function ModernReadmeOutput({
         )}
       </AnimatePresence>
 
-      {/* Custom Styles */}
-      <style jsx global>{`
-        .modern-readme-preview {
-          color: #e6edf3;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
-          font-size: 16px;
-          line-height: 1.6;
-        }
-        
-        .modern-readme-preview h1 {
-          color: #f0f6fc;
-          font-size: 2.5em;
-          font-weight: 700;
-          margin-bottom: 24px;
-          padding-bottom: 0.3em;
-          border-bottom: 2px solid #00ff88;
-          background: linear-gradient(135deg, #f0f6fc 0%, #00ff88 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          text-align: center;
-        }
-        
-        .modern-readme-preview h2 {
-          color: #f0f6fc;
-          font-size: 1.8em;
-          font-weight: 600;
-          margin-top: 32px;
-          margin-bottom: 20px;
-          padding-bottom: 0.3em;
-          border-bottom: 1px solid #00ff88;
-          position: relative;
-        }
-        
-        .modern-readme-preview h2::before {
-          content: '';
-          position: absolute;
-          left: 0;
-          bottom: -1px;
-          width: 60px;
-          height: 2px;
-          background: linear-gradient(90deg, #00ff88, transparent);
-        }
-        
-        .modern-readme-preview h3 {
-          color: #00ff88;
-          font-size: 1.4em;
-          font-weight: 600;
-          margin-top: 28px;
-          margin-bottom: 16px;
-        }
-        
-        .modern-readme-preview h4, 
-        .modern-readme-preview h5, 
-        .modern-readme-preview h6 {
-          color: #f0f6fc;
-          font-weight: 600;
-          margin-top: 24px;
-          margin-bottom: 16px;
-        }
-        
-        .modern-readme-preview p {
-          margin-bottom: 16px;
-          color: #e6edf3;
-          line-height: 1.7;
-        }
-        
-        .modern-readme-preview blockquote {
-          padding: 16px 20px;
-          color: #8d96a0;
-          border-left: 4px solid #00ff88;
-          margin: 20px 0;
-          background: rgba(0, 255, 136, 0.05);
-          border-radius: 0 8px 8px 0;
-        }
-        
-        .modern-readme-preview ul, 
-        .modern-readme-preview ol {
-          padding-left: 2em;
-          margin-bottom: 16px;
-        }
-        
-        .modern-readme-preview li {
-          margin-bottom: 8px;
-          color: #e6edf3;
-          line-height: 1.6;
-        }
-        
-        .modern-readme-preview li::marker {
-          color: #00ff88;
-        }
-        
-        .modern-readme-preview code {
-          background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
-          padding: 4px 8px;
-          border-radius: 6px;
-          font-size: 0.9em;
-          color: #00ff88;
-          font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
-          border: 1px solid rgba(0, 255, 136, 0.2);
-        }
-        
-        .modern-readme-preview pre {
-          background: linear-gradient(135deg, #0a0a0a, #111111);
-          padding: 20px;
-          border-radius: 12px;
-          overflow-x: auto;
-          margin: 20px 0;
-          border: 1px solid rgba(0, 255, 136, 0.2);
-          position: relative;
-        }
-        
-        .modern-readme-preview pre::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, #00ff88, transparent);
-        }
-        
-        .modern-readme-preview pre code {
-          background: transparent;
-          padding: 0;
-          border-radius: 0;
-          color: #f0f6fc;
-          border: none;
-        }
-        
-        .modern-readme-preview table {
-          border-collapse: collapse;
-          margin: 20px 0;
-          width: 100%;
-          border-radius: 8px;
-          overflow: hidden;
-          border: 1px solid rgba(0, 255, 136, 0.2);
-        }
-        
-        .modern-readme-preview th, 
-        .modern-readme-preview td {
-          padding: 12px 16px;
-          text-align: left;
-          border-bottom: 1px solid rgba(0, 255, 136, 0.1);
-        }
-        
-        .modern-readme-preview th {
-          background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
-          font-weight: 600;
-          color: #00ff88;
-        }
-        
-        .modern-readme-preview td {
-          color: #e6edf3;
-        }
-        
-        .modern-readme-preview a {
-          color: #00ff88;
-          text-decoration: none;
-          border-bottom: 1px solid transparent;
-          transition: all 0.2s ease;
-        }
-        
-        .modern-readme-preview a:hover {
-          border-bottom-color: #00ff88;
-          text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
-        }
-        
-        .modern-readme-preview img {
-          max-width: 100%;
-          height: auto;
-          border-radius: 12px;
-          margin: 16px 0;
-          border: 1px solid rgba(0, 255, 136, 0.2);
-        }
-        
-        .modern-readme-preview hr {
-          border: none;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, #00ff88, transparent);
-          margin: 32px 0;
-        }
-        
-        .modern-readme-preview strong {
-          color: #00ff88;
-          font-weight: 600;
-        }
-        
-        .modern-readme-preview em {
-          color: #e6edf3;
-          font-style: italic;
-        }
-
-        /* Badge Styling */
-        .modern-readme-preview img[alt*="badge" i],
-        .modern-readme-preview img[src*="shields.io"],
-        .modern-readme-preview img[src*="badge"] {
-          display: inline-block;
-          margin: 4px;
-          border-radius: 4px;
-          border: none;
-        }
-
-        /* Center aligned content */
-        .modern-readme-preview p[align="center"],
-        .modern-readme-preview div[align="center"] {
-          text-align: center;
-        }
-
-        /* Enhanced Scrollbar Styling */
-        .scrollbar-thin {
-          scrollbar-width: thin;
-        }
-        
-        .scrollbar-thumb-green-400\/40::-webkit-scrollbar-thumb {
-          background: linear-gradient(180deg, rgba(0, 255, 136, 0.5), rgba(0, 255, 136, 0.3));
-          border-radius: 8px;
-          border: 1px solid rgba(0, 255, 136, 0.2);
-        }
-        
-        .scrollbar-thumb-green-400\/40::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(180deg, rgba(0, 255, 136, 0.7), rgba(0, 255, 136, 0.4));
-          box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
-        }
-        
-        .scrollbar-track-green-900\/20::-webkit-scrollbar-track {
-          background: rgba(20, 83, 45, 0.2);
-          border-radius: 8px;
-        }
-        
-        .scrollbar-thin::-webkit-scrollbar {
-          width: 10px;
-        }
-
-        .scrollbar-thin::-webkit-scrollbar-corner {
-          background: transparent;
-        }
-        
-        /* Smooth Scrolling */
-        .scroll-smooth {
-          scroll-behavior: smooth;
-        }
-        
-        html {
-          scroll-behavior: smooth;
-        }
-
-        /* Enhanced backdrop blur support */
-        @supports (backdrop-filter: blur(20px)) {
-          .backdrop-blur-2xl {
-            backdrop-filter: blur(20px);
-          }
-        }
-      `}</style>
+      {/* Success/Error Messages */}
+      <AnimatePresence>
+        {(saveError || saveSuccess) && (
+          <motion.div
+            className={`fixed bottom-6 left-6 right-6 max-w-md mx-auto backdrop-blur-xl border rounded-2xl p-4 z-70 ${
+              saveError 
+                ? 'bg-red-900/80 border-red-400/20' 
+                : 'bg-green-900/80 border-green-400/20'
+            }`}
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 50, scale: 0.9 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          >
+            <div className={`flex items-center gap-3 text-sm ${
+              saveError ? 'text-red-400' : 'text-green-400'
+            }`}>
+              {saveError ? (
+                <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              ) : (
+                <Check className="w-5 h-5 flex-shrink-0" />
+              )}
+              <span className="flex-1">{saveError || 'README saved successfully to GitHub!'}</span>
+              <button
+                onClick={() => {
+                  setSaveError('');
+                  setSaveSuccess(false);
+                }}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
