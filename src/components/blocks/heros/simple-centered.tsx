@@ -103,7 +103,7 @@ export default function SimpleCentered() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 z-50 bg-black/80 backdrop-blur-lg"
+              className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-lg"
             >
               <ModernReadmeOutput 
                 content={generatedReadme}
