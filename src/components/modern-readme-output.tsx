@@ -248,18 +248,18 @@ export default function ModernReadmeOutput({
   const sanitizedContent = DOMPurify.sanitize(processedContent);
 
   return (
-    <div className="fixed inset-0 bg-black text-foreground full-screen-layout flex-layout performance-optimized no-lag">
+    <div className="fixed inset-0 bg-black text-foreground overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 z-0 w-full h-full">
+      <div className="absolute inset-0 z-0">
         <MinimalGridBackground />
       </div>
 
-      {/* Main Header - positioned at top */}
+      {/* Main Header - Fixed at top */}
       <motion.header
-        className="relative z-10 glass-navbar border-b border-green-400/20 no-lag flex-shrink-0"
-        initial={{ y: -50, opacity: 0 }}
+        className="fixed top-0 left-0 right-0 z-20 bg-black/90 backdrop-blur-xl border-b border-green-400/30 shadow-lg"
+        initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
       >
         {/* Progress Bar */}
         <motion.div
@@ -269,18 +269,26 @@ export default function ModernReadmeOutput({
           animate={{ scaleX: 1 }}
           transition={{ duration: 0.3 }}
         />
+        {/* Progress Bar */}
+        <motion.div
+          className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-green-400 to-green-600"
+          style={{ width: `${scrollProgress * 100}%` }}
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 0.3 }}
+        />
 
-        <div className="container mx-auto px-6 py-3">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between gap-4">
             {/* Left Section */}
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
               {/* Back Button */}
               <motion.button
-                onClick={() => window.history.back()}
-                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-400 hover:text-green-400 transition-colors rounded-lg hover:bg-green-400/10"
+                onClick={onClose || (() => window.history.back())}
+                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-400 hover:text-green-400 transition-all rounded-lg hover:bg-green-400/10 border border-gray-700 hover:border-green-400/50"
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.2 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -288,32 +296,27 @@ export default function ModernReadmeOutput({
                 <span className="hidden sm:inline">Back</span>
               </motion.button>
 
+              {/* Title */}
               <motion.div
                 className="flex items-center gap-3"
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.4 }}
+                transition={{ delay: 0.3 }}
               >
-                <div className="relative">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur opacity-30" />
-                  <div className="relative bg-black p-2 rounded-lg">
-                    <FileText className="w-4 h-4 text-green-400" />
-                  </div>
-                </div>
-                <div>
-                  <h1 className="text-lg font-bold bg-gradient-to-r from-white to-green-400 bg-clip-text text-transparent">
+                <div className="flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-green-400" />
+                  <h1 className="text-lg font-bold text-white">
                     README Generated
                   </h1>
-                  <p className="text-xs text-gray-400">Your documentation is ready</p>
                 </div>
               </motion.div>
 
               {/* View Mode Toggle */}
               <motion.div
-                className="flex items-center bg-gray-900/50 rounded-lg p-1 border border-green-400/20"
+                className="hidden md:flex items-center bg-gray-900/80 rounded-lg p-1 border border-green-400/20"
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 0.4 }}
               >
                 <button
                   onClick={() => setViewMode('preview')}
@@ -324,7 +327,7 @@ export default function ModernReadmeOutput({
                   }`}
                 >
                   <Eye className="w-4 h-4" />
-                  Preview
+                  <span className="hidden lg:inline">Preview</span>
                 </button>
                 <button
                   onClick={() => setViewMode('raw')}
@@ -335,18 +338,18 @@ export default function ModernReadmeOutput({
                   }`}
                 >
                   <Code className="w-4 h-4" />
-                  Raw
+                  <span className="hidden lg:inline">Raw</span>
                 </button>
               </motion.div>
             </div>
 
-            {/* Right Section */}
+            {/* Right Section - Action Buttons */}
             <div className="flex items-center gap-2">
               <motion.div
                 className="flex items-center gap-2"
                 initial={{ x: 20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.6 }}
+                transition={{ delay: 0.5 }}
               >
                 {/* Copy Button */}
                 <Button
@@ -503,26 +506,27 @@ export default function ModernReadmeOutput({
       </motion.header>
 
       {/* Main Content Area */}
-      <div className="relative z-10 flex-1 flex flex-col min-h-0">
+      <div className="relative z-10 pt-20 h-full overflow-hidden">
         {/* Content Section */}
-        <main className="flex-1 flex flex-col px-4 sm:px-6 py-4 min-h-0">
-          <div className="container mx-auto max-w-7xl flex-1 flex flex-col min-h-0">
+        <main className="h-full px-4 sm:px-6 py-4">
+          <div className="container mx-auto max-w-7xl h-full">
             <motion.div
-              className="relative flex-1 flex flex-col min-h-0"
+              className="relative h-full"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
             >
               {/* Content Container with Enhanced Glass Effect */}
-              <div className="relative glass rounded-3xl overflow-hidden shadow-glass-lg shadow-green-400/20 no-lag readme-content-area">
+              <div className="relative glass rounded-2xl overflow-hidden shadow-2xl shadow-green-400/20 h-full flex flex-col">
                 {/* Multi-layered Glass Effect */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-green-400/30 to-green-600/30 rounded-3xl blur-xl opacity-40" />
-                <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.08)] via-transparent to-[rgba(0,255,100,0.05)] rounded-3xl" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,255,100,0.1),transparent_50%)]" />
+                <div className="absolute -inset-1 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-2xl blur-xl opacity-60" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.05)] via-transparent to-[rgba(0,255,100,0.03)] rounded-2xl" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,255,100,0.08),transparent_50%)]" />
                 
                 <div 
                   ref={contentRef}
-                  className="relative flex-1 overflow-y-auto scrollbar-thin scrollbar-green content-scroll gpu-accelerated"
+                  className="relative flex-1 overflow-y-auto scrollbar-thin scrollbar-green content-scroll"
+                  onScroll={handleScroll}
                 >
                   <AnimatePresence mode="wait">
                     {viewMode === 'preview' ? (
