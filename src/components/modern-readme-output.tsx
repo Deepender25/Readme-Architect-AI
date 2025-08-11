@@ -2,38 +2,25 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Download, 
-  Copy, 
-  Check, 
-  X, 
-  Eye, 
-  Code, 
+import {
+  Download,
+  Copy,
+  Check,
+  X,
+  Eye,
+  Code,
   FileText,
   Github,
   ArrowLeft,
   Settings,
-  Monitor,
-  Smartphone,
-  Tablet,
   RefreshCw,
   AlertCircle,
   Maximize2,
   Minimize2,
   Share2,
-  Star,
   BookOpen,
-  Zap,
-  Sparkles,
-  ChevronDown,
-  ChevronUp,
-  Edit3,
-  Save,
   ExternalLink,
-  GitBranch,
   Clock,
-  User,
-  Calendar,
   Hash,
   Layers,
   BarChart3
@@ -49,13 +36,13 @@ interface ModernReadmeOutputProps {
   onEdit?: () => void;
 }
 
-export default function ModernReadmeOutput({ 
-  content, 
+export default function ModernReadmeOutput({
+  content,
   repositoryUrl,
   projectName,
   generationParams,
   onClose,
-  onEdit 
+  onEdit
 }: ModernReadmeOutputProps) {
   const [viewMode, setViewMode] = useState<'preview' | 'raw' | 'split'>('preview');
   const [copySuccess, setCopySuccess] = useState(false);
@@ -65,24 +52,23 @@ export default function ModernReadmeOutput({
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showStats, setShowStats] = useState(false);
-  const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [processedContent, setProcessedContent] = useState('');
   const [isClient, setIsClient] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [fontSize, setFontSize] = useState(16);
   const [theme, setTheme] = useState<'dark' | 'github' | 'minimal'>('dark');
-  
+
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Client-side initialization
   useEffect(() => {
     setIsClient(true);
-    
+
     const processContent = async () => {
       try {
         const { marked } = await import('marked');
         const DOMPurify = (await import('isomorphic-dompurify')).default;
-        
+
         const processed = marked(content) as string;
         const sanitized = DOMPurify.sanitize(processed);
         setProcessedContent(sanitized);
@@ -119,7 +105,7 @@ export default function ModernReadmeOutput({
 
   const handleDownload = () => {
     setIsDownloading(true);
-    
+
     setTimeout(() => {
       const blob = new Blob([content], { type: 'text/markdown' });
       const url = URL.createObjectURL(blob);
@@ -159,7 +145,7 @@ export default function ModernReadmeOutput({
 
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
-      
+
     } catch (error) {
       console.error('Error saving README:', error);
       setSaveError(error instanceof Error ? error.message : 'Failed to save README');
@@ -209,19 +195,19 @@ export default function ModernReadmeOutput({
   }
 
   const themeClasses = {
-    dark: 'bg-gradient-to-br from-gray-900 via-black to-gray-900',
+    dark: 'bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white',
     github: 'bg-white text-gray-900',
     minimal: 'bg-gray-50 text-gray-800'
   };
 
   return (
-    <div className={`min-h-screen ${themeClasses[theme]} text-white relative transition-all duration-500`}>
+    <div className={`min-h-screen ${themeClasses[theme]} relative transition-all duration-500`}>
       {/* Animated Background */}
       <div className="fixed inset-0 z-0 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(0,255,136,0.15),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.1),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_40%,rgba(168,85,247,0.08),transparent_50%)]" />
-        
+
         {/* Floating particles */}
         {[...Array(20)].map((_, i) => (
           <motion.div
@@ -247,9 +233,8 @@ export default function ModernReadmeOutput({
 
       {/* Header */}
       <motion.header
-        className={`sticky top-0 z-50 backdrop-blur-2xl border-b transition-all duration-300 ${
-          isFullscreen ? 'bg-black/95 border-green-400/30' : 'bg-black/80 border-green-400/20'
-        }`}
+        className={`sticky top-0 z-50 backdrop-blur-2xl border-b transition-all duration-300 ${isFullscreen ? 'bg-black/95 border-green-400/30' : 'bg-black/80 border-green-400/20'
+          }`}
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
@@ -269,10 +254,10 @@ export default function ModernReadmeOutput({
               </motion.button>
 
               <div className="flex items-center gap-4">
-                <motion.div 
+                <motion.div
                   className="relative p-3 bg-gradient-to-br from-green-400/20 to-green-600/20 rounded-xl border border-green-400/30"
                   whileHover={{ scale: 1.05 }}
-                  animate={{ 
+                  animate={{
                     boxShadow: [
                       '0 0 20px rgba(0, 255, 136, 0.3)',
                       '0 0 30px rgba(0, 255, 136, 0.5)',
@@ -284,7 +269,7 @@ export default function ModernReadmeOutput({
                   <FileText className="w-6 h-6 text-green-400" />
                   <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse" />
                 </motion.div>
-                
+
                 <div>
                   <h1 className="text-xl font-bold bg-gradient-to-r from-white to-green-400 bg-clip-text text-transparent">
                     {projectName || 'README Generated'}
@@ -308,11 +293,10 @@ export default function ModernReadmeOutput({
                   <motion.button
                     key={mode}
                     onClick={() => setViewMode(mode as any)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      viewMode === mode
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${viewMode === mode
                         ? 'bg-green-400 text-black shadow-lg'
                         : 'text-gray-400 hover:text-white hover:bg-white/5'
-                    }`}
+                      }`}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -350,13 +334,12 @@ export default function ModernReadmeOutput({
                 onClick={handleCopy}
                 variant="ghost"
                 size="sm"
-                className={`transition-all duration-300 ${
-                  copySuccess 
-                    ? 'bg-green-500/20 text-green-400 border-green-400/50' 
+                className={`transition-all duration-300 ${copySuccess
+                    ? 'bg-green-500/20 text-green-400 border-green-400/50'
                     : 'bg-gray-900/50 hover:bg-green-400/10 text-gray-300 hover:text-green-400 border-green-400/20'
-                } border backdrop-blur-sm`}
+                  } border backdrop-blur-sm`}
               >
-                <motion.div 
+                <motion.div
                   className="flex items-center gap-2"
                   animate={copySuccess ? { scale: [1, 1.1, 1] } : {}}
                 >
@@ -377,7 +360,7 @@ export default function ModernReadmeOutput({
                   size="sm"
                   className="bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 border-0 shadow-lg"
                 >
-                  <motion.div 
+                  <motion.div
                     className="flex items-center gap-2"
                     animate={isSaving ? { rotate: 360 } : {}}
                     transition={{ duration: 1, repeat: isSaving ? Infinity : 0 }}
@@ -403,7 +386,7 @@ export default function ModernReadmeOutput({
                 size="sm"
                 className="bg-gradient-to-r from-green-500 to-green-600 text-black hover:from-green-400 hover:to-green-500 border-0 shadow-lg font-semibold"
               >
-                <motion.div 
+                <motion.div
                   className="flex items-center gap-2"
                   animate={isDownloading ? { y: [0, -2, 0] } : {}}
                   transition={{ duration: 0.5, repeat: isDownloading ? Infinity : 0 }}
@@ -502,9 +485,8 @@ export default function ModernReadmeOutput({
             transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
           >
             {/* Content Container */}
-            <div className={`relative bg-black/40 backdrop-blur-xl border border-green-400/20 overflow-hidden transition-all duration-300 ${
-              isFullscreen ? 'rounded-none min-h-screen' : 'rounded-2xl'
-            }`}>
+            <div className={`relative bg-black/40 backdrop-blur-xl border border-green-400/20 overflow-hidden transition-all duration-300 ${isFullscreen ? 'rounded-none min-h-screen' : 'rounded-2xl'
+              }`}>
               {/* Content Header */}
               <div className="flex items-center justify-between p-6 border-b border-green-400/20 bg-gradient-to-r from-transparent via-green-400/5 to-transparent">
                 <div className="flex items-center gap-3">
@@ -525,42 +507,31 @@ export default function ModernReadmeOutput({
                     </>
                   )}
                 </div>
-                
-                {/* Device Preview Toggle */}
-                {(viewMode === 'preview' || viewMode === 'split') && (
-                  <div className="flex items-center gap-1 bg-gray-900/50 rounded-lg p-1">
-                    {[
-                      { device: 'desktop', icon: Monitor, label: 'Desktop' },
-                      { device: 'tablet', icon: Tablet, label: 'Tablet' },
-                      { device: 'mobile', icon: Smartphone, label: 'Mobile' }
-                    ].map(({ device, icon: Icon, label }) => (
-                      <motion.button
-                        key={device}
-                        onClick={() => setPreviewDevice(device as any)}
-                        className={`p-2 rounded-lg transition-all ${
-                          previewDevice === device
-                            ? 'bg-green-400 text-black'
-                            : 'text-gray-400 hover:text-green-400 hover:bg-green-400/10'
-                        }`}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        title={label}
-                      >
-                        <Icon className="w-4 h-4" />
-                      </motion.button>
-                    ))}
+
+                {/* Content Stats */}
+                <div className="flex items-center gap-4 text-sm text-gray-400">
+                  <div className="flex items-center gap-1">
+                    <Hash className="w-3 h-3" />
+                    <span>{contentStats.words} words</span>
                   </div>
-                )}
+                  <div className="flex items-center gap-1">
+                    <Layers className="w-3 h-3" />
+                    <span>{contentStats.sections} sections</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Code className="w-3 h-3" />
+                    <span>{Math.floor(contentStats.codeBlocks)} code blocks</span>
+                  </div>
+                </div>
               </div>
 
               {/* Content Area */}
-              <div 
+              <div
                 ref={contentRef}
-                className={`overflow-y-auto transition-all duration-300 ${
-                  isFullscreen ? 'h-[calc(100vh-140px)]' : 'max-h-[calc(100vh-300px)]'
-                }`}
-                style={{ 
-                  scrollbarWidth: 'thin', 
+                className={`overflow-y-auto transition-all duration-300 ${isFullscreen ? 'h-[calc(100vh-140px)]' : 'max-h-[calc(100vh-300px)]'
+                  }`}
+                style={{
+                  scrollbarWidth: 'thin',
                   scrollbarColor: 'rgba(0, 255, 136, 0.6) rgba(0, 0, 0, 0.3)',
                   fontSize: `${fontSize}px`
                 }}
@@ -575,11 +546,9 @@ export default function ModernReadmeOutput({
                       transition={{ duration: 0.4, type: "spring" }}
                       className="p-8"
                     >
-                      <div 
-                        className={`prose prose-invert prose-green max-w-none transition-all duration-300 ${
-                          previewDevice === 'mobile' ? 'max-w-sm mx-auto' :
-                          previewDevice === 'tablet' ? 'max-w-2xl mx-auto' : ''
-                        }`}
+                      <div
+                        className={`prose max-w-none transition-all duration-300 ${theme === 'dark' ? 'prose-invert prose-green' : 'prose-gray'
+                          }`}
                         dangerouslySetInnerHTML={{ __html: processedContent }}
                         style={{
                           lineHeight: '1.7',
@@ -596,7 +565,10 @@ export default function ModernReadmeOutput({
                       transition={{ duration: 0.4, type: "spring" }}
                       className="p-8"
                     >
-                      <pre className="font-mono text-sm text-gray-300 whitespace-pre-wrap leading-relaxed bg-gray-900/30 rounded-lg p-6 border border-gray-700/50">
+                      <pre className={`font-mono text-sm whitespace-pre-wrap leading-relaxed rounded-lg p-6 border transition-all duration-300 ${theme === 'dark'
+                          ? 'text-gray-300 bg-gray-900/30 border-gray-700/50'
+                          : 'text-gray-700 bg-gray-100 border-gray-300'
+                        }`}>
                         {content}
                       </pre>
                     </motion.div>
@@ -616,12 +588,15 @@ export default function ModernReadmeOutput({
                             <Code className="w-4 h-4 text-purple-400" />
                             <span className="text-sm font-medium text-purple-400">Source</span>
                           </div>
-                          <pre className="font-mono text-xs text-gray-300 whitespace-pre-wrap leading-relaxed bg-gray-900/30 rounded-lg p-4 border border-gray-700/50 max-h-full overflow-auto">
+                          <pre className={`font-mono text-xs whitespace-pre-wrap leading-relaxed rounded-lg p-4 border max-h-full overflow-auto transition-all duration-300 ${theme === 'dark'
+                              ? 'text-gray-300 bg-gray-900/30 border-gray-700/50'
+                              : 'text-gray-700 bg-gray-100 border-gray-300'
+                            }`}>
                             {content}
                           </pre>
                         </div>
                       </div>
-                      
+
                       {/* Preview Side */}
                       <div className="w-1/2">
                         <div className="p-6">
@@ -629,13 +604,14 @@ export default function ModernReadmeOutput({
                             <Eye className="w-4 h-4 text-green-400" />
                             <span className="text-sm font-medium text-green-400">Preview</span>
                           </div>
-                          <div 
-                            className={`prose prose-invert prose-green prose-sm max-w-none ${
-                              previewDevice === 'mobile' ? 'max-w-xs' :
-                              previewDevice === 'tablet' ? 'max-w-lg' : ''
-                            }`}
+                          <div
+                            className={`prose prose-sm max-w-none ${theme === 'dark' ? 'prose-invert prose-green' : 'prose-gray'
+                              }`}
                             dangerouslySetInnerHTML={{ __html: processedContent }}
-                            style={{ lineHeight: '1.6', color: '#e5e7eb' }}
+                            style={{
+                              lineHeight: '1.6',
+                              color: theme === 'dark' ? '#e5e7eb' : '#374151'
+                            }}
                           />
                         </div>
                       </div>
@@ -695,20 +671,18 @@ export default function ModernReadmeOutput({
               {/* Theme */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-3">Theme</label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   {[
-                    { value: 'dark', label: 'Dark', color: 'bg-gray-900' },
-                    { value: 'github', label: 'GitHub', color: 'bg-white' },
-                    { value: 'minimal', label: 'Minimal', color: 'bg-gray-100' }
+                    { value: 'dark', label: 'Dark Mode', color: 'bg-gray-900' },
+                    { value: 'github', label: 'Light Mode', color: 'bg-white' }
                   ].map(({ value, label, color }) => (
                     <button
                       key={value}
                       onClick={() => setTheme(value as any)}
-                      className={`p-3 rounded-lg border transition-all ${
-                        theme === value
+                      className={`p-3 rounded-lg border transition-all ${theme === value
                           ? 'border-green-400 bg-green-400/10 text-green-400'
                           : 'border-gray-600 text-gray-400 hover:border-gray-500'
-                      }`}
+                        }`}
                     >
                       <div className={`w-4 h-4 ${color} rounded mx-auto mb-1 border border-gray-600`} />
                       <div className="text-xs">{label}</div>
@@ -717,30 +691,7 @@ export default function ModernReadmeOutput({
                 </div>
               </div>
 
-              {/* Preview Device */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-3">Preview Device</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { value: 'desktop', label: 'Desktop', icon: Monitor },
-                    { value: 'tablet', label: 'Tablet', icon: Tablet },
-                    { value: 'mobile', label: 'Mobile', icon: Smartphone }
-                  ].map(({ value, label, icon: Icon }) => (
-                    <button
-                      key={value}
-                      onClick={() => setPreviewDevice(value as any)}
-                      className={`p-3 rounded-lg border transition-all ${
-                        previewDevice === value
-                          ? 'border-green-400 bg-green-400/10 text-green-400'
-                          : 'border-gray-600 text-gray-400 hover:border-gray-500'
-                      }`}
-                    >
-                      <Icon className="w-5 h-5 mx-auto mb-1" />
-                      <div className="text-xs">{label}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
+
             </div>
           </motion.div>
         )}
@@ -750,19 +701,17 @@ export default function ModernReadmeOutput({
       <AnimatePresence>
         {(saveError || saveSuccess) && (
           <motion.div
-            className={`fixed bottom-6 left-6 right-6 max-w-md mx-auto backdrop-blur-xl border rounded-2xl p-4 z-70 ${
-              saveError 
-                ? 'bg-red-900/80 border-red-400/20' 
+            className={`fixed bottom-6 left-6 right-6 max-w-md mx-auto backdrop-blur-xl border rounded-2xl p-4 z-70 ${saveError
+                ? 'bg-red-900/80 border-red-400/20'
                 : 'bg-green-900/80 border-green-400/20'
-            }`}
+              }`}
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            <div className={`flex items-center gap-3 text-sm ${
-              saveError ? 'text-red-400' : 'text-green-400'
-            }`}>
+            <div className={`flex items-center gap-3 text-sm ${saveError ? 'text-red-400' : 'text-green-400'
+              }`}>
               {saveError ? (
                 <AlertCircle className="w-5 h-5 flex-shrink-0" />
               ) : (
