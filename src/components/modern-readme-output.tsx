@@ -248,7 +248,7 @@ export default function ModernReadmeOutput({
   const sanitizedContent = DOMPurify.sanitize(processedContent);
 
   return (
-    <div className="fixed inset-0 bg-black text-foreground overflow-hidden">
+    <div className="fixed inset-0 bg-black text-foreground flex flex-col overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <MinimalGridBackground />
@@ -256,39 +256,31 @@ export default function ModernReadmeOutput({
 
       {/* Main Header - Fixed at top */}
       <motion.header
-        className="fixed top-0 left-0 right-0 z-20 bg-black/90 backdrop-blur-xl border-b border-green-400/30 shadow-lg"
+        className="relative z-30 bg-black/95 backdrop-blur-xl border-b border-green-400/30 shadow-xl flex-shrink-0"
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
       >
         {/* Progress Bar */}
         <motion.div
-          className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-green-400 to-green-600"
-          style={{ width: `${scrollProgress * 100}%` }}
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 0.3 }}
-        />
-        {/* Progress Bar */}
-        <motion.div
-          className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-green-400 to-green-600"
+          className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-green-400 to-green-600 z-10"
           style={{ width: `${scrollProgress * 100}%` }}
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ duration: 0.3 }}
         />
 
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between gap-4">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between gap-2">
             {/* Left Section */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               {/* Back Button */}
               <motion.button
                 onClick={onClose || (() => window.history.back())}
-                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-400 hover:text-green-400 transition-all rounded-lg hover:bg-green-400/10 border border-gray-700 hover:border-green-400/50"
+                className="flex items-center gap-1 px-2 py-1.5 text-sm font-medium text-gray-400 hover:text-green-400 transition-all rounded-lg hover:bg-green-400/10"
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
+                transition={{ delay: 0.1 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -298,89 +290,77 @@ export default function ModernReadmeOutput({
 
               {/* Title */}
               <motion.div
-                className="flex items-center gap-3"
+                className="flex items-center gap-2"
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.2 }}
               >
-                <div className="flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-green-400" />
-                  <h1 className="text-lg font-bold text-white">
-                    README Generated
-                  </h1>
-                </div>
+                <FileText className="w-4 h-4 text-green-400" />
+                <h1 className="text-base font-bold text-white hidden sm:block">
+                  README Generated
+                </h1>
               </motion.div>
 
               {/* View Mode Toggle */}
               <motion.div
-                className="hidden md:flex items-center bg-gray-900/80 rounded-lg p-1 border border-green-400/20"
+                className="flex items-center bg-gray-900/80 rounded-lg p-0.5 border border-green-400/20"
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.4 }}
+                transition={{ delay: 0.3 }}
               >
                 <button
                   onClick={() => setViewMode('preview')}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                  className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-all ${
                     viewMode === 'preview'
                       ? 'bg-green-400 text-black shadow-lg'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
-                  <Eye className="w-4 h-4" />
-                  <span className="hidden lg:inline">Preview</span>
+                  <Eye className="w-3 h-3" />
+                  <span className="hidden md:inline">Preview</span>
                 </button>
                 <button
                   onClick={() => setViewMode('raw')}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                  className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-all ${
                     viewMode === 'raw'
                       ? 'bg-green-400 text-black shadow-lg'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
-                  <Code className="w-4 h-4" />
-                  <span className="hidden lg:inline">Raw</span>
+                  <Code className="w-3 h-3" />
+                  <span className="hidden md:inline">Raw</span>
                 </button>
               </motion.div>
             </div>
 
             {/* Right Section - Action Buttons */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <motion.div
-                className="flex items-center gap-2"
+                className="flex items-center gap-1"
                 initial={{ x: 20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 0.4 }}
               >
                 {/* Copy Button */}
                 <Button
                   onClick={handleCopy}
                   variant="ghost"
                   size="sm"
-                  className={`relative group transition-all duration-300 ${
+                  className={`relative group transition-all duration-300 px-2 py-1.5 text-xs ${
                     copySuccess 
                       ? 'bg-green-500/20 border-green-400/60 text-green-400' 
-                      : 'bg-gray-900/50 border-green-400/20 hover:border-green-400/40 hover:bg-green-400/10'
+                      : 'bg-gray-900/80 border-green-400/20 hover:border-green-400/40 hover:bg-green-400/10'
                   }`}
                 >
-                  <div className={`absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur transition-opacity duration-300 ${
-                    copySuccess ? 'opacity-40' : 'opacity-0 group-hover:opacity-20'
-                  }`} />
-                  <div className="relative flex items-center gap-2">
+                  <div className="relative flex items-center gap-1">
                     <AnimatePresence mode="wait">
                       {copyAnimation ? (
                         <motion.div
                           key="copying"
-                          initial={{ scale: 0.8, rotate: -180 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          exit={{ scale: 0.8, rotate: 180 }}
-                          transition={{ duration: 0.3 }}
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 0.6, ease: "easeInOut" }}
                         >
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 0.6, ease: "easeInOut" }}
-                          >
-                            <Copy className="w-4 h-4" />
-                          </motion.div>
+                          <Copy className="w-3 h-3" />
                         </motion.div>
                       ) : copySuccess ? (
                         <motion.div
@@ -390,7 +370,7 @@ export default function ModernReadmeOutput({
                           exit={{ scale: 0.5, opacity: 0 }}
                           transition={{ duration: 0.3, type: "spring", stiffness: 200 }}
                         >
-                          <Check className="w-4 h-4 text-green-400" />
+                          <Check className="w-3 h-3 text-green-400" />
                         </motion.div>
                       ) : (
                         <motion.div
@@ -400,29 +380,14 @@ export default function ModernReadmeOutput({
                           exit={{ scale: 0.8 }}
                           transition={{ duration: 0.2 }}
                         >
-                          <Copy className="w-4 h-4" />
+                          <Copy className="w-3 h-3" />
                         </motion.div>
                       )}
                     </AnimatePresence>
-                    <motion.span
-                      key={copySuccess ? 'copied' : 'copy'}
-                      initial={{ opacity: 0, y: 5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
+                    <span className="hidden sm:inline">
                       {copySuccess ? 'Copied!' : 'Copy'}
-                    </motion.span>
+                    </span>
                   </div>
-                  
-                  {/* Success ripple effect */}
-                  {copySuccess && (
-                    <motion.div
-                      className="absolute inset-0 bg-green-400/20 rounded-lg"
-                      initial={{ scale: 0.8, opacity: 0.8 }}
-                      animate={{ scale: 1.2, opacity: 0 }}
-                      transition={{ duration: 0.6, ease: "easeOut" }}
-                    />
-                  )}
                 </Button>
 
                 {/* Save to GitHub Button */}
@@ -431,23 +396,24 @@ export default function ModernReadmeOutput({
                     onClick={handleSaveToGitHub}
                     disabled={isSaving}
                     size="sm"
-                    className="relative group bg-blue-600 text-white hover:bg-blue-700 font-medium"
+                    className="relative group bg-blue-600 text-white hover:bg-blue-700 font-medium px-2 py-1.5 text-xs"
                   >
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-blue-600 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity" />
-                    <div className="relative flex items-center gap-2">
+                    <div className="relative flex items-center gap-1">
                       {isSaving ? (
                         <motion.div
                           animate={{ rotate: 360 }}
                           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                         >
-                          <Zap className="w-4 h-4" />
+                          <Zap className="w-3 h-3" />
                         </motion.div>
                       ) : saveSuccess ? (
-                        <Check className="w-4 h-4" />
+                        <Check className="w-3 h-3" />
                       ) : (
-                        <Save className="w-4 h-4" />
+                        <Save className="w-3 h-3" />
                       )}
-                      {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save to GitHub'}
+                      <span className="hidden sm:inline">
+                        {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save'}
+                      </span>
                     </div>
                   </Button>
                 )}
@@ -457,21 +423,22 @@ export default function ModernReadmeOutput({
                   onClick={handleDownload}
                   disabled={isDownloading}
                   size="sm"
-                  className="relative group bg-green-400 text-black hover:bg-green-300 font-medium"
+                  className="relative group bg-green-400 text-black hover:bg-green-300 font-medium px-2 py-1.5 text-xs"
                 >
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity" />
-                  <div className="relative flex items-center gap-2">
+                  <div className="relative flex items-center gap-1">
                     {isDownloading ? (
                       <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                       >
-                        <Zap className="w-4 h-4" />
+                        <Zap className="w-3 h-3" />
                       </motion.div>
                     ) : (
-                      <Download className="w-4 h-4" />
+                      <Download className="w-3 h-3" />
                     )}
-                    {isDownloading ? 'Downloading...' : 'Download'}
+                    <span className="hidden sm:inline">
+                      {isDownloading ? 'Downloading...' : 'Download'}
+                    </span>
                   </div>
                 </Button>
 
@@ -481,10 +448,12 @@ export default function ModernReadmeOutput({
                     onClick={onEdit}
                     variant="ghost"
                     size="sm"
-                    className="bg-gray-900/50 border border-green-400/20 hover:border-green-400/40 hover:bg-green-400/10"
+                    className="bg-gray-900/80 border border-green-400/20 hover:border-green-400/40 hover:bg-green-400/10 px-2 py-1.5 text-xs"
                   >
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Edit
+                    <div className="flex items-center gap-1">
+                      <Sparkles className="w-3 h-3" />
+                      <span className="hidden sm:inline">Edit</span>
+                    </div>
                   </Button>
                 )}
 
@@ -506,22 +475,21 @@ export default function ModernReadmeOutput({
       </motion.header>
 
       {/* Main Content Area */}
-      <div className="relative z-10 pt-20 h-full overflow-hidden">
+      <div className="relative z-10 flex-1 overflow-hidden">
         {/* Content Section */}
-        <main className="h-full px-4 sm:px-6 py-4">
-          <div className="container mx-auto max-w-7xl h-full">
+        <main className="h-full px-4 py-4">
+          <div className="container mx-auto max-w-6xl h-full">
             <motion.div
               className="relative h-full"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
             >
               {/* Content Container with Enhanced Glass Effect */}
               <div className="relative glass rounded-2xl overflow-hidden shadow-2xl shadow-green-400/20 h-full flex flex-col">
                 {/* Multi-layered Glass Effect */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-2xl blur-xl opacity-60" />
-                <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.05)] via-transparent to-[rgba(0,255,100,0.03)] rounded-2xl" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,255,100,0.08),transparent_50%)]" />
+                <div className="absolute -inset-1 bg-gradient-to-r from-green-400/15 to-green-600/15 rounded-2xl blur-xl opacity-50" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.03)] via-transparent to-[rgba(0,255,100,0.02)] rounded-2xl" />
                 
                 <div 
                   ref={contentRef}
@@ -536,7 +504,7 @@ export default function ModernReadmeOutput({
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
                         transition={{ duration: 0.3 }}
-                        className="p-6 sm:p-8 lg:p-12 pb-20"
+                        className="p-6 sm:p-8 pb-16"
                       >
                         <div 
                           ref={previewRef}
@@ -551,7 +519,7 @@ export default function ModernReadmeOutput({
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 20 }}
                         transition={{ duration: 0.3 }}
-                        className="p-6 sm:p-8 lg:p-12 pb-20"
+                        className="p-6 sm:p-8 pb-16"
                       >
                         <pre className="font-mono text-sm text-gray-300 whitespace-pre-wrap leading-relaxed overflow-x-auto">
                           {content}
