@@ -248,15 +248,15 @@ export default function ModernReadmeOutput({
   const sanitizedContent = DOMPurify.sanitize(processedContent);
 
   return (
-    <div className="min-h-screen bg-black text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag">
+    <div className="fixed inset-0 bg-black text-foreground full-screen-layout flex-layout performance-optimized no-lag">
       {/* Background */}
-      <div className="fixed inset-0 z-0 w-full h-full">
+      <div className="absolute inset-0 z-0 w-full h-full">
         <MinimalGridBackground />
       </div>
 
       {/* Main Header - positioned at top */}
       <motion.header
-        className="sticky top-0 z-50 glass-navbar border-b border-green-400/20 no-lag"
+        className="relative z-50 glass-navbar border-b border-green-400/20 no-lag flex-shrink-0"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
@@ -503,18 +503,18 @@ export default function ModernReadmeOutput({
       </motion.header>
 
       {/* Main Content Area */}
-      <div className="relative z-10 min-h-screen pb-32">
+      <div className="relative z-10 flex-1 flex flex-col min-h-0">
         {/* Content Section */}
-        <main className="px-4 sm:px-6 py-6">
-          <div className="container mx-auto max-w-7xl">
+        <main className="flex-1 flex flex-col px-4 sm:px-6 py-4 min-h-0">
+          <div className="container mx-auto max-w-7xl flex-1 flex flex-col min-h-0">
             <motion.div
-              className="relative"
+              className="relative flex-1 flex flex-col min-h-0"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               {/* Content Container with Enhanced Glass Effect */}
-              <div className="relative glass rounded-3xl overflow-hidden shadow-glass-lg shadow-green-400/20 no-lag min-h-[calc(100vh-200px)]">
+              <div className="relative glass rounded-3xl overflow-hidden shadow-glass-lg shadow-green-400/20 no-lag readme-content-area">
                 {/* Multi-layered Glass Effect */}
                 <div className="absolute -inset-1 bg-gradient-to-r from-green-400/30 to-green-600/30 rounded-3xl blur-xl opacity-40" />
                 <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.08)] via-transparent to-[rgba(0,255,100,0.05)] rounded-3xl" />
@@ -522,8 +522,7 @@ export default function ModernReadmeOutput({
                 
                 <div 
                   ref={contentRef}
-                  className="relative h-[calc(100vh-200px)] overflow-y-auto scrollbar-thin scrollbar-green scroll-smooth gpu-accelerated"
-                  style={{ scrollBehavior: 'smooth' }}
+                  className="relative flex-1 overflow-y-auto scrollbar-thin scrollbar-green content-scroll gpu-accelerated"
                 >
                   <AnimatePresence mode="wait">
                     {viewMode === 'preview' ? (
@@ -533,7 +532,7 @@ export default function ModernReadmeOutput({
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
                         transition={{ duration: 0.3 }}
-                        className="p-6 sm:p-8 lg:p-12"
+                        className="p-6 sm:p-8 lg:p-12 pb-20"
                       >
                         <div 
                           ref={previewRef}
@@ -548,7 +547,7 @@ export default function ModernReadmeOutput({
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 20 }}
                         transition={{ duration: 0.3 }}
-                        className="p-6 sm:p-8 lg:p-12"
+                        className="p-6 sm:p-8 lg:p-12 pb-20"
                       >
                         <pre className="font-mono text-sm text-gray-300 whitespace-pre-wrap leading-relaxed overflow-x-auto">
                           {content}

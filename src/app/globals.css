@@ -239,16 +239,33 @@
 
   /* Custom Scrollbar Classes */
   .scrollbar-thin::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
   }
 
   .scrollbar-green::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, rgba(0, 255, 136, 0.4), rgba(0, 255, 136, 0.6));
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.5), rgba(0, 255, 136, 0.7));
+    border-radius: 10px;
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+    transition: all 0.3s ease;
   }
 
   .scrollbar-green::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, rgba(0, 255, 136, 0.6), rgba(0, 255, 136, 0.8));
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.7), rgba(0, 255, 136, 0.9));
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.5);
+    transform: scale(1.1);
+  }
+
+  .scrollbar-green::-webkit-scrollbar-corner {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
   }
 
   .scrollbar-hidden {
@@ -258,6 +275,57 @@
 
   .scrollbar-hidden::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Smooth scrolling improvements */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Enhanced smooth scrolling for content areas */
+  .content-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 255, 136, 0.6) rgba(0, 0, 0, 0.3);
+  }
+
+  /* Fix for full-screen layouts */
+  .full-screen-layout {
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile */
+    overflow: hidden;
+  }
+
+  /* Ensure proper flex layout */
+  .flex-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Important for flex children to shrink */
+  }
+
+  /* Content area specific styles */
+  .readme-content-area {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Mobile optimizations for scrolling */
+  @media (max-width: 768px) {
+    .content-scroll {
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: y proximity;
+    }
+    
+    .scrollbar-thin::-webkit-scrollbar {
+      width: 4px;
+    }
   }
 }
 
