@@ -39,7 +39,24 @@ class handler(BaseHTTPRequestHandler):
     def do_request(self):
         parsed_url = urllib.parse.urlparse(self.path)
         query_params = urllib.parse.parse_qs(parsed_url.query)
-        
+
+        protected_paths = [
+            '/api/repositories',
+            '/api/generate',
+            '/api/history',
+            '/api/history/' # for individual history items
+        ]
+
+        # Centralized authentication check
+        if any(parsed_url.path.startswith(p) for p in protected_paths):
+            user_data = self.get_user_from_cookie()
+            if not user_data:
+                self.send_json_response({'error': 'Authentication required.'}, 401)
+                return
+            if 'access_token' not in user_data:
+                self.send_json_response({'error': 'Invalid authentication.'}, 401)
+                return
+
         if parsed_url.path == '/auth/github':
             self.handle_github_auth()
         elif parsed_url.path == '/auth/callback':
@@ -126,15 +143,7 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
 
     def handle_repositories(self):
-        user_data = self.get_user_from_cookie()
-        
-        if not user_data:
-            self.send_json_response({'error': 'Authentication required.'}, 401)
-            return
-        
-        if 'access_token' not in user_data:
-            self.send_json_response({'error': 'Invalid authentication.'}, 401)
-            return
+        user_data = self.get_user_from_cookie() # user_data is guaranteed to be valid here
         
         try:
             headers = {'Authorization': f'token {user_data["access_token"]}'}
@@ -494,12 +503,7 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
     def handle_history(self):
         """Handle history requests"""
         print("🔄 History request received")
-        user_data = self.get_user_from_cookie()
-        
-        if not user_data:
-            print("❌ No user authentication found")
-            self.send_json_response({'error': 'Authentication required.'}, 401)
-            return
+        user_data = self.get_user_from_cookie() # user_data is guaranteed to be valid here
         
         print(f"👤 User authenticated: {user_data.get('username', 'unknown')}")
         
@@ -541,11 +545,7 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
 
     def handle_history_item(self, history_id):
         """Handle individual history item requests"""
-        user_data = self.get_user_from_cookie()
-        
-        if not user_data:
-            self.send_json_response({'error': 'Authentication required.'}, 401)
-            return
+        user_data = self.get_user_from_cookie() # user_data is guaranteed to be valid here
         
         user_id = str(user_data.get('github_id', ''))
         

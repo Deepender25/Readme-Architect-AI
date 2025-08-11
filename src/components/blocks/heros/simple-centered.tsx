@@ -1,62 +1,60 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Github, GitBranch, BrainCircuit, Bot, Wand2, Code } from 'lucide-react';
+import { Github, GitBranch, BrainCircuit, Bot, Wand2, Code, Sparkles, Zap, FileText, Star, ArrowRight, Play } from 'lucide-react';
 import ReadmeGeneratorFlow from '@/components/readme-generator-flow';
 import ModernReadmeOutput from '@/components/modern-readme-output';
 import { ScrollAnimatedDiv } from '@/components/ui/scroll-animated-div';
 
-const TechLogo = ({ icon, initialAngle, radius }: { icon: React.ReactNode, initialAngle: number, radius: number }) => {
-  const [angle, setAngle] = useState(initialAngle);
-
-  useEffect(() => {
-    const animate = () => {
-      setAngle(prevAngle => prevAngle + 0.005);
-      requestAnimationFrame(animate);
-    };
-    const animationFrameId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, []);
-
-  const x = Math.cos(angle) * radius;
-  const y = Math.sin(angle) * radius;
-
-  return (
-    <motion.div
-      className="absolute"
-      style={{ 
-        x,
-        y,
-        color: '#00ff88',
-      }}
-    >
-      {icon}
-    </motion.div>
-  );
-};
-
-const MovingGrid = () => {
-  return (
-    <div className="absolute inset-0 z-0">
-      <div 
-        className="absolute inset-0 bg-repeat"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2300ff881a' stroke-width='2' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e")`,
-          animation: 'moveGrid 120s linear infinite'
-        }}
-      />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="relative flex items-center justify-center w-64 h-64">
-          <TechLogo icon={<Github size={32} />} initialAngle={0} radius={100} />
-          <TechLogo icon={<GitBranch size={32} />} initialAngle={Math.PI / 2} radius={100} />
-          <TechLogo icon={<Code size={32} />} initialAngle={Math.PI} radius={100} />
-          <TechLogo icon={<Bot size={32} />} initialAngle={3 * Math.PI / 2} radius={100} />
+const FeatureCard = ({ icon: Icon, title, description, delay }: { 
+  icon: any, 
+  title: string, 
+  description: string, 
+  delay: number 
+}) => (
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, delay }}
+    className="relative group"
+  >
+    <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    <div className="relative bg-black/40 backdrop-blur-xl border border-green-400/20 rounded-2xl p-6 hover:border-green-400/40 transition-all duration-300">
+      <div className="flex items-center gap-4 mb-3">
+        <div className="p-2 bg-green-400/10 rounded-lg">
+          <Icon className="w-6 h-6 text-green-400" />
         </div>
+        <h3 className="text-lg font-semibold text-white">{title}</h3>
       </div>
+      <p className="text-gray-400 text-sm leading-relaxed">{description}</p>
     </div>
-  );
-};
+  </motion.div>
+);
+
+const StatCard = ({ number, label, delay }: { number: string, label: string, delay: number }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.8 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.5, delay }}
+    className="text-center"
+  >
+    <motion.div
+      className="text-3xl font-bold text-green-400 mb-2"
+      animate={{ 
+        textShadow: [
+          '0 0 10px rgba(0, 255, 136, 0.5)',
+          '0 0 20px rgba(0, 255, 136, 0.8)',
+          '0 0 10px rgba(0, 255, 136, 0.5)'
+        ]
+      }}
+      transition={{ duration: 2, repeat: Infinity }}
+    >
+      {number}
+    </motion.div>
+    <div className="text-gray-400 text-sm">{label}</div>
+  </motion.div>
+);
 
 export default function SimpleCentered() {
   const [showGenerator, setShowGenerator] = useState(false);
@@ -96,78 +94,204 @@ export default function SimpleCentered() {
   };
 
   return (
-    <div className="bg-[#0a0a0a] min-h-screen font-sans text-white overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        <MovingGrid />
-      </div>
-      <div className="relative isolate px-6 pt-0 lg:px-8 min-h-screen flex flex-col justify-center">
-        <div className="mx-auto max-w-4xl py-12 sm:py-16 lg:py-20">
-          <AnimatePresence mode="wait">
-            {showEditor ? (
-              <motion.div
-                key="editor-content"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-                className="fixed inset-0 z-50 bg-black/80 backdrop-blur-lg"
-              >
-                <ModernReadmeOutput 
-                  content={generatedReadme}
-                  repositoryUrl={repositoryUrl}
-                  projectName={projectName}
-                  generationParams={generationParams}
-                  onClose={handleEditorClose}
-                />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="hero-content"
-                initial={{ opacity: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-                className="text-center"
-              >
-                <ScrollAnimatedDiv delay={0} duration={0.8} yOffset={60}>
-                  <motion.h1
-                    className="text-5xl font-bold tracking-tight text-white sm:text-7xl"
-                    style={{ textShadow: '0 0 20px rgba(0, 255, 136, 0.3), 0 0 40px rgba(0, 255, 136, 0.2)' }}
-                  >
-                    Generate Perfect READMEs in Seconds
-                  </motion.h1>
-                </ScrollAnimatedDiv>
-                
-                <ScrollAnimatedDiv delay={0.2} duration={0.8} yOffset={40}>
-                  <motion.p className="mt-6 text-lg font-medium text-gray-300 sm:text-xl/8 max-w-2xl mx-auto">
-                    Transform your repositories with AI-powered README generation. Just paste your GitHub URL and watch the magic happen.
-                  </motion.p>
-                </ScrollAnimatedDiv>
-                
-                <ScrollAnimatedDiv delay={0.4} duration={0.8} yOffset={30} className="mt-10">
-                  {!showGenerator ? (
-                    <div className="max-w-md mx-auto">
-                      <div className="relative group">
-                        <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity" />
-                        <div className="relative bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl p-6">
+    <div className="min-h-screen font-sans text-white overflow-hidden relative">
+      <div className="relative isolate px-6 pt-0 lg:px-8 min-h-screen">
+        <AnimatePresence mode="wait">
+          {showEditor ? (
+            <motion.div
+              key="editor-content"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 z-50 bg-black/80 backdrop-blur-lg"
+            >
+              <ModernReadmeOutput 
+                content={generatedReadme}
+                repositoryUrl={repositoryUrl}
+                projectName={projectName}
+                generationParams={generationParams}
+                onClose={handleEditorClose}
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="hero-content"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+              className="relative z-10"
+            >
+              {/* Hero Section */}
+              <div className="mx-auto max-w-6xl py-12 sm:py-16 lg:py-20">
+                <div className="text-center mb-16">
+                  <ScrollAnimatedDiv delay={0} duration={0.8} yOffset={60}>
+                    <motion.div
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-green-400/10 border border-green-400/30 rounded-full text-green-400 text-sm font-medium mb-8"
+                      animate={{ 
+                        boxShadow: [
+                          '0 0 10px rgba(0, 255, 136, 0.3)',
+                          '0 0 20px rgba(0, 255, 136, 0.5)',
+                          '0 0 10px rgba(0, 255, 136, 0.3)'
+                        ]
+                      }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      AI-Powered Documentation
+                    </motion.div>
+                  </ScrollAnimatedDiv>
+                  
+                  <ScrollAnimatedDiv delay={0.1} duration={0.8} yOffset={60}>
+                    <motion.h1
+                      className="text-5xl font-bold tracking-tight text-white sm:text-7xl lg:text-8xl mb-6"
+                      style={{ 
+                        textShadow: '0 0 30px rgba(0, 255, 136, 0.3), 0 0 60px rgba(0, 255, 136, 0.2)',
+                        background: 'linear-gradient(135deg, #ffffff 0%, #00ff88 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text'
+                      }}
+                    >
+                      Generate Perfect
+                      <br />
+                      <span className="text-green-400">READMEs</span> in Seconds
+                    </motion.h1>
+                  </ScrollAnimatedDiv>
+                  
+                  <ScrollAnimatedDiv delay={0.2} duration={0.8} yOffset={40}>
+                    <motion.p className="mt-6 text-xl font-medium text-gray-300 sm:text-2xl max-w-3xl mx-auto leading-relaxed">
+                      Transform your repositories with AI-powered README generation. 
+                      <br className="hidden sm:block" />
+                      Just paste your GitHub URL and watch the magic happen.
+                    </motion.p>
+                  </ScrollAnimatedDiv>
+                  
+                  <ScrollAnimatedDiv delay={0.4} duration={0.8} yOffset={30} className="mt-12">
+                    {!showGenerator ? (
+                      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-lg mx-auto">
+                        <div className="relative group w-full sm:w-auto">
+                          <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity" />
                           <motion.button
-                            whileHover={{ scale: 1.02 }}
+                            whileHover={{ scale: 1.02, y: -2 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={handleStartGeneration}
-                            className="w-full px-6 py-4 bg-green-500 text-black font-semibold rounded-lg transition-all duration-300 hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-black text-lg"
-                            style={{ boxShadow: '0 0 20px rgba(0, 255, 136, 0.4)' }}
+                            className="relative w-full sm:w-auto px-8 py-4 bg-green-500 text-black font-bold rounded-xl transition-all duration-300 hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-black text-lg flex items-center justify-center gap-3"
+                            style={{ boxShadow: '0 0 30px rgba(0, 255, 136, 0.4)' }}
                           >
-                            Start README Generation
+                            <Play className="w-5 h-5" />
+                            Start Generation
+                            <ArrowRight className="w-5 h-5" />
                           </motion.button>
                         </div>
+                        
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="px-6 py-4 bg-transparent border border-green-400/30 text-green-400 font-semibold rounded-xl hover:bg-green-400/10 hover:border-green-400/50 transition-all duration-300 flex items-center gap-2"
+                        >
+                          <Github className="w-5 h-5" />
+                          View Examples
+                        </motion.button>
                       </div>
-                    </div>
-                  ) : (
-                    <ReadmeGeneratorFlow onComplete={handleGenerationComplete} />
-                  )}
+                    ) : (
+                      <ReadmeGeneratorFlow onComplete={handleGenerationComplete} />
+                    )}
+                  </ScrollAnimatedDiv>
+                </div>
+
+                {/* Stats Section */}
+                <ScrollAnimatedDiv delay={0.6} duration={0.8} yOffset={40}>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
+                    <StatCard number="10K+" label="READMEs Generated" delay={0.7} />
+                    <StatCard number="99%" label="Accuracy Rate" delay={0.8} />
+                    <StatCard number="< 30s" label="Average Time" delay={0.9} />
+                    <StatCard number="24/7" label="Available" delay={1.0} />
+                  </div>
                 </ScrollAnimatedDiv>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+
+                {/* Features Grid */}
+                <ScrollAnimatedDiv delay={0.8} duration={0.8} yOffset={40}>
+                  <div className="mb-12 text-center">
+                    <h2 className="text-3xl font-bold text-white mb-4">Why Choose Our Generator?</h2>
+                    <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                      Powered by advanced AI to create comprehensive, professional documentation
+                    </p>
+                  </div>
+                  
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+                    <FeatureCard
+                      icon={BrainCircuit}
+                      title="AI-Powered Analysis"
+                      description="Advanced algorithms analyze your codebase to generate contextually relevant documentation"
+                      delay={0.9}
+                    />
+                    <FeatureCard
+                      icon={Zap}
+                      title="Lightning Fast"
+                      description="Generate comprehensive READMEs in under 30 seconds with our optimized processing"
+                      delay={1.0}
+                    />
+                    <FeatureCard
+                      icon={Github}
+                      title="GitHub Integration"
+                      description="Seamlessly connect with GitHub repositories and save directly to your projects"
+                      delay={1.1}
+                    />
+                    <FeatureCard
+                      icon={FileText}
+                      title="Professional Templates"
+                      description="Choose from multiple professionally designed templates that suit your project type"
+                      delay={1.2}
+                    />
+                    <FeatureCard
+                      icon={Code}
+                      title="Code Analysis"
+                      description="Automatically detects technologies, dependencies, and project structure"
+                      delay={1.3}
+                    />
+                    <FeatureCard
+                      icon={Star}
+                      title="Quality Assured"
+                      description="Every generated README follows best practices and industry standards"
+                      delay={1.4}
+                    />
+                  </div>
+                </ScrollAnimatedDiv>
+
+                {/* CTA Section */}
+                <ScrollAnimatedDiv delay={1.2} duration={0.8} yOffset={40}>
+                  <div className="text-center bg-gradient-to-r from-green-400/10 to-green-600/10 border border-green-400/20 rounded-3xl p-12">
+                    <motion.div
+                      animate={{ 
+                        scale: [1, 1.05, 1],
+                        rotate: [0, 5, -5, 0]
+                      }}
+                      transition={{ duration: 4, repeat: Infinity }}
+                      className="inline-block mb-6"
+                    >
+                      <Bot className="w-16 h-16 text-green-400" />
+                    </motion.div>
+                    <h3 className="text-2xl font-bold text-white mb-4">Ready to Transform Your Documentation?</h3>
+                    <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
+                      Join thousands of developers who have already improved their project documentation with our AI-powered generator.
+                    </p>
+                    {!showGenerator && (
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={handleStartGeneration}
+                        className="px-8 py-4 bg-green-500 text-black font-bold rounded-xl hover:bg-green-400 transition-all duration-300 flex items-center gap-3 mx-auto"
+                      >
+                        <Wand2 className="w-5 h-5" />
+                        Get Started Now
+                      </motion.button>
+                    )}
+                  </div>
+                </ScrollAnimatedDiv>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

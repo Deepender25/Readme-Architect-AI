@@ -32,6 +32,7 @@ import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
 import SimpleDropdown from '@/components/ui/simple-dropdown'
+import withAuth from '@/components/withAuth'
 
 interface Repository {
   name: string;
@@ -220,22 +221,7 @@ function RepositoriesContent() {
     return { totalStars, totalForks, languages: languages.length, privateCount };
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-black text-foreground relative overflow-hidden flex items-center justify-center">
-        <div className="fixed inset-0 z-0 w-full h-full">
-          <MinimalGridBackground />
-        </div>
-        <div className="fixed top-0 left-0 right-0 z-50">
-          <GitHubOAuthNavbar />
-        </div>
-        <div className="relative z-10 text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Authentication Required</h1>
-          <p className="text-gray-400">Please sign in to view your repositories.</p>
-        </div>
-      </div>
-    );
-  }
+  
 
   const stats = getRepositoryStats();
 
@@ -587,10 +573,12 @@ function RepositoriesContent() {
   )
 }
 
-export default function RepositoriesPage() {
+const RepositoriesPage = withAuth(RepositoriesContent);
+
+export default function RepositoriesPageWrapper() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <RepositoriesContent />
+      <RepositoriesPage />
     </Suspense>
-  )
+  );
 }
