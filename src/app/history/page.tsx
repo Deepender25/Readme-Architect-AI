@@ -268,12 +268,14 @@ function HistoryContent() {
               </p>
             </motion.div>
 
-            {/* Statistics Cards */}
+            {/* Statistics Cards - Single Instance */}
             <motion.div
+              key="history-stats-unique"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
               className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+              data-testid="history-stats-dashboard"
             >
               <div className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-xl border border-[rgba(255,255,255,0.1)] p-4">
                 <div className="flex items-center gap-3">
@@ -585,7 +587,7 @@ const HistoryPage = withAuth(HistoryContent);
 export default function HistoryPageWrapper() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <HistoryPage />
+      <HistoryPage key="history-page-single" />
     </Suspense>
   );
 }
