@@ -1,6 +1,6 @@
-# AutoDoc AI - Next.js Version
+# AutoDoc AI
 
-A modern Next.js application for generating professional README files using AI, featuring the beautiful UI from the `rd` folder integrated with the powerful README generation logic from the main project.
+A modern Next.js application for generating professional README files using AI, featuring a beautiful UI with powerful README generation capabilities.
 
 ## 🚀 Features
 
@@ -51,24 +51,17 @@ A modern Next.js application for generating professional README files using AI, 
 ## 🏗️ Project Structure
 
 ```
-src/
-├── app/
-│   ├── api/
-│   │   ├── generate/route.ts    # README generation API
-│   │   └── stream/route.ts      # Streaming generation API
-│   ├── globals.css              # Global styles and theme
-│   ├── layout.tsx               # Root layout
-│   └── page.tsx                 # Home page
-├── components/
-│   ├── blocks/
-│   │   ├── footers/             # Footer components
-│   │   ├── heros/               # Hero section components
-│   │   └── navbars/             # Navigation components
-│   ├── ui/                      # Reusable UI components
-│   ├── github-readme-editor.tsx # Main editor component
-│   └── minimal-geometric-background.tsx
-└── lib/
-    └── utils.ts                 # Utility functions
+├── api/                         # Python serverless functions
+│   ├── index.py                 # Main API handler (auth, repos, history)
+│   ├── generate.py              # README generation endpoint
+│   ├── stream.py                # Streaming generation endpoint
+│   └── database.py              # Database operations
+├── src/                         # Next.js application
+│   ├── app/                     # App router pages and API routes
+│   ├── components/              # React components
+│   └── lib/                     # Utility functions
+├── static/                      # Static assets for legacy interface
+└── vercel.json                  # Deployment configuration
 ```
 
 ## 🎨 Design Features
@@ -87,15 +80,15 @@ src/
 - **Components:** Modular, reusable component architecture
 - **API:** RESTful endpoints with streaming support
 
-## 📝 Migration Notes
+## 🔧 Architecture
 
-This project successfully migrates:
-- ✅ Modern UI from `rd/` folder
-- ✅ Component structure and styling
-- ✅ Animation and interaction patterns
-- ✅ README generation logic integration
-- ✅ Streaming API implementation
-- ✅ TypeScript configuration
+This project combines:
+- ✅ **Next.js Frontend**: Modern React application with TypeScript
+- ✅ **Python Backend**: Serverless functions for AI processing
+- ✅ **Dual Interface**: Both modern Next.js UI and legacy static interface
+- ✅ **GitHub Integration**: OAuth authentication and repository access
+- ✅ **AI Generation**: Google Gemini for README creation
+- ✅ **Database**: Supabase for user history and data persistence
 
 ## 🚀 Deployment
 
