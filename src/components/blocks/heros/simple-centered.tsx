@@ -14,9 +14,9 @@ const FeatureCard = ({ icon: Icon, title, description, delay }: {
   delay: number 
 }) => (
   <motion.div
-    initial={{ opacity: 0, y: 30 }}
+    initial={{ opacity: 0, y: 15 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6, delay }}
+    transition={{ duration: 0.3, delay: Math.min(delay * 0.05, 0.2) }}
     className="relative group"
   >
     <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -34,9 +34,9 @@ const FeatureCard = ({ icon: Icon, title, description, delay }: {
 
 const StatCard = ({ number, label, delay }: { number: string, label: string, delay: number }) => (
   <motion.div
-    initial={{ opacity: 0, scale: 0.8 }}
+    initial={{ opacity: 0, scale: 0.95 }}
     animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.5, delay }}
+    transition={{ duration: 0.3, delay: Math.min(delay * 0.05, 0.15) }}
     className="text-center"
   >
     <motion.div
@@ -152,7 +152,7 @@ export default function SimpleCentered() {
               {/* Hero Section */}
               <div className="mx-auto max-w-6xl py-12 sm:py-16 lg:py-20">
                 <div className="text-center mb-16">
-                  <ScrollAnimatedDiv delay={0} duration={0.8} yOffset={60}>
+                  <ScrollAnimatedDiv delay={0} duration={0.4} yOffset={30}>
                     <motion.div
                       className="inline-flex items-center gap-2 px-4 py-2 bg-green-400/10 border border-green-400/30 rounded-full text-green-400 text-sm font-medium mb-8"
                       animate={{ 
@@ -169,7 +169,7 @@ export default function SimpleCentered() {
                     </motion.div>
                   </ScrollAnimatedDiv>
                   
-                  <ScrollAnimatedDiv delay={0.1} duration={0.8} yOffset={60}>
+                  <ScrollAnimatedDiv delay={0.05} duration={0.4} yOffset={30}>
                     <motion.h1
                       className="text-5xl font-bold tracking-tight text-white sm:text-7xl lg:text-8xl mb-6"
                       style={{ 
@@ -186,7 +186,7 @@ export default function SimpleCentered() {
                     </motion.h1>
                   </ScrollAnimatedDiv>
                   
-                  <ScrollAnimatedDiv delay={0.2} duration={0.8} yOffset={40}>
+                  <ScrollAnimatedDiv delay={0.1} duration={0.4} yOffset={20}>
                     <motion.p className="mt-6 text-xl font-medium text-gray-300 sm:text-2xl max-w-3xl mx-auto leading-relaxed">
                       Transform your repositories with AI-powered README generation. 
                       <br className="hidden sm:block" />
@@ -194,7 +194,7 @@ export default function SimpleCentered() {
                     </motion.p>
                   </ScrollAnimatedDiv>
                   
-                  <ScrollAnimatedDiv delay={0.4} duration={0.8} yOffset={30} className="mt-12">
+                  <ScrollAnimatedDiv delay={0.15} duration={0.4} yOffset={20} className="mt-12">
                     {!showGenerator ? (
                       <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-lg mx-auto">
                         <div className="relative group w-full sm:w-auto">
@@ -228,17 +228,17 @@ export default function SimpleCentered() {
                 </div>
 
                 {/* Stats Section */}
-                <ScrollAnimatedDiv delay={0.6} duration={0.8} yOffset={40}>
+                <ScrollAnimatedDiv delay={0.2} duration={0.4} yOffset={20}>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
-                    <StatCard number="10K+" label="READMEs Generated" delay={0.7} />
-                    <StatCard number="99%" label="Accuracy Rate" delay={0.8} />
-                    <StatCard number="< 30s" label="Average Time" delay={0.9} />
-                    <StatCard number="24/7" label="Available" delay={1.0} />
+                    <StatCard number="10K+" label="READMEs Generated" delay={1} />
+                    <StatCard number="99%" label="Accuracy Rate" delay={2} />
+                    <StatCard number="< 30s" label="Average Time" delay={3} />
+                    <StatCard number="24/7" label="Available" delay={4} />
                   </div>
                 </ScrollAnimatedDiv>
 
                 {/* Features Grid */}
-                <ScrollAnimatedDiv delay={0.8} duration={0.8} yOffset={40}>
+                <ScrollAnimatedDiv delay={0.25} duration={0.4} yOffset={20}>
                   <div className="mb-12 text-center">
                     <h2 className="text-3xl font-bold text-white mb-4">Why Choose Our Generator?</h2>
                     <p className="text-gray-400 text-lg max-w-2xl mx-auto">
@@ -251,43 +251,43 @@ export default function SimpleCentered() {
                       icon={BrainCircuit}
                       title="AI-Powered Analysis"
                       description="Advanced algorithms analyze your codebase to generate contextually relevant documentation"
-                      delay={0.9}
+                      delay={1}
                     />
                     <FeatureCard
                       icon={Zap}
                       title="Lightning Fast"
                       description="Generate comprehensive READMEs in under 30 seconds with our optimized processing"
-                      delay={1.0}
+                      delay={2}
                     />
                     <FeatureCard
                       icon={Github}
                       title="GitHub Integration"
                       description="Seamlessly connect with GitHub repositories and save directly to your projects"
-                      delay={1.1}
+                      delay={3}
                     />
                     <FeatureCard
                       icon={FileText}
                       title="Professional Templates"
                       description="Choose from multiple professionally designed templates that suit your project type"
-                      delay={1.2}
+                      delay={4}
                     />
                     <FeatureCard
                       icon={Code}
                       title="Code Analysis"
                       description="Automatically detects technologies, dependencies, and project structure"
-                      delay={1.3}
+                      delay={5}
                     />
                     <FeatureCard
                       icon={Star}
                       title="Quality Assured"
                       description="Every generated README follows best practices and industry standards"
-                      delay={1.4}
+                      delay={6}
                     />
                   </div>
                 </ScrollAnimatedDiv>
 
                 {/* CTA Section */}
-                <ScrollAnimatedDiv delay={1.2} duration={0.8} yOffset={40}>
+                <ScrollAnimatedDiv delay={0.3} duration={0.4} yOffset={20}>
                   <div className="text-center bg-gradient-to-r from-green-400/10 to-green-600/10 border border-green-400/20 rounded-3xl p-12">
                     <motion.div
                       animate={{ 

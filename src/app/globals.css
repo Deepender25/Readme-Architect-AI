@@ -5,6 +5,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Performance optimizations for smooth scrolling and animations */
+@import './performance.css';
+
 
 
 /*
@@ -26,8 +29,26 @@
 }
 
 @layer utilities {
+  /* Performance optimizations */
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  
   body {
     font-family: "Inter", sans-serif;
+    /* Enable GPU acceleration */
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    
+    /* Optimize rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    
+    /* Improve scroll performance */
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
   }
   
   .font-mono {

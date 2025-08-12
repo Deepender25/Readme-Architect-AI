@@ -18,9 +18,9 @@ export const ScrollAnimatedDiv: React.FC<ScrollAnimatedDivProps> = ({
   children,
   className = '',
   delay = 0,
-  duration = 0.6,
-  yOffset = 50,
-  threshold = 0.1,
+  duration = 0.3, // Reduced duration for faster animations
+  yOffset = 20, // Reduced offset for subtler movement
+  threshold = 0.05, // Lower threshold for earlier triggering
   triggerOnce = true,
 }) => {
   const { ref, isVisible } = useScrollAnimation({ threshold, triggerOnce });
@@ -32,24 +32,19 @@ export const ScrollAnimatedDiv: React.FC<ScrollAnimatedDivProps> = ({
       initial={{ 
         opacity: 0, 
         y: yOffset,
-        scale: 0.95
       }}
       animate={isVisible ? { 
         opacity: 1, 
         y: 0,
-        scale: 1
       } : { 
         opacity: 0, 
         y: yOffset,
-        scale: 0.95
       }}
       transition={{
         duration,
-        delay,
-        ease: [0.25, 0.46, 0.45, 0.94], // Custom easing for smooth pop-down effect
-        type: "spring",
-        stiffness: 100,
-        damping: 15
+        delay: Math.min(delay, 0.1), // Cap delay at 0.1s for responsiveness
+        ease: [0.25, 0.46, 0.45, 0.94], // Smooth easing
+        type: "tween", // Use tween instead of spring for consistency
       }}
     >
       {children}
