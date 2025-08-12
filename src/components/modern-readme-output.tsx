@@ -42,7 +42,7 @@ import { marked } from 'marked';
 
 import DOMPurify from 'isomorphic-dompurify';
 
-import GitHubOAuthNavbar from '@/components/blocks/navbars/github-oauth-navbar';
+
 
 import MinimalGridBackground from '@/components/minimal-geometric-background';
 
@@ -466,19 +466,13 @@ export default function ModernReadmeOutput({
 
       </div>
 
-      {/* Navbar - positioned above background, always visible */}
+      {/* Navbar removed to prevent duplication when used as modal/overlay */}
 
-      <div className="fixed top-0 left-0 right-0 z-50">
-
-        <GitHubOAuthNavbar />
-
-      </div>
-
-      {/* Secondary Header - positioned below navbar */}
+      {/* Secondary Header - positioned at top since navbar is removed */}
 
       <motion.header
 
-        className="sticky top-16 z-40 glass-navbar border-b border-green-400/20 no-lag"
+        className="sticky top-0 z-40 glass-navbar border-b border-green-400/20 no-lag"
 
         initial={{ y: -50, opacity: 0 }}
 
@@ -928,7 +922,7 @@ export default function ModernReadmeOutput({
 
       {/* Main Content Area */}
 
-      <div className="relative z-10 min-h-screen pt-16">
+      <div className="relative z-10 min-h-screen">
 
         {/* Content Section */}
 
