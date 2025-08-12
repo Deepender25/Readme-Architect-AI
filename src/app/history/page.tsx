@@ -272,7 +272,7 @@ function HistoryContent() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
               className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
             >
               <div className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-xl border border-[rgba(255,255,255,0.1)] p-4">
@@ -322,7 +322,7 @@ function HistoryContent() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              transition={{ duration: 0.3, delay: 0.15 }}
               className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] p-6 mb-8"
             >
               <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
@@ -399,7 +399,7 @@ function HistoryContent() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
               className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] p-8"
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
@@ -443,7 +443,7 @@ function HistoryContent() {
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -20 }}
-                          transition={{ delay: index * 0.05 }}
+                          transition={{ delay: Math.min(index * 0.02, 0.2), duration: 0.3 }}
                           className="group relative p-6 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] rounded-xl hover:border-green-400/30 transition-all duration-200"
                         >
                           <div className="flex items-start justify-between">

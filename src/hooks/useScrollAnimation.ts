@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 interface UseScrollAnimationOptions {
   threshold?: number;
@@ -10,42 +10,42 @@ interface UseScrollAnimationOptions {
 
 export const useScrollAnimation = (options: UseScrollAnimationOptions = {}) => {
   const {
-    threshold = 0.1,
-    rootMargin = '0px 0px -50px 0px',
+    threshold = 0.05, // Reduced threshold for faster triggering
+    rootMargin = '0px 0px -20px 0px', // Reduced margin for earlier triggering
     triggerOnce = true
   } = options;
 
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  const handleIntersection = useCallback(([entry]: IntersectionObserverEntry[]) => {
+    if (entry.isIntersecting) {
+      setIsVisible(true);
+      if (triggerOnce && ref.current && observerRef.current) {
+        observerRef.current.unobserve(ref.current);
+      }
+    } else if (!triggerOnce) {
+      setIsVisible(false);
+    }
+  }, [triggerOnce]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          if (triggerOnce && ref.current) {
-            observer.unobserve(ref.current);
-          }
-        } else if (!triggerOnce) {
-          setIsVisible(false);
-        }
-      },
-      {
-        threshold,
-        rootMargin,
-      }
-    );
+    if (!ref.current) return;
 
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
+    observerRef.current = new IntersectionObserver(handleIntersection, {
+      threshold,
+      rootMargin,
+    });
+
+    observerRef.current.observe(ref.current);
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (observerRef.current) {
+        observerRef.current.disconnect();
       }
     };
-  }, [threshold, rootMargin, triggerOnce]);
+  }, [threshold, rootMargin, handleIntersection]);
 
   return { ref, isVisible };
 };

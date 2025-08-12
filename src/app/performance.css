@@ -1,0 +1,178 @@
+/* Performance optimizations for smooth scrolling and animations */
+
+/* Enable hardware acceleration for better performance */
+* {
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Optimize scrolling performance */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  /* Enable GPU acceleration */
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  
+  /* Optimize rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  
+  /* Improve scroll performance */
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Optimize animations */
+[data-framer-motion] {
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Optimize backdrop blur performance */
+.backdrop-blur-xl,
+.backdrop-blur-lg,
+.backdrop-blur-md,
+.backdrop-blur-sm {
+  -webkit-backdrop-filter: blur(var(--tw-backdrop-blur));
+  backdrop-filter: blur(var(--tw-backdrop-blur));
+  will-change: backdrop-filter;
+}
+
+/* Optimize transform animations */
+.transform {
+  will-change: transform;
+}
+
+/* Optimize opacity animations */
+.opacity-0,
+.opacity-100 {
+  will-change: opacity;
+}
+
+/* Smooth transitions for interactive elements */
+button,
+a,
+[role="button"] {
+  transition: all 0.15s ease-in-out;
+  will-change: transform, opacity, background-color, border-color;
+}
+
+/* Optimize scroll containers */
+.overflow-y-auto,
+.overflow-x-auto,
+.overflow-auto {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Optimize grid and flex layouts */
+.grid,
+.flex {
+  will-change: contents;
+}
+
+/* Optimize fixed and sticky elements */
+.fixed,
+.sticky {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
+/* Optimize images and media */
+img,
+video,
+canvas {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
+/* Optimize hover effects */
+.group:hover .group-hover\:opacity-100,
+.hover\:opacity-100:hover {
+  will-change: opacity;
+}
+
+.group:hover .group-hover\:scale-105,
+.hover\:scale-105:hover {
+  will-change: transform;
+}
+
+/* Optimize motion components */
+[data-motion-component] {
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
+/* Optimize scroll-triggered animations */
+[data-scroll-animation] {
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
+/* Optimize loading states */
+.animate-spin,
+.animate-pulse,
+.animate-bounce {
+  will-change: transform, opacity;
+}
+
+/* Optimize gradient backgrounds */
+.bg-gradient-to-r,
+.bg-gradient-to-l,
+.bg-gradient-to-t,
+.bg-gradient-to-b {
+  will-change: background-image;
+}
+
+/* Optimize shadow effects */
+.shadow-lg,
+.shadow-xl,
+.shadow-2xl {
+  will-change: box-shadow;
+}
+
+/* Optimize border animations */
+.border-green-400\/30,
+.border-green-500\/50,
+.hover\:border-green-500\/50:hover {
+  will-change: border-color;
+}
+
+/* Optimize text color animations */
+.text-green-400,
+.hover\:text-green-400:hover,
+.group-hover\:text-green-400 {
+  will-change: color;
+}
+
+/* Optimize background color animations */
+.bg-green-500,
+.hover\:bg-green-600:hover,
+.bg-surface\/50 {
+  will-change: background-color;
+}
