@@ -76,12 +76,40 @@ export default function SimpleCentered() {
 
   const handleStartGeneration = () => setShowGenerator(true);
 
-  const handleGenerationComplete = (readme: string, repoUrl: string, projName: string, genParams: any) => {
+  const handleGenerationComplete = async (readme: string, repoUrl: string, projName: string, genParams: any) => {
     setGeneratedReadme(readme);
     setRepositoryUrl(repoUrl);
     setProjectName(projName);
     setGenerationParams(genParams);
     setShowEditor(true);
+    
+    // Auto-save to history for authenticated users
+    try {
+      console.log('💾 Auto-saving README to history...');
+      
+      const response = await fetch('/api/save-history', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          repository_url: repoUrl,
+          repository_name: projName || repoUrl.split('/').pop() || 'Unknown',
+          project_name: projName,
+          readme_content: readme,
+          generation_params: genParams,
+        }),
+      });
+
+      if (response.ok) {
+        console.log('✅ README auto-saved to history successfully');
+      } else {
+        const errorData = await response.json();
+        console.warn('⚠️ Failed to auto-save README to history:', errorData.error);
+      }
+    } catch (error) {
+      console.error('❌ Error auto-saving to history:', error);
+    }
   };
 
   const handleEditorClose = () => {
