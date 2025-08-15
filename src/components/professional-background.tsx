@@ -4,8 +4,6 @@ import React from 'react';
 import ThinGreenGridBackground from './thin-green-grid-background';
 import TechLogosBackground from './tech-logos-background';
 import CSSSparklesBackground from './css-sparkles-background';
-import MouseCursorGlow from './mouse-cursor-glow';
-
 export default function ProfessionalBackground() {
   return (
     <div className="absolute inset-0 w-full h-full bg-black overflow-hidden">
@@ -30,9 +28,6 @@ export default function ProfessionalBackground() {
           gravityStrength={25}
         />
       </div>
-
-      {/* Mouse cursor glow effect */}
-      <MouseCursorGlow />
       
       {/* Subtle overlay to ensure content remains readable */}
       <div className="absolute inset-0 z-30 bg-gradient-to-br from-black/10 via-transparent to-black/20 pointer-events-none" />
