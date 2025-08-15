@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import GitHubOAuthNavbar from '@/components/blocks/navbars/github-oauth-navbar'
-import MinimalGridBackground from '@/components/minimal-geometric-background'
+import ProfessionalBackground from '@/components/professional-background'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Clock, 
@@ -236,7 +236,7 @@ function HistoryContent() {
     <div className="min-h-screen bg-black text-foreground relative overflow-hidden">
       {/* Background */}
       <div className="fixed inset-0 z-0 w-full h-full">
-        <MinimalGridBackground />
+        <ProfessionalBackground />
       </div>
       
       {/* Navbar */}
