@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect } from 'react'
 import GitHubOAuthNavbar from '@/components/blocks/navbars/github-oauth-navbar'
-import MinimalGridBackground from '@/components/minimal-geometric-background'
+import ProfessionalBackground from '@/components/professional-background'
 import { motion } from 'framer-motion'
 import { 
   User, 
@@ -200,7 +200,7 @@ function SettingsContent() {
     return (
       <div className="min-h-screen bg-black text-foreground relative overflow-hidden flex items-center justify-center">
         <div className="fixed inset-0 z-0 w-full h-full">
-          <MinimalGridBackground />
+          <ProfessionalBackground />
         </div>
         <div className="fixed top-0 left-0 right-0 z-50">
           <GitHubOAuthNavbar />
@@ -217,7 +217,7 @@ function SettingsContent() {
     <div className="min-h-screen bg-black text-foreground relative overflow-hidden">
       {/* Background */}
       <div className="fixed inset-0 z-0 w-full h-full">
-        <MinimalGridBackground />
+        <ProfessionalBackground />
       </div>
       
       {/* Navbar */}

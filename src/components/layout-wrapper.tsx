@@ -3,7 +3,7 @@
 import { ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import GitHubOAuthNavbar from '@/components/blocks/navbars/github-oauth-navbar'
-import MinimalGridBackground from '@/components/minimal-geometric-background'
+import ProfessionalBackground from '@/components/professional-background'
 import { CenteredWithLogo } from '@/components/blocks/footers/centered-with-logo'
 import PageTransition from '@/components/page-transition'
 
@@ -22,7 +22,7 @@ export default function LayoutWrapper({
     <div className="min-h-screen bg-black text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag">
       {/* Background */}
       <div className="fixed inset-0 z-0 w-full h-full">
-        <MinimalGridBackground />
+        <ProfessionalBackground />
       </div>
       
       {/* Navbar */}
