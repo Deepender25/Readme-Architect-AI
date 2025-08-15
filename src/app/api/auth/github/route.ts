@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Force dynamic rendering for this route
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
-    // Proxy to the Python OAuth handler
-    const baseUrl = process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}` 
-      : 'http://localhost:3000';
+    // Get the current host from the request
+    const host = request.headers.get('host');
+    const protocol = host?.includes('localhost') ? 'http' : 'https';
+    const baseUrl = `${protocol}://${host}`;
     
     const pythonAuthUrl = `${baseUrl}/auth/github`;
     
@@ -13,6 +17,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(pythonAuthUrl);
   } catch (error) {
     console.error('GitHub auth error:', error);
-    return NextResponse.redirect('/?error=auth_failed');
+    const host = request.headers.get('host');
+    const protocol = host?.includes('localhost') ? 'http' : 'https';
+    const baseUrl = `${protocol}://${host}`;
+    return NextResponse.redirect(`${baseUrl}/?error=auth_failed`);
   }
 }

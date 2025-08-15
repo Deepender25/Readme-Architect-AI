@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Force dynamic rendering for this route
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   
   try {
-    // Proxy to the Python OAuth callback handler
-    const baseUrl = process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}` 
-      : 'http://localhost:3000';
+    // Get the current host from the request
+    const host = request.headers.get('host');
+    const protocol = host?.includes('localhost') ? 'http' : 'https';
+    const baseUrl = `${protocol}://${host}`;
     
     const pythonCallbackUrl = `${baseUrl}/auth/callback?${searchParams.toString()}`;
     
@@ -40,6 +44,9 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('GitHub callback error:', error);
-    return NextResponse.redirect('/?error=callback_failed');
+    const host = request.headers.get('host');
+    const protocol = host?.includes('localhost') ? 'http' : 'https';
+    const baseUrl = `${protocol}://${host}`;
+    return NextResponse.redirect(`${baseUrl}/?error=callback_failed`);
   }
 }

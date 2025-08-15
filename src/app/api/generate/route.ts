@@ -1,32 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Force dynamic rendering for this route
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   
   try {
-    // Check if we're on Vercel and try direct Python API first
-    if (process.env.VERCEL_URL) {
-      // Try the direct Python API endpoint
-      const pythonApiUrl = `https://${process.env.VERCEL_URL}/api/python/generate?${searchParams.toString()}`;
-      
-      try {
-        const response = await fetch(pythonApiUrl, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'NextJS-Internal-Request',
-          },
-        });
+    // Try the direct Python API endpoint first
+    const host = request.headers.get('host');
+    const protocol = host?.includes('localhost') ? 'http' : 'https';
+    const baseUrl = `${protocol}://${host}`;
+    const pythonApiUrl = `${baseUrl}/api/python/generate?${searchParams.toString()}`;
+    
+    try {
+      const response = await fetch(pythonApiUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': request.headers.get('Cookie') || '',
+          'User-Agent': 'NextJS-Internal-Request',
+        },
+      });
 
-        if (response.ok) {
-          const data = await response.json();
-          return NextResponse.json(data);
-        } else {
-          console.log('Python API failed, falling back to local generation');
-        }
-      } catch (error) {
-        console.log('Python API error, falling back to local generation:', error);
+      if (response.ok) {
+        const data = await response.json();
+        return NextResponse.json(data);
+      } else {
+        console.log('Python API failed, falling back to local generation');
       }
+    } catch (error) {
+      console.log('Python API error, falling back to local generation:', error);
     }
     
     // Fallback: Use local generation logic
