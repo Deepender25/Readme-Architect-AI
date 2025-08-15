@@ -1,5 +1,9 @@
 import { NextRequest } from 'next/server';
 
+// Force dynamic rendering for this route
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 // Simple fallback README generator for when Python API is not accessible
 function generateSimpleReadme(params: {
   repoUrl: string;

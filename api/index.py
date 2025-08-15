@@ -79,8 +79,20 @@ class handler(BaseHTTPRequestHandler):
         if not GITHUB_CLIENT_ID or not GITHUB_CLIENT_SECRET:
             self.send_json_response({'error': 'GitHub OAuth not configured.'}, 500)
             return
+        
+        # Use environment variable first, then dynamic detection
+        redirect_uri = os.getenv("GITHUB_REDIRECT_URI")
+        if not redirect_uri:
+            # Fallback to dynamic detection
+            host = self.headers.get('Host')
+            if host:
+                protocol = 'https' if 'localhost' not in host else 'http'
+                redirect_uri = f"{protocol}://{host}/auth/callback"
+            else:
+                # Final fallback
+                redirect_uri = "https://autodocai.vercel.app/auth/callback"
             
-        github_auth_url = f"https://github.com/login/oauth/authorize?client_id={GITHUB_CLIENT_ID}&redirect_uri={GITHUB_REDIRECT_URI}&scope=repo"
+        github_auth_url = f"https://github.com/login/oauth/authorize?client_id={GITHUB_CLIENT_ID}&redirect_uri={redirect_uri}&scope=repo"
         self.send_response(302)
         self.send_header('Location', github_auth_url)
         self.end_headers()

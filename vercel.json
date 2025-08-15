@@ -6,15 +6,7 @@
       "use": "@vercel/next"
     },
     {
-      "src": "api/index.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "api/generate.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "api/stream.py",
+      "src": "api/*.py",
       "use": "@vercel/python"
     }
   ],
@@ -25,7 +17,7 @@
       "headers": {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, Cookie"
       }
     },
     {
@@ -34,32 +26,47 @@
       "headers": {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, Cookie"
       }
     },
     {
       "src": "/api/python/(.*)",
-      "dest": "/api/index.py"
+      "dest": "/api/index.py",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, Cookie"
+      }
     },
     {
-      "src": "/auth/github",
-      "dest": "/api/index.py"
-    },
-    {
-      "src": "/auth/callback",
-      "dest": "/api/index.py"
+      "src": "/auth/(.*)",
+      "dest": "/api/index.py",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, Cookie",
+        "Access-Control-Allow-Credentials": "true"
+      }
     },
     {
       "src": "/api/repositories",
-      "dest": "/api/index.py"
+      "dest": "/api/index.py",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, Cookie",
+        "Access-Control-Allow-Credentials": "true"
+      }
     },
     {
-      "src": "/api/history",
-      "dest": "/api/index.py"
-    },
-    {
-      "src": "/api/history/(.*)",
-      "dest": "/api/index.py"
+      "src": "/api/history(.*)",
+      "dest": "/api/index.py",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, Cookie",
+        "Access-Control-Allow-Credentials": "true"
+      }
     },
     {
       "src": "/(.*)",
