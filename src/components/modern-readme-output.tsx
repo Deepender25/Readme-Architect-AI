@@ -44,7 +44,7 @@ import DOMPurify from 'isomorphic-dompurify';
 
 
 
-import MinimalGridBackground from '@/components/minimal-geometric-background';
+import ProfessionalBackground from '@/components/professional-background';
 
 import { useAuth, authenticatedFetch } from '@/lib/auth';
 
@@ -462,7 +462,7 @@ export default function ModernReadmeOutput({
 
       <div className="fixed inset-0 z-0 w-full h-full">
 
-        <MinimalGridBackground />
+        <ProfessionalBackground />
 
       </div>
 
