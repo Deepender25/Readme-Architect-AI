@@ -6,33 +6,53 @@ import TechLogosBackground from './tech-logos-background';
 import CSSSparklesBackground from './css-sparkles-background';
 import MouseCursorGlow from './mouse-cursor-glow';
 
-export default function ProfessionalBackground() {
+interface EnhancedBackgroundWrapperProps {
+  children: React.ReactNode;
+  showTechLogos?: boolean;
+  showSparkles?: boolean;
+  showMouseGlow?: boolean;
+  logoCount?: number;
+  className?: string;
+}
+
+export default function EnhancedBackgroundWrapper({
+  children,
+  showTechLogos = true,
+  showSparkles = true,
+  showMouseGlow = true,
+  logoCount = 20,
+  className = ""
+}: EnhancedBackgroundWrapperProps) {
   return (
-    <div className="absolute inset-0 w-full h-full bg-black overflow-hidden">
+    <div className={`relative w-full h-full bg-black overflow-hidden ${className}`}>
       {/* Base thin green grid layer */}
       <div className="absolute inset-0 z-10">
         <ThinGreenGridBackground />
       </div>
       
       {/* CSS Sparkles layer */}
-      <div className="absolute inset-0 z-15">
-        <CSSSparklesBackground />
-      </div>
+      {showSparkles && (
+        <div className="absolute inset-0 z-15">
+          <CSSSparklesBackground />
+        </div>
+      )}
       
       {/* Interactive tech logos layer */}
-      <div className="absolute inset-0 z-20">
-        <TechLogosBackground
-          logoCount={20}
-          movementSpeed={0.2}
-          mouseInfluence={140}
-          backgroundColor="transparent"
-          mouseGravity="attract"
-          gravityStrength={25}
-        />
-      </div>
+      {showTechLogos && (
+        <div className="absolute inset-0 z-20">
+          <TechLogosBackground
+            logoCount={logoCount}
+            movementSpeed={0.2}
+            mouseInfluence={140}
+            backgroundColor="transparent"
+            mouseGravity="attract"
+            gravityStrength={25}
+          />
+        </div>
+      )}
 
       {/* Mouse cursor glow effect */}
-      <MouseCursorGlow />
+      {showMouseGlow && <MouseCursorGlow />}
       
       {/* Subtle overlay to ensure content remains readable */}
       <div className="absolute inset-0 z-30 bg-gradient-to-br from-black/10 via-transparent to-black/20 pointer-events-none" />
@@ -49,6 +69,11 @@ export default function ProfessionalBackground() {
             `
           }}
         />
+      </div>
+
+      {/* Content layer */}
+      <div className="relative z-40">
+        {children}
       </div>
     </div>
   );

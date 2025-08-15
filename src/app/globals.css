@@ -5,6 +5,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 /* Performance optimizations for smooth scrolling and animations */
 @import './performance.css';
 
