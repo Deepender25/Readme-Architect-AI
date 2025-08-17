@@ -1,7 +1,6 @@
 "use client"
 
 import { Suspense } from 'react'
-
 import { motion } from 'framer-motion'
 import { 
   BookOpen, 
@@ -23,11 +22,11 @@ import {
   ExternalLink
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useSmoothNavigation } from '@/hooks/use-smooth-navigation'
 import LayoutWrapper from '@/components/layout-wrapper'
+import PageHeader from '@/components/layout/page-header'
+import ContentSection from '@/components/layout/content-section'
 
 function DocumentationContent() {
-  const { navigateWithPreload } = useSmoothNavigation()
 
   const sections = [
     {

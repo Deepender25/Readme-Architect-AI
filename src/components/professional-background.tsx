@@ -1,50 +1,176 @@
-"use client";
+'use client';
 
-import React from 'react';
-import ThinGreenGridBackground from './thin-green-grid-background';
-import TechLogosBackground from './tech-logos-background';
-import CSSSparklesBackground from './css-sparkles-background';
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+
 export default function ProfessionalBackground() {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [windowSize, setWindowSize] = useState({ width: 1920, height: 1080 });
+
+  useEffect(() => {
+    // Set initial window size
+    if (typeof window !== 'undefined') {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (typeof window !== 'undefined') {
+        setMousePosition({
+          x: e.clientX / window.innerWidth,
+          y: e.clientY / window.innerHeight,
+        });
+      }
+    };
+
+    const handleResize = () => {
+      if (typeof window !== 'undefined') {
+        setWindowSize({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('resize', handleResize);
+      
+      return () => {
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('resize', handleResize);
+      };
+    }
+  }, []);
+
   return (
-    <div className="absolute inset-0 w-full h-full bg-black overflow-hidden">
-      {/* Base thin green grid layer */}
-      <div className="absolute inset-0 z-10">
-        <ThinGreenGridBackground />
-      </div>
+    <div className="absolute inset-0 overflow-hidden">
+      {/* Deep black gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-950 to-black" />
       
-      {/* CSS Sparkles layer */}
-      <div className="absolute inset-0 z-15">
-        <CSSSparklesBackground />
-      </div>
+      {/* Enhanced animated grid pattern */}
+      <motion.div
+        className="absolute inset-0 opacity-15"
+        animate={{
+          backgroundPosition: ['0% 0%', '100% 100%'],
+        }}
+        transition={{
+          duration: 25,
+          repeat: Infinity,
+          repeatType: 'reverse',
+          ease: 'linear',
+        }}
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(0, 255, 136, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 136, 0.08) 1px, transparent 1px)
+          `,
+          backgroundSize: '60px 60px',
+        }}
+      />
       
-      {/* Interactive tech logos layer */}
-      <div className="absolute inset-0 z-20">
-        <TechLogosBackground
-          logoCount={20}
-          movementSpeed={0.2}
-          mouseInfluence={140}
-          backgroundColor="transparent"
-          mouseGravity="attract"
-          gravityStrength={25}
-        />
+      {/* Secondary grid for depth */}
+      <motion.div
+        className="absolute inset-0 opacity-10"
+        animate={{
+          backgroundPosition: ['100% 100%', '0% 0%'],
+        }}
+        transition={{
+          duration: 35,
+          repeat: Infinity,
+          repeatType: 'reverse',
+          ease: 'linear',
+        }}
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(0, 255, 136, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 136, 0.05) 1px, transparent 1px)
+          `,
+          backgroundSize: '120px 120px',
+        }}
+      />
+
+      {/* Enhanced floating orbs */}
+      <div className="absolute inset-0">
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              width: `${200 + i * 40}px`,
+              height: `${200 + i * 40}px`,
+              background: `radial-gradient(circle, rgba(0, 255, 136, ${0.08 - i * 0.01}) 0%, transparent 70%)`,
+              left: `${15 + i * 12}%`,
+              top: `${8 + i * 10}%`,
+            }}
+            animate={{
+              x: [0, 40, -40, 0],
+              y: [0, -40, 40, 0],
+              scale: [1, 1.15, 0.85, 1],
+              rotate: [0, 180, 360],
+            }}
+            transition={{
+              duration: 12 + i * 3,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: i * 0.8,
+            }}
+          />
+        ))}
       </div>
+
+      {/* Enhanced interactive mouse glow */}
+      <motion.div
+        className="absolute w-[500px] h-[500px] rounded-full pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(0, 255, 136, 0.12) 0%, rgba(0, 255, 136, 0.06) 40%, transparent 70%)',
+          left: mousePosition.x * windowSize.width - 250,
+          top: mousePosition.y * windowSize.height - 250,
+        }}
+        animate={{
+          scale: [1, 1.3, 1],
+          opacity: [0.4, 0.8, 0.4],
+        }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+      />
       
-      {/* Subtle overlay to ensure content remains readable */}
-      <div className="absolute inset-0 z-30 bg-gradient-to-br from-black/10 via-transparent to-black/20 pointer-events-none" />
-      
-      {/* Professional depth effect */}
-      <div className="absolute inset-0 z-5">
-        <div 
-          className="absolute inset-0 opacity-20"
-          style={{
-            background: `
-              radial-gradient(circle at 20% 30%, rgba(0, 255, 136, 0.15) 0%, transparent 50%),
-              radial-gradient(circle at 80% 70%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
-              radial-gradient(circle at 40% 90%, rgba(0, 255, 136, 0.08) 0%, transparent 50%)
-            `
-          }}
-        />
-      </div>
+      {/* Secondary mouse glow */}
+      <motion.div
+        className="absolute w-[300px] h-[300px] rounded-full pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(0, 255, 136, 0.08) 0%, transparent 60%)',
+          left: mousePosition.x * windowSize.width - 150,
+          top: mousePosition.y * windowSize.height - 150,
+        }}
+        animate={{
+          scale: [1.2, 0.8, 1.2],
+          opacity: [0.2, 0.5, 0.2],
+        }}
+        transition={{
+          duration: 2.5,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+      />
+
+      {/* Subtle noise texture */}
+      <div 
+        className="absolute inset-0 opacity-[0.015] mix-blend-overlay"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      />
+
+      {/* Enhanced gradient overlays for depth */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/40" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40" />
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-black/20 to-transparent" />
     </div>
   );
 }
