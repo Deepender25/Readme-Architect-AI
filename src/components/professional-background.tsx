@@ -46,13 +46,13 @@ export default function ProfessionalBackground() {
   }, []);
 
   return (
-    <div className="professional-background absolute inset-0 overflow-hidden">
+    <div className="professional-background enhanced-grid-background absolute inset-0 overflow-hidden">
       {/* Deep black gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-950 to-black" />
       
       {/* Enhanced animated grid pattern - Primary */}
       <motion.div
-        className="absolute inset-0 opacity-30"
+        className="absolute inset-0 opacity-40"
         animate={{
           backgroundPosition: ['0% 0%', '100% 100%'],
         }}
@@ -64,8 +64,8 @@ export default function ProfessionalBackground() {
         }}
         style={{
           backgroundImage: `
-            linear-gradient(rgba(0, 255, 136, 0.18) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 255, 136, 0.18) 1px, transparent 1px)
+            linear-gradient(rgba(0, 255, 136, 0.25) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 136, 0.25) 1px, transparent 1px)
           `,
           backgroundSize: '60px 60px',
         }}
@@ -73,7 +73,7 @@ export default function ProfessionalBackground() {
       
       {/* Secondary grid for depth */}
       <motion.div
-        className="absolute inset-0 opacity-25"
+        className="absolute inset-0 opacity-30"
         animate={{
           backgroundPosition: ['100% 100%', '0% 0%'],
         }}
@@ -85,8 +85,8 @@ export default function ProfessionalBackground() {
         }}
         style={{
           backgroundImage: `
-            linear-gradient(rgba(0, 255, 136, 0.12) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 255, 136, 0.12) 1px, transparent 1px)
+            linear-gradient(rgba(0, 255, 136, 0.18) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 136, 0.18) 1px, transparent 1px)
           `,
           backgroundSize: '120px 120px',
         }}
@@ -94,7 +94,7 @@ export default function ProfessionalBackground() {
       
       {/* Tertiary fine grid */}
       <motion.div
-        className="absolute inset-0 opacity-15"
+        className="absolute inset-0 opacity-20"
         animate={{
           backgroundPosition: ['0% 0%', '50% 50%'],
         }}

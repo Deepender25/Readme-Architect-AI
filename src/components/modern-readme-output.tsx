@@ -620,7 +620,7 @@ export default function ModernReadmeOutput({
 
               {/* Mobile Action Buttons */}
 
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-2">
 
                 <Button
 
@@ -630,19 +630,21 @@ export default function ModernReadmeOutput({
 
                   size="sm"
 
-                  className={`relative group transition-all duration-300 p-2 ${
+                  className={`relative group transition-all duration-300 px-3 py-2 ultra-mobile-button mobile-contrast-button ${
 
                     copySuccess 
 
-                      ? 'bg-green-500/20 border-green-400/60 text-green-400' 
+                      ? 'bg-green-500/40 border-green-400 text-green-400' 
 
-                      : 'bg-gray-900/50 border-green-400/20 hover:border-green-400/40 hover:bg-green-400/10'
+                      : ''
 
                   }`}
 
                 >
 
-                  <Copy className="w-4 h-4" />
+                  <Copy className="w-4 h-4 mr-1" />
+
+                  <span className="text-xs font-bold">Copy</span>
 
                 </Button>
 
@@ -656,11 +658,13 @@ export default function ModernReadmeOutput({
 
                   size="sm"
 
-                  className="relative group bg-green-400 text-black hover:bg-green-300 font-medium p-2"
+                  className="relative group mobile-download-button ultra-mobile-button px-3 py-2"
 
                 >
 
-                  <Download className="w-4 h-4" />
+                  <Download className="w-4 h-4 mr-1" />
+
+                  <span className="text-xs font-bold">Download</span>
 
                 </Button>
 
