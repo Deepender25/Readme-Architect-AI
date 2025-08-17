@@ -1,8 +1,6 @@
 "use client"
 
 import { useState, useEffect, Suspense } from 'react'
-import GitHubOAuthNavbar from '@/components/blocks/navbars/github-oauth-navbar'
-import ProfessionalBackground from '@/components/professional-background'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Github, 
@@ -12,27 +10,27 @@ import {
   ExternalLink, 
   Loader2, 
   Search,
-  Filter,
   SortAsc,
   SortDesc,
-  Calendar,
   Code,
-  Eye,
   Lock,
   Unlock,
   RefreshCw,
   FileText,
   Activity,
-  TrendingUp,
   CheckCircle,
   AlertCircle,
-  Info
+  Info,
+  FolderGit2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
 import SimpleDropdown from '@/components/ui/simple-dropdown'
 import withAuth from '@/components/withAuth'
+import LayoutWrapper from '@/components/layout-wrapper'
+import PageHeader from '@/components/layout/page-header'
+import ContentSection from '@/components/layout/content-section'
 
 interface Repository {
   name: string;
@@ -171,11 +169,13 @@ function RepositoriesContent() {
       await new Promise(resolve => setTimeout(resolve, 500));
       
       // Navigate to main page with repository pre-filled
-      const url = new URL(window.location.origin);
-      url.searchParams.set('repo', repoUrl);
-      url.searchParams.set('name', repoName);
-      
-      window.location.href = url.toString();
+      if (typeof window !== 'undefined') {
+        const url = new URL(window.location.origin);
+        url.searchParams.set('repo', repoUrl);
+        url.searchParams.set('name', repoName);
+        
+        window.location.href = url.toString();
+      }
     } catch (error) {
       console.error('Error navigating to README generator:', error);
       showToast('Failed to navigate to README generator. Please try again.', 'error');
@@ -226,96 +226,59 @@ function RepositoriesContent() {
   const stats = getRepositoryStats();
 
   return (
-    <div className="min-h-screen bg-black text-foreground relative overflow-hidden">
-      {/* Background */}
-      <div className="fixed inset-0 z-0 w-full h-full">
-        <ProfessionalBackground />
-      </div>
-      
-      {/* Navbar */}
-      <div className="fixed top-0 left-0 right-0 z-50">
-        <GitHubOAuthNavbar />
-      </div>
+    <LayoutWrapper>
+      <PageHeader
+        title="My Repositories"
+        description="Browse, filter, and generate READMEs for your GitHub repositories"
+        badge="GitHub Integration"
+        icon={FolderGit2}
+      />
 
-      {/* Main Content */}
-      <main className="relative z-10 min-h-screen pt-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="container mx-auto px-6 py-8"
-        >
-          <div className="max-w-7xl mx-auto">
-            {/* Header */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-center mb-8"
-            >
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-green-400 bg-clip-text text-transparent mb-4">
-                My Repositories
-              </h1>
-              <p className="text-gray-400 text-lg">
-                Browse, filter, and generate READMEs for your GitHub repositories
-              </p>
-            </motion.div>
+      <ContentSection background="none" padding="none" className="mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="glass-card p-4">
+            <div className="flex items-center gap-3">
+              <Github className="w-8 h-8 text-blue-400" />
+              <div>
+                <div className="text-2xl font-bold text-white">{repositories.length}</div>
+                <div className="text-sm text-gray-400">Repositories</div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="glass-card p-4">
+            <div className="flex items-center gap-3">
+              <Star className="w-8 h-8 text-yellow-400" />
+              <div>
+                <div className="text-2xl font-bold text-white">{stats.totalStars}</div>
+                <div className="text-sm text-gray-400">Total Stars</div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="glass-card p-4">
+            <div className="flex items-center gap-3">
+              <Code className="w-8 h-8 text-purple-400" />
+              <div>
+                <div className="text-2xl font-bold text-white">{stats.languages}</div>
+                <div className="text-sm text-gray-400">Languages</div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="glass-card p-4">
+            <div className="flex items-center gap-3">
+              <Lock className="w-8 h-8 text-orange-400" />
+              <div>
+                <div className="text-2xl font-bold text-white">{stats.privateCount}</div>
+                <div className="text-sm text-gray-400">Private</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ContentSection>
 
-            {/* Statistics Cards */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
-            >
-              <div className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-xl border border-[rgba(255,255,255,0.1)] p-4">
-                <div className="flex items-center gap-3">
-                  <Github className="w-8 h-8 text-blue-400" />
-                  <div>
-                    <div className="text-2xl font-bold text-white">{repositories.length}</div>
-                    <div className="text-sm text-gray-400">Repositories</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-xl border border-[rgba(255,255,255,0.1)] p-4">
-                <div className="flex items-center gap-3">
-                  <Star className="w-8 h-8 text-yellow-400" />
-                  <div>
-                    <div className="text-2xl font-bold text-white">{stats.totalStars}</div>
-                    <div className="text-sm text-gray-400">Total Stars</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-xl border border-[rgba(255,255,255,0.1)] p-4">
-                <div className="flex items-center gap-3">
-                  <Code className="w-8 h-8 text-purple-400" />
-                  <div>
-                    <div className="text-2xl font-bold text-white">{stats.languages}</div>
-                    <div className="text-sm text-gray-400">Languages</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-xl border border-[rgba(255,255,255,0.1)] p-4">
-                <div className="flex items-center gap-3">
-                  <Lock className="w-8 h-8 text-orange-400" />
-                  <div>
-                    <div className="text-2xl font-bold text-white">{stats.privateCount}</div>
-                    <div className="text-sm text-gray-400">Private</div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Filters and Controls */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.15 }}
-              className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] p-6 mb-8"
-            >
+      <ContentSection background="glass" className="mb-8">
               <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
                 <div className="flex flex-col sm:flex-row gap-4 flex-1">
                   {/* Search */}
@@ -402,17 +365,9 @@ function RepositoriesContent() {
                 {filterLanguage !== 'all' && <span>• Language: {filterLanguage}</span>}
                 {filterVisibility !== 'all' && <span>• Visibility: {filterVisibility}</span>}
               </div>
-            </motion.div>
+      </ContentSection>
 
-            {/* Repository List */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
-              className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] p-8"
-            >
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
-              <div className="relative">
+      <ContentSection background="gradient">
                 {isLoading ? (
                   <div className="flex items-center justify-center py-12">
                     <div className="flex items-center gap-3 text-green-400">
@@ -509,7 +464,9 @@ function RepositoriesContent() {
                                 variant="outline"
                                 onClick={() => {
                                   showToast('Opening repository on GitHub...', 'info');
-                                  window.open(repo.html_url, '_blank');
+                                  if (typeof window !== 'undefined') {
+                                    window.open(repo.html_url, '_blank');
+                                  }
                                 }}
                                 className="opacity-0 group-hover:opacity-100 transition-opacity border-[rgba(255,255,255,0.2)] hover:border-blue-400/50 text-blue-400"
                               >
@@ -542,11 +499,7 @@ function RepositoriesContent() {
                     </AnimatePresence>
                   </div>
                 )}
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
-      </main>
+      </ContentSection>
 
       {/* Toast Notification */}
       {toast && (
@@ -569,7 +522,7 @@ function RepositoriesContent() {
           </div>
         </motion.div>
       )}
-    </div>
+    </LayoutWrapper>
   )
 }
 

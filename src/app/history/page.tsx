@@ -1,8 +1,6 @@
 "use client"
 
 import { useState, useEffect, Suspense } from 'react'
-import GitHubOAuthNavbar from '@/components/blocks/navbars/github-oauth-navbar'
-import ProfessionalBackground from '@/components/professional-background'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Clock, 
@@ -12,26 +10,26 @@ import {
   Download, 
   Loader2, 
   Search,
-  Filter,
   SortAsc,
   SortDesc,
   Calendar,
   FileText,
-  Activity,
   RefreshCw,
   CheckCircle,
   AlertCircle,
   Info,
-  ExternalLink,
   Copy,
-  Edit,
-  BarChart3
+  BarChart3,
+  History
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import SimpleDropdown from '@/components/ui/simple-dropdown'
 import ModernReadmeEditor from '@/components/modern-readme-editor'
 import withAuth from '@/components/withAuth'
+import LayoutWrapper from '@/components/layout-wrapper'
+import PageHeader from '@/components/layout/page-header'
+import ContentSection from '@/components/layout/content-section'
 
 interface HistoryItem {
   id: string;
@@ -233,100 +231,89 @@ function HistoryContent() {
   const stats = getHistoryStats();
 
   return (
-    <div className="min-h-screen bg-black text-foreground relative overflow-hidden">
-      {/* Background */}
-      <div className="fixed inset-0 z-0 w-full h-full">
-        <ProfessionalBackground />
-      </div>
-      
-      {/* Navbar */}
-      <div className="fixed top-0 left-0 right-0 z-50">
-        <GitHubOAuthNavbar />
-      </div>
+    <LayoutWrapper>
+      <PageHeader
+        title="README History"
+        description="View, manage, and download your previously generated READMEs"
+        badge="Your Creations"
+        icon={History}
+      />
 
-      {/* Main Content */}
-      <main className="relative z-10 min-h-screen pt-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="container mx-auto px-6 py-8"
-        >
-          <div className="max-w-7xl mx-auto">
-            {/* Header */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-center mb-8"
-            >
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-green-400 bg-clip-text text-transparent mb-4">
-                README History
-              </h1>
-              <p className="text-gray-400 text-lg">
-                View, manage, and download your previously generated READMEs
-              </p>
-            </motion.div>
+      <ContentSection background="none" padding="none" className="mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="glass-card p-6 group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-blue-400/20 rounded-xl group-hover:bg-blue-400/30 transition-colors">
+                <FileText className="w-8 h-8 text-blue-400" />
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-white">{stats.totalItems}</div>
+                <div className="text-sm text-gray-400">Total READMEs</div>
+              </div>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="glass-card p-6 group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-purple-400/20 rounded-xl group-hover:bg-purple-400/30 transition-colors">
+                <BarChart3 className="w-8 h-8 text-purple-400" />
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-white">{stats.withDemo}</div>
+                <div className="text-sm text-gray-400">With Demos</div>
+              </div>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="glass-card p-6 group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-green-400/20 rounded-xl group-hover:bg-green-400/30 transition-colors">
+                <Github className="w-8 h-8 text-green-400" />
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-white">{stats.uniqueRepos}</div>
+                <div className="text-sm text-gray-400">Repositories</div>
+              </div>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="glass-card p-6 group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-orange-400/20 rounded-xl group-hover:bg-orange-400/30 transition-colors">
+                <Clock className="w-8 h-8 text-orange-400" />
+              </div>
+              <div>
+                <div className="text-lg font-bold text-white">
+                  {stats.lastGenerated ? formatDate(stats.lastGenerated).split(',')[0] : 'Never'}
+                </div>
+                <div className="text-sm text-gray-400">Last Generated</div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </ContentSection>
 
-            {/* Statistics Cards - Single Instance */}
-            <motion.div
-              key="history-stats-unique"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
-              data-testid="history-stats-dashboard"
-            >
-              <div className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-xl border border-[rgba(255,255,255,0.1)] p-4">
-                <div className="flex items-center gap-3">
-                  <FileText className="w-8 h-8 text-blue-400" />
-                  <div>
-                    <div className="text-2xl font-bold text-white">{stats.totalItems}</div>
-                    <div className="text-sm text-gray-400">Total READMEs</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-xl border border-[rgba(255,255,255,0.1)] p-4">
-                <div className="flex items-center gap-3">
-                  <BarChart3 className="w-8 h-8 text-purple-400" />
-                  <div>
-                    <div className="text-2xl font-bold text-white">{stats.withDemo}</div>
-                    <div className="text-sm text-gray-400">With Demos</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-xl border border-[rgba(255,255,255,0.1)] p-4">
-                <div className="flex items-center gap-3">
-                  <Github className="w-8 h-8 text-green-400" />
-                  <div>
-                    <div className="text-2xl font-bold text-white">{stats.uniqueRepos}</div>
-                    <div className="text-sm text-gray-400">Repositories</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-xl border border-[rgba(255,255,255,0.1)] p-4">
-                <div className="flex items-center gap-3">
-                  <Clock className="w-8 h-8 text-orange-400" />
-                  <div>
-                    <div className="text-lg font-bold text-white">
-                      {stats.lastGenerated ? formatDate(stats.lastGenerated).split(',')[0] : 'Never'}
-                    </div>
-                    <div className="text-sm text-gray-400">Last Generated</div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Filters and Controls */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.15 }}
-              className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] p-6 mb-8"
-            >
+      <ContentSection background="glass" className="mb-8">
               <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
                 <div className="flex flex-col sm:flex-row gap-4 flex-1">
                   {/* Search */}
@@ -337,7 +324,7 @@ function HistoryContent() {
                       placeholder="Search history..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-400/50"
+                      className="glass-input w-full pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none"
                     />
                   </div>
 
@@ -373,7 +360,7 @@ function HistoryContent() {
                     onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                     variant="outline"
                     size="sm"
-                    className="border-[rgba(255,255,255,0.1)] text-gray-300 hover:border-green-400/50"
+                    className="glass-button border-none text-gray-300 hover:text-green-400"
                   >
                     {sortOrder === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
                   </Button>
@@ -383,7 +370,7 @@ function HistoryContent() {
                     variant="outline"
                     size="sm"
                     disabled={isRefreshing}
-                    className="border-green-400/50 text-green-400 hover:bg-green-400/10"
+                    className="glass-button border-none text-green-400 hover:bg-green-400/20"
                   >
                     <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                   </Button>
@@ -395,17 +382,9 @@ function HistoryContent() {
                 {searchTerm && <span>• Filtered by: "{searchTerm}"</span>}
                 {filterDemo !== 'all' && <span>• Demo: {filterDemo}</span>}
               </div>
-            </motion.div>
+      </ContentSection>
 
-            {/* History List */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
-              className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] p-8"
-            >
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-20" />
-              <div className="relative">
+      <ContentSection background="gradient">
                 {isLoading ? (
                   <div className="flex items-center justify-center py-12">
                     <div className="flex items-center gap-3 text-green-400">
@@ -420,7 +399,7 @@ function HistoryContent() {
                     <Button 
                       onClick={() => fetchHistory()} 
                       variant="outline" 
-                      className="border-green-500/50 text-green-400"
+                      className="glass-button border-none text-green-400"
                     >
                       Try Again
                     </Button>
@@ -446,7 +425,7 @@ function HistoryContent() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -20 }}
                           transition={{ delay: Math.min(index * 0.02, 0.2), duration: 0.3 }}
-                          className="group relative p-6 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] rounded-xl hover:border-green-400/30 transition-all duration-200"
+                          className="glass-card p-8 group"
                         >
                           <div className="flex items-start justify-between">
                             <div className="flex-1 min-w-0">
@@ -492,7 +471,7 @@ function HistoryContent() {
                                 size="sm"
                                 variant="outline"
                                 onClick={() => copyToClipboard(item.readme_content, item.project_name || item.repository_name)}
-                                className="opacity-0 group-hover:opacity-100 transition-opacity border-[rgba(255,255,255,0.2)] hover:border-blue-400/50 text-blue-400"
+                                className="opacity-0 group-hover:opacity-100 transition-all duration-300 glass-button border-none text-blue-400 hover:bg-blue-400/20"
                               >
                                 <Copy className="w-4 h-4 mr-2" />
                                 Copy
@@ -502,7 +481,7 @@ function HistoryContent() {
                                 size="sm"
                                 variant="outline"
                                 onClick={() => downloadReadme(item)}
-                                className="opacity-0 group-hover:opacity-100 transition-opacity border-[rgba(255,255,255,0.2)] hover:border-green-400/50 text-green-400"
+                                className="opacity-0 group-hover:opacity-100 transition-all duration-300 glass-button border-none text-green-400 hover:bg-green-400/20"
                               >
                                 <Download className="w-4 h-4 mr-2" />
                                 Download
@@ -512,7 +491,7 @@ function HistoryContent() {
                                 size="sm"
                                 variant="outline"
                                 onClick={() => viewReadme(item)}
-                                className="opacity-0 group-hover:opacity-100 transition-opacity border-[rgba(255,255,255,0.2)] hover:border-purple-400/50 text-purple-400"
+                                className="opacity-0 group-hover:opacity-100 transition-all duration-300 glass-button border-none text-purple-400 hover:bg-purple-400/20"
                               >
                                 <Eye className="w-4 h-4 mr-2" />
                                 View
@@ -523,7 +502,7 @@ function HistoryContent() {
                                 variant="outline"
                                 onClick={() => deleteHistoryItem(item.id)}
                                 disabled={deletingId === item.id}
-                                className="opacity-0 group-hover:opacity-100 transition-opacity border-red-400/50 text-red-400 hover:bg-red-400/10"
+                                className="opacity-0 group-hover:opacity-100 transition-all duration-300 glass-button border-none text-red-400 hover:bg-red-400/20"
                               >
                                 {deletingId === item.id ? (
                                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -538,11 +517,7 @@ function HistoryContent() {
                     </AnimatePresence>
                   </div>
                 )}
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
-      </main>
+      </ContentSection>
 
       {/* README Editor Modal */}
       {showEditor && selectedItem && (
@@ -578,7 +553,7 @@ function HistoryContent() {
           </div>
         </motion.div>
       )}
-    </div>
+    </LayoutWrapper>
   )
 }
 

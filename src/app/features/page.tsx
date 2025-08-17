@@ -1,7 +1,6 @@
 "use client"
 
 import { Suspense } from 'react'
-
 import { motion } from 'framer-motion'
 import { 
   Zap, 
@@ -9,11 +8,9 @@ import {
   FileText, 
   Sparkles,
   Code,
-  Globe,
   Shield,
   Clock,
   Users,
-  Star,
   CheckCircle,
   ArrowRight,
   Rocket,
@@ -30,11 +27,13 @@ import {
   Workflow
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useSmoothNavigation } from '@/hooks/use-smooth-navigation'
 import LayoutWrapper from '@/components/layout-wrapper'
+import PageHeader from '@/components/layout/page-header'
+import ContentSection from '@/components/layout/content-section'
+import { useRouter } from 'next/navigation'
 
 function FeaturesContent() {
-  const { navigateWithPreload } = useSmoothNavigation()
+  const router = useRouter()
 
   const mainFeatures = [
     {
@@ -138,181 +137,133 @@ function FeaturesContent() {
 
   return (
     <LayoutWrapper>
-        <div className="container mx-auto px-6 py-12">
-          <div className="max-w-7xl mx-auto">
-            
-            {/* Hero Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-center mb-20"
-            >
-              <motion.div
-                className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/20 border border-green-400/30 rounded-full text-green-400 text-sm font-medium mb-6"
-                animate={{
-                  boxShadow: [
-                    '0 0 0px rgba(0, 255, 136, 0.3)',
-                    '0 0 20px rgba(0, 255, 136, 0.5)',
-                    '0 0 0px rgba(0, 255, 136, 0.3)'
-                  ]
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <Sparkles className="w-4 h-4" />
-                Powerful Features
-              </motion.div>
-              
-              <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-white via-green-400 to-white bg-clip-text text-transparent mb-6">
-                Everything You Need
-              </h1>
-              
-              <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-                AutoDoc AI combines cutting-edge artificial intelligence with developer-friendly tools 
-                to create professional documentation in under 30 seconds. Trusted by developers worldwide.
-              </p>
-            </motion.div>
+      <PageHeader
+        title="Everything You Need"
+        description="AutoDoc AI combines cutting-edge artificial intelligence with developer-friendly tools to create professional documentation in under 30 seconds. Trusted by developers worldwide."
+        badge="Powerful Features"
+        icon={Sparkles}
+      />
 
-            {/* Stats Section */}
+      <ContentSection background="none" padding="none" className="mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {stats.map((stat, index) => (
             <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 * index, duration: 0.5 }}
+              className="text-center p-6 glass-card"
+            >
+              <stat.icon className="w-8 h-8 text-green-400 mx-auto mb-3" />
+              <div className="text-3xl font-bold text-white mb-1">{stat.number}</div>
+              <div className="text-sm text-gray-400">{stat.label}</div>
+            </motion.div>
+          ))}
+        </div>
+      </ContentSection>
+
+      <ContentSection background="none" padding="none" className="mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {mainFeatures.map((feature, index) => (
+            <motion.div
+              key={feature.title}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-12 sm:mb-16 lg:mb-20"
+              transition={{ delay: 0.1 * index, duration: 0.6 }}
+              className="group relative"
             >
-              {stats.map((stat, index) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.1 * index, duration: 0.5 }}
-                  className="text-center p-6 bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)]"
-                >
-                  <stat.icon className="w-8 h-8 text-green-400 mx-auto mb-3" />
-                  <div className="text-3xl font-bold text-white mb-1">{stat.number}</div>
-                  <div className="text-sm text-gray-400">{stat.label}</div>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            {/* Main Features Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-12 sm:mb-16 lg:mb-20">
-              {mainFeatures.map((feature, index) => (
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * index, duration: 0.6 }}
-                  className="group relative"
-                >
-                  <div className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden hover:border-green-400/30 transition-all duration-300 p-8">
-                    {/* Gradient background */}
-                    <div className={`absolute -inset-0.5 bg-gradient-to-r ${feature.color} rounded-2xl blur-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
-                    
-                    <div className="relative">
-                      {/* Icon */}
-                      <div className={`w-16 h-16 bg-gradient-to-r ${feature.color} rounded-2xl flex items-center justify-center mb-6`}>
-                        <feature.icon className="w-8 h-8 text-white" />
-                      </div>
-                      
-                      {/* Content */}
-                      <h3 className="text-2xl font-bold text-white mb-4">{feature.title}</h3>
-                      <p className="text-gray-400 leading-relaxed mb-6">{feature.description}</p>
-                      
-                      {/* Feature List */}
-                      <div className="grid grid-cols-2 gap-2">
-                        {feature.features.map((item, itemIndex) => (
-                          <motion.div
-                            key={item}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.2 + index * 0.1 + itemIndex * 0.05 }}
-                            className="flex items-center gap-2 text-sm text-gray-400"
-                          >
-                            <CheckCircle className="w-3 h-3 text-green-400 flex-shrink-0" />
-                            <span>{item}</span>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Additional Features */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-              className="mb-20"
-            >
-              <div className="text-center mb-12">
-                <h2 className="text-4xl font-bold text-white mb-4">And Much More</h2>
-                <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                  Discover all the powerful features that make AutoDoc AI the ultimate documentation tool.
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-                {additionalFeatures.map((feature, index) => (
-                  <motion.div
-                    key={feature.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 * index, duration: 0.5 }}
-                    className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-xl border border-[rgba(255,255,255,0.1)] p-6 hover:border-green-400/30 transition-all duration-300 group"
-                  >
-                    <feature.icon className="w-8 h-8 text-green-400 mb-4 group-hover:scale-110 transition-transform duration-300" />
-                    <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
-                    <p className="text-gray-400 text-sm">{feature.description}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* CTA Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.0 }}
-              className="text-center"
-            >
-              <div className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-3xl border border-[rgba(255,255,255,0.1)] p-12 relative overflow-hidden">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-3xl blur-lg opacity-20" />
+              <div className="glass-card p-8 overflow-hidden">
+                {/* Gradient background */}
+                <div className={`absolute -inset-0.5 bg-gradient-to-r ${feature.color} rounded-2xl blur-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
+                
                 <div className="relative">
-                  <Zap className="w-16 h-16 text-green-400 mx-auto mb-6" />
-                  <h2 className="text-4xl font-bold text-white mb-4">
-                    Ready to Get Started?
-                  </h2>
-                  <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-                    Join thousands of developers who have transformed their documentation workflow with AutoDoc AI.
-                  </p>
+                  {/* Icon */}
+                  <div className={`w-16 h-16 bg-gradient-to-r ${feature.color} rounded-2xl flex items-center justify-center mb-6`}>
+                    <feature.icon className="w-8 h-8 text-white" />
+                  </div>
                   
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button
-                      onClick={() => navigateWithPreload('/')}
-                      className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg shadow-green-500/25 transition-all duration-300 hover:shadow-green-500/40 hover:scale-105"
-                    >
-                      <Zap className="w-5 h-5 mr-2" />
-                      Start Creating
-                      <ArrowRight className="w-5 h-5 ml-2" />
-                    </Button>
-                    
-                    <Button
-                      onClick={() => navigateWithPreload('/examples')}
-                      variant="outline"
-                      className="border-green-400/50 text-green-400 hover:bg-green-400/10 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 hover:border-green-400"
-                    >
-                      <Eye className="w-5 h-5 mr-2" />
-                      View Examples
-                    </Button>
+                  {/* Content */}
+                  <h3 className="text-2xl font-bold text-white mb-4">{feature.title}</h3>
+                  <p className="text-gray-400 leading-relaxed mb-6">{feature.description}</p>
+                  
+                  {/* Feature List */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {feature.features.map((item, itemIndex) => (
+                      <motion.div
+                        key={item}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 + index * 0.1 + itemIndex * 0.05 }}
+                        className="flex items-center gap-2 text-sm text-gray-400"
+                      >
+                        <CheckCircle className="w-3 h-3 text-green-400 flex-shrink-0" />
+                        <span>{item}</span>
+                      </motion.div>
+                    ))}
                   </div>
                 </div>
               </div>
             </motion.div>
+          ))}
+        </div>
+      </ContentSection>
+
+      <ContentSection background="none" padding="none" className="mb-16">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-white mb-4">And Much More</h2>
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            Discover all the powerful features that make AutoDoc AI the ultimate documentation tool.
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {additionalFeatures.map((feature, index) => (
+            <motion.div
+              key={feature.title}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * index, duration: 0.5 }}
+              className="glass-card p-6 group"
+            >
+              <feature.icon className="w-8 h-8 text-green-400 mb-4 group-hover:scale-110 transition-transform duration-300" />
+              <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
+              <p className="text-gray-400 text-sm">{feature.description}</p>
+            </motion.div>
+          ))}
+        </div>
+      </ContentSection>
+
+      <ContentSection background="gradient" className="text-center">
+        <div className="relative">
+          <Zap className="w-16 h-16 text-green-400 mx-auto mb-6" />
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Ready to Get Started?
+          </h2>
+          <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+            Join thousands of developers who have transformed their documentation workflow with AutoDoc AI.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              onClick={() => router.push('/')}
+              className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg shadow-green-500/25 transition-all duration-300 hover:shadow-green-500/40 hover:scale-105"
+            >
+              <Zap className="w-5 h-5 mr-2" />
+              Start Creating
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+            
+            <Button
+              onClick={() => router.push('/examples')}
+              variant="outline"
+              className="border-green-400/50 text-green-400 hover:bg-green-400/10 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 hover:border-green-400"
+            >
+              <Eye className="w-5 h-5 mr-2" />
+              View Examples
+            </Button>
           </div>
         </div>
+      </ContentSection>
     </LayoutWrapper>
   )
 }
