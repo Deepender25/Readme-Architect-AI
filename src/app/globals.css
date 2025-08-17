@@ -861,3 +861,537 @@
       transform: rotate(360deg);
     }
   }
+
+/* Additional styles for smooth page transitions and preventing white flash */
+html, body {
+  background-color: #000000 !important;
+  overflow-x: hidden;
+}
+
+/* Prevent white flash during page transitions */
+.page-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Fix for endless scroll containers */
+.history-scroll-container {
+  max-height: calc(100vh - 400px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Enhanced scrollbar for history page */
+.history-scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.history-scroll-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+.history-scroll-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.6), rgba(0, 255, 136, 0.8));
+  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+}
+
+.history-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.8), rgba(0, 255, 136, 1));
+  box-shadow: 0 0 12px rgba(0, 255, 136, 0.5);
+}
+
+/* Smooth page transition improvements */
+.smooth-page-transition {
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Prevent layout shift during transitions */
+.min-h-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Enhanced glass effects for better visibility */
+.glass-card {
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+}
+
+/* Grid background enhancements */
+.grid-background {
+  background-image: 
+    linear-gradient(rgba(0, 255, 136, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.15) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: moveGridSlow 120s linear infinite;
+}
+
+@keyframes moveGridSlow {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+/* Mobile optimizations for page transitions */
+@media (max-width: 768px) {
+  .page-transition-overlay {
+    backdrop-filter: blur(5px);
+  }
+  
+  .smooth-page-transition {
+    transition-duration: 0.3s;
+  }
+}
+
+/* Fix dropdown visibility issues */
+.dropdown-menu {
+  z-index: 9999999 !important;
+  position: fixed !important;
+}
+
+/* Ensure background is visible */
+.professional-background {
+  z-index: 0 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+}
+
+/* Force dropdown above everything */
+[data-dropdown-menu="true"] {
+  z-index: 9999999 !important;
+  position: fixed !important;
+}
+
+/* Enhanced dropdown styling */
+.simple-dropdown-menu {
+  background: rgba(15, 15, 15, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(0, 255, 136, 0.3) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 255, 136, 0.1) !important;
+}
+
+/* Ensure grid background is visible */
+.grid-background-layer {
+  opacity: 0.3 !important;
+  pointer-events: none !important;
+}
+
+/* Fix for mobile dropdown positioning */
+@media (max-width: 768px) {
+  .dropdown-menu {
+    max-width: calc(100vw - 32px) !important;
+    left: 16px !important;
+    right: 16px !important;
+    width: auto !important;
+  }
+}/* C
+omprehensive Mobile Optimizations */
+
+/* Mobile Navigation Fixes */
+@media (max-width: 1024px) {
+  .mobile-nav-overlay {
+    position: fixed !important;
+    top: 64px !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 99998 !important;
+    background: rgba(0, 0, 0, 0.98) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-top: 1px solid rgba(0, 255, 136, 0.2) !important;
+  }
+  
+  /* Reduce animations on mobile for better performance */
+  .glass, .glass-card, .glass-navbar {
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    transition-duration: 0.2s !important;
+  }
+  
+  /* Optimize touch interactions */
+  button, a, [role="button"] {
+    -webkit-tap-highlight-color: rgba(0, 255, 136, 0.2) !important;
+    touch-action: manipulation !important;
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+  
+  /* Improve text readability on mobile */
+  body {
+    -webkit-text-size-adjust: 100% !important;
+    text-size-adjust: 100% !important;
+  }
+  
+  /* Reduce motion for better performance */
+  * {
+    animation-duration: 0.3s !important;
+    transition-duration: 0.3s !important;
+  }
+  
+  /* Mobile-specific grid background optimization */
+  .professional-background {
+    opacity: 0.7 !important;
+  }
+  
+  .professional-background > div {
+    opacity: 0.5 !important;
+  }
+}
+
+/* Mobile-specific styles for small screens */
+@media (max-width: 768px) {
+  /* Container padding adjustments */
+  .container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  /* Button size improvements */
+  .glass-button {
+    min-height: 48px !important;
+    padding: 12px 16px !important;
+    font-size: 16px !important;
+  }
+  
+  /* Input field improvements */
+  .glass-input {
+    min-height: 48px !important;
+    font-size: 16px !important;
+    padding: 12px 16px !important;
+  }
+  
+  /* Card spacing improvements */
+  .glass-card {
+    margin: 8px !important;
+    padding: 16px !important;
+  }
+  
+  /* Dropdown improvements for mobile */
+  .dropdown-menu {
+    max-width: calc(100vw - 32px) !important;
+    left: 16px !important;
+    right: 16px !important;
+    width: auto !important;
+    max-height: 60vh !important;
+    overflow-y: auto !important;
+  }
+  
+  /* Mobile navbar improvements */
+  .mobile-navbar {
+    height: 64px !important;
+    padding: 0 16px !important;
+  }
+  
+  /* Mobile content spacing */
+  .mobile-content {
+    padding-top: 80px !important;
+    padding-bottom: 24px !important;
+  }
+  
+  /* Mobile modal improvements */
+  .mobile-modal {
+    margin: 0 !important;
+    border-radius: 0 !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+  }
+  
+  /* Mobile scroll improvements */
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch !important;
+    scroll-behavior: smooth !important;
+    overscroll-behavior: contain !important;
+  }
+}
+
+/* Ultra-small screens (phones in portrait) */
+@media (max-width: 480px) {
+  /* Further reduce animations */
+  * {
+    animation-duration: 0.2s !important;
+    transition-duration: 0.2s !important;
+  }
+  
+  /* Improve touch targets */
+  button, a, [role="button"] {
+    min-height: 48px !important;
+    min-width: 48px !important;
+    padding: 12px !important;
+  }
+  
+  /* Container adjustments */
+  .container {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+  
+  /* Text size adjustments */
+  h1 {
+    font-size: 1.875rem !important;
+  }
+  
+  h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  /* Card improvements */
+  .glass-card {
+    margin: 4px !important;
+    padding: 12px !important;
+  }
+  
+  /* Mobile-specific background optimization */
+  .professional-background {
+    opacity: 0.5 !important;
+  }
+  
+  /* Disable complex animations on very small screens */
+  .professional-background > div:nth-child(n+3) {
+    display: none !important;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-height: 500px) and (orientation: landscape) {
+  .mobile-modal {
+    max-height: 100vh !important;
+    overflow-y: auto !important;
+  }
+  
+  .mobile-content {
+    padding-top: 60px !important;
+  }
+}
+
+/* High DPI screens optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .glass, .glass-card, .glass-navbar {
+    border-width: 0.5px !important;
+  }
+}
+
+/* Mobile-specific utility classes */
+.mobile-optimized {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  touch-action: manipulation !important;
+}
+
+.mobile-text {
+  -webkit-text-size-adjust: 100% !important;
+  text-size-adjust: 100% !important;
+}
+
+.mobile-scroll-container {
+  -webkit-overflow-scrolling: touch !important;
+  scroll-behavior: smooth !important;
+  overscroll-behavior: contain !important;
+}
+
+/* Mobile performance optimizations */
+.mobile-performance {
+  will-change: transform !important;
+  transform: translateZ(0) !important;
+  backface-visibility: hidden !important;
+  perspective: 1000px !important;
+}
+
+/* Mobile-specific button styles */
+.mobile-button {
+  min-height: 48px !important;
+  min-width: 48px !important;
+  padding: 12px 20px !important;
+  font-size: 16px !important;
+  border-radius: 12px !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: rgba(0, 255, 136, 0.2) !important;
+}
+
+/* Mobile-specific input styles */
+.mobile-input {
+  min-height: 48px !important;
+  font-size: 16px !important;
+  padding: 12px 16px !important;
+  border-radius: 12px !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+
+/* Mobile-specific card styles */
+.mobile-card {
+  margin: 8px !important;
+  padding: 16px !important;
+  border-radius: 16px !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Mobile navigation specific fixes */
+.mobile-nav-fixed {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 99999 !important;
+  background: rgba(0, 0, 0, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+/* Mobile dropdown specific fixes */
+.mobile-dropdown {
+  position: fixed !important;
+  top: 64px !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 99998 !important;
+  background: rgba(0, 0, 0, 0.98) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  max-height: calc(100vh - 64px) !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}/* Critic
+al Mobile Navigation Fixes */
+@media (max-width: 1024px) {
+  /* Force mobile navbar to be visible */
+  .mobile-nav-dropdown {
+    position: fixed !important;
+    top: 64px !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 999999 !important;
+    background: rgba(0, 0, 0, 0.98) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-top: 1px solid rgba(0, 255, 136, 0.2) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+  }
+  
+  /* Ensure navbar is always on top */
+  nav {
+    z-index: 999999 !important;
+    position: fixed !important;
+  }
+  
+  /* Mobile output page header fixes */
+  .mobile-output-header {
+    padding: 8px 16px !important;
+    background: rgba(0, 0, 0, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+  }
+  
+  /* Mobile button improvements */
+  .mobile-action-button {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 8px !important;
+    border-radius: 8px !important;
+  }
+  
+  /* Mobile content spacing */
+  .mobile-content-spacing {
+    padding: 16px 8px !important;
+    margin-top: 80px !important;
+  }
+}
+
+/* Ultra-specific mobile navbar fix */
+@media (max-width: 768px) {
+  /* Force navbar visibility */
+  .lg\\:hidden {
+    display: block !important;
+  }
+  
+  /* Mobile dropdown specific positioning */
+  .mobile-nav-menu {
+    position: fixed !important;
+    top: 64px !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 999998 !important;
+    background: rgba(0, 0, 0, 0.98) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    max-height: calc(100vh - 64px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Mobile output page specific fixes */
+  .mobile-readme-output {
+    padding-top: 80px !important;
+  }
+  
+  .mobile-readme-header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 99999 !important;
+    background: rgba(0, 0, 0, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(0, 255, 136, 0.2) !important;
+  }
+  
+  /* Mobile content container */
+  .mobile-content-container {
+    padding: 16px 8px !important;
+    margin-top: 120px !important;
+  }
+  
+  /* Mobile glass card adjustments */
+  .mobile-glass-card {
+    margin: 8px !important;
+    padding: 16px !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+  }
+}
+
+/* Mobile-specific animation optimizations */
+@media (max-width: 480px) {
+  /* Disable complex animations on very small screens */
+  .motion-div {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  /* Simplify background for performance */
+  .professional-background > div:nth-child(n+3) {
+    display: none !important;
+  }
+  
+  /* Mobile text optimizations */
+  body {
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+  }
+  
+  /* Mobile button text */
+  .mobile-button-text {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+  }
+}

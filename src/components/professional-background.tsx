@@ -46,18 +46,60 @@ export default function ProfessionalBackground() {
   }, []);
 
   return (
-    <div className="absolute inset-0 overflow-hidden">
+    <div className="professional-background absolute inset-0 overflow-hidden">
       {/* Deep black gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-950 to-black" />
       
-      {/* Enhanced animated grid pattern */}
+      {/* Enhanced animated grid pattern - Primary */}
       <motion.div
-        className="absolute inset-0 opacity-15"
+        className="absolute inset-0 opacity-30"
         animate={{
           backgroundPosition: ['0% 0%', '100% 100%'],
         }}
         transition={{
-          duration: 25,
+          duration: 60,
+          repeat: Infinity,
+          repeatType: 'reverse',
+          ease: 'linear',
+        }}
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(0, 255, 136, 0.18) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 136, 0.18) 1px, transparent 1px)
+          `,
+          backgroundSize: '60px 60px',
+        }}
+      />
+      
+      {/* Secondary grid for depth */}
+      <motion.div
+        className="absolute inset-0 opacity-25"
+        animate={{
+          backgroundPosition: ['100% 100%', '0% 0%'],
+        }}
+        transition={{
+          duration: 80,
+          repeat: Infinity,
+          repeatType: 'reverse',
+          ease: 'linear',
+        }}
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(0, 255, 136, 0.12) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 136, 0.12) 1px, transparent 1px)
+          `,
+          backgroundSize: '120px 120px',
+        }}
+      />
+      
+      {/* Tertiary fine grid */}
+      <motion.div
+        className="absolute inset-0 opacity-15"
+        animate={{
+          backgroundPosition: ['0% 0%', '50% 50%'],
+        }}
+        transition={{
+          duration: 100,
           repeat: Infinity,
           repeatType: 'reverse',
           ease: 'linear',
@@ -67,34 +109,34 @@ export default function ProfessionalBackground() {
             linear-gradient(rgba(0, 255, 136, 0.08) 1px, transparent 1px),
             linear-gradient(90deg, rgba(0, 255, 136, 0.08) 1px, transparent 1px)
           `,
-          backgroundSize: '60px 60px',
+          backgroundSize: '20px 20px',
         }}
       />
       
-      {/* Secondary grid for depth */}
+      {/* Quaternary ultra-fine grid for texture */}
       <motion.div
         className="absolute inset-0 opacity-10"
         animate={{
-          backgroundPosition: ['100% 100%', '0% 0%'],
+          backgroundPosition: ['25% 25%', '75% 75%'],
         }}
         transition={{
-          duration: 35,
+          duration: 120,
           repeat: Infinity,
           repeatType: 'reverse',
           ease: 'linear',
         }}
         style={{
           backgroundImage: `
-            linear-gradient(rgba(0, 255, 136, 0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 255, 136, 0.05) 1px, transparent 1px)
+            linear-gradient(rgba(0, 255, 136, 0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 136, 0.06) 1px, transparent 1px)
           `,
-          backgroundSize: '120px 120px',
+          backgroundSize: '10px 10px',
         }}
       />
 
-      {/* Enhanced floating orbs */}
+      {/* Enhanced floating orbs - Reduced for mobile performance */}
       <div className="absolute inset-0">
-        {[...Array(8)].map((_, i) => (
+        {[...Array(4)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute rounded-full"

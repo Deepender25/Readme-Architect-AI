@@ -62,6 +62,8 @@ interface ModernReadmeOutputProps {
 
   onEdit?: () => void;
 
+  disableAutoSave?: boolean;
+
 }
 
 export default function ModernReadmeOutput({ 
@@ -76,7 +78,9 @@ export default function ModernReadmeOutput({
 
   onClose,
 
-  onEdit 
+  onEdit,
+
+  disableAutoSave = false
 
 }: ModernReadmeOutputProps) {
 
@@ -164,7 +168,7 @@ export default function ModernReadmeOutput({
 
     const autoSaveToDatabase = async () => {
 
-      if (!isAuthenticated || !user || !repositoryUrl || autoSaved) return;
+      if (!isAuthenticated || !user || !repositoryUrl || autoSaved || disableAutoSave) return;
 
       try {
 
@@ -456,7 +460,7 @@ export default function ModernReadmeOutput({
 
   return (
 
-    <div className="min-h-screen bg-black text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag">
+    <div className="min-h-screen bg-black text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag mobile-optimized">
 
       {/* Background */}
 
@@ -472,7 +476,7 @@ export default function ModernReadmeOutput({
 
       <motion.header
 
-        className="sticky top-0 z-40 glass-navbar border-b border-green-400/20 no-lag"
+        className="sticky top-0 z-40 glass-navbar border-b border-green-400/20 no-lag mobile-readme-header"
 
         initial={{ y: -50, opacity: 0 }}
 
@@ -498,13 +502,183 @@ export default function ModernReadmeOutput({
 
         />
 
-        <div className="container mx-auto px-6 py-3">
+        <div className="container mx-auto px-4 sm:px-6 py-2 sm:py-3">
 
-          <div className="flex items-center justify-between">
+          {/* Mobile Header Layout */}
+
+          <div className="sm:hidden">
+
+            <div className="flex items-center justify-between mb-2">
+
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+
+                <div className="relative">
+
+                  <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-green-600 rounded-lg blur opacity-30" />
+
+                  <div className="relative bg-black p-2 rounded-lg">
+
+                    <FileText className="w-4 h-4 text-green-400" />
+
+                  </div>
+
+                </div>
+
+                <div>
+
+                  <h1 className="text-sm font-bold bg-gradient-to-r from-white to-green-400 bg-clip-text text-transparent">
+
+                    README Generated
+
+                  </h1>
+
+                  <p className="text-xs text-gray-400">Documentation ready</p>
+
+                </div>
+
+              </div>
+
+              
+
+              {/* Close Button - Mobile */}
+
+              {onClose && (
+
+                <Button
+
+                  onClick={onClose}
+
+                  variant="ghost"
+
+                  size="sm"
+
+                  className="bg-gray-900/50 border border-red-400/20 hover:border-red-400/40 hover:bg-red-400/10 text-red-400 p-2"
+
+                >
+
+                  <X className="w-4 h-4" />
+
+                </Button>
+
+              )}
+
+            </div>
+
+            
+
+            {/* Mobile Controls Row */}
+
+            <div className="flex items-center justify-between gap-2">
+
+              {/* View Mode Toggle - Mobile */}
+
+              <div className="flex items-center bg-gray-900/50 rounded-lg p-1 border border-green-400/20">
+
+                <button
+
+                  onClick={() => setViewMode('preview')}
+
+                  className={`flex items-center justify-center p-2 rounded-md text-sm font-medium transition-all ${
+
+                    viewMode === 'preview'
+
+                      ? 'bg-green-400 text-black shadow-lg'
+
+                      : 'text-gray-400 hover:text-white'
+
+                  }`}
+
+                >
+
+                  <Eye className="w-4 h-4" />
+
+                </button>
+
+                <button
+
+                  onClick={() => setViewMode('raw')}
+
+                  className={`flex items-center justify-center p-2 rounded-md text-sm font-medium transition-all ${
+
+                    viewMode === 'raw'
+
+                      ? 'bg-green-400 text-black shadow-lg'
+
+                      : 'text-gray-400 hover:text-white'
+
+                  }`}
+
+                >
+
+                  <Code className="w-4 h-4" />
+
+                </button>
+
+              </div>
+
+              
+
+              {/* Mobile Action Buttons */}
+
+              <div className="flex items-center gap-1">
+
+                <Button
+
+                  onClick={handleCopy}
+
+                  variant="ghost"
+
+                  size="sm"
+
+                  className={`relative group transition-all duration-300 p-2 ${
+
+                    copySuccess 
+
+                      ? 'bg-green-500/20 border-green-400/60 text-green-400' 
+
+                      : 'bg-gray-900/50 border-green-400/20 hover:border-green-400/40 hover:bg-green-400/10'
+
+                  }`}
+
+                >
+
+                  <Copy className="w-4 h-4" />
+
+                </Button>
+
+                
+
+                <Button
+
+                  onClick={handleDownload}
+
+                  disabled={isDownloading}
+
+                  size="sm"
+
+                  className="relative group bg-green-400 text-black hover:bg-green-300 font-medium p-2"
+
+                >
+
+                  <Download className="w-4 h-4" />
+
+                </Button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          
+
+          {/* Desktop Header Layout */}
+
+          <div className="hidden sm:flex items-center justify-between flex-wrap gap-2">
 
             {/* Left Section */}
 
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 sm:gap-6 flex-1 min-w-0">
 
               <motion.div
 
@@ -544,7 +718,7 @@ export default function ModernReadmeOutput({
 
               </motion.div>
 
-              {/* View Mode Toggle */}
+              {/* View Mode Toggle - Desktop */}
 
               <motion.div
 
@@ -606,7 +780,7 @@ export default function ModernReadmeOutput({
 
             </div>
 
-            {/* Right Section */}
+            {/* Right Section - Desktop */}
 
             <div className="flex items-center gap-2">
 
@@ -922,13 +1096,13 @@ export default function ModernReadmeOutput({
 
       {/* Main Content Area */}
 
-      <div className="relative z-10 min-h-screen">
+      <div className="relative z-10 min-h-screen mobile-readme-output">
 
         {/* Content Section */}
 
-        <main className="px-6 py-8">
+        <main className="mobile-content-container">
 
-          <div className="container mx-auto max-w-6xl">
+          <div className="container mx-auto max-w-6xl px-2 sm:px-0">
 
             <motion.div
 
@@ -944,7 +1118,7 @@ export default function ModernReadmeOutput({
 
               {/* Content Container with Enhanced Glass Effect */}
 
-              <div className="relative glass rounded-3xl overflow-hidden shadow-glass-lg shadow-green-400/20 no-lag">
+              <div className="relative glass rounded-2xl sm:rounded-3xl overflow-hidden shadow-glass-lg shadow-green-400/20 no-lag mobile-glass-card">
 
                 {/* Multi-layered Glass Effect */}
 
@@ -960,7 +1134,7 @@ export default function ModernReadmeOutput({
 
                   ref={contentRef}
 
-                  className="relative max-h-[calc(100vh-300px)] overflow-y-auto scrollbar-thin scrollbar-green scroll-smooth gpu-accelerated"
+                  className="relative max-h-[calc(100vh-200px)] sm:max-h-[calc(100vh-300px)] overflow-y-auto scrollbar-thin scrollbar-green scroll-smooth gpu-accelerated mobile-scroll-container"
 
                   style={{ scrollBehavior: 'smooth' }}
 
@@ -982,7 +1156,7 @@ export default function ModernReadmeOutput({
 
                         transition={{ duration: 0.3 }}
 
-                        className="p-8"
+                        className="p-4 sm:p-8"
 
                       >
 
@@ -1012,11 +1186,11 @@ export default function ModernReadmeOutput({
 
                         transition={{ duration: 0.3 }}
 
-                        className="p-8"
+                        className="p-4 sm:p-8"
 
                       >
 
-                        <pre className="font-mono text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
+                        <pre className="font-mono text-xs sm:text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
 
                           {content}
 
