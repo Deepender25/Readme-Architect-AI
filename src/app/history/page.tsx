@@ -25,7 +25,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import SimpleDropdown from '@/components/ui/simple-dropdown'
-import ModernReadmeEditor from '@/components/modern-readme-editor'
+import ModernReadmeOutput from '@/components/modern-readme-output'
 import withAuth from '@/components/withAuth'
 import LayoutWrapper from '@/components/layout-wrapper'
 import PageHeader from '@/components/layout/page-header'
@@ -384,146 +384,152 @@ function HistoryContent() {
               </div>
       </ContentSection>
 
-      <ContentSection background="gradient">
-                {isLoading ? (
-                  <div className="flex items-center justify-center py-12">
-                    <div className="flex items-center gap-3 text-green-400">
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Loading your history...</span>
-                    </div>
-                  </div>
-                ) : error ? (
-                  <div className="text-center py-12">
-                    <AlertCircle className="w-12 h-12 mx-auto mb-4 text-red-400" />
-                    <div className="text-red-400 mb-4">{error}</div>
-                    <Button 
-                      onClick={() => fetchHistory()} 
-                      variant="outline" 
-                      className="glass-button border-none text-green-400"
-                    >
-                      Try Again
-                    </Button>
-                  </div>
-                ) : filteredHistory.length === 0 ? (
-                  <div className="text-center py-12 text-gray-400">
-                    <Clock className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p className="text-lg mb-2">No README history found</p>
-                    <p className="text-sm">
-                      {history.length === 0 
-                        ? "Generate your first README to see it here!" 
-                        : "Try adjusting your search or filter criteria"
-                      }
-                    </p>
-                  </div>
-                ) : (
-                  <div className="grid gap-4">
-                    <AnimatePresence>
-                      {filteredHistory.map((item, index) => (
-                        <motion.div
-                          key={item.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -20 }}
-                          transition={{ delay: Math.min(index * 0.02, 0.2), duration: 0.3 }}
-                          className="glass-card p-8 group"
-                        >
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-3 mb-3">
-                                <Github className="w-5 h-5 text-green-400" />
-                                <h4 className="text-xl font-semibold text-white truncate">
-                                  {item.project_name || item.repository_name}
-                                </h4>
-                                {item.generation_params.include_demo && (
-                                  <span className="flex items-center gap-1 px-2 py-1 text-xs bg-purple-500/20 text-purple-400 rounded-full">
-                                    <BarChart3 className="w-3 h-3" />
-                                    Demo Included
-                                  </span>
-                                )}
-                              </div>
-                              
-                              <p className="text-gray-300 mb-4 truncate">
-                                {item.repository_url}
-                              </p>
-                              
-                              <div className="flex items-center gap-6 text-sm text-gray-400">
-                                <div className="flex items-center gap-1">
-                                  <Calendar className="w-4 h-4" />
-                                  <span>Created {formatDate(item.created_at)}</span>
-                                </div>
-                                
-                                {item.updated_at !== item.created_at && (
-                                  <div className="flex items-center gap-1">
-                                    <Clock className="w-4 h-4" />
-                                    <span>Updated {formatDate(item.updated_at)}</span>
-                                  </div>
-                                )}
-                                
-                                <div className="flex items-center gap-1">
-                                  <FileText className="w-4 h-4" />
-                                  <span>{Math.round(item.readme_content.length / 1000)}k chars</span>
-                                </div>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-center gap-2 ml-6">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => copyToClipboard(item.readme_content, item.project_name || item.repository_name)}
-                                className="opacity-0 group-hover:opacity-100 transition-all duration-300 glass-button border-none text-blue-400 hover:bg-blue-400/20"
-                              >
-                                <Copy className="w-4 h-4 mr-2" />
-                                Copy
-                              </Button>
-                              
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => downloadReadme(item)}
-                                className="opacity-0 group-hover:opacity-100 transition-all duration-300 glass-button border-none text-green-400 hover:bg-green-400/20"
-                              >
-                                <Download className="w-4 h-4 mr-2" />
-                                Download
-                              </Button>
-                              
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => viewReadme(item)}
-                                className="opacity-0 group-hover:opacity-100 transition-all duration-300 glass-button border-none text-purple-400 hover:bg-purple-400/20"
-                              >
-                                <Eye className="w-4 h-4 mr-2" />
-                                View
-                              </Button>
-                              
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => deleteHistoryItem(item.id)}
-                                disabled={deletingId === item.id}
-                                className="opacity-0 group-hover:opacity-100 transition-all duration-300 glass-button border-none text-red-400 hover:bg-red-400/20"
-                              >
-                                {deletingId === item.id ? (
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  <Trash2 className="w-4 h-4" />
-                                )}
-                              </Button>
-                            </div>
+      <ContentSection background="gradient" className="min-h-0">
+        <div className="max-h-[calc(100vh-400px)] overflow-y-auto scrollbar-thin scrollbar-green">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="flex items-center gap-3 text-green-400">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Loading your history...</span>
+              </div>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <AlertCircle className="w-12 h-12 mx-auto mb-4 text-red-400" />
+              <div className="text-red-400 mb-4">{error}</div>
+              <Button 
+                onClick={() => fetchHistory()} 
+                variant="outline" 
+                className="glass-button border-none text-green-400"
+              >
+                Try Again
+              </Button>
+            </div>
+          ) : filteredHistory.length === 0 ? (
+            <div className="text-center py-12 text-gray-400">
+              <Clock className="w-12 h-12 mx-auto mb-4 opacity-50" />
+              <p className="text-lg mb-2">No README history found</p>
+              <p className="text-sm">
+                {history.length === 0 
+                  ? "Generate your first README to see it here!" 
+                  : "Try adjusting your search or filter criteria"
+                }
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-4 pb-6">
+              <AnimatePresence>
+                {filteredHistory.map((item, index) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ delay: Math.min(index * 0.02, 0.2), duration: 0.3 }}
+                    className="glass-card p-8 group"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-3">
+                          <Github className="w-5 h-5 text-green-400" />
+                          <h4 className="text-xl font-semibold text-white truncate">
+                            {item.project_name || item.repository_name}
+                          </h4>
+                          {item.generation_params.include_demo && (
+                            <span className="flex items-center gap-1 px-2 py-1 text-xs bg-purple-500/20 text-purple-400 rounded-full">
+                              <BarChart3 className="w-3 h-3" />
+                              Demo Included
+                            </span>
+                          )}
+                        </div>
+                        
+                        <p className="text-gray-300 mb-4 truncate">
+                          {item.repository_url}
+                        </p>
+                        
+                        <div className="flex items-center gap-6 text-sm text-gray-400">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4" />
+                            <span>Created {formatDate(item.created_at)}</span>
                           </div>
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
-                  </div>
-                )}
+                          
+                          {item.updated_at !== item.created_at && (
+                            <div className="flex items-center gap-1">
+                              <Clock className="w-4 h-4" />
+                              <span>Updated {formatDate(item.updated_at)}</span>
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center gap-1">
+                            <FileText className="w-4 h-4" />
+                            <span>{Math.round(item.readme_content.length / 1000)}k chars</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 ml-6">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => copyToClipboard(item.readme_content, item.project_name || item.repository_name)}
+                          className="opacity-0 group-hover:opacity-100 transition-all duration-300 glass-button border-none text-blue-400 hover:bg-blue-400/20"
+                        >
+                          <Copy className="w-4 h-4 mr-2" />
+                          Copy
+                        </Button>
+                        
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => downloadReadme(item)}
+                          className="opacity-0 group-hover:opacity-100 transition-all duration-300 glass-button border-none text-green-400 hover:bg-green-400/20"
+                        >
+                          <Download className="w-4 h-4 mr-2" />
+                          Download
+                        </Button>
+                        
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => viewReadme(item)}
+                          className="opacity-0 group-hover:opacity-100 transition-all duration-300 glass-button border-none text-purple-400 hover:bg-purple-400/20"
+                        >
+                          <Eye className="w-4 h-4 mr-2" />
+                          View
+                        </Button>
+                        
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => deleteHistoryItem(item.id)}
+                          disabled={deletingId === item.id}
+                          className="opacity-0 group-hover:opacity-100 transition-all duration-300 glass-button border-none text-red-400 hover:bg-red-400/20"
+                        >
+                          {deletingId === item.id ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="w-4 h-4" />
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          )}
+        </div>
       </ContentSection>
 
-      {/* README Editor Modal */}
+      {/* README Output Modal */}
       {showEditor && selectedItem && (
         <div className="fixed inset-0 z-50 bg-black">
-          <ModernReadmeEditor 
+          <ModernReadmeOutput 
             content={selectedItem.readme_content}
+            repositoryUrl={selectedItem.repository_url}
+            projectName={selectedItem.project_name || selectedItem.repository_name}
+            generationParams={selectedItem.generation_params}
+            disableAutoSave={true}
             onClose={() => {
               setShowEditor(false);
               setSelectedItem(null);

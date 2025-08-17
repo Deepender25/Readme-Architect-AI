@@ -142,7 +142,7 @@ class handler(BaseHTTPRequestHandler):
             session_data = base64.b64encode(json.dumps(user_session_data).encode()).decode()
             
             self.send_response(302)
-            self.send_header('Location', '/?session=success')
+            self.send_header('Location', f'/?auth_success={urllib.parse.quote(session_data)}')
             
             cookie_value = f'github_user={session_data}; Path=/; Max-Age=86400; SameSite=Lax'
             self.send_header('Set-Cookie', cookie_value)

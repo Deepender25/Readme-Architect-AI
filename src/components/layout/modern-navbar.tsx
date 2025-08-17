@@ -62,7 +62,7 @@ export default function ModernNavbar() {
 
   return (
     <nav
-      className={`w-full z-[9998] smooth-transition h-16 no-lag hardware-accelerated ${
+      className={`fixed top-0 left-0 right-0 w-full z-[99999] smooth-transition h-16 no-lag hardware-accelerated ${
         isScrolled
           ? 'glass-navbar shadow-lg shadow-green-500/10'
           : 'glass-light border-b border-transparent'
@@ -295,16 +295,19 @@ export default function ModernNavbar() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="lg:hidden border-t border-green-400/20 overflow-hidden"
-            >
+      </div>
+      
+      {/* Mobile Navigation - Outside container for full width */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="lg:hidden mobile-nav-menu mobile-nav-dropdown"
+          >
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
               <div className="py-4 space-y-1">
                 {navLinks.map((link, index) => {
                   const isActive = isActiveLink(link.href);
@@ -405,10 +408,10 @@ export default function ModernNavbar() {
                   )}
                 </div>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }

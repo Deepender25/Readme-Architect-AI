@@ -48,13 +48,13 @@ export default function AppLayout({
       
       {/* Navbar */}
       {showNavbar && (
-        <div className="fixed top-0 left-0 right-0 z-50">
+        <div className="fixed top-0 left-0 right-0 z-[99999]">
           <ModernNavbar />
         </div>
       )}
 
       {/* Main Content */}
-      <main className={`relative z-10 min-h-screen flex flex-col ${showNavbar ? 'pt-16' : ''}`}>
+      <main className={`relative z-10 min-h-screen flex flex-col ${showNavbar ? 'pt-16 sm:pt-16' : ''}`}>
         {/* Breadcrumbs */}
         {showBreadcrumbs && !isHomePage && showNavbar && (
           <div className="border-b border-border/50 bg-black/20 backdrop-blur-sm">

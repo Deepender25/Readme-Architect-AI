@@ -11,43 +11,73 @@ interface PageTransitionProps {
 const pageVariants = {
   initial: {
     opacity: 0,
-    y: 20,
-    scale: 0.98
+    scale: 0.95,
+    filter: 'blur(10px)',
+    y: 20
   },
   in: {
     opacity: 1,
-    y: 0,
-    scale: 1
+    scale: 1,
+    filter: 'blur(0px)',
+    y: 0
   },
   out: {
     opacity: 0,
-    y: -20,
-    scale: 1.02
+    scale: 1.05,
+    filter: 'blur(10px)',
+    y: -20
   }
 }
 
 const pageTransition = {
   type: 'tween',
-  ease: 'anticipate',
-  duration: 0.4
+  ease: [0.22, 1, 0.36, 1],
+  duration: 0.4,
+  filter: { duration: 0.3 }
+}
+
+const overlayVariants = {
+  initial: { opacity: 1 },
+  animate: { opacity: 0 },
+  exit: { opacity: 1 }
+}
+
+const overlayTransition = {
+  duration: 0.2,
+  ease: "easeInOut"
 }
 
 export default function PageTransition({ children }: PageTransitionProps) {
   const pathname = usePathname()
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={pathname}
-        initial="initial"
-        animate="in"
-        exit="out"
-        variants={pageVariants}
-        transition={pageTransition}
-        className="w-full"
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={pathname}
+          initial="initial"
+          animate="in"
+          exit="out"
+          variants={pageVariants}
+          transition={pageTransition}
+          className="w-full min-h-screen bg-black smooth-page-transition"
+        >
+          {children}
+        </motion.div>
+      </AnimatePresence>
+      
+      {/* Smooth transition overlay to prevent white flash */}
+      <AnimatePresence>
+        <motion.div
+          key={`overlay-${pathname}`}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          variants={overlayVariants}
+          transition={overlayTransition}
+          className="page-transition-overlay"
+        />
+      </AnimatePresence>
+    </>
   )
 }
