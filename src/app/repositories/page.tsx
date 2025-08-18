@@ -458,7 +458,7 @@ function RepositoriesContent() {
                               </div>
                             </div>
                             
-                            <div className="flex items-center gap-3 ml-6">
+                            <div className="flex items-center gap-2 ml-4 md:ml-6 flex-shrink-0">
                               <Button
                                 size="sm"
                                 variant="outline"
@@ -468,27 +468,43 @@ function RepositoriesContent() {
                                     window.open(repo.html_url, '_blank');
                                   }
                                 }}
-                                className="opacity-0 group-hover:opacity-100 transition-opacity border-[rgba(255,255,255,0.2)] hover:border-blue-400/50 text-blue-400"
+                                className="glass-button border-none text-blue-400 hover:bg-blue-400/20 hidden sm:flex"
                               >
-                                <ExternalLink className="w-4 h-4 mr-2" />
-                                View on GitHub
+                                <ExternalLink className="w-4 h-4 sm:mr-2" />
+                                <span className="hidden sm:inline">View on GitHub</span>
+                              </Button>
+                              
+                              {/* Mobile GitHub link */}
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  showToast('Opening repository on GitHub...', 'info');
+                                  if (typeof window !== 'undefined') {
+                                    window.open(repo.html_url, '_blank');
+                                  }
+                                }}
+                                className="glass-button border-none text-blue-400 hover:bg-blue-400/20 sm:hidden p-2"
+                              >
+                                <ExternalLink className="w-4 h-4" />
                               </Button>
                               
                               <Button
                                 size="sm"
                                 onClick={() => handleGenerateReadme(repo.html_url, repo.name)}
                                 disabled={selectedRepo === repo.name}
-                                className="bg-green-600 hover:bg-green-700 text-white min-w-[140px]"
+                                className="bg-green-600 hover:bg-green-700 text-white min-w-[100px] sm:min-w-[140px]"
                               >
                                 {selectedRepo === repo.name ? (
                                   <>
-                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                    Redirecting...
+                                    <Loader2 className="w-4 h-4 sm:mr-2 animate-spin" />
+                                    <span className="hidden sm:inline">Redirecting...</span>
                                   </>
                                 ) : (
                                   <>
-                                    <FileText className="w-4 h-4 mr-2" />
-                                    Generate README
+                                    <FileText className="w-4 h-4 sm:mr-2" />
+                                    <span className="hidden sm:inline">Generate README</span>
+                                    <span className="sm:hidden">Generate</span>
                                   </>
                                 )}
                               </Button>

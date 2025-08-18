@@ -467,35 +467,35 @@ function HistoryContent() {
                         </div>
                       </div>
                       
-                      <div className="flex items-center gap-2 ml-6">
+                      <div className="flex items-center gap-1 sm:gap-2 ml-4 md:ml-6 flex-shrink-0">
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => copyToClipboard(item.readme_content, item.project_name || item.repository_name)}
-                          className="opacity-0 group-hover:opacity-100 transition-all duration-300 glass-button border-none text-blue-400 hover:bg-blue-400/20"
+                          className="glass-button border-none text-blue-400 hover:bg-blue-400/20 p-2 sm:px-3 sm:py-2"
                         >
-                          <Copy className="w-4 h-4 mr-2" />
-                          Copy
+                          <Copy className="w-4 h-4 sm:mr-2" />
+                          <span className="hidden sm:inline">Copy</span>
                         </Button>
                         
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => downloadReadme(item)}
-                          className="opacity-0 group-hover:opacity-100 transition-all duration-300 glass-button border-none text-green-400 hover:bg-green-400/20"
+                          className="glass-button border-none text-green-400 hover:bg-green-400/20 p-2 sm:px-3 sm:py-2"
                         >
-                          <Download className="w-4 h-4 mr-2" />
-                          Download
+                          <Download className="w-4 h-4 sm:mr-2" />
+                          <span className="hidden sm:inline">Download</span>
                         </Button>
                         
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => viewReadme(item)}
-                          className="opacity-0 group-hover:opacity-100 transition-all duration-300 glass-button border-none text-purple-400 hover:bg-purple-400/20"
+                          className="glass-button border-none text-purple-400 hover:bg-purple-400/20 p-2 sm:px-3 sm:py-2"
                         >
-                          <Eye className="w-4 h-4 mr-2" />
-                          View
+                          <Eye className="w-4 h-4 sm:mr-2" />
+                          <span className="hidden sm:inline">View</span>
                         </Button>
                         
                         <Button
@@ -503,7 +503,7 @@ function HistoryContent() {
                           variant="outline"
                           onClick={() => deleteHistoryItem(item.id)}
                           disabled={deletingId === item.id}
-                          className="opacity-0 group-hover:opacity-100 transition-all duration-300 glass-button border-none text-red-400 hover:bg-red-400/20"
+                          className="glass-button border-none text-red-400 hover:bg-red-400/20 p-2 sm:px-3 sm:py-2"
                         >
                           {deletingId === item.id ? (
                             <Loader2 className="w-4 h-4 animate-spin" />
