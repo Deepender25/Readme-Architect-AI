@@ -12,7 +12,6 @@ import RepositoriesList from '@/components/repositories-list';
 import HistoryList from '@/components/history-list';
 import ModernReadmeOutput from '@/components/modern-readme-output';
 import ModernReadmeEditor from '@/components/modern-readme-editor';
-import MinimalGridBackground from '@/components/minimal-geometric-background';
 
 interface GitHubReadmeEditorProps {
   initialContent?: string;
@@ -356,10 +355,6 @@ export default function GitHubReadmeEditor({
 
   return (
     <div className="min-h-screen bg-black text-foreground relative overflow-hidden">
-      {/* Background */}
-      <div className="fixed inset-0 z-0 w-full h-full">
-        <MinimalGridBackground />
-      </div>
       {/* Header */}
       <motion.div 
         className="border-b border-border backdrop-blur-md bg-surface/80"

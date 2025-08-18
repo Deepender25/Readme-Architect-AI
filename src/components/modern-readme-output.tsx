@@ -44,7 +44,6 @@ import DOMPurify from 'isomorphic-dompurify';
 
 
 
-import ProfessionalBackground from '@/components/professional-background';
 
 import { useAuth, authenticatedFetch } from '@/lib/auth';
 
@@ -462,13 +461,6 @@ export default function ModernReadmeOutput({
 
     <div className="min-h-screen bg-black text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag mobile-optimized">
 
-      {/* Background */}
-
-      <div className="fixed inset-0 z-0 w-full h-full">
-
-        <ProfessionalBackground />
-
-      </div>
 
       {/* Navbar removed to prevent duplication when used as modal/overlay */}
 
