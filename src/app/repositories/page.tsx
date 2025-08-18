@@ -26,7 +26,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
-import SimpleDropdown from '@/components/ui/simple-dropdown'
+import ProfessionalDropdown from '@/components/ui/professional-dropdown'
 import withAuth from '@/components/withAuth'
 import LayoutWrapper from '@/components/layout-wrapper'
 import PageHeader from '@/components/layout/page-header'
@@ -294,7 +294,7 @@ function RepositoriesContent() {
                   </div>
 
                   {/* Language Filter */}
-                  <SimpleDropdown
+                  <ProfessionalDropdown
                     options={[
                       { value: 'all', label: 'All Languages', icon: <Code className="w-4 h-4" /> },
                       ...getUniqueLanguages().map(lang => ({ 
@@ -310,7 +310,7 @@ function RepositoriesContent() {
                   />
 
                   {/* Visibility Filter */}
-                  <SimpleDropdown
+                  <ProfessionalDropdown
                     options={[
                       { value: 'all', label: 'All Repositories', icon: <Github className="w-4 h-4" /> },
                       { value: 'public', label: 'Public Only', icon: <Unlock className="w-4 h-4" /> },
@@ -325,7 +325,7 @@ function RepositoriesContent() {
 
                 <div className="flex gap-2">
                   {/* Sort Controls */}
-                  <SimpleDropdown
+                  <ProfessionalDropdown
                     options={[
                       { value: 'updated', label: 'Last Updated', icon: <Clock className="w-4 h-4" /> },
                       { value: 'name', label: 'Name', icon: <FileText className="w-4 h-4" /> },

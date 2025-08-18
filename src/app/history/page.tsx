@@ -24,7 +24,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
-import SimpleDropdown from '@/components/ui/simple-dropdown'
+import ProfessionalDropdown from '@/components/ui/professional-dropdown'
 import ModernReadmeOutput from '@/components/modern-readme-output'
 import withAuth from '@/components/withAuth'
 import LayoutWrapper from '@/components/layout-wrapper'
@@ -329,7 +329,7 @@ function HistoryContent() {
                   </div>
 
                   {/* Demo Filter */}
-                  <SimpleDropdown
+                  <ProfessionalDropdown
                     options={[
                       { value: 'all', label: 'All READMEs', icon: <FileText className="w-4 h-4" /> },
                       { value: 'with', label: 'With Demo', icon: <BarChart3 className="w-4 h-4" /> },
@@ -344,7 +344,7 @@ function HistoryContent() {
 
                 <div className="flex gap-2">
                   {/* Sort Controls */}
-                  <SimpleDropdown
+                  <ProfessionalDropdown
                     options={[
                       { value: 'created', label: 'Date Created', icon: <Calendar className="w-4 h-4" /> },
                       { value: 'updated', label: 'Last Updated', icon: <Clock className="w-4 h-4" /> },

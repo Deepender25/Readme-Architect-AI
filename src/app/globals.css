@@ -926,24 +926,6 @@ html, body {
   -webkit-backdrop-filter: blur(24px) !important;
 }
 
-/* Grid background enhancements */
-.grid-background {
-  background-image: 
-    linear-gradient(rgba(0, 255, 136, 0.15) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 136, 0.15) 1px, transparent 1px);
-  background-size: 60px 60px;
-  animation: moveGridSlow 120s linear infinite;
-}
-
-@keyframes moveGridSlow {
-  0% {
-    background-position: 0% 0%;
-  }
-  100% {
-    background-position: 100% 100%;
-  }
-}
-
 /* Mobile optimizations for page transitions */
 @media (max-width: 768px) {
   .page-transition-overlay {
@@ -961,15 +943,6 @@ html, body {
   position: fixed !important;
 }
 
-/* Ensure background is visible */
-.professional-background {
-  z-index: 0 !important;
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-}
 
 /* Force dropdown above everything */
 [data-dropdown-menu="true"] {
@@ -1044,14 +1017,6 @@ omprehensive Mobile Optimizations */
     transition-duration: 0.3s !important;
   }
   
-  /* Mobile-specific grid background optimization */
-  .professional-background {
-    opacity: 0.7 !important;
-  }
-  
-  .professional-background > div {
-    opacity: 0.5 !important;
-  }
 }
 
 /* Mobile-specific styles for small screens */
@@ -1156,15 +1121,6 @@ omprehensive Mobile Optimizations */
     padding: 12px !important;
   }
   
-  /* Mobile-specific background optimization */
-  .professional-background {
-    opacity: 0.5 !important;
-  }
-  
-  /* Disable complex animations on very small screens */
-  .professional-background > div:nth-child(n+3) {
-    display: none !important;
-  }
 }
 
 /* Landscape mobile optimization */
@@ -1378,10 +1334,6 @@ al Mobile Navigation Fixes */
     transition: none !important;
   }
   
-  /* Simplify background for performance */
-  .professional-background > div:nth-child(n+3) {
-    display: none !important;
-  }
   
   /* Mobile text optimizations */
   body {
@@ -1394,8 +1346,9 @@ al Mobile Navigation Fixes */
     font-size: 12px !important;
     font-weight: 500 !important;
   }
-}/* C
-ritical Mobile Navigation and Button Fixes */
+}
+
+/* Critical Mobile Navigation and Button Fixes */
 
 /* Force mobile navbar dropdown to be visible */
 @media (max-width: 1024px) {
@@ -1457,40 +1410,29 @@ ritical Mobile Navigation and Button Fixes */
   opacity: 1 !important;
 }
 
-/* Mobile-specific grid visibility */
-@media (max-width: 768px) {
-  .professional-background {
-    opacity: 1 !important;
-  }
-  
-  .professional-background > div {
-    opacity: 0.8 !important;
-  }
-  
-  /* Mobile navbar specific fixes */
-  .lg\\:hidden {
-    display: block !important;
-    visibility: visible !important;
-  }
-  
-  /* Mobile button contrast improvements */
-  .mobile-contrast-button {
-    background: rgba(255, 255, 255, 0.2) !important;
-    border: 2px solid rgba(255, 255, 255, 0.5) !important;
-    color: white !important;
-    font-weight: 600 !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
-  }
-  
-  .mobile-contrast-button:hover {
-    background: rgba(0, 255, 136, 0.4) !important;
-    border-color: rgba(0, 255, 136, 0.8) !important;
-    color: white !important;
-    box-shadow: 0 6px 20px rgba(0, 255, 136, 0.5) !important;
-  }
+/* Mobile navbar specific fixes */
+.lg\\:hidden {
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Mobile button contrast improvements */
+.mobile-contrast-button {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 2px solid rgba(255, 255, 255, 0.5) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+.mobile-contrast-button:hover {
+  background: rgba(0, 255, 136, 0.4) !important;
+  border-color: rgba(0, 255, 136, 0.8) !important;
+  color: white !important;
+  box-shadow: 0 6px 20px rgba(0, 255, 136, 0.5) !important;
 }
 
 /* Ultra-specific mobile navbar visibility fix */
@@ -1534,6 +1476,103 @@ ritical Mobile Navigation and Button Fixes */
     box-shadow: 0 8px 24px rgba(0, 255, 136, 0.6) !important;
     transform: translateY(-2px) !important;
   }
+}
+
+/* Professional Dropdown Specific Styles */
+.professional-dropdown-menu {
+  background: rgba(17, 24, 39, 0.95) !important;
+  border: 1px solid rgba(107, 114, 128, 0.5) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  transform: none !important;
+  position: fixed !important;
+  z-index: 9999999 !important;
+  contain: layout style paint !important;
+  will-change: auto !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+/* Ensure dropdown positioning is not affected by parent transforms */
+.professional-dropdown-portal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none !important;
+  z-index: 9999999 !important;
+  transform: none !important;
+  will-change: auto !important;
+}
+
+.professional-dropdown-content {
+  pointer-events: auto !important;
+  position: absolute !important;
+  transform: none !important;
+  will-change: auto !important;
+  background: rgba(17, 24, 39, 0.98) !important;
+  border: 1px solid rgba(107, 114, 128, 0.5) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  overflow: hidden !important;
+}
+
+.professional-dropdown-option {
+  transition: all 0.15s ease-out !important;
+}
+
+.professional-dropdown-option:hover {
+  background: rgba(55, 65, 81, 0.8) !important;
+}
+
+.professional-dropdown-option:active {
+  background: rgba(75, 85, 99, 0.9) !important;
+}
+
+.professional-dropdown-option.selected {
+  background: rgba(34, 197, 94, 0.2) !important;
+  color: rgba(34, 197, 94, 1) !important;
+  font-weight: 500 !important;
+}
+
+/* Enhanced Dropdown Specific Styles */
+.enhanced-dropdown-menu {
+  background: rgba(15, 15, 15, 0.98) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(0, 255, 136, 0.3) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 255, 136, 0.15) !important;
+}
+
+.enhanced-dropdown-option {
+  transition: all 0.15s ease-out !important;
+}
+
+.enhanced-dropdown-option:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.enhanced-dropdown-option.selected {
+  background: rgba(0, 255, 136, 0.15) !important;
+  border-left: 2px solid rgba(0, 255, 136, 0.8) !important;
+}
+
+.enhanced-dropdown-search {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.enhanced-dropdown-search:focus {
+  border-color: rgba(0, 255, 136, 0.5) !important;
+  box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.2) !important;
 }
 
 /* Mobile Touch Target and Dropdown Improvements */

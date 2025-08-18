@@ -5,7 +5,6 @@ import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import ModernNavbar from '@/components/layout/modern-navbar'
 import ModernFooter from '@/components/layout/modern-footer'
-import ProfessionalBackground from '@/components/professional-background'
 import PageTransition from '@/components/page-transition'
 import Breadcrumbs from '@/components/layout/breadcrumbs'
 
@@ -41,10 +40,6 @@ export default function AppLayout({
 
   return (
     <div className="min-h-screen bg-black text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag">
-      {/* Background */}
-      <div className="fixed inset-0 z-0 w-full h-full">
-        <ProfessionalBackground />
-      </div>
       
       {/* Navbar */}
       {showNavbar && (
