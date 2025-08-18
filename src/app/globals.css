@@ -1535,3 +1535,71 @@ ritical Mobile Navigation and Button Fixes */
     transform: translateY(-2px) !important;
   }
 }
+
+/* Mobile Touch Target and Dropdown Improvements */
+.mobile-touch-target {
+  min-height: 44px !important;
+  min-width: 44px !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: rgba(0, 255, 136, 0.2) !important;
+}
+
+.mobile-dropdown-menu {
+  border: 1px solid rgba(0, 255, 136, 0.4) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(0, 255, 136, 0.2) !important;
+}
+
+@media (max-width: 768px) {
+  .mobile-dropdown-menu {
+    max-width: calc(100vw - 16px) !important;
+    border-radius: 12px !important;
+  }
+  
+  .mobile-touch-target {
+    min-height: 48px !important;
+    padding: 12px !important;
+  }
+  
+  /* Improve repository and history card layouts on mobile */
+  .glass-card {
+    padding: 16px !important;
+    margin: 8px 0 !important;
+  }
+  
+  /* Better button spacing on mobile */
+  .flex-shrink-0 {
+    flex-wrap: wrap !important;
+  }
+}
+
+/* Ensure dropdowns work properly on all scroll containers */
+.dropdown-menu {
+  position: fixed !important;
+  z-index: 9999999 !important;
+}
+
+/* Better scrolling for history/repositories lists */
+.scrollbar-thin {
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(0, 255, 136, 0.6) rgba(0, 0, 0, 0.2) !important;
+}
+
+.scrollbar-green::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+.scrollbar-green::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border-radius: 10px !important;
+}
+
+.scrollbar-green::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.6), rgba(0, 255, 136, 0.8)) !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(0, 255, 136, 0.2) !important;
+}
+
+.scrollbar-green::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.8), rgba(0, 255, 136, 1)) !important;
+}
