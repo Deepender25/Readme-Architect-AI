@@ -39,7 +39,7 @@ export default function AppLayout({
   }
 
   return (
-    <div className="min-h-screen bg-black text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag">
+    <div className="min-h-screen bg-transparent text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag">
       
       {/* Navbar */}
       {showNavbar && (

@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { AuthProvider } from '@/lib/auth';
+import EnhancedGridBackground from '@/components/enhanced-grid-background';
 import "./globals.css";
 
 export default function RootLayout({
@@ -27,6 +28,7 @@ export default function RootLayout({
           overflow-x: hidden;
         }
         
+        
         /* Smooth page transition styles */
         .page-transition-overlay {
           position: fixed;
@@ -40,7 +42,10 @@ export default function RootLayout({
         }
       `}</style>
       </head>
-      <body className="antialiased bg-black">
+      <body className="antialiased bg-transparent">
+        {/* Enhanced Grid Background - Professional animated grid across all pages */}
+        <EnhancedGridBackground />
+        
         <AuthProvider>
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
@@ -65,7 +70,7 @@ export default function RootLayout({
                 ease: [0.22, 1, 0.36, 1],
                 filter: { duration: 0.3 }
               }}
-              className="min-h-screen bg-black"
+              className="min-h-screen relative z-10"
             >
               {children}
             </motion.div>

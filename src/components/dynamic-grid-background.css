@@ -1,0 +1,137 @@
+
+:root {
+      --grid-size: 35px;
+      --line-color: rgba(0, 255, 136, 0.06);
+      --fill-color: rgba(0, 255, 136, 0.4);
+      --glow-color: rgba(0, 255, 136, 0.3);
+    }
+
+.grid-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: 
+        linear-gradient(to right, var(--line-color) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--line-color) 1px, transparent 1px);
+      background-size: var(--grid-size) var(--grid-size);
+      background-attachment: fixed;
+      z-index: -10;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .corner-fade {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      background: radial-gradient(
+        ellipse at center,
+        transparent 25%,
+        rgba(0, 0, 0, 0.4) 70%,
+        rgba(0, 0, 0, 0.8) 100%
+      );
+      z-index: -9;
+    }
+
+    .grid-square {
+      position: absolute;
+      width: var(--grid-size);
+      height: var(--grid-size);
+      background-color: transparent;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .shape-square   { clip-path: none; }
+    .shape-circle   { clip-path: circle(50% at 50% 50%); }
+    .shape-diamond  { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+    .shape-triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
+
+    .grid-square.active {
+      background-color: var(--fill-color);
+      box-shadow: 0 0 15px var(--glow-color);
+      transform: scale(1.05);
+      border-radius: 2px;
+    }
+
+    .grid-square.pulse {
+      animation: pulse 1.5s ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { 
+        background-color: transparent;
+        box-shadow: 0 0 0px var(--glow-color);
+        transform: scale(1);
+      }
+      50% { 
+        background-color: var(--fill-color);
+        box-shadow: 0 0 20px var(--glow-color);
+        transform: scale(1.1);
+      }
+      100% { 
+        background-color: transparent;
+        box-shadow: 0 0 0px var(--glow-color);
+        transform: scale(1);
+      }
+    }
+
+    .content {
+      position: relative;
+      z-index: 10;
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      padding: 16px;
+      color: white;
+      font-family: system-ui, -apple-system, sans-serif;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .control-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .control-item label {
+      font-size: 14px;
+      color: #cbd5e1;
+      min-width: 80px;
+    }
+
+    .control-item input[type="range"] {
+      width: 120px;
+    }
+
+    .control-item span {
+      font-size: 12px;
+      color: #94a3b8;
+      min-width: 30px;
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --grid-size: 25px;
+      }
+      
+      .controls {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+        padding: 12px;
+      }
+    }

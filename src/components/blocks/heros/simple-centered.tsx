@@ -20,7 +20,7 @@ const FeatureCard = ({ icon: Icon, title, description, delay }: {
     className="relative group"
   >
     <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-    <div className="relative bg-black/40 backdrop-blur-xl border border-green-400/20 rounded-2xl p-6 hover:border-green-400/40 transition-all duration-300">
+    <div className="relative bg-black/20 backdrop-blur-xl border border-green-400/20 rounded-2xl p-6 hover:border-green-400/40 transition-all duration-300">
       <div className="flex items-center gap-4 mb-3">
         <div className="p-2 bg-green-400/10 rounded-lg">
           <Icon className="w-6 h-6 text-green-400" />

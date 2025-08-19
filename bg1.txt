@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Grid Background</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --grid-size: 35px;
+      --line-color: rgba(0, 255, 136, 0.1);
+      --fill-color: rgba(0, 255, 136, 0.8);
+      --glow-color: rgba(0, 255, 136, 0.5);
+    }
+
+    body {
+      background-color: #0a0a0a;
+      overflow: hidden;
+    }
+
+    .grid-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(to right, var(--line-color) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--line-color) 1px, transparent 1px);
+      background-size: var(--grid-size) var(--grid-size);
+    }
+
+    .corner-fade {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(
+        circle at center,
+        transparent 30%,
+        rgba(10, 10, 10, 0.85) 100%
+      );
+    }
+
+    .grid-square {
+      position: absolute;
+      width: var(--grid-size);
+      height: var(--grid-size);
+      background-color: transparent;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .shape-square   { clip-path: none; }
+    .shape-circle   { clip-path: circle(50% at 50% 50%); }
+    .shape-diamond  { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+    .shape-triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
+
+    .grid-square.active {
+      background-color: var(--fill-color);
+      box-shadow: 0 0 15px var(--glow-color);
+      transform: scale(1.05);
+      border-radius: 2px;
+    }
+
+    .grid-square.pulse {
+      animation: pulse 1.5s ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { 
+        background-color: transparent;
+        box-shadow: 0 0 0px var(--glow-color);
+        transform: scale(1);
+      }
+      50% { 
+        background-color: var(--fill-color);
+        box-shadow: 0 0 20px var(--glow-color);
+        transform: scale(1.1);
+      }
+      100% { 
+        background-color: transparent;
+        box-shadow: 0 0 0px var(--glow-color);
+        transform: scale(1);
+      }
+    }
+
+    .content {
+      position: relative;
+      z-index: 10;
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      padding: 16px;
+      color: white;
+      font-family: system-ui, -apple-system, sans-serif;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .control-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .control-item label {
+      font-size: 14px;
+      color: #cbd5e1;
+      min-width: 80px;
+    }
+
+    .control-item input[type="range"] {
+      width: 120px;
+    }
+
+    .control-item span {
+      font-size: 12px;
+      color: #94a3b8;
+      min-width: 30px;
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --grid-size: 25px;
+      }
+      
+      .controls {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-container" id="gridContainer"></div>
+  <div class="corner-fade"></div>
+  
+  <div class="content">
+    <div class="controls">
+      <h3 class="text-sm font-semibold mb-3 text-green-400">Grid Controls</h3>
+      <div class="control-item">
+        <label>Speed</label>
+        <input type="range" id="speedSlider" min="100" max="2000" value="800">
+        <span id="speedValue">800ms</span>
+      </div>
+      <div class="control-item">
+        <label>Intensity</label>
+        <input type="range" id="intensitySlider" min="1" max="20" value="5">
+        <span id="intensityValue">5</span>
+      </div>
+      <div class="control-item">
+        <label>Brightness</label>
+        <input type="range" id="brightnessSlider" min="0.1" max="1" step="0.1" value="0.8">
+        <span id="brightnessValue">80%</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    class DynamicGrid {
+      constructor() {
+        this.container = document.getElementById('gridContainer');
+        this.gridSize = 35;
+        this.squares = [];
+        this.activeSquares = new Set();
+        this.intervalId = null;
+        this.speed = 800;
+        this.intensity = 5;
+        this.brightness = 0.8;
+        
+        this.init();
+        this.bindControls();
+      }
+
+      init() {
+        this.updateGridSize();
+        this.createGrid();
+        this.startAnimation();
+        window.addEventListener('resize', () => this.handleResize());
+      }
+
+      updateGridSize() {
+        const root = document.documentElement;
+        if (window.innerWidth <= 768) {
+          root.style.setProperty('--grid-size', '25px');
+          this.gridSize = 25;
+        } else {
+          root.style.setProperty('--grid-size', '35px');
+          this.gridSize = 35;
+        }
+      }
+
+      createGrid() {
+        this.container.innerHTML = '';
+        this.squares = [];
+        this.activeSquares.clear();
+
+        const cols = Math.ceil(window.innerWidth / this.gridSize);
+        const rows = Math.ceil(window.innerHeight / this.gridSize);
+
+        for (let row = 0; row < rows; row++) {
+          for (let col = 0; col < cols; col++) {
+            const square = document.createElement('div');
+            square.className = 'grid-square';
+            square.style.left = `${col * this.gridSize}px`;
+            square.style.top = `${row * this.gridSize}px`;
+            
+            this.container.appendChild(square);
+            this.squares.push(square);
+          }
+        }
+      }
+
+      handleResize() {
+        this.updateGridSize();
+        this.createGrid();
+      }
+
+      startAnimation() {
+        if (this.intervalId) {
+          clearInterval(this.intervalId);
+        }
+        this.intervalId = setInterval(() => this.animateRandom(), this.speed);
+      }
+
+      animateRandom() {
+        const availableSquares = this.squares.filter(s => !this.activeSquares.has(s));
+        if (availableSquares.length === 0) return;
+
+        // Activate multiple squares based on intensity
+        const count = Math.min(this.intensity, availableSquares.length);
+        for (let i = 0; i < count; i++) {
+          const idx = Math.floor(Math.random() * availableSquares.length);
+          const square = availableSquares.splice(idx, 1)[0];
+
+          const duration = 800 + Math.random() * 1200;
+          square.style.animationDuration = `${duration}ms`;
+          square.style.setProperty('--fill-color', `rgba(0, 255, 136, ${this.brightness})`);
+          square.style.setProperty('--glow-color', `rgba(0, 255, 136, ${this.brightness * 0.6})`);
+
+          square.classList.add('pulse');
+          this.activeSquares.add(square);
+
+          setTimeout(() => {
+            square.classList.remove('pulse');
+            this.activeSquares.delete(square);
+          }, duration);
+        }
+      }
+
+      setSpeed(value) {
+        this.speed = parseInt(value);
+        this.startAnimation();
+      }
+
+      setIntensity(value) {
+        this.intensity = parseInt(value);
+      }
+
+      setBrightness(value) {
+        this.brightness = parseFloat(value);
+        const root = document.documentElement;
+        const alpha = value;
+        root.style.setProperty('--fill-color', `rgba(0, 255, 136, ${alpha})`);
+        root.style.setProperty('--glow-color', `rgba(0, 255, 136, ${alpha * 0.6})`);
+      }
+
+      bindControls() {
+        const speedSlider = document.getElementById('speedSlider');
+        const intensitySlider = document.getElementById('intensitySlider');
+        const brightnessSlider = document.getElementById('brightnessSlider');
+
+        // Update speed slider range for slower speeds
+        speedSlider.min = "1000";
+        speedSlider.max = "5000";
+        speedSlider.value = this.speed;
+
+        speedSlider.addEventListener('input', (e) => {
+          this.setSpeed(e.target.value);
+          document.getElementById('speedValue').textContent = `${e.target.value}ms`;
+        });
+
+        intensitySlider.addEventListener('input', (e) => {
+          this.setIntensity(e.target.value);
+          document.getElementById('intensityValue').textContent = e.target.value;
+        });
+
+        brightnessSlider.addEventListener('input', (e) => {
+          this.setBrightness(e.target.value);
+          document.getElementById('brightnessValue').textContent = `${Math.round(e.target.value * 100)}%`;
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      new DynamicGrid();
+    });
+  </script>
+</body>
+</html>
