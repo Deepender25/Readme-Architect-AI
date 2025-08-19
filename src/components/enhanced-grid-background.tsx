@@ -16,11 +16,11 @@ export default function EnhancedGridBackground() {
       
       {/* Main grid pattern - enhanced visibility */}
       <div 
-        className="absolute inset-0 opacity-35 w-full h-full"
+        className="absolute inset-0 opacity-40 w-full h-full"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(0, 255, 136, 0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 255, 136, 0.3) 1px, transparent 1px)
+            linear-gradient(rgba(0, 255, 136, 0.35) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 136, 0.35) 1px, transparent 1px)
           `,
           backgroundSize: '40px 40px',
           backgroundPosition: 'center center',
@@ -30,11 +30,11 @@ export default function EnhancedGridBackground() {
       
       {/* Secondary finer grid - enhanced visibility */}
       <div 
-        className="absolute inset-0 opacity-20 w-full h-full"
+        className="absolute inset-0 opacity-25 w-full h-full"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(0, 255, 136, 0.15) 0.5px, transparent 0.5px),
-            linear-gradient(90deg, rgba(0, 255, 136, 0.15) 0.5px, transparent 0.5px)
+            linear-gradient(rgba(0, 255, 136, 0.18) 0.5px, transparent 0.5px),
+            linear-gradient(90deg, rgba(0, 255, 136, 0.18) 0.5px, transparent 0.5px)
           `,
           backgroundSize: '20px 20px',
           backgroundPosition: 'center center',

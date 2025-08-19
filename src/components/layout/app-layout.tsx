@@ -49,7 +49,7 @@ export default function AppLayout({
       )}
 
       {/* Main Content */}
-      <main className={`relative z-10 min-h-screen flex flex-col ${showNavbar ? 'pt-16 sm:pt-16' : ''}`}>
+      <main className={`relative z-20 min-h-screen flex flex-col ${showNavbar ? 'pt-16 sm:pt-16' : ''}`}>
         {/* Breadcrumbs */}
         {showBreadcrumbs && !isHomePage && showNavbar && (
           <div className="border-b border-border/50 bg-black/20 backdrop-blur-sm">
@@ -71,7 +71,7 @@ export default function AppLayout({
 
       {/* Footer */}
       {showFooter && (
-        <div className="relative z-10">
+        <div className="relative z-20">
           <ModernFooter />
         </div>
       )}
