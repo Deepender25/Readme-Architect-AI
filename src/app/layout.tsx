@@ -70,7 +70,7 @@ export default function RootLayout({
                 ease: [0.22, 1, 0.36, 1],
                 filter: { duration: 0.3 }
               }}
-              className="min-h-screen relative z-10"
+              className="min-h-screen relative z-20"
             >
               {children}
             </motion.div>

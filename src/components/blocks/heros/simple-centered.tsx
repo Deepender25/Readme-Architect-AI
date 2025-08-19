@@ -17,17 +17,19 @@ const FeatureCard = ({ icon: Icon, title, description, delay }: {
     initial={{ opacity: 0, y: 15 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.3, delay: Math.min(delay * 0.05, 0.2) }}
-    className="relative group"
+    className="relative group cursor-pointer"
+    whileHover={{ y: -4, scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
   >
-    <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-    <div className="relative bg-black/20 backdrop-blur-xl border border-green-400/20 rounded-2xl p-6 hover:border-green-400/40 transition-all duration-300">
+    <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-300" />
+    <div className="relative bg-black/40 backdrop-blur-xl border border-green-400/20 rounded-2xl p-6 hover:border-green-400/50 hover:bg-black/60 transition-all duration-300 group-hover:shadow-xl group-hover:shadow-green-400/20">
       <div className="flex items-center gap-4 mb-3">
-        <div className="p-2 bg-green-400/10 rounded-lg">
-          <Icon className="w-6 h-6 text-green-400" />
+        <div className="p-2 bg-green-400/10 rounded-lg group-hover:bg-green-400/20 transition-all duration-300">
+          <Icon className="w-6 h-6 text-green-400 group-hover:text-green-300 transition-colors duration-300" />
         </div>
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
+        <h3 className="text-lg font-semibold text-white group-hover:text-green-300 transition-colors duration-300">{title}</h3>
       </div>
-      <p className="text-gray-400 text-sm leading-relaxed">{description}</p>
+      <p className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors duration-300">{description}</p>
     </div>
   </motion.div>
 );
@@ -147,7 +149,7 @@ export default function SimpleCentered() {
               initial={{ opacity: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
-              className="relative z-10"
+              className="relative z-30"
             >
               {/* Hero Section */}
               <div className="mx-auto max-w-6xl py-12 sm:py-16 lg:py-20">
@@ -171,13 +173,14 @@ export default function SimpleCentered() {
                   
                   <ScrollAnimatedDiv delay={0.05} duration={0.4} yOffset={30}>
                     <motion.h1
-                      className="text-5xl font-bold tracking-tight text-white sm:text-7xl lg:text-8xl mb-6"
+                      className="text-5xl font-bold tracking-tight text-white sm:text-7xl lg:text-8xl mb-6 relative z-10"
                       style={{ 
                         textShadow: '0 0 30px rgba(0, 255, 136, 0.3), 0 0 60px rgba(0, 255, 136, 0.2)',
                         background: 'linear-gradient(135deg, #ffffff 0%, #00ff88 100%)',
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text'
+                        backgroundClip: 'text',
+                        filter: 'drop-shadow(0 0 10px rgba(0, 255, 136, 0.5))'
                       }}
                     >
                       Generate Perfect

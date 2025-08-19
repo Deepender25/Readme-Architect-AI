@@ -163,9 +163,9 @@ export default function ModernNavbar() {
                     exit={{ opacity: 0, scale: 0.95 }}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={login}
-                    disabled={isLoading}
-                    className="relative flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-400 border border-green-400/30 rounded-lg overflow-hidden group hover:border-green-400/50 transition-all duration-200 disabled:opacity-50"
+                      onClick={login}
+                      disabled={isLoading}
+                      className="relative flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-400 border border-green-400/30 rounded-lg overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50"
                   >
                     <Github className="w-4 h-4" />
                     <span className="relative z-10">
@@ -187,7 +187,7 @@ export default function ModernNavbar() {
                       whileHover={{ scale: 1.01 }}
                       whileTap={{ scale: 0.99 }}
                       onClick={() => setDropdownOpen(!dropdownOpen)}
-                      className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-foreground/80 hover:text-green-400 transition-all duration-200 border border-transparent hover:border-green-400/20 rounded-lg bg-green-400/5 hover:bg-green-400/10"
+                      className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-foreground/80 hover:text-green-400 transition-all duration-300 border border-transparent hover:border-green-400/30 rounded-lg bg-green-400/5 hover:bg-green-400/15 hover:shadow-lg hover:shadow-green-400/20"
                     >
                       <img
                         src={user?.avatar_url}

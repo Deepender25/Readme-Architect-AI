@@ -67,6 +67,19 @@
     border-radius: 1rem;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
+
+  /* Standardized Button Styles */
+  .btn-primary {
+    @apply px-6 py-3 bg-green-500 text-black font-semibold rounded-xl transition-all duration-300 hover:bg-green-400 hover:shadow-lg hover:shadow-green-400/30 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-black;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 bg-transparent border border-green-400/30 text-green-400 font-semibold rounded-xl hover:bg-green-400/10 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300;
+  }
+
+  .btn-ghost {
+    @apply px-4 py-2 bg-green-400/5 text-green-400 font-medium rounded-lg hover:bg-green-400/15 hover:text-green-300 transition-all duration-300;
+  }
   
   .glass:hover {
     background: rgba(12, 12, 12, 0.7);
