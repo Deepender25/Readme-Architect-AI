@@ -60,7 +60,7 @@ export default function PageTransition({ children }: PageTransitionProps) {
           exit="out"
           variants={pageVariants}
           transition={pageTransition}
-          className="w-full min-h-screen bg-black smooth-page-transition"
+          className="w-full min-h-screen bg-transparent smooth-page-transition"
         >
           {children}
         </motion.div>
