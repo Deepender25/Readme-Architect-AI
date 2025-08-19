@@ -1,36 +1,36 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Github, Twitter, Mail, Heart, FileText, Zap, Code2, Star } from 'lucide-react';
+import { Github, Instagram, Mail, Heart, FileText, Zap, Code2, Star, Clock } from 'lucide-react';
 
 export default function ModernFooter() {
   const currentYear = new Date().getFullYear();
 
   const footerLinks = {
-    product: [
+    navigation: [
       { name: 'Features', href: '/features' },
-      { name: 'Examples', href: '/examples' },
       { name: 'Documentation', href: '/documentation' },
-      { name: 'Pricing', href: '/pricing' }
+      { name: 'Examples', href: '/examples' }
+    ],
+    pricing: [
+      { name: 'Pricing', href: '/pricing', comingSoon: true }
     ],
     resources: [
-      { name: 'GitHub', href: 'https://github.com' },
-      { name: 'API Reference', href: '/docs/api' },
+      { name: 'GitHub', href: 'https://github.com/Deepender25/Readme-Architect-AI' },
+      { name: 'API Reference', href: '/docs/api', comingSoon: true },
       { name: 'Tutorials', href: '/tutorials' },
       { name: 'Blog', href: '/blog' }
     ],
-    company: [
+    funProject: [
       { name: 'About', href: '/about' },
-      { name: 'Privacy', href: '/privacy' },
-      { name: 'Terms', href: '/terms' },
       { name: 'Contact', href: '/contact' }
     ]
   };
 
   const socialLinks = [
-    { name: 'GitHub', icon: Github, href: 'https://github.com' },
-    { name: 'Twitter', icon: Twitter, href: 'https://twitter.com' },
-    { name: 'Email', icon: Mail, href: 'mailto:hello@autodocai.com' }
+    { name: 'GitHub', icon: Github, href: 'https://github.com/Deepender25' },
+    { name: 'Instagram', icon: Instagram, href: 'https://www.instagram.com/itsadi.art?igsh=NGthdzVkbTlzOXRr' },
+    { name: 'Email', icon: Mail, href: 'mailto:yadavdeepender65@gmail.com' }
   ];
 
   return (
@@ -115,8 +115,8 @@ export default function ModernFooter() {
             </div>
 
             {/* Links Sections */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-8 lg:col-span-3">
-              {/* Product Links */}
+            <div className="grid grid-cols-1 sm:grid-cols-4 lg:grid-cols-4 gap-8 lg:col-span-3">
+              {/* Navigation Links */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -124,10 +124,10 @@ export default function ModernFooter() {
               >
                 <h4 className="font-semibold text-white mb-4 flex items-center gap-2">
                   <Code2 className="w-4 h-4 text-green-400" />
-                  Product
+                  Navigation
                 </h4>
                 <ul className="space-y-3">
-                  {footerLinks.product.map((link) => (
+                  {footerLinks.navigation.map((link) => (
                     <li key={link.name}>
                       <a
                         href={link.href}
@@ -135,6 +135,35 @@ export default function ModernFooter() {
                       >
                         {link.name}
                       </a>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+
+              {/* Pricing Links */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.15 }}
+              >
+                <h4 className="font-semibold text-white mb-4 flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-green-400" />
+                  Pricing
+                </h4>
+                <ul className="space-y-3">
+                  {footerLinks.pricing.map((link) => (
+                    <li key={link.name}>
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-400 text-sm">
+                          {link.name}
+                        </span>
+                        {link.comingSoon && (
+                          <span className="text-xs bg-green-400/20 text-green-400 px-2 py-1 rounded-full flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            Coming Soon
+                          </span>
+                        )}
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -150,28 +179,36 @@ export default function ModernFooter() {
                 <ul className="space-y-3">
                   {footerLinks.resources.map((link) => (
                     <li key={link.name}>
-                      <a
-                        href={link.href}
-                        className="text-gray-400 hover:text-green-400 transition-colors duration-300 text-sm"
-                        target={link.href.startsWith('http') ? '_blank' : undefined}
-                        rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      >
-                        {link.name}
-                      </a>
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={link.href}
+                          className="text-gray-400 hover:text-green-400 transition-colors duration-300 text-sm"
+                          target={link.href.startsWith('http') ? '_blank' : undefined}
+                          rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                        >
+                          {link.name}
+                        </a>
+                        {link.comingSoon && (
+                          <span className="text-xs bg-green-400/20 text-green-400 px-2 py-1 rounded-full flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            Coming Soon
+                          </span>
+                        )}
+                      </div>
                     </li>
                   ))}
                 </ul>
               </motion.div>
 
-              {/* Company Links */}
+              {/* Fun Project Links */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
-                <h4 className="font-semibold text-white mb-4">Company</h4>
+                <h4 className="font-semibold text-white mb-4">Fun Project</h4>
                 <ul className="space-y-3">
-                  {footerLinks.company.map((link) => (
+                  {footerLinks.funProject.map((link) => (
                     <li key={link.name}>
                       <a
                         href={link.href}
