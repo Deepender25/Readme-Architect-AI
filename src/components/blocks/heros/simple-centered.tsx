@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, GitBranch, BrainCircuit, Bot, Wand2, Code, Sparkles, Zap, FileText, Star, ArrowRight, Play } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import ReadmeGeneratorFlow from '@/components/readme-generator-flow';
 import ModernReadmeOutput from '@/components/modern-readme-output';
 import { ScrollAnimatedDiv } from '@/components/ui/scroll-animated-div';
@@ -59,6 +60,7 @@ const StatCard = ({ number, label, delay }: { number: string, label: string, del
 );
 
 export default function SimpleCentered() {
+  const router = useRouter();
   const [showGenerator, setShowGenerator] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [generatedReadme, setGeneratedReadme] = useState('');
@@ -77,6 +79,26 @@ export default function SimpleCentered() {
   }, []);
 
   const handleStartGeneration = () => setShowGenerator(true);
+
+  const handleViewExamples = () => {
+    router.push('/examples');
+  };
+
+  const handleGetStartedNow = () => {
+    // First show the generator
+    setShowGenerator(true);
+    
+    // Then scroll to it after a short delay to allow the component to render
+    setTimeout(() => {
+      const generatorElement = document.getElementById('readme-generator');
+      if (generatorElement) {
+        generatorElement.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }, 100);
+  };
 
   const handleGenerationComplete = async (readme: string, repoUrl: string, projName: string, genParams: any) => {
     setGeneratedReadme(readme);
@@ -218,6 +240,7 @@ export default function SimpleCentered() {
                         <motion.button
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
+                          onClick={handleViewExamples}
                           className="px-6 py-4 bg-transparent border border-green-400/30 text-green-400 font-semibold rounded-xl hover:bg-green-400/10 hover:border-green-400/50 transition-all duration-300 flex items-center gap-2"
                         >
                           <Github className="w-5 h-5" />
@@ -225,7 +248,9 @@ export default function SimpleCentered() {
                         </motion.button>
                       </div>
                     ) : (
-                      <ReadmeGeneratorFlow onComplete={handleGenerationComplete} />
+                      <div id="readme-generator">
+                        <ReadmeGeneratorFlow onComplete={handleGenerationComplete} />
+                      </div>
                     )}
                   </ScrollAnimatedDiv>
                 </div>
@@ -310,7 +335,7 @@ export default function SimpleCentered() {
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={handleStartGeneration}
+                        onClick={handleGetStartedNow}
                         className="px-8 py-4 bg-green-500 text-black font-bold rounded-xl hover:bg-green-400 transition-all duration-300 flex items-center gap-3 mx-auto"
                       >
                         <Wand2 className="w-5 h-5" />
