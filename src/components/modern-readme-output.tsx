@@ -622,14 +622,10 @@ export default function ModernReadmeOutput({
 
                   size="sm"
 
-                  className={`relative group transition-all duration-300 px-3 py-2 ultra-mobile-button mobile-contrast-button ${
-
+                  className={`relative group transition-all duration-300 px-3 py-2 ultra-mobile-button mobile-contrast-button mobile-touch-target ${
                     copySuccess 
-
                       ? 'bg-green-500/40 border-green-400 text-green-400' 
-
-                      : ''
-
+                      : 'bg-gray-900/70 border border-gray-400/30 hover:border-green-400/50 hover:bg-green-400/20 text-white'
                   }`}
 
                 >
@@ -1160,7 +1156,7 @@ export default function ModernReadmeOutput({
 
                           ref={previewRef}
 
-                          className="prose prose-invert prose-green max-w-none modern-readme-preview"
+                          className="prose prose-invert prose-green max-w-none modern-readme-preview content-layer"
 
                           dangerouslySetInnerHTML={{ __html: sanitizedContent }}
 

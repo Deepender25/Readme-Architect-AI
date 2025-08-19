@@ -71,11 +71,11 @@ export default function EnhancedGridBackground() {
         }}
       />
       
-      {/* Darken header area for better readability */}
+      {/* Deep black header area for better readability */}
       <div 
         className="absolute top-0 left-0 right-0 h-40 pointer-events-none"
         style={{
-          background: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)',
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.4) 70%, transparent 100%)',
           zIndex: 3,
         }}
       />
