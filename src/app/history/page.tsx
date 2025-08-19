@@ -522,21 +522,36 @@ function HistoryContent() {
       </ContentSection>
 
       {/* README Output Modal */}
-      {showEditor && selectedItem && (
-        <div className="fixed inset-0 z-50 bg-black">
-          <ModernReadmeOutput 
-            content={selectedItem.readme_content}
-            repositoryUrl={selectedItem.repository_url}
-            projectName={selectedItem.project_name || selectedItem.repository_name}
-            generationParams={selectedItem.generation_params}
-            disableAutoSave={true}
-            onClose={() => {
-              setShowEditor(false);
-              setSelectedItem(null);
+      <AnimatePresence mode="wait">
+        {showEditor && selectedItem && (
+          <motion.div 
+            key="readme-modal"
+            className="fixed inset-0 z-[9999] bg-black"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                setShowEditor(false);
+                setSelectedItem(null);
+              }
             }}
-          />
-        </div>
-      )}
+          >
+            <ModernReadmeOutput 
+              content={selectedItem.readme_content}
+              repositoryUrl={selectedItem.repository_url}
+              projectName={selectedItem.project_name || selectedItem.repository_name}
+              generationParams={selectedItem.generation_params}
+              disableAutoSave={true}
+              onClose={() => {
+                setShowEditor(false);
+                setSelectedItem(null);
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Toast Notification */}
       {toast && (
