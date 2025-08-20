@@ -1088,11 +1088,11 @@ export default function ModernReadmeOutput({
 
       {/* Main Content Area */}
 
-      <div className="relative z-10 min-h-screen mobile-readme-output">
+      <div className="relative z-10 p-6">
 
         {/* Content Section */}
 
-        <main className="mobile-content-container">
+        <main className="flex justify-center">
 
           <div className="container mx-auto max-w-6xl px-2 sm:px-0">
 
