@@ -20,7 +20,8 @@ import {
   Info,
   Copy,
   BarChart3,
-  History
+  History,
+  ArrowLeft
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
@@ -526,7 +527,7 @@ function HistoryContent() {
         {showEditor && selectedItem && (
           <motion.div 
             key="readme-modal"
-            className="fixed inset-0 z-[9999] bg-black"
+            className="fixed inset-0 z-[9999] bg-black overflow-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -538,17 +539,50 @@ function HistoryContent() {
               }
             }}
           >
-            <ModernReadmeOutput 
-              content={selectedItem.readme_content}
-              repositoryUrl={selectedItem.repository_url}
-              projectName={selectedItem.project_name || selectedItem.repository_name}
-              generationParams={selectedItem.generation_params}
-              disableAutoSave={true}
-              onClose={() => {
-                setShowEditor(false);
-                setSelectedItem(null);
-              }}
-            />
+            {/* Navigation Bar */}
+            <motion.div
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              className="flex-shrink-0 z-50 bg-black/80 backdrop-blur-lg border-b border-green-400/20"
+            >
+              <div className="container mx-auto px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <Button
+                      onClick={() => {
+                        setShowEditor(false);
+                        setSelectedItem(null);
+                      }}
+                      variant="outline"
+                      size="sm"
+                      className="border-green-400/20 text-green-400 hover:bg-green-400/10"
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-2" />
+                      Back to History
+                    </Button>
+                    <div className="text-sm text-gray-400">
+                      <span className="text-green-400 font-medium">
+                        {selectedItem.project_name || selectedItem.repository_name}
+                      </span>
+                      <span className="mx-2">•</span>
+                      <span>Generated README</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* README Output - Auto-sizing container for history view */}
+            <div className="flex-shrink-0 overflow-auto">
+              <ModernReadmeOutput 
+                content={selectedItem.readme_content}
+                repositoryUrl={selectedItem.repository_url}
+                projectName={selectedItem.project_name || selectedItem.repository_name}
+                generationParams={selectedItem.generation_params}
+                disableAutoSave={true}
+                historyView={true}
+              />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

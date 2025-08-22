@@ -63,6 +63,8 @@ interface ModernReadmeOutputProps {
 
   disableAutoSave?: boolean;
 
+  historyView?: boolean;
+
 }
 
 export default function ModernReadmeOutput({ 
@@ -79,7 +81,9 @@ export default function ModernReadmeOutput({
 
   onEdit,
 
-  disableAutoSave = false
+  disableAutoSave = false,
+
+  historyView = false
 
 }: ModernReadmeOutputProps) {
 
@@ -167,7 +171,7 @@ export default function ModernReadmeOutput({
 
     const autoSaveToDatabase = async () => {
 
-      if (!isAuthenticated || !user || !repositoryUrl || autoSaved || disableAutoSave) return;
+      if (disableAutoSave || !isAuthenticated || !user || !repositoryUrl || autoSaved) return;
 
       try {
 
@@ -235,7 +239,7 @@ export default function ModernReadmeOutput({
 
     return () => clearTimeout(timer);
 
-  }, [isAuthenticated, user, repositoryUrl, content, projectName, generationParams, autoSaved]);
+  }, [isAuthenticated, user, repositoryUrl, content, projectName, generationParams, autoSaved, disableAutoSave]);
 
   const handleCopy = async () => {
 
@@ -459,7 +463,7 @@ export default function ModernReadmeOutput({
 
   return (
 
-    <div className="min-h-screen bg-black text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag mobile-optimized">
+    <div className={`${historyView ? 'h-full' : 'h-screen'} bg-black text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag mobile-optimized flex flex-col`}>
 
 
       {/* Navbar removed to prevent duplication when used as modal/overlay */}
@@ -1088,7 +1092,7 @@ export default function ModernReadmeOutput({
 
       {/* Main Content Area */}
 
-      <div className="relative z-10 p-6">
+      <div className={`relative z-10 ${historyView ? 'p-2 sm:p-4' : 'p-6'} ${historyView ? 'flex-shrink-0' : 'flex-1'} overflow-hidden`}>
 
         {/* Content Section */}
 
@@ -1126,7 +1130,7 @@ export default function ModernReadmeOutput({
 
                   ref={contentRef}
 
-                  className="relative max-h-[calc(100vh-200px)] sm:max-h-[calc(100vh-300px)] overflow-y-auto scrollbar-thin scrollbar-green scroll-smooth gpu-accelerated mobile-scroll-container"
+                  className={`relative ${historyView ? 'overflow-visible' : 'h-[calc(100vh-200px)] sm:h-[calc(100vh-220px)] overflow-y-auto'} scrollbar-thin scrollbar-green scroll-smooth gpu-accelerated mobile-scroll-container`}
 
                   style={{ scrollBehavior: 'smooth' }}
 
@@ -1384,7 +1388,7 @@ export default function ModernReadmeOutput({
 
               {/* Auto-save Status */}
 
-              {isAuthenticated && autoSaved && !githubSaveResult && (
+              {!historyView && isAuthenticated && autoSaved && !githubSaveResult && !disableAutoSave && (
 
                 <motion.div
 
@@ -1422,27 +1426,31 @@ export default function ModernReadmeOutput({
 
               {/* Floating Action Hint */}
 
-              <motion.div
+              {!historyView && (
 
-                className="absolute -bottom-6 right-4 bg-green-400 text-black px-4 py-2 rounded-full text-sm font-medium shadow-lg shadow-green-400/50"
+                <motion.div
 
-                initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                  className="absolute -bottom-6 right-4 bg-green-400 text-black px-4 py-2 rounded-full text-sm font-medium shadow-lg shadow-green-400/50"
 
-                animate={{ opacity: 1, y: 0, scale: 1 }}
+                  initial={{ opacity: 0, y: 20, scale: 0.8 }}
 
-                transition={{ delay: 1.2, duration: 0.5 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
 
-              >
+                  transition={{ delay: 1.2, duration: 0.5 }}
 
-                <div className="flex items-center gap-2">
+                >
 
-                  <Sparkles className="w-4 h-4" />
+                  <div className="flex items-center gap-2">
 
-                  README ready to use!
+                    <Sparkles className="w-4 h-4" />
 
-                </div>
+                    README ready to use!
 
-              </motion.div>
+                  </div>
+
+                </motion.div>
+
+              )}
 
             </motion.div>
 
