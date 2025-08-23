@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, Suspense } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Clock, 
@@ -26,7 +27,6 @@ import {
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import ProfessionalDropdown from '@/components/ui/professional-dropdown'
-import ModernReadmeOutput from '@/components/modern-readme-output'
 import withAuth from '@/components/withAuth'
 import LayoutWrapper from '@/components/layout-wrapper'
 import PageHeader from '@/components/layout/page-header'
@@ -48,6 +48,7 @@ interface HistoryItem {
 }
 
 function HistoryContent() {
+  const router = useRouter();
   const { user, isAuthenticated } = useAuth();
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [filteredHistory, setFilteredHistory] = useState<HistoryItem[]>([]);
@@ -59,8 +60,6 @@ function HistoryContent() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [filterDemo, setFilterDemo] = useState<'all' | 'with' | 'without'>('all');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
-  const [selectedItem, setSelectedItem] = useState<HistoryItem | null>(null);
-  const [showEditor, setShowEditor] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Show toast notification
@@ -204,8 +203,7 @@ function HistoryContent() {
   };
 
   const viewReadme = (item: HistoryItem) => {
-    setSelectedItem(item);
-    setShowEditor(true);
+    router.push(`/history/${item.id}`);
   };
 
   const formatDate = (dateString: string) => {
@@ -522,70 +520,6 @@ function HistoryContent() {
         </div>
       </ContentSection>
 
-      {/* README Output Modal */}
-      <AnimatePresence mode="wait">
-        {showEditor && selectedItem && (
-          <motion.div 
-            key="readme-modal"
-            className="fixed inset-0 z-[9999] bg-black overflow-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            onKeyDown={(e) => {
-              if (e.key === 'Escape') {
-                setShowEditor(false);
-                setSelectedItem(null);
-              }
-            }}
-          >
-            {/* Navigation Bar */}
-            <motion.div
-              initial={{ y: -50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              className="flex-shrink-0 z-50 bg-black/80 backdrop-blur-lg border-b border-green-400/20"
-            >
-              <div className="container mx-auto px-4 py-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <Button
-                      onClick={() => {
-                        setShowEditor(false);
-                        setSelectedItem(null);
-                      }}
-                      variant="outline"
-                      size="sm"
-                      className="border-green-400/20 text-green-400 hover:bg-green-400/10"
-                    >
-                      <ArrowLeft className="w-4 h-4 mr-2" />
-                      Back to History
-                    </Button>
-                    <div className="text-sm text-gray-400">
-                      <span className="text-green-400 font-medium">
-                        {selectedItem.project_name || selectedItem.repository_name}
-                      </span>
-                      <span className="mx-2">•</span>
-                      <span>Generated README</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* README Output - Auto-sizing container for history view */}
-            <div className="flex-shrink-0 overflow-auto">
-              <ModernReadmeOutput 
-                content={selectedItem.readme_content}
-                repositoryUrl={selectedItem.repository_url}
-                projectName={selectedItem.project_name || selectedItem.repository_name}
-                generationParams={selectedItem.generation_params}
-                disableAutoSave={true}
-                historyView={true}
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Toast Notification */}
       {toast && (
