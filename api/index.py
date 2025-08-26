@@ -24,7 +24,7 @@ except:
 # GitHub OAuth Configuration
 GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID")
 GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
-GITHUB_REDIRECT_URI = os.getenv("GITHUB_REDIRECT_URI", "https://autodocai.vercel.app/auth/callback")
+GITHUB_REDIRECT_URI = os.getenv("GITHUB_REDIRECT_URI", "https://autodocai.vercel.app/api/auth/callback")
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -80,30 +80,47 @@ class handler(BaseHTTPRequestHandler):
             self.send_json_response({'error': 'GitHub OAuth not configured.'}, 500)
             return
         
-        # Use environment variable first, then dynamic detection
-        redirect_uri = os.getenv("GITHUB_REDIRECT_URI")
-        if not redirect_uri:
-            # Fallback to dynamic detection
-            host = self.headers.get('Host')
-            if host:
-                protocol = 'https' if 'localhost' not in host else 'http'
-                redirect_uri = f"{protocol}://{host}/auth/callback"
-            else:
-                # Final fallback
-                redirect_uri = "https://autodocai.vercel.app/auth/callback"
-            
-        github_auth_url = f"https://github.com/login/oauth/authorize?client_id={GITHUB_CLIENT_ID}&redirect_uri={redirect_uri}&scope=repo"
+        print(f"DEBUG: GitHub auth called")
+        print(f"DEBUG: Raw path: {self.path}")
+        
+        # Use the exact redirect URI from environment
+        redirect_uri = "https://autodocai.vercel.app/api/auth/callback"
+        print(f"DEBUG: Using redirect_uri: {redirect_uri}")
+        
+        # Simple state parameter
+        state = 'oauth_login'
+        print(f"DEBUG: Using state: {state}")
+        
+        # Build GitHub OAuth URL with minimal parameters
+        github_params = {
+            'client_id': GITHUB_CLIENT_ID,
+            'redirect_uri': redirect_uri,
+            'scope': 'repo',
+            'state': state
+        }
+        
+        github_auth_url = f"https://github.com/login/oauth/authorize?{urllib.parse.urlencode(github_params)}"
+        print(f"DEBUG: Redirecting to: {github_auth_url}")
+        
         self.send_response(302)
         self.send_header('Location', github_auth_url)
         self.end_headers()
 
     def handle_github_callback(self, query_params):
-        code = query_params.get('code', [None])[0]
+        code_list = query_params.get('code', [None])
+        code = code_list[0] if code_list else None
+        
+        print(f"DEBUG: Callback received - code exists: {code is not None}")
+        
         if not code:
-            self.send_error(400, "Missing authorization code")
+            print("DEBUG: No code received, redirecting to login with error")
+            self.send_response(302)
+            self.send_header('Location', '/login?error=no_code')
+            self.end_headers()
             return
         
         try:
+            print("DEBUG: Exchanging code for token...")
             token_response = requests.post('https://github.com/login/oauth/access_token', {
                 'client_id': GITHUB_CLIENT_ID,
                 'client_secret': GITHUB_CLIENT_SECRET,
@@ -113,22 +130,42 @@ class handler(BaseHTTPRequestHandler):
             token_data = token_response.json()
             access_token = token_data.get('access_token')
             
+            print(f"DEBUG: Token exchange result: {token_data}")
+            
             if not access_token:
+                print("DEBUG: No access token received")
                 self.send_response(302)
-                self.send_header('Location', '/?error=token_failed')
+                self.send_header('Location', '/login?error=token_failed')
                 self.end_headers()
                 return
             
+            print("DEBUG: Getting user data from GitHub...")
             user_response = requests.get('https://api.github.com/user', 
                 headers={'Authorization': f'token {access_token}'})
             
             if user_response.status_code != 200:
+                print(f"DEBUG: Failed to get user data: {user_response.status_code}")
                 self.send_response(302)
-                self.send_header('Location', '/?error=user_failed')
+                self.send_header('Location', '/login?error=user_failed')
                 self.end_headers()
                 return
             
             user_data = user_response.json()
+            print(f"DEBUG: Successfully got user data for: {user_data.get('login', 'unknown')}")
+            
+            # Get user email if available
+            try:
+                email_response = requests.get('https://api.github.com/user/emails', 
+                    headers={'Authorization': f'token {access_token}'})
+                
+                email = None
+                if email_response.status_code == 200:
+                    emails = email_response.json()
+                    primary_email = next((e for e in emails if e.get('primary')), None)
+                    if primary_email:
+                        email = primary_email.get('email')
+            except:
+                email = None
             
             user_session_data = {
                 'github_id': user_data['id'],
@@ -136,22 +173,40 @@ class handler(BaseHTTPRequestHandler):
                 'name': user_data.get('name', user_data['login']),
                 'avatar_url': user_data['avatar_url'],
                 'html_url': user_data['html_url'],
+                'email': email,
                 'access_token': access_token
             }
             
             session_data = base64.b64encode(json.dumps(user_session_data).encode()).decode()
             
-            self.send_response(302)
-            self.send_header('Location', f'/?auth_success={urllib.parse.quote(session_data)}')
+            # Redirect to home page with auth success
+            redirect_url = f'/?auth_success={urllib.parse.quote(session_data)}'
             
-            cookie_value = f'github_user={session_data}; Path=/; Max-Age=86400; SameSite=Lax'
+            print(f"DEBUG: Redirecting to: {redirect_url}")
+            
+            self.send_response(302)
+            self.send_header('Location', redirect_url)
+            
+            # Set cookie with proper flags for production
+            host = self.headers.get('Host', '')
+            is_production = 'localhost' not in host
+            
+            if is_production:
+                cookie_value = f'github_user={session_data}; Path=/; Max-Age=86400; SameSite=Lax; Secure'
+            else:
+                cookie_value = f'github_user={session_data}; Path=/; Max-Age=86400; SameSite=Lax'
+            
+            print(f"DEBUG: Setting cookie: {cookie_value}")
             self.send_header('Set-Cookie', cookie_value)
             
             self.end_headers()
             
         except Exception as e:
+            print(f"DEBUG: Exception in callback: {str(e)}")
+            import traceback
+            traceback.print_exc()
             self.send_response(302)
-            self.send_header('Location', f'/?error=auth_failed')
+            self.send_header('Location', '/login?error=auth_failed')
             self.end_headers()
 
     def handle_repositories(self):
