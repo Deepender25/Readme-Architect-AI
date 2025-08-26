@@ -83,21 +83,43 @@ class handler(BaseHTTPRequestHandler):
         print(f"DEBUG: GitHub auth called")
         print(f"DEBUG: Raw path: {self.path}")
         
+        # Parse query parameters to check for account switching
+        from urllib.parse import urlparse, parse_qs
+        parsed_url = urlparse(self.path)
+        query_params = parse_qs(parsed_url.query)
+        force_account_selection = query_params.get('force_account_selection', [False])[0]
+        
+        print(f"DEBUG: Force account selection: {force_account_selection}")
+        
         # Use the exact redirect URI from environment
         redirect_uri = "https://autodocai.vercel.app/api/auth/callback"
         print(f"DEBUG: Using redirect_uri: {redirect_uri}")
         
-        # Simple state parameter
-        state = 'oauth_login'
-        print(f"DEBUG: Using state: {state}")
+        # Build state parameter
+        if force_account_selection == 'true':
+            # Use unique state for account switching to force fresh auth flow
+            import time
+            state = f'oauth_switch_{int(time.time())}'
+            print(f"DEBUG: Account switching - using unique state: {state}")
+        else:
+            state = 'oauth_login'
+            print(f"DEBUG: Regular login - using state: {state}")
         
-        # Build GitHub OAuth URL with minimal parameters
+        # Build GitHub OAuth URL
         github_params = {
             'client_id': GITHUB_CLIENT_ID,
             'redirect_uri': redirect_uri,
             'scope': 'repo',
             'state': state
         }
+        
+        # For account switching, try to force fresh authentication
+        if force_account_selection == 'true':
+            print("DEBUG: Adding parameters to encourage account switching")
+            # Empty login parameter tells GitHub to show login form
+            github_params['login'] = ''
+            # Allow signup to ensure fresh flow
+            github_params['allow_signup'] = 'true'
         
         github_auth_url = f"https://github.com/login/oauth/authorize?{urllib.parse.urlencode(github_params)}"
         print(f"DEBUG: Redirecting to: {github_auth_url}")
