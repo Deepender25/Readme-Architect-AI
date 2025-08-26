@@ -11,7 +11,18 @@ export async function GET(request: NextRequest) {
     const protocol = host?.includes('localhost') ? 'http' : 'https';
     const baseUrl = `${protocol}://${host}`;
     
-    const pythonAuthUrl = `${baseUrl}/auth/github`;
+    // Forward all query parameters to the Python handler
+    const { searchParams } = new URL(request.url);
+    const queryString = searchParams.toString();
+    
+    console.log('Next.js GitHub auth route called');
+    console.log('Original URL:', request.url);
+    console.log('Search params:', searchParams.toString());
+    console.log('returnTo param:', searchParams.get('returnTo'));
+    console.log('returnTo type:', typeof searchParams.get('returnTo'));
+    
+    const pythonAuthUrl = `${baseUrl}/auth/github${queryString ? `?${queryString}` : ''}`;
+    console.log('Redirecting to Python:', pythonAuthUrl);
     
     // Redirect to Python OAuth handler
     return NextResponse.redirect(pythonAuthUrl);
@@ -20,6 +31,6 @@ export async function GET(request: NextRequest) {
     const host = request.headers.get('host');
     const protocol = host?.includes('localhost') ? 'http' : 'https';
     const baseUrl = `${protocol}://${host}`;
-    return NextResponse.redirect(`${baseUrl}/?error=auth_failed`);
+    return NextResponse.redirect(`${baseUrl}/login?error=auth_failed`);
   }
 }
