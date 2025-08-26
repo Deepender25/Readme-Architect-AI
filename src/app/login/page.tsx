@@ -2,10 +2,11 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Github, ArrowRight, User, LogOut, RefreshCw } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Github, ArrowRight, RefreshCw, Play } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import LoadingPage from '@/components/ui/loading-page';
+import ProfessionalBackground from '@/components/professional-background';
 
 interface PreviousAccount {
   username: string;
@@ -20,7 +21,6 @@ function LoginPageContent() {
   const searchParams = useSearchParams();
   const { user, isAuthenticated, isLoading } = useAuth();
   const [previousAccount, setPreviousAccount] = useState<PreviousAccount | null>(null);
-  const [showAccountSelection, setShowAccountSelection] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -57,17 +57,9 @@ function LoginPageContent() {
   const loadPreviousAccount = () => {
     try {
       const stored = localStorage.getItem('previous_github_account');
-      const shouldShowSelection = localStorage.getItem('show_account_selection');
-      
       if (stored) {
         const account = JSON.parse(stored);
         setPreviousAccount(account);
-        
-        // Show account selection if flag is set or if explicitly requested
-        if (shouldShowSelection === 'true' || searchParams.get('select') === 'true') {
-          setShowAccountSelection(true);
-          localStorage.removeItem('show_account_selection');
-        }
       }
     } catch (error) {
       console.error('Failed to load previous account:', error);
@@ -87,30 +79,14 @@ function LoginPageContent() {
       console.error('Failed to store return URL:', error);
     }
     
-    // Clear the show selection flag since user chose to continue
-    localStorage.removeItem('show_account_selection');
     window.location.href = '/api/auth/github';
   };
 
   const handleLoginWithDifferentAccount = () => {
-    setIsRedirecting(true);
-    
-    // Store the return URL in sessionStorage
+    // Redirect to the dedicated account switching page
     const returnToParam = searchParams.get('returnTo');
-    const returnTo = (returnToParam && typeof returnToParam === 'string') ? returnToParam : '/';
-    
-    try {
-      sessionStorage.setItem('oauth_return_to', returnTo);
-    } catch (error) {
-      console.error('Failed to store return URL:', error);
-    }
-    
-    // Clear previous account info
-    localStorage.removeItem('previous_github_account');
-    localStorage.removeItem('show_account_selection');
-    
-    // Direct redirect to GitHub OAuth
-    window.location.href = '/api/auth/github';
+    const switchUrl = `/switch-account${returnToParam ? `?returnTo=${encodeURIComponent(returnToParam)}` : ''}`;
+    router.push(switchUrl);
   };
 
   const handleDirectLogin = () => {
@@ -120,8 +96,6 @@ function LoginPageContent() {
     const returnToParam = searchParams.get('returnTo');
     const returnTo = (returnToParam && typeof returnToParam === 'string') ? returnToParam : '/';
     
-    console.log('Direct login - storing returnTo:', returnTo);
-    
     try {
       sessionStorage.setItem('oauth_return_to', returnTo);
     } catch (error) {
@@ -132,238 +106,173 @@ function LoginPageContent() {
     window.location.href = '/api/auth/github';
   };
 
-  const formatLastLogin = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      const now = new Date();
-      const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-      
-      if (diffInHours < 1) return 'Just now';
-      if (diffInHours < 24) return `${diffInHours} hours ago`;
-      if (diffInHours < 48) return 'Yesterday';
-      return date.toLocaleDateString();
-    } catch {
-      return 'Recently';
-    }
-  };
-
   if (isLoading) {
     return <LoadingPage message="Checking authentication..." />;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
-        >
-          <motion.div
-            className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-green-500/30"
-            animate={{
-              boxShadow: [
-                '0 0 20px rgba(0, 255, 136, 0.3)',
-                '0 0 40px rgba(0, 255, 136, 0.5)',
-                '0 0 20px rgba(0, 255, 136, 0.3)'
-              ]
-            }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <Github className="w-8 h-8 text-white" />
-          </motion.div>
-          
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome to AutoDoc AI</h1>
-          <p className="text-gray-400">Sign in with your GitHub account to continue</p>
-        </motion.div>
-
-        {/* Error Message */}
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6 p-4 bg-red-900/50 border border-red-700 rounded-xl"
-          >
-            <p className="text-red-300 text-sm text-center">{error}</p>
-          </motion.div>
-        )}
-
-        {/* Login Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-gray-900/50 backdrop-blur-xl border border-gray-800 rounded-2xl p-6 shadow-2xl"
-        >
-          <AnimatePresence mode="wait">
-            {showAccountSelection && previousAccount ? (
+    <div className="min-h-screen font-sans text-white overflow-hidden relative">
+      <ProfessionalBackground />
+      
+      <div className="relative isolate px-6 pt-0 lg:px-8 min-h-screen">
+        <div className="relative z-30 min-h-screen flex items-center justify-center">
+          <div className="w-full max-w-md">
+            {/* Header matching main site exactly */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center mb-12"
+            >
               <motion.div
-                key="account-selection"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-green-400/10 border border-green-400/30 rounded-full text-green-400 text-sm font-medium mb-8"
+                animate={{ 
+                  boxShadow: [
+                    '0 0 10px rgba(0, 255, 136, 0.3)',
+                    '0 0 20px rgba(0, 255, 136, 0.5)',
+                    '0 0 10px rgba(0, 255, 136, 0.3)'
+                  ]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
               >
-                <div className="text-center">
-                  <h2 className="text-xl font-semibold text-white mb-2">Continue with your account?</h2>
-                  <p className="text-gray-400 text-sm">You previously signed in with this GitHub account</p>
-                </div>
-
-                {/* Previous Account Card */}
-                <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={previousAccount.avatar_url}
-                      alt={previousAccount.name}
-                      className="w-12 h-12 rounded-full border-2 border-green-500/50"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-white truncate">{previousAccount.name}</h3>
-                      <p className="text-sm text-gray-400 truncate">@{previousAccount.username}</p>
-                      <p className="text-xs text-gray-500">Last login: {formatLastLogin(previousAccount.last_login)}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="space-y-3">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleContinueWithPrevious}
-                    disabled={isRedirecting}
-                    className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isRedirecting ? (
-                      <RefreshCw className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <>
-                        <User className="w-5 h-5" />
-                        <span>Continue as {previousAccount.name}</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </>
-                    )}
-                  </motion.button>
-
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleLoginWithDifferentAccount}
-                    disabled={isRedirecting}
-                    className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <Github className="w-5 h-5" />
-                    <span>Use different GitHub account</span>
-                  </motion.button>
-
-                  <div className="text-center">
-                    <p className="text-xs text-gray-500">
-                      Note: If GitHub doesn't show account selection, you may need to{' '}
-                      <a 
-                        href="https://github.com/logout" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-green-400 hover:text-green-300 underline"
-                      >
-                        sign out of GitHub
-                      </a>{' '}
-                      first.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="text-center">
-                  <button
-                    onClick={() => setShowAccountSelection(false)}
-                    className="text-sm text-gray-400 hover:text-gray-300 transition-colors"
-                  >
-                    Back to login options
-                  </button>
-                </div>
+                <Github className="w-4 h-4" />
+                GitHub Authentication
               </motion.div>
-            ) : (
-              <motion.div
-                key="direct-login"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                className="space-y-6"
+              
+              <motion.h1
+                className="text-4xl font-bold tracking-tight text-white sm:text-5xl mb-4 relative z-10"
+                style={{ 
+                  textShadow: '0 0 30px rgba(0, 255, 136, 0.3), 0 0 60px rgba(0, 255, 136, 0.2)',
+                  background: 'linear-gradient(135deg, #ffffff 0%, #00ff88 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  filter: 'drop-shadow(0 0 10px rgba(0, 255, 136, 0.5))'
+                }}
               >
-                <div className="text-center">
-                  <h2 className="text-xl font-semibold text-white mb-2">Sign in to continue</h2>
-                  <p className="text-gray-400 text-sm">Connect your GitHub account to access all features</p>
-                </div>
+                Welcome to
+                <br />
+                <span className="text-green-400">AutoDoc AI</span>
+              </motion.h1>
+              
+              <p className="text-xl font-medium text-gray-300 max-w-md mx-auto leading-relaxed">
+                Connect your GitHub account to start generating professional READMEs
+              </p>
+            </motion.div>
 
-                {/* Direct Login Button */}
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleDirectLogin}
-                  disabled={isRedirecting}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-gray-800 hover:bg-gray-700 border border-gray-600 hover:border-green-500/50 text-white font-medium rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
-                >
-                  {isRedirecting ? (
-                    <RefreshCw className="w-5 h-5 animate-spin" />
+            {/* Login Card matching main site style */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="relative group"
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-3xl blur opacity-30 group-hover:opacity-50 transition-opacity" />
+              <div className="relative bg-black/40 backdrop-blur-xl border border-green-400/20 rounded-3xl p-8 hover:border-green-400/50 hover:bg-black/60 transition-all duration-300 shadow-xl shadow-green-400/20">
+                
+                {error && (
+                  <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl">
+                    <p className="text-red-300 text-center font-medium">{error}</p>
+                  </div>
+                )}
+
+                <div className="space-y-6">
+                  {previousAccount ? (
+                    <>
+                      {/* Previous Account with Profile Picture */}
+                      <div className="text-center mb-6">
+                        <h2 className="text-2xl font-bold text-white mb-2">Welcome Back!</h2>
+                        <p className="text-gray-400">Continue with your GitHub account</p>
+                      </div>
+                      
+                      <div className="bg-green-400/10 border border-green-400/30 rounded-2xl p-6 text-center">
+                        <img
+                          src={previousAccount.avatar_url}
+                          alt={previousAccount.name}
+                          className="w-20 h-20 rounded-full mx-auto mb-4 border-2 border-green-400/50 shadow-lg shadow-green-400/30"
+                        />
+                        <h3 className="text-xl font-semibold text-white mb-1">{previousAccount.name}</h3>
+                        <p className="text-green-400 mb-6">@{previousAccount.username}</p>
+                        
+                        <div className="relative group/btn">
+                          <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-30 group-hover/btn:opacity-50 transition-opacity" />
+                          <motion.button
+                            whileHover={{ scale: 1.02, y: -2 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={handleContinueWithPrevious}
+                            disabled={isRedirecting}
+                            className="relative w-full px-6 py-4 bg-green-500 text-black font-bold rounded-xl transition-all duration-300 hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-black text-lg flex items-center justify-center gap-3 disabled:opacity-50"
+                            style={{ boxShadow: '0 0 30px rgba(0, 255, 136, 0.4)' }}
+                          >
+                            {isRedirecting ? (
+                              <RefreshCw className="w-5 h-5 animate-spin" />
+                            ) : (
+                              <>
+                                <Play className="w-5 h-5" />
+                                Continue as {previousAccount.name}
+                                <ArrowRight className="w-5 h-5" />
+                              </>
+                            )}
+                          </motion.button>
+                        </div>
+                      </div>
+
+                      {/* Divider */}
+                      <div className="relative py-4">
+                        <div className="absolute inset-0 flex items-center">
+                          <div className="w-full border-t border-green-400/20"></div>
+                        </div>
+                        <div className="relative flex justify-center">
+                          <span className="px-4 bg-black/40 text-gray-400 text-sm">or</span>
+                        </div>
+                      </div>
+
+                      {/* Switch Account */}
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={handleLoginWithDifferentAccount}
+                        className="w-full px-6 py-4 bg-transparent border border-green-400/30 text-green-400 font-semibold rounded-xl hover:bg-green-400/10 hover:border-green-400/50 transition-all duration-300 flex items-center justify-center gap-3"
+                      >
+                        <Github className="w-5 h-5" />
+                        Use Different Account
+                      </motion.button>
+                    </>
                   ) : (
                     <>
-                      <Github className="w-5 h-5 group-hover:text-green-400 transition-colors" />
-                      <span>Continue with GitHub</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      {/* First Time Login */}
+                      <div className="text-center mb-8">
+                        <h2 className="text-2xl font-bold text-white mb-3">Get Started</h2>
+                        <p className="text-gray-400">Connect your GitHub account to begin</p>
+                      </div>
+
+                      <div className="relative group/btn">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-30 group-hover/btn:opacity-50 transition-opacity" />
+                        <motion.button
+                          whileHover={{ scale: 1.02, y: -2 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={handleDirectLogin}
+                          disabled={isRedirecting}
+                          className="relative w-full px-8 py-4 bg-green-500 text-black font-bold rounded-xl transition-all duration-300 hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-black text-lg flex items-center justify-center gap-3 disabled:opacity-50"
+                          style={{ boxShadow: '0 0 30px rgba(0, 255, 136, 0.4)' }}
+                        >
+                          {isRedirecting ? (
+                            <RefreshCw className="w-5 h-5 animate-spin" />
+                          ) : (
+                            <>
+                              <Play className="w-5 h-5" />
+                              Sign in with GitHub
+                              <ArrowRight className="w-5 h-5" />
+                            </>
+                          )}
+                        </motion.button>
+                      </div>
                     </>
                   )}
-                </motion.button>
-
-                {/* Previous Account Option */}
-                {previousAccount && (
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-gray-700" />
-                    </div>
-                    <div className="relative flex justify-center text-sm">
-                      <span className="px-2 bg-gray-900 text-gray-400">or</span>
-                    </div>
-                  </div>
-                )}
-
-                {previousAccount && (
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setShowAccountSelection(true)}
-                    className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700 hover:border-gray-600 text-gray-300 font-medium rounded-xl transition-all"
-                  >
-                    <img
-                      src={previousAccount.avatar_url}
-                      alt={previousAccount.name}
-                      className="w-5 h-5 rounded-full"
-                    />
-                    <span>Continue as {previousAccount.name}</span>
-                  </motion.button>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-
-        {/* Footer */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="text-center mt-8"
-        >
-          <p className="text-gray-500 text-sm">
-            By signing in, you agree to our{' '}
-            <a href="/terms" className="text-green-400 hover:text-green-300 transition-colors">
-              Terms of Service
-            </a>{' '}
-            and{' '}
-            <a href="/privacy" className="text-green-400 hover:text-green-300 transition-colors">
-              Privacy Policy
-            </a>
-          </p>
-        </motion.div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   );
