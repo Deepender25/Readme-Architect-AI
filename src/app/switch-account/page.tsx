@@ -3,8 +3,9 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Github, ArrowRight, ExternalLink, CheckCircle } from 'lucide-react';
+import { Github, ArrowRight, ExternalLink, CheckCircle, Sparkles, BrainCircuit, UserX, RefreshCw } from 'lucide-react';
 import LoadingPage from '@/components/ui/loading-page';
+import EnhancedGridBackground from '@/components/enhanced-grid-background';
 
 function SwitchAccountContent() {
   const router = useRouter();
@@ -44,125 +45,241 @@ function SwitchAccountContent() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Minimal Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
-        >
-          <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mx-auto mb-4">
-            <Github className="w-6 h-6 text-black" />
-          </div>
-          
-          <h1 className="text-2xl font-bold text-white mb-2">
-            Switch Account
-          </h1>
-          <p className="text-gray-400 text-sm">
-            Quick 2-step process
-          </p>
-        </motion.div>
+    <div className="min-h-screen font-sans text-white overflow-hidden relative">
+      {/* Enhanced Grid Background */}
+      <EnhancedGridBackground />
+      
+      <div className="relative z-30 flex items-center justify-center min-h-screen p-4">
+        <div className="w-full max-w-lg">
+          {/* Enhanced Header */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            {/* Animated Logo */}
+            <motion.div
+              className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6"
+              animate={{ 
+                boxShadow: [
+                  '0 0 20px rgba(0, 255, 136, 0.4)',
+                  '0 0 40px rgba(0, 255, 136, 0.6)',
+                  '0 0 20px rgba(0, 255, 136, 0.4)'
+                ]
+              }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <BrainCircuit className="w-10 h-10 text-white" />
+            </motion.div>
+            
+            <motion.div
+              className="inline-flex items-center gap-2 px-4 py-2 bg-green-400/10 border border-green-400/30 rounded-full text-green-400 text-sm font-medium mb-6"
+              animate={{ 
+                boxShadow: [
+                  '0 0 10px rgba(0, 255, 136, 0.3)',
+                  '0 0 20px rgba(0, 255, 136, 0.5)',
+                  '0 0 10px rgba(0, 255, 136, 0.3)'
+                ]
+              }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <UserX className="w-4 h-4" />
+              Account Switching
+            </motion.div>
+            
+            <h1 className="text-4xl font-bold text-white mb-3"
+              style={{
+                background: 'linear-gradient(135deg, #ffffff 0%, #00ff88 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                filter: 'drop-shadow(0 0 10px rgba(0, 255, 136, 0.3))'
+              }}
+            >
+              Switch Account
+            </h1>
+            <p className="text-gray-300 text-lg">
+              Quick & secure 2-step process
+            </p>
+          </motion.div>
 
-        {/* 2-Step Process */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-gray-900/50 border border-gray-800 rounded-xl p-6"
-        >
-          <div className="space-y-4">
-            {/* Step 1: Sign Out */}
-            <div className={`p-4 rounded-lg border transition-colors ${
-              currentStep === 1 
-                ? 'border-green-500 bg-green-500/10' 
-                : currentStep > 1 
-                ? 'border-green-600 bg-green-600/10'
-                : 'border-gray-700 bg-gray-800/30'
-            }`}>
-              <div className="flex items-center gap-3 mb-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  currentStep === 1 
-                    ? 'bg-green-500 text-black' 
-                    : currentStep > 1 
-                    ? 'bg-green-600 text-white'
-                    : 'bg-gray-600 text-white'
-                }`}>
-                  {currentStep > 1 ? (
-                    <CheckCircle className="w-5 h-5" />
-                  ) : (
-                    <span className="font-bold text-sm">1</span>
-                  )}
-                </div>
-                <div>
-                  <h3 className="font-medium text-white">Sign Out</h3>
-                  <p className="text-gray-400 text-sm">Open GitHub logout</p>
-                </div>
-              </div>
-              
-              {currentStep === 1 && (
-                <button
-                  onClick={handleStartLogout}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-black font-medium rounded-lg transition-colors"
+          {/* Enhanced 2-Step Process */}
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="relative group"
+          >
+            {/* Glow effect */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-3xl blur opacity-75 group-hover:opacity-100 transition-opacity duration-300" />
+            
+            <div className="relative bg-black/60 backdrop-blur-xl border border-green-400/20 rounded-3xl p-8 shadow-2xl hover:border-green-400/40 transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-green-400/5 to-transparent rounded-3xl" />
+              <div className="relative space-y-6 mb-8">
+                {/* Step 1: Enhanced Sign Out */}
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className={`relative group p-6 rounded-2xl border transition-all duration-300 ${
+                    currentStep === 1 
+                      ? 'border-green-500 bg-green-500/15 shadow-lg shadow-green-500/20' 
+                      : currentStep > 1 
+                      ? 'border-green-600 bg-green-600/15'
+                      : 'border-gray-700/50 bg-gray-800/20'
+                  }`}
                 >
-                  <ExternalLink className="w-4 h-4" />
-                  <span>Open Logout</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              )}
-              
-              {currentStep > 1 && (
-                <div className="text-green-400 text-sm font-medium">✓ Completed</div>
-              )}
-            </div>
+                  <div className="flex items-center gap-5 mb-4">
+                    <motion.div 
+                      className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg ${
+                        currentStep === 1 
+                          ? 'bg-green-500 text-black' 
+                          : currentStep > 1 
+                          ? 'bg-green-600 text-white'
+                          : 'bg-gray-600 text-white'
+                      }`}
+                      whileHover={{ scale: 1.1 }}
+                      animate={currentStep === 1 ? { scale: [1, 1.05, 1] } : {}}
+                      transition={{ duration: 2, repeat: currentStep === 1 ? Infinity : 0 }}
+                    >
+                      {currentStep > 1 ? (
+                        <CheckCircle className="w-6 h-6" />
+                      ) : (
+                        <span className="font-bold text-lg">1</span>
+                      )}
+                    </motion.div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-white text-lg mb-1">Sign Out</h3>
+                      <p className="text-gray-400">Open GitHub logout page in new tab</p>
+                    </div>
+                  </div>
+                  
+                  {currentStep === 1 && (
+                    <motion.button
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={handleStartLogout}
+                      className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-green-500 hover:bg-green-600 text-black font-bold rounded-xl transition-all duration-300 shadow-lg"
+                    >
+                      <ExternalLink className="w-5 h-5" />
+                      <span>Open GitHub Logout</span>
+                      <ArrowRight className="w-5 h-5" />
+                    </motion.button>
+                  )}
+                  
+                  {currentStep > 1 && (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex items-center gap-2 text-green-400 font-semibold"
+                    >
+                      <CheckCircle className="w-5 h-5" />
+                      <span>Step Completed Successfully</span>
+                    </motion.div>
+                  )}
+                </motion.div>
 
-            {/* Step 2: Login */}
-            <div className={`p-4 rounded-lg border transition-colors ${
-              currentStep === 2 
-                ? 'border-green-500 bg-green-500/10' 
-                : 'border-gray-700 bg-gray-800/30'
-            }`}>
-              <div className="flex items-center gap-3 mb-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  currentStep === 2 
-                    ? 'bg-green-500 text-black' 
-                    : 'bg-gray-600 text-white'
-                }`}>
-                  <span className="font-bold text-sm">2</span>
-                </div>
-                <div>
-                  <h3 className="font-medium text-white">Login</h3>
-                  <p className="text-gray-400 text-sm">Choose new account</p>
-                </div>
+                {/* Step 2: Enhanced Login */}
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className={`relative group p-6 rounded-2xl border transition-all duration-300 ${
+                    currentStep === 2 
+                      ? 'border-green-500 bg-green-500/15 shadow-lg shadow-green-500/20' 
+                      : 'border-gray-700/50 bg-gray-800/20'
+                  }`}
+                >
+                  <div className="flex items-center gap-5 mb-4">
+                    <motion.div 
+                      className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg ${
+                        currentStep === 2 
+                          ? 'bg-green-500 text-black' 
+                          : 'bg-gray-600 text-white'
+                      }`}
+                      whileHover={{ scale: 1.1 }}
+                      animate={currentStep === 2 ? { scale: [1, 1.05, 1] } : {}}
+                      transition={{ duration: 2, repeat: currentStep === 2 ? Infinity : 0 }}
+                    >
+                      <span className="font-bold text-lg">2</span>
+                    </motion.div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-white text-lg mb-1">New Login</h3>
+                      <p className="text-gray-400">Choose your new GitHub account</p>
+                    </div>
+                  </div>
+                  
+                  {currentStep === 2 && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="relative p-4 bg-green-500/15 border border-green-500/30 rounded-xl backdrop-blur-sm"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-green-400/5 to-transparent rounded-xl" />
+                      <div className="relative flex items-center justify-center gap-3">
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                          className="w-5 h-5 border-2 border-green-400 border-t-transparent rounded-full"
+                        />
+                        <span className="text-green-300 font-semibold">Redirecting to GitHub...</span>
+                      </div>
+                    </motion.div>
+                  )}
+                  
+                  {currentStep < 2 && (
+                    <div className="flex items-center gap-2 text-gray-500 font-medium">
+                      <RefreshCw className="w-4 h-4" />
+                      <span>Waiting for step 1...</span>
+                    </div>
+                  )}
+                </motion.div>
               </div>
+
+              {/* Enhanced Back Button */}
+              {currentStep === 1 && (
+                <div className="relative pt-6 border-t border-green-400/20">
+                  <motion.button
+                    whileHover={{ scale: 1.02, x: -2 }}
+                    onClick={handleBackToLogin}
+                    className="w-full text-gray-400 hover:text-green-400 font-medium py-3 rounded-xl hover:bg-gray-500/10 transition-all duration-300 flex items-center justify-center gap-2"
+                  >
+                    ← Back to Login
+                  </motion.button>
+                </div>
+              )}
               
-              {currentStep === 2 && (
-                <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
+              {/* Progress indicator */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="relative mt-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl backdrop-blur-sm"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 to-transparent rounded-2xl" />
+                <div className="relative text-center">
+                  <p className="text-blue-200 text-sm font-medium mb-2">
+                    🔄 Account Switch in Progress
+                  </p>
                   <div className="flex items-center justify-center gap-2">
-                    <div className="w-4 h-4 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-green-400 text-sm font-medium">Redirecting to GitHub...</span>
+                    <div className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+                      currentStep >= 1 ? 'bg-green-400' : 'bg-gray-600'
+                    }`} />
+                    <div className={`w-8 h-0.5 transition-colors duration-300 ${
+                      currentStep >= 2 ? 'bg-green-400' : 'bg-gray-600'
+                    }`} />
+                    <div className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+                      currentStep >= 2 ? 'bg-green-400' : 'bg-gray-600'
+                    }`} />
                   </div>
                 </div>
-              )}
-              
-              {currentStep < 2 && (
-                <div className="text-gray-500 text-sm font-medium">Waiting...</div>
-              )}
+              </motion.div>
             </div>
-          </div>
-
-          {/* Back Button */}
-          {currentStep === 1 && (
-            <div className="text-center mt-6 pt-4 border-t border-gray-700">
-              <button
-                onClick={handleBackToLogin}
-                className="text-gray-400 hover:text-white text-sm font-medium transition-colors"
-              >
-                ← Back to Login
-              </button>
-            </div>
-          )}
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
     </div>
   );
