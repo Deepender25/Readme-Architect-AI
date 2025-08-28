@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
 
     // Check environment variables
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.error('Missing email configuration:', {
+      console.error('❌ Missing email configuration:', {
         EMAIL_USER: process.env.EMAIL_USER ? 'Set' : 'Missing',
         EMAIL_PASS: process.env.EMAIL_PASS ? 'Set' : 'Missing'
       });
@@ -149,34 +149,50 @@ Reply directly to respond to ${name}.
       html: htmlContent,
     };
 
-    // Create transporter
-    console.log('Creating email transporter...');
+    // Create transporter with enhanced configuration
+    console.log('🔧 Creating email transporter...');
     const transporter = nodemailer.createTransporter({
+      service: 'gmail', // Use Gmail service
       host: 'smtp.gmail.com',
       port: 587,
       secure: false, // true for 465, false for other ports
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        pass: process.env.EMAIL_PASS, // This should be an App Password
       },
+      tls: {
+        rejectUnauthorized: false // Allow self-signed certificates
+      }
     });
     
     // Verify transporter configuration
     try {
-      console.log('Verifying transporter configuration...');
+      console.log('🔍 Verifying transporter configuration...');
       await transporter.verify();
       console.log('✅ Email transporter verified successfully');
     } catch (verifyError) {
       console.error('❌ Email transporter verification failed:', verifyError);
+      console.error('Error details:', verifyError);
+      
+      // Provide more specific error guidance
+      let errorMsg = 'Email service configuration error.';
+      if (verifyError instanceof Error) {
+        if (verifyError.message.includes('Invalid login')) {
+          errorMsg = 'Gmail authentication failed. Please ensure you are using an App Password, not your regular Gmail password.';
+        } else if (verifyError.message.includes('ENOTFOUND')) {
+          errorMsg = 'Cannot connect to Gmail servers. Please check your internet connection.';
+        }
+      }
+      
       return NextResponse.json(
-        { error: 'Email service configuration error. Please check your email settings.' },
+        { error: errorMsg },
         { status: 500 }
       );
     }
 
-    console.log('Sending notification email...');
-    await transporter.sendMail(mailOptions);
-    console.log('✅ Notification email sent successfully');
+    console.log('📧 Sending notification email...');
+    const info = await transporter.sendMail(mailOptions);
+    console.log('✅ Notification email sent successfully:', info.messageId);
 
     // Optional: Send confirmation email to the user
     const confirmationHtml = `
@@ -222,9 +238,9 @@ Reply directly to respond to ${name}.
     };
 
     // Send confirmation email to user
-    console.log('Sending confirmation email...');
-    await transporter.sendMail(confirmationOptions);
-    console.log('✅ Confirmation email sent successfully');
+    console.log('📧 Sending confirmation email...');
+    const confirmInfo = await transporter.sendMail(confirmationOptions);
+    console.log('✅ Confirmation email sent successfully:', confirmInfo.messageId);
 
     return NextResponse.json(
       { 
