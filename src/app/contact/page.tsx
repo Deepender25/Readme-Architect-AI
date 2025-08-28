@@ -223,26 +223,6 @@ export default function ContactPage() {
                   <p className="text-xs text-gray-500 text-center">
                     ✅ Contact form is now fully functional! You'll receive a confirmation email after submitting.
                   </p>
-                  
-                  {/* Debug section - remove in production */}
-                  <div className="mt-4 p-3 bg-yellow-400/10 border border-yellow-400/30 rounded-lg">
-                    <p className="text-xs text-yellow-400 text-center mb-2">🔧 Debug Info:</p>
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        try {
-                          const response = await fetch('/api/test-email');
-                          const result = await response.json();
-                          alert(JSON.stringify(result, null, 2));
-                        } catch (error) {
-                          alert('Test failed: ' + error);
-                        }
-                      }}
-                      className="text-xs bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-400 px-3 py-1 rounded border border-yellow-400/30 transition-all"
-                    >
-                      Test Email Configuration
-                    </button>
-                  </div>
                 </form>
               </div>
             </motion.section>
