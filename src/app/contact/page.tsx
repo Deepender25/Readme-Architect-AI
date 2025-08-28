@@ -27,7 +27,10 @@ export default function ContactPage() {
     setSubmitStatus('idle')
 
     try {
-      const response = await fetch('/api/contact', {
+      console.log('📧 Attempting to send contact form...')
+      
+      // Try Next.js API route first
+      let response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -35,17 +38,33 @@ export default function ContactPage() {
         body: JSON.stringify(formData),
       })
 
-      const result = await response.json()
+      let result = await response.json()
+
+      // If Next.js route fails, try Python fallback
+      if (!response.ok) {
+        console.log('⚠️ Next.js route failed, trying Python fallback...')
+        response = await fetch('/api/python/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        })
+        result = await response.json()
+      }
 
       if (response.ok) {
         setSubmitStatus('success')
         setStatusMessage('Thank you! Your message has been sent successfully. I\'ll get back to you soon!')
         setFormData({ name: '', email: '', subject: '', message: '' }) // Reset form
+        console.log('✅ Contact form sent successfully')
       } else {
         setSubmitStatus('error')
         setStatusMessage(result.error || 'Something went wrong. Please try again.')
+        console.error('❌ Contact form failed:', result.error)
       }
     } catch (error) {
+      console.error('❌ Contact form network error:', error)
       setSubmitStatus('error')
       setStatusMessage('Network error. Please check your connection and try again.')
     } finally {
@@ -204,6 +223,26 @@ export default function ContactPage() {
                   <p className="text-xs text-gray-500 text-center">
                     ✅ Contact form is now fully functional! You'll receive a confirmation email after submitting.
                   </p>
+                  
+                  {/* Debug section - remove in production */}
+                  <div className="mt-4 p-3 bg-yellow-400/10 border border-yellow-400/30 rounded-lg">
+                    <p className="text-xs text-yellow-400 text-center mb-2">🔧 Debug Info:</p>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          const response = await fetch('/api/test-email');
+                          const result = await response.json();
+                          alert(JSON.stringify(result, null, 2));
+                        } catch (error) {
+                          alert('Test failed: ' + error);
+                        }
+                      }}
+                      className="text-xs bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-400 px-3 py-1 rounded border border-yellow-400/30 transition-all"
+                    >
+                      Test Email Configuration
+                    </button>
+                  </div>
                 </form>
               </div>
             </motion.section>

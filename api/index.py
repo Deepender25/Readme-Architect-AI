@@ -70,6 +70,8 @@ class handler(BaseHTTPRequestHandler):
         elif parsed_url.path.startswith('/api/history/'):
             history_id = parsed_url.path.split('/')[-1]
             self.handle_history_item(history_id)
+        elif parsed_url.path == '/api/python/contact':
+            self.handle_contact()
         else:
             self.send_response(404)
             self.end_headers()
@@ -631,6 +633,219 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
         
         else:
             self.send_json_response({'error': 'Method not allowed'}, 405)
+
+    def handle_contact(self):
+        """Handle contact form submissions"""
+        if self.command != 'POST':
+            self.send_json_response({'error': 'Method not allowed'}, 405)
+            return
+            
+        try:
+            # Get request body
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            data = json.loads(post_data.decode('utf-8'))
+            
+            name = data.get('name', '').strip()
+            email = data.get('email', '').strip()
+            subject = data.get('subject', '').strip()
+            message = data.get('message', '').strip()
+            
+            # Validation
+            if not all([name, email, subject, message]):
+                self.send_json_response({'error': 'All fields are required'}, 400)
+                return
+                
+            # Email validation
+            import re
+            email_pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+            if not re.match(email_pattern, email):
+                self.send_json_response({'error': 'Invalid email address'}, 400)
+                return
+            
+            # Check environment variables
+            email_user = os.getenv('EMAIL_USER')
+            email_pass = os.getenv('EMAIL_PASS')
+            
+            if not email_user or not email_pass:
+                print('❌ Missing email configuration')
+                self.send_json_response({'error': 'Email service not configured'}, 500)
+                return
+            
+            print(f'📧 Processing contact form: {name} <{email}> - {subject}')
+            
+            # Send email using Python
+            success = self.send_contact_email(name, email, subject, message, email_user, email_pass)
+            
+            if success:
+                print('✅ Contact email sent successfully')
+                self.send_json_response({
+                    'message': 'Email sent successfully!',
+                    'success': True
+                })
+            else:
+                print('❌ Failed to send contact email')
+                self.send_json_response({'error': 'Failed to send email'}, 500)
+                
+        except Exception as e:
+            print(f'❌ Contact form error: {str(e)}')
+            self.send_json_response({'error': 'Internal server error'}, 500)
+    
+    def send_contact_email(self, name, email, subject, message, email_user, email_pass):
+        """Send contact form email using Python smtplib"""
+        try:
+            import smtplib
+            from email.mime.text import MIMEText
+            from email.mime.multipart import MIMEMultipart
+            from datetime import datetime
+            
+            # Create message
+            msg = MIMEMultipart('alternative')
+            msg['From'] = f'"AutoDoc AI Contact Form" <{email_user}>'
+            msg['To'] = email_user
+            msg['Reply-To'] = email
+            msg['Subject'] = f'🚀 AutoDoc AI Contact: {subject} - from {name}'
+            
+            # Create HTML content
+            html_content = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <title>New Contact Form Submission - AutoDoc AI</title>
+                <style>
+                    body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; }}
+                    .container {{ max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }}
+                    .header {{ background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px; }}
+                    .content {{ background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; }}
+                    .field {{ margin-bottom: 15px; }}
+                    .field-label {{ font-weight: bold; color: #10b981; display: block; margin-bottom: 5px; }}
+                    .field-value {{ background: white; padding: 10px; border-radius: 5px; border-left: 4px solid #10b981; }}
+                    .message-content {{ background: white; padding: 15px; border-radius: 5px; border-left: 4px solid #10b981; white-space: pre-wrap; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>🚀 AutoDoc AI - New Contact Form Submission</h1>
+                        <p>Someone reached out through your website!</p>
+                    </div>
+                    
+                    <div style="background: #e1f5fe; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+                        <strong>Received:</strong> {datetime.now().strftime('%A, %B %d, %Y at %I:%M %p')}
+                    </div>
+
+                    <div class="content">
+                        <div class="field">
+                            <span class="field-label">👤 Name:</span>
+                            <div class="field-value">{name}</div>
+                        </div>
+                        <div class="field">
+                            <span class="field-label">📧 Email:</span>
+                            <div class="field-value"><a href="mailto:{email}">{email}</a></div>
+                        </div>
+                        <div class="field">
+                            <span class="field-label">📋 Subject:</span>
+                            <div class="field-value">{subject}</div>
+                        </div>
+                        <div class="field">
+                            <span class="field-label">💬 Message:</span>
+                            <div class="message-content">{message}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; color: #666; font-size: 12px; border-top: 1px solid #eee; padding-top: 20px;">
+                        <p>This email was sent from your AutoDoc AI contact form.</p>
+                        <p>🌟 AutoDoc AI - Making documentation beautiful!</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            # Create text content
+            text_content = f"""
+New Contact Form Submission - AutoDoc AI
+
+Received: {datetime.now().strftime('%A, %B %d, %Y at %I:%M %p')}
+
+Name: {name}
+Email: {email}
+Subject: {subject}
+
+Message:
+{message}
+
+---
+This email was sent from your AutoDoc AI contact form.
+Reply directly to respond to {name}.
+            """
+            
+            # Attach parts
+            msg.attach(MIMEText(text_content, 'plain'))
+            msg.attach(MIMEText(html_content, 'html'))
+            
+            # Send email
+            print('🔧 Connecting to Gmail SMTP...')
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            server.login(email_user, email_pass)
+            
+            print('📧 Sending notification email...')
+            server.send_message(msg)
+            
+            # Send confirmation email to user
+            confirm_msg = MIMEMultipart('alternative')
+            confirm_msg['From'] = f'"Deepender from AutoDoc AI" <{email_user}>'
+            confirm_msg['To'] = email
+            confirm_msg['Subject'] = 'Thank you for contacting AutoDoc AI! 🚀'
+            
+            confirm_html = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <title>Thank You - AutoDoc AI</title>
+                <style>
+                    body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; }}
+                    .container {{ max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }}
+                    .header {{ background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>Thank You, {name}! 🙏</h1>
+                        <p>Your message has been received</p>
+                    </div>
+                    <p>Hi {name},</p>
+                    <p>Thank you for reaching out! I've received your message about "<strong>{subject}</strong>" and I'll get back to you within 24-48 hours.</p>
+                    <p>In the meantime, feel free to:</p>
+                    <ul>
+                        <li>🚀 Try out AutoDoc AI: <a href="https://autodocai.vercel.app/generate">Generate a README</a></li>
+                        <li>⭐ Star us on GitHub: <a href="https://github.com/Deepender25/Readme-Architect-AI">GitHub Repository</a></li>
+                    </ul>
+                    <p>Best regards,<br>Deepender Yadav<br>Creator of AutoDoc AI</p>
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #666; font-size: 12px;">
+                        <p>AutoDoc AI - Making documentation beautiful! 🎨</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            confirm_msg.attach(MIMEText(confirm_html, 'html'))
+            
+            print('📧 Sending confirmation email...')
+            server.send_message(confirm_msg)
+            
+            server.quit()
+            print('✅ All emails sent successfully')
+            return True
+            
+        except Exception as e:
+            print(f'❌ Email sending failed: {str(e)}')
+            return False
 
     def handle_history_item(self, history_id):
         """Handle individual history item requests"""
