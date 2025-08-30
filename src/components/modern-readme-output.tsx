@@ -1130,7 +1130,7 @@ export default function ModernReadmeOutput({
 
                   ref={contentRef}
 
-                  className={`relative ${historyView ? 'overflow-visible' : 'h-[calc(100vh-200px)] sm:h-[calc(100vh-220px)] overflow-y-auto'} scrollbar-thin scrollbar-green scroll-smooth gpu-accelerated mobile-scroll-container`}
+                  className={`relative ${historyView ? 'overflow-visible' : 'h-[calc(100vh-200px)] sm:h-[calc(100vh-220px)] overflow-y-auto'} scrollbar-thin scrollbar-green smooth-scroll content-scroll hardware-accelerated scroll-container mobile-scroll-container`}
 
                   style={{ scrollBehavior: 'smooth' }}
 

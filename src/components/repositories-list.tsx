@@ -113,7 +113,7 @@ export default function RepositoriesList({ onSelectRepository }: RepositoriesLis
         <span className="text-sm text-muted-foreground">{repositories.length} repositories</span>
       </div>
       
-      <div className="grid gap-4 max-h-96 overflow-y-auto">
+      <div className="grid gap-4 max-h-96 overflow-y-auto scroll-container scrollbar-thin scrollbar-green smooth-scroll content-scroll hardware-accelerated">
         <AnimatePresence>
           {repositories.map((repo, index) => (
             <motion.div

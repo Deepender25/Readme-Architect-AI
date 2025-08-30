@@ -384,7 +384,10 @@ function HistoryContent() {
       </ContentSection>
 
       <ContentSection background="gradient" className="min-h-0">
-        <div className="max-h-[calc(100vh-400px)] overflow-y-auto scrollbar-thin scrollbar-green">
+        <div className="max-h-[calc(100vh-400px)] overflow-y-auto scrollbar-thin scrollbar-green" style={{
+          transform: 'translate3d(0, 0, 0)',
+          willChange: 'scroll-position'
+        }}>
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <div className="flex items-center gap-3 text-green-400">
@@ -426,6 +429,11 @@ function HistoryContent() {
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ delay: Math.min(index * 0.02, 0.2), duration: 0.3 }}
                     className="glass-card p-8 group"
+                    style={{
+                      transform: 'translate3d(0, 0, 0)',
+                      willChange: 'transform',
+                      isolation: 'isolate'
+                    }}
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">

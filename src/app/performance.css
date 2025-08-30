@@ -1,12 +1,22 @@
-/* Performance optimizations for smooth scrolling and animations */
+/* Ultra-smooth Performance Optimizations */
 
-/* Enable hardware acceleration for better performance */
-* {
-  -webkit-transform: translateZ(0);
-  -moz-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  -o-transform: translateZ(0);
-  transform: translateZ(0);
+/* Global hardware acceleration for silky smooth performance */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+body {
+  /* Enable GPU acceleration globally */
+  transform: translate3d(0, 0, 0) !important;
+  -webkit-transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+  perspective: 1000px !important;
+  will-change: scroll-position !important;
+  overscroll-behavior: none !important;
 }
 
 /* Optimize scrolling performance */

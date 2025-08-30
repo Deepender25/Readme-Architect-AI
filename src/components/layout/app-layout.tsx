@@ -39,7 +39,11 @@ export default function AppLayout({
   }
 
   return (
-    <div className="min-h-screen bg-transparent text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag">
+    <div className="min-h-screen bg-transparent text-foreground relative performance-optimized smooth-scroll no-lag" style={{
+      transform: 'translate3d(0, 0, 0)',
+      willChange: 'auto',
+      backfaceVisibility: 'hidden'
+    }}>
       
       {/* Navbar */}
       {showNavbar && (
@@ -49,7 +53,10 @@ export default function AppLayout({
       )}
 
       {/* Main Content */}
-      <main className={`relative z-20 min-h-screen flex flex-col ${showNavbar ? 'pt-16 sm:pt-16' : ''}`}>
+      <main className={`relative z-40 min-h-screen flex flex-col ${showNavbar ? 'pt-16 sm:pt-16' : ''}`} style={{
+        transform: 'translate3d(0, 0, 0)',
+        willChange: 'auto'
+      }}>
         {/* Breadcrumbs */}
         {showBreadcrumbs && !isHomePage && showNavbar && (
           <div className="border-b border-border/50 bg-black/20 backdrop-blur-sm">

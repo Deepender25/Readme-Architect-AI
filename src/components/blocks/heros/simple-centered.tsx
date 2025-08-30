@@ -15,12 +15,17 @@ const FeatureCard = ({ icon: Icon, title, description, delay }: {
   delay: number 
 }) => (
   <motion.div
-    initial={{ opacity: 0, y: 15 }}
+    initial={{ opacity: 0, y: 8 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.3, delay: Math.min(delay * 0.05, 0.2) }}
-    className="relative group cursor-pointer"
-    whileHover={{ y: -4, scale: 1.02 }}
-    whileTap={{ scale: 0.98 }}
+    transition={{ duration: 0.2, delay: Math.min(delay * 0.03, 0.15), ease: [0.25, 0.46, 0.45, 0.94] }}
+    className="relative group cursor-pointer critical-smooth"
+    whileHover={{ y: -2 }}
+    whileTap={{ y: 0 }}
+    style={{ 
+      willChange: 'transform, opacity',
+      transform: 'translate3d(0, 0, 0)',
+      backfaceVisibility: 'hidden' 
+    }}
   >
     <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-300" />
     <div className="relative bg-black/40 backdrop-blur-xl border border-green-400/20 rounded-2xl p-6 hover:border-green-400/50 hover:bg-black/60 transition-all duration-300 group-hover:shadow-xl group-hover:shadow-green-400/20">
@@ -37,21 +42,27 @@ const FeatureCard = ({ icon: Icon, title, description, delay }: {
 
 const StatCard = ({ number, label, delay }: { number: string, label: string, delay: number }) => (
   <motion.div
-    initial={{ opacity: 0, scale: 0.95 }}
+    initial={{ opacity: 0, scale: 0.98 }}
     animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.3, delay: Math.min(delay * 0.05, 0.15) }}
-    className="text-center"
+    transition={{ duration: 0.2, delay: Math.min(delay * 0.03, 0.1), ease: [0.25, 0.46, 0.45, 0.94] }}
+    className="text-center critical-smooth"
+    style={{ 
+      willChange: 'transform, opacity',
+      transform: 'translate3d(0, 0, 0)',
+      backfaceVisibility: 'hidden' 
+    }}
   >
     <motion.div
-      className="text-3xl font-bold text-green-400 mb-2"
+      className="text-3xl font-bold text-green-400 mb-2 text-glow"
       animate={{ 
         textShadow: [
-          '0 0 10px rgba(0, 255, 136, 0.5)',
-          '0 0 20px rgba(0, 255, 136, 0.8)',
-          '0 0 10px rgba(0, 255, 136, 0.5)'
+          '0 0 8px rgba(0, 255, 136, 0.4)',
+          '0 0 15px rgba(0, 255, 136, 0.6)',
+          '0 0 8px rgba(0, 255, 136, 0.4)'
         ]
       }}
-      transition={{ duration: 2, repeat: Infinity }}
+      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+      style={{ willChange: 'text-shadow' }}
     >
       {number}
     </motion.div>
@@ -176,24 +187,25 @@ export default function SimpleCentered() {
               {/* Hero Section */}
               <div className="mx-auto max-w-6xl py-12 sm:py-16 lg:py-20">
                 <div className="text-center mb-16">
-                  <ScrollAnimatedDiv delay={0} duration={0.4} yOffset={30}>
+                  <ScrollAnimatedDiv delay={0} duration={0.3} yOffset={20}>
                     <motion.div
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-green-400/10 border border-green-400/30 rounded-full text-green-400 text-sm font-medium mb-8"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-green-400/10 border border-green-400/30 rounded-full text-green-400 text-sm font-medium mb-8 glow-green"
                       animate={{ 
                         boxShadow: [
-                          '0 0 10px rgba(0, 255, 136, 0.3)',
-                          '0 0 20px rgba(0, 255, 136, 0.5)',
-                          '0 0 10px rgba(0, 255, 136, 0.3)'
+                          '0 0 8px rgba(0, 255, 136, 0.2)',
+                          '0 0 15px rgba(0, 255, 136, 0.4)',
+                          '0 0 8px rgba(0, 255, 136, 0.2)'
                         ]
                       }}
-                      transition={{ duration: 2, repeat: Infinity }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                      style={{ willChange: 'box-shadow' }}
                     >
                       <Sparkles className="w-4 h-4" />
                       AI-Powered Documentation
                     </motion.div>
                   </ScrollAnimatedDiv>
                   
-                  <ScrollAnimatedDiv delay={0.05} duration={0.4} yOffset={30}>
+                  <ScrollAnimatedDiv delay={0.05} duration={0.3} yOffset={20}>
                     <motion.h1
                       className="text-5xl font-bold tracking-tight text-white sm:text-7xl lg:text-8xl mb-6 relative z-10"
                       style={{ 
@@ -225,8 +237,8 @@ export default function SimpleCentered() {
                         <div className="relative group w-full sm:w-auto">
                           <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity" />
                           <motion.button
-                            whileHover={{ scale: 1.02, y: -2 }}
-                            whileTap={{ scale: 0.98 }}
+                            whileHover={{ y: -2 }}
+                            whileTap={{ y: 0 }}
                             onClick={handleStartGeneration}
                             className="relative w-full sm:w-auto px-8 py-4 bg-green-500 text-black font-bold rounded-xl transition-all duration-300 hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-black text-lg flex items-center justify-center gap-3"
                             style={{ boxShadow: '0 0 30px rgba(0, 255, 136, 0.4)' }}
@@ -238,8 +250,8 @@ export default function SimpleCentered() {
                         </div>
                         
                         <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
+                          whileHover={{ y: -1 }}
+                          whileTap={{ y: 0 }}
                           onClick={handleViewExamples}
                           className="px-6 py-4 bg-transparent border border-green-400/30 text-green-400 font-semibold rounded-xl hover:bg-green-400/10 hover:border-green-400/50 transition-all duration-300 flex items-center gap-2"
                         >
@@ -333,8 +345,8 @@ export default function SimpleCentered() {
                     </p>
                     {!showGenerator && (
                       <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                        whileHover={{ y: -2 }}
+                        whileTap={{ y: 0 }}
                         onClick={handleGetStartedNow}
                         className="px-8 py-4 bg-green-500 text-black font-bold rounded-xl hover:bg-green-400 transition-all duration-300 flex items-center gap-3 mx-auto"
                       >

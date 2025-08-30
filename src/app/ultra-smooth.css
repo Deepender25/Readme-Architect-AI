@@ -1,0 +1,385 @@
+/* Ultra-Smooth Scrolling and Animation Optimizations */
+
+/* Global scroll optimization */
+* {
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Enhanced hardware acceleration for all scrollable elements */
+.overflow-y-auto,
+.overflow-x-auto,
+.overflow-auto,
+.overflow-scroll {
+  will-change: scroll-position !important;
+  transform: translate3d(0, 0, 0) !important;
+  -webkit-transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+  perspective: 1000px !important;
+  contain: layout style paint !important;
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain !important;
+}
+
+/* Ultra-smooth momentum scrolling */
+.ultra-smooth-scroll {
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain !important;
+  scroll-snap-type: y proximity !important;
+  transform: translate3d(0, 0, 0) !important;
+  will-change: scroll-position !important;
+  contain: layout style paint !important;
+}
+
+/* Perfect scrollbar styling for all containers */
+.scrollbar-ultra-smooth::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+.scrollbar-ultra-smooth::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+.scrollbar-ultra-smooth::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.4), rgba(0, 255, 136, 0.7)) !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(0, 255, 136, 0.2) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 2px 8px rgba(0, 255, 136, 0.2) !important;
+}
+
+.scrollbar-ultra-smooth::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.6), rgba(0, 255, 136, 0.9)) !important;
+  box-shadow: 0 4px 12px rgba(0, 255, 136, 0.4) !important;
+  transform: scaleY(1.1) !important;
+}
+
+.scrollbar-ultra-smooth::-webkit-scrollbar-corner {
+  background: transparent !important;
+}
+
+/* Enhanced Firefox scrollbar */
+.scrollbar-ultra-smooth {
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(0, 255, 136, 0.6) rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Buttery smooth button transitions */
+button,
+[role="button"],
+.btn,
+.button {
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, opacity, background-color, border-color, box-shadow !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+}
+
+button:hover,
+[role="button"]:hover,
+.btn:hover,
+.button:hover {
+  transform: translate3d(0, -1px, 0) !important;
+}
+
+button:active,
+[role="button"]:active,
+.btn:active,
+.button:active {
+  transform: translate3d(0, 0, 0) scale(0.98) !important;
+}
+
+/* Smooth modal and overlay animations */
+.modal-backdrop,
+.overlay {
+  animation: smoothBackdropFadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+  backdrop-filter: blur(0px) !important;
+}
+
+.modal-content,
+.dialog-content {
+  animation: smoothModalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+}
+
+@keyframes smoothBackdropFadeIn {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px) !important;
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(8px) !important;
+  }
+}
+
+@keyframes smoothModalSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95) !important;
+    filter: blur(3px) !important;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) !important;
+    filter: blur(0px) !important;
+  }
+}
+
+/* Ultra-smooth card hover effects */
+.card,
+.glass-card,
+.surface {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, box-shadow, border-color !important;
+  transform: translate3d(0, 0, 0) !important;
+  contain: layout style paint !important;
+}
+
+.card:hover,
+.glass-card:hover,
+.surface:hover {
+  transform: translate3d(0, -2px, 0) scale(1.005) !important;
+}
+
+/* Smooth text and typography */
+h1, h2, h3, h4, h5, h6, p, span, div {
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* Optimize input field animations */
+input,
+textarea,
+select {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  will-change: border-color, box-shadow, background-color !important;
+  transform: translate3d(0, 0, 0) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  transform: translate3d(0, -1px, 0) !important;
+}
+
+/* Enhanced dropdown animations */
+.dropdown-menu,
+.select-menu,
+.popover {
+  animation: smoothDropdownSlideIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+  transform-origin: top center !important;
+  will-change: transform, opacity !important;
+}
+
+@keyframes smoothDropdownSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95) !important;
+    filter: blur(2px) !important;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) !important;
+    filter: blur(0px) !important;
+  }
+}
+
+/* Optimize list animations */
+.animate-list-item {
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, opacity !important;
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Smooth hover states for interactive elements */
+a,
+.link {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  will-change: color, text-shadow !important;
+}
+
+a:hover,
+.link:hover {
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.4) !important;
+}
+
+/* Perfect smooth scrolling for content areas */
+.content-area,
+.readme-content,
+.markdown-content {
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain !important;
+  contain: layout style paint !important;
+  will-change: scroll-position !important;
+}
+
+/* Mobile-specific smooth optimizations */
+@media (max-width: 768px) {
+  /* Reduce animation complexity on mobile for better performance */
+  * {
+    animation-duration: 0.2s !important;
+    transition-duration: 0.2s !important;
+  }
+  
+  /* Optimize touch interactions */
+  button,
+  [role="button"],
+  a {
+    -webkit-tap-highlight-color: rgba(0, 255, 136, 0.2) !important;
+    touch-action: manipulation !important;
+  }
+  
+  /* Better scroll performance on mobile */
+  .overflow-y-auto,
+  .overflow-x-auto,
+  .overflow-auto {
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: y proximity !important;
+  }
+}
+
+/* Ultra-small screen optimizations */
+@media (max-width: 480px) {
+  /* Minimal animations for best performance */
+  * {
+    animation-duration: 0.1s !important;
+    transition-duration: 0.1s !important;
+  }
+  
+  /* Reduce blur effects */
+  .backdrop-blur-xl,
+  .backdrop-blur-lg {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+}
+
+/* High refresh rate display optimizations */
+@media (min-resolution: 120dpi) {
+  * {
+    animation-fill-mode: both !important;
+    transform-style: preserve-3d !important;
+  }
+}
+
+/* Optimize background animations */
+.background-animation,
+.grid-animation,
+.particle-animation {
+  will-change: auto !important;
+  contain: layout style paint !important;
+  transform: translateZ(0) !important;
+}
+
+/* Performance-critical components */
+.framer-motion-element {
+  will-change: transform, opacity !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+}
+
+/* Ensure page transitions are buttery smooth */
+.page-transition,
+.route-transition {
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  will-change: transform, opacity, filter !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+}
+
+/* Optimize loading animations */
+.loading-spinner,
+.animate-spin {
+  animation: smoothSpin 1s linear infinite !important;
+  will-change: transform !important;
+}
+
+@keyframes smoothSpin {
+  0% {
+    transform: rotate(0deg) translate3d(0, 0, 0) !important;
+  }
+  100% {
+    transform: rotate(360deg) translate3d(0, 0, 0) !important;
+  }
+}
+
+/* Perfect scroll snap for section navigation */
+.scroll-snap-section {
+  scroll-snap-align: start !important;
+  scroll-snap-stop: always !important;
+}
+
+.scroll-snap-container {
+  scroll-snap-type: y mandatory !important;
+  scroll-behavior: smooth !important;
+}
+
+/* Eliminate jank from flex and grid layouts */
+.flex,
+.grid {
+  contain: layout style !important;
+  will-change: contents !important;
+}
+
+/* Optimize image loading and rendering */
+img,
+picture,
+video {
+  will-change: transform !important;
+  transform: translate3d(0, 0, 0) !important;
+  image-rendering: crisp-edges !important;
+  image-rendering: -webkit-optimize-contrast !important;
+}
+
+/* Critical rendering path optimizations */
+.critical-content {
+  contain: layout style paint !important;
+  content-visibility: auto !important;
+  contain-intrinsic-size: 0 500px !important;
+}
+
+/* Smooth focus transitions */
+:focus,
+:focus-visible {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  outline: 2px solid rgba(0, 255, 136, 0.5) !important;
+  outline-offset: 2px !important;
+}
+
+/* Perfect tooltip and popup animations */
+.tooltip,
+.popup,
+.notification {
+  animation: smoothPopIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+}
+
+@keyframes smoothPopIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9) !important;
+    filter: blur(2px) !important;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) !important;
+    filter: blur(0px) !important;
+  }
+}
+
+/* Eliminate all possible jank sources */
+.no-jank {
+  contain: layout style paint !important;
+  will-change: auto !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+  perspective: 1000px !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}

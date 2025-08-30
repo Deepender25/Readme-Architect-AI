@@ -1,44 +1,55 @@
 'use client';
 
-export default function EnhancedGridBackground() {
+import { memo } from 'react';
+
+const EnhancedGridBackground = memo(function EnhancedGridBackground() {
   return (
     <div 
       className="fixed inset-0 w-full h-full pointer-events-none"
       style={{ 
-        zIndex: -10,
+        zIndex: 1,
         minHeight: '100vh',
         minWidth: '100vw',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        willChange: 'auto',
+        transform: 'translate3d(0, 0, 0)',
+        backfaceVisibility: 'hidden'
       }}
     >
-      {/* Base black background */}
-      <div className="absolute inset-0 bg-black w-full h-full" />
+      {/* Base gradient background */}
+      <div 
+        className="absolute inset-0 w-full h-full"
+        style={{
+          background: 'linear-gradient(135deg, #000000 0%, #0a0a0a 25%, #000000 50%, #0a0a0a 75%, #000000 100%)',
+          zIndex: 1
+        }}
+      />
       
       {/* Main grid pattern - enhanced visibility */}
       <div 
-        className="absolute inset-0 opacity-40 w-full h-full"
+        className="absolute inset-0 w-full h-full"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(0, 255, 136, 0.35) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 255, 136, 0.35) 1px, transparent 1px)
+            linear-gradient(rgba(0, 255, 136, 0.12) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 136, 0.12) 1px, transparent 1px)
           `,
           backgroundSize: '40px 40px',
-          backgroundPosition: 'center center',
-          backgroundAttachment: 'fixed'
+          backgroundPosition: '0 0',
+          zIndex: 2
         }}
       />
       
       {/* Secondary finer grid - enhanced visibility */}
       <div 
-        className="absolute inset-0 opacity-25 w-full h-full"
+        className="absolute inset-0 w-full h-full"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(0, 255, 136, 0.18) 0.5px, transparent 0.5px),
-            linear-gradient(90deg, rgba(0, 255, 136, 0.18) 0.5px, transparent 0.5px)
+            linear-gradient(rgba(0, 255, 136, 0.08) 0.5px, transparent 0.5px),
+            linear-gradient(90deg, rgba(0, 255, 136, 0.08) 0.5px, transparent 0.5px)
           `,
           backgroundSize: '20px 20px',
-          backgroundPosition: 'center center',
-          backgroundAttachment: 'fixed'
+          backgroundPosition: '0 0',
+          zIndex: 2
         }}
       />
       
@@ -81,4 +92,6 @@ export default function EnhancedGridBackground() {
       />
     </div>
   );
-}
+});
+
+export default EnhancedGridBackground;
