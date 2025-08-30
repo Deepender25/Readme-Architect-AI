@@ -1,0 +1,310 @@
+/* GLOBAL SMOOTH SCROLLING OPTIMIZATIONS */
+
+/* Critical global scroll settings - highest priority */
+* {
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Enhanced HTML document scrolling */
+html {
+  scroll-behavior: smooth !important;
+  scroll-snap-type: none !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  height: 100% !important;
+  
+  /* Performance optimizations */
+  transform: translateZ(0) !important;
+  -webkit-transform: translateZ(0) !important;
+  backface-visibility: hidden !important;
+  perspective: 1000px !important;
+  will-change: scroll-position !important;
+  
+  /* Smooth font rendering */
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+  
+  /* Prevent scroll chaining */
+  overscroll-behavior: none !important;
+  -ms-scroll-chaining: none !important;
+}
+
+/* Enhanced body scrolling */
+body {
+  scroll-behavior: smooth !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  height: 100% !important;
+  min-height: 100vh !important;
+  
+  /* Performance optimizations */
+  transform: translate3d(0, 0, 0) !important;
+  -webkit-transform: translate3d(0, 0, 0) !important;
+  will-change: scroll-position !important;
+  backface-visibility: hidden !important;
+  perspective: 1000px !important;
+  
+  /* Smooth scrolling optimizations */
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: none !important;
+  scroll-snap-type: none !important;
+  
+  /* Remove any scroll delays */
+  scroll-padding-top: 0 !important;
+  scroll-margin-top: 0 !important;
+  
+  /* Optimize compositing */
+  contain: layout style paint !important;
+  isolation: isolate !important;
+}
+
+/* Ultra-smooth viewport optimization */
+.min-h-screen {
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  scroll-behavior: smooth !important;
+}
+
+/* Enhanced container scrolling */
+.container,
+.max-w-7xl,
+.max-w-6xl,
+.max-w-5xl,
+.max-w-4xl {
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain !important;
+}
+
+/* Optimized main content areas */
+main,
+.main-content,
+.page-content {
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain !important;
+  transform: translate3d(0, 0, 0) !important;
+  will-change: scroll-position !important;
+  contain: layout style paint !important;
+}
+
+/* Ultra-smooth flex containers */
+.flex,
+.flex-col,
+.flex-row {
+  transform: translate3d(0, 0, 0) !important;
+  will-change: transform !important;
+  backface-visibility: hidden !important;
+  contain: layout style paint !important;
+}
+
+/* Enhanced grid containers */
+.grid {
+  transform: translate3d(0, 0, 0) !important;
+  will-change: transform !important;
+  backface-visibility: hidden !important;
+  contain: layout style paint !important;
+}
+
+/* Smooth scrolling for all divs that might be scrollable */
+div {
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Performance optimization for all elements */
+* {
+  transform: translateZ(0) !important;
+  -webkit-transform: translateZ(0) !important;
+  backface-visibility: hidden !important;
+  perspective: 1000px !important;
+}
+
+/* Ultra-smooth transitions for all interactive elements */
+a,
+button,
+input,
+textarea,
+select,
+[role="button"],
+[tabindex],
+.cursor-pointer {
+  transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, opacity, background-color, border-color, box-shadow !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+  contain: layout style paint !important;
+}
+
+/* Optimized hover states */
+a:hover,
+button:hover,
+[role="button"]:hover,
+.cursor-pointer:hover {
+  transform: translate3d(0, -0.5px, 0) !important;
+}
+
+/* Smooth active states */
+a:active,
+button:active,
+[role="button"]:active,
+.cursor-pointer:active {
+  transform: translate3d(0, 0, 0) scale(0.99) !important;
+}
+
+/* Enhanced page-level scrolling */
+.page-wrapper {
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: none !important;
+  transform: translate3d(0, 0, 0) !important;
+  will-change: scroll-position !important;
+  contain: layout style paint !important;
+  height: 100vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Remove any potential scroll delays */
+* {
+  scroll-padding: 0 !important;
+  scroll-margin: 0 !important;
+}
+
+/* Optimize document flow for smooth scrolling */
+#__next,
+.next-root {
+  height: 100% !important;
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: none !important;
+}
+
+/* Critical rendering optimizations */
+.critical-smooth {
+  will-change: auto !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+  perspective: 1000px !important;
+  contain: layout style paint !important;
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Enhanced animation frame optimization */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    animation-fill-mode: both !important;
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  }
+}
+
+/* Mobile-specific smooth scrolling enhancements */
+@media (max-width: 768px) {
+  html,
+  body {
+    scroll-behavior: smooth !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: none !important;
+    touch-action: pan-y !important;
+  }
+  
+  /* Enhanced mobile scroll containers */
+  .overflow-y-auto,
+  .overflow-auto {
+    scroll-behavior: smooth !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain !important;
+    scroll-snap-type: y proximity !important;
+  }
+  
+  /* Mobile touch optimization */
+  * {
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+  }
+}
+
+/* High refresh rate display optimizations */
+@media (min-resolution: 120dpi) {
+  * {
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  }
+}
+
+/* Ultra-high refresh rate (120Hz+) optimizations */
+@media screen and (min-resolution: 2dppx) {
+  * {
+    transition-duration: 0.1s !important;
+    animation-duration: 0.2s !important;
+  }
+}
+
+/* Force hardware acceleration on key layout elements */
+body > *,
+main > *,
+.layout-container > * {
+  transform: translate3d(0, 0, 0) !important;
+  will-change: transform !important;
+  backface-visibility: hidden !important;
+  contain: layout style paint !important;
+}
+
+/* Smooth page navigation */
+.page-transition {
+  transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, opacity !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+}
+
+/* Enhanced viewport scroll optimization */
+@supports (height: 100dvh) {
+  .min-h-screen {
+    min-height: 100dvh !important;
+  }
+  
+  body {
+    min-height: 100dvh !important;
+  }
+}
+
+/* Critical smooth scrolling fixes */
+html {
+  scroll-snap-type: none !important;
+  scroll-padding-top: 0 !important;
+}
+
+body {
+  scroll-snap-type: none !important;
+  scroll-padding-top: 0 !important;
+}
+
+/* Remove any potential scroll interference */
+.overflow-hidden {
+  overflow: hidden !important;
+}
+
+/* Ensure smooth scrolling on layout containers */
+.layout-container,
+.app-container,
+.main-wrapper {
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: none !important;
+  transform: translate3d(0, 0, 0) !important;
+  will-change: scroll-position !important;
+  contain: layout style paint !important;
+}
+
+/* Final performance boost */
+* {
+  image-rendering: optimizeSpeed !important;
+  image-rendering: -moz-crisp-edges !important;
+  image-rendering: -webkit-optimize-contrast !important;
+  image-rendering: optimize-contrast !important;
+  -ms-interpolation-mode: nearest-neighbor !important;
+}

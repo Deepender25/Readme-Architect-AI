@@ -121,8 +121,18 @@ function LoginPageContent() {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            transition={{ 
+              duration: 0.5, 
+              ease: [0.25, 0.46, 0.45, 0.94],
+              type: "spring",
+              stiffness: 100,
+              damping: 15
+            }}
+            className="text-center mb-16 hardware-accelerated"
+            style={{
+              willChange: 'transform, opacity',
+              transform: 'translate3d(0, 0, 0)'
+            }}
           >
             <motion.div
               initial={{ opacity: 0, y: 10 }}

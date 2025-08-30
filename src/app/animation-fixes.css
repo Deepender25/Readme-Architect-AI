@@ -1,0 +1,378 @@
+/* ANIMATION FIXES - Prevent Element Clipping and Visual Errors */
+
+/* CRITICAL: Disable all problematic scaling animations */
+button:active,
+[role="button"]:active,
+.btn:active,
+.button:active,
+.cursor-pointer:active,
+.interactive-ultra-smooth:active,
+.btn-ultra-smooth:active,
+.card-ultra-smooth:active,
+.glass-card:active,
+.glass-button:active {
+  transform: translate3d(0, 0, 0) !important;
+  scale: 1 !important;
+  transition: all 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* Fix hover animations - no scaling */
+button:hover,
+[role="button"]:hover,
+.btn:hover,
+.button:hover,
+.cursor-pointer:hover,
+.interactive-ultra-smooth:hover,
+.btn-ultra-smooth:hover,
+.glass-button:hover {
+  transform: translate3d(0, -1px, 0) !important;
+  scale: 1 !important;
+  transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* Fix card hover animations - minimal scaling only */
+.card-ultra-smooth:hover,
+.glass-card:hover,
+.card:hover {
+  transform: translate3d(0, -2px, 0) !important;
+  scale: 1 !important;
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* Ensure all containers can accommodate animated elements */
+.overflow-hidden {
+  overflow: visible !important;
+  /* Only hide overflow on specific axes if needed */
+}
+
+.overflow-x-hidden {
+  overflow-x: hidden !important;
+  overflow-y: visible !important;
+}
+
+.overflow-y-hidden {
+  overflow-y: hidden !important;
+  overflow-x: visible !important;
+}
+
+/* Fix container constraints that cause clipping */
+.container,
+.max-w-7xl,
+.max-w-6xl,
+.max-w-5xl,
+.max-w-4xl,
+.max-w-3xl,
+.max-w-2xl,
+.max-w-xl,
+.max-w-lg {
+  overflow: visible !important;
+  contain: none !important;
+}
+
+/* Fix flex container clipping */
+.flex,
+.flex-col,
+.flex-row {
+  overflow: visible !important;
+  contain: none !important;
+}
+
+/* Fix grid container clipping */
+.grid {
+  overflow: visible !important;
+  contain: none !important;
+}
+
+/* Ensure proper z-index layering for animated elements */
+button:hover,
+[role="button"]:hover,
+.btn:hover,
+.button:hover,
+.cursor-pointer:hover,
+.interactive-ultra-smooth:hover,
+.btn-ultra-smooth:hover,
+.glass-button:hover,
+.card-ultra-smooth:hover,
+.glass-card:hover {
+  z-index: 10 !important;
+  position: relative !important;
+}
+
+button:active,
+[role="button"]:active,
+.btn:active,
+.button:active,
+.cursor-pointer:active {
+  z-index: 15 !important;
+  position: relative !important;
+}
+
+/* Fix specific problematic animations from Framer Motion */
+[data-framer-motion] {
+  overflow: visible !important;
+}
+
+/* Remove contain properties that cause clipping */
+* {
+  contain: none !important;
+}
+
+/* Only apply contain to specific elements that need it */
+.performance-contained {
+  contain: layout style !important;
+}
+
+.paint-contained {
+  contain: paint !important;
+}
+
+/* Fix glass card container issues */
+.glass,
+.glass-card,
+.glass-strong {
+  overflow: visible !important;
+  contain: none !important;
+}
+
+/* Ensure animated elements don't get clipped by parents */
+.animated-element {
+  position: relative !important;
+  z-index: 1 !important;
+  overflow: visible !important;
+}
+
+.animated-element:hover {
+  z-index: 10 !important;
+}
+
+.animated-element:active {
+  z-index: 15 !important;
+}
+
+/* Fix modal and dropdown positioning issues */
+.modal-content,
+.dropdown-menu,
+.popover {
+  z-index: 9999999 !important;
+  position: fixed !important;
+  overflow: visible !important;
+  contain: none !important;
+}
+
+/* Remove problematic backdrop-filter during animations */
+.no-backdrop-during-animation:hover {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Fix scrollable container issues */
+.scroll-container,
+.overflow-y-auto,
+.overflow-auto {
+  overflow-x: visible !important;
+  contain: none !important;
+}
+
+/* Ensure proper stacking context */
+.stacking-context {
+  transform: translateZ(0) !important;
+  isolation: isolate !important;
+}
+
+/* Fix button container issues */
+.button-container {
+  overflow: visible !important;
+  contain: none !important;
+  z-index: 1 !important;
+}
+
+.button-container button:hover {
+  z-index: 10 !important;
+}
+
+/* Fix card container issues */
+.card-container {
+  overflow: visible !important;
+  contain: none !important;
+  z-index: 1 !important;
+}
+
+.card-container .card:hover,
+.card-container .glass-card:hover {
+  z-index: 10 !important;
+}
+
+/* Fix navigation container issues */
+.nav-container {
+  overflow: visible !important;
+  contain: none !important;
+  z-index: 999999 !important;
+}
+
+/* Override any conflicting contain properties */
+.no-contain {
+  contain: none !important;
+}
+
+.no-contain * {
+  contain: none !important;
+}
+
+/* Ensure proper layering for interactive elements */
+.interactive-layer {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.interactive-layer:hover {
+  z-index: 10 !important;
+}
+
+.interactive-layer:active {
+  z-index: 15 !important;
+}
+
+/* Fix specific animation timing to prevent visual glitches */
+.smooth-animation {
+  transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background-color 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              border-color 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, opacity, background-color, border-color, box-shadow !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+}
+
+/* Consistent hover state - no scaling */
+.smooth-animation:hover {
+  transform: translate3d(0, -1px, 0) !important;
+}
+
+/* Consistent active state - no scaling */
+.smooth-animation:active {
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Fix parent container overflow issues */
+.parent-overflow-fix {
+  overflow: visible !important;
+  position: relative !important;
+}
+
+.parent-overflow-fix > * {
+  overflow: visible !important;
+}
+
+/* Ensure animated elements have proper spacing */
+.animated-spacing {
+  padding: 4px !important;
+  margin: 4px !important;
+}
+
+.animated-spacing > * {
+  margin: -4px !important;
+}
+
+/* Fix specific UI component issues */
+.ui-component {
+  overflow: visible !important;
+  contain: none !important;
+  position: relative !important;
+}
+
+.ui-component:hover {
+  z-index: 10 !important;
+}
+
+/* Remove all problematic scale transforms */
+* {
+  --tw-scale-x: 1 !important;
+  --tw-scale-y: 1 !important;
+}
+
+/* Fix motion.div specific issues */
+.motion-div {
+  overflow: visible !important;
+  contain: none !important;
+}
+
+/* Remove scale from hover states globally */
+*:hover {
+  scale: 1 !important;
+  --tw-scale-x: 1 !important;
+  --tw-scale-y: 1 !important;
+}
+
+*:active {
+  scale: 1 !important;
+  --tw-scale-x: 1 !important;
+  --tw-scale-y: 1 !important;
+}
+
+/* Fix specific container types */
+.relative {
+  overflow: visible !important;
+}
+
+.absolute {
+  overflow: visible !important;
+}
+
+.fixed {
+  overflow: visible !important;
+}
+
+/* Ensure proper element boundaries */
+.element-boundary {
+  border: 1px solid transparent !important;
+  box-sizing: border-box !important;
+}
+
+/* Fix layout shift issues */
+.no-layout-shift {
+  contain: none !important;
+  will-change: auto !important;
+}
+
+/* Override any conflicting styles */
+.force-no-scale {
+  transform: translate3d(0, 0, 0) !important;
+  scale: 1 !important;
+}
+
+.force-no-scale:hover {
+  transform: translate3d(0, -1px, 0) !important;
+  scale: 1 !important;
+}
+
+.force-no-scale:active {
+  transform: translate3d(0, 0, 0) !important;
+  scale: 1 !important;
+}
+
+/* Ensure proper stacking and visibility */
+.visible-during-animation {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Fix any transform origin issues */
+* {
+  transform-origin: center center !important;
+}
+
+/* Emergency override for clipping issues */
+.emergency-overflow-fix {
+  overflow: visible !important;
+  contain: none !important;
+  clip: unset !important;
+  clip-path: none !important;
+}
+
+.emergency-overflow-fix * {
+  overflow: visible !important;
+  contain: none !important;
+  clip: unset !important;
+  clip-path: none !important;
+}

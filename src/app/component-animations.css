@@ -1,0 +1,381 @@
+/* COMPONENT-LEVEL ANIMATION OPTIMIZATIONS */
+
+/* Ultra-smooth button animations */
+.btn-ultra-smooth {
+  transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, background-color, border-color, box-shadow !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+  contain: layout style paint !important;
+}
+
+.btn-ultra-smooth:hover {
+  transform: translate3d(0, -1px, 0) !important;
+  transition-duration: 0.1s !important;
+}
+
+.btn-ultra-smooth:active {
+  transform: translate3d(0, 0, 0) scale(0.99) !important;
+  transition-duration: 0.05s !important;
+}
+
+/* Enhanced card animations */
+.card-ultra-smooth {
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, box-shadow, border-color !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+  contain: layout style paint !important;
+}
+
+.card-ultra-smooth:hover {
+  transform: translate3d(0, -3px, 0) scale(1.008) !important;
+  transition-duration: 0.15s !important;
+}
+
+/* Interactive element optimizations */
+.interactive-ultra-smooth {
+  transition: all 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, opacity, background-color !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+  cursor: pointer !important;
+}
+
+.interactive-ultra-smooth:hover {
+  transform: translate3d(0, -0.5px, 0) !important;
+}
+
+.interactive-ultra-smooth:active {
+  transform: translate3d(0, 0, 0) scale(0.995) !important;
+}
+
+/* Input field animations */
+.input-ultra-smooth {
+  transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: border-color, box-shadow, background-color !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+}
+
+.input-ultra-smooth:focus {
+  transform: translate3d(0, -1px, 0) !important;
+  transition-duration: 0.1s !important;
+}
+
+/* Modal and overlay animations */
+.modal-ultra-smooth {
+  animation: ultraModalSlideIn 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+  will-change: transform, opacity !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+}
+
+.backdrop-ultra-smooth {
+  animation: ultraBackdropFadeIn 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+  will-change: opacity, backdrop-filter !important;
+}
+
+@keyframes ultraModalSlideIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 15px, 0) scale(0.98) !important;
+    filter: blur(2px) !important;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) !important;
+    filter: blur(0px) !important;
+  }
+}
+
+@keyframes ultraBackdropFadeIn {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px) !important;
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(8px) !important;
+  }
+}
+
+/* Dropdown animations */
+.dropdown-ultra-smooth {
+  animation: ultraDropdownSlideIn 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+  transform-origin: top center !important;
+  will-change: transform, opacity !important;
+}
+
+@keyframes ultraDropdownSlideIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -8px, 0) scale(0.98) !important;
+    filter: blur(1px) !important;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) !important;
+    filter: blur(0px) !important;
+  }
+}
+
+/* Loading animations */
+.loading-ultra-smooth {
+  animation: ultraSpin 1s linear infinite !important;
+  will-change: transform !important;
+  transform-origin: center !important;
+}
+
+@keyframes ultraSpin {
+  from {
+    transform: rotate(0deg) !important;
+  }
+  to {
+    transform: rotate(360deg) !important;
+  }
+}
+
+.pulse-ultra-smooth {
+  animation: ultraPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+  will-change: opacity !important;
+}
+
+@keyframes ultraPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Bounce animation for notifications */
+.bounce-ultra-smooth {
+  animation: ultraBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+  will-change: transform !important;
+  transform-origin: center !important;
+}
+
+@keyframes ultraBounce {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.3) !important;
+  }
+  50% {
+    transform: translate3d(0, 0, 0) scale(1.05) !important;
+  }
+  70% {
+    transform: translate3d(0, 0, 0) scale(0.9) !important;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) !important;
+  }
+}
+
+/* Slide animations */
+.slide-in-ultra-smooth {
+  animation: ultraSlideIn 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+  will-change: transform, opacity !important;
+}
+
+.slide-out-ultra-smooth {
+  animation: ultraSlideOut 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+  will-change: transform, opacity !important;
+}
+
+@keyframes ultraSlideIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(-20px, 0, 0) !important;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) !important;
+  }
+}
+
+@keyframes ultraSlideOut {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) !important;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(20px, 0, 0) !important;
+  }
+}
+
+/* Scale animations */
+.scale-in-ultra-smooth {
+  animation: ultraScaleIn 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+  will-change: transform, opacity !important;
+  transform-origin: center !important;
+}
+
+.scale-out-ultra-smooth {
+  animation: ultraScaleOut 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+  will-change: transform, opacity !important;
+  transform-origin: center !important;
+}
+
+@keyframes ultraScaleIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.95) !important;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) !important;
+  }
+}
+
+@keyframes ultraScaleOut {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) !important;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.95) !important;
+  }
+}
+
+/* Fade animations */
+.fade-in-ultra-smooth {
+  animation: ultraFadeIn 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+  will-change: opacity !important;
+}
+
+.fade-out-ultra-smooth {
+  animation: ultraFadeOut 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+  will-change: opacity !important;
+}
+
+@keyframes ultraFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes ultraFadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Notification animations */
+.notification-ultra-smooth {
+  animation: ultraNotificationSlideIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+  will-change: transform, opacity !important;
+}
+
+@keyframes ultraNotificationSlideIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -20px, 0) scale(0.9) !important;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) !important;
+  }
+}
+
+/* List item animations */
+.list-item-ultra-smooth {
+  transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, background-color, border-color !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+}
+
+.list-item-ultra-smooth:hover {
+  transform: translate3d(0, -1px, 0) !important;
+  transition-duration: 0.1s !important;
+}
+
+/* Progress bar animations */
+.progress-ultra-smooth {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: width, background-color !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+}
+
+/* Toggle animations */
+.toggle-ultra-smooth {
+  transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, background-color !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+}
+
+/* Navigation animations */
+.nav-ultra-smooth {
+  transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, background-color, opacity !important;
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+}
+
+.nav-ultra-smooth:hover {
+  transform: translate3d(0, -1px, 0) !important;
+}
+
+/* Optimized focus states */
+.focus-ultra-smooth:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.3) !important;
+  border-color: rgba(0, 255, 136, 0.5) !important;
+  transition: all 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .btn-ultra-smooth,
+  .card-ultra-smooth,
+  .interactive-ultra-smooth {
+    transition-duration: 0.1s !important;
+  }
+  
+  .card-ultra-smooth:hover {
+    transform: translate3d(0, -1px, 0) scale(1.005) !important;
+  }
+  
+  .btn-ultra-smooth:hover {
+    transform: translate3d(0, -0.5px, 0) !important;
+  }
+}
+
+/* Reduce motion support */
+@media (prefers-reduced-motion: reduce) {
+  .btn-ultra-smooth,
+  .card-ultra-smooth,
+  .interactive-ultra-smooth,
+  .input-ultra-smooth,
+  .modal-ultra-smooth,
+  .backdrop-ultra-smooth,
+  .dropdown-ultra-smooth,
+  .loading-ultra-smooth,
+  .pulse-ultra-smooth,
+  .bounce-ultra-smooth,
+  .slide-in-ultra-smooth,
+  .slide-out-ultra-smooth,
+  .scale-in-ultra-smooth,
+  .scale-out-ultra-smooth,
+  .fade-in-ultra-smooth,
+  .fade-out-ultra-smooth,
+  .notification-ultra-smooth,
+  .list-item-ultra-smooth,
+  .progress-ultra-smooth,
+  .toggle-ultra-smooth,
+  .nav-ultra-smooth {
+    animation: none !important;
+    transition: none !important;
+  }
+}

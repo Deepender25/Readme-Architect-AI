@@ -135,7 +135,7 @@ export default function HistoryList({ onSelectHistory }: HistoryListProps) {
         <span className="text-sm text-muted-foreground">{history.length} items</span>
       </div>
       
-      <div className="grid gap-4 max-h-96 overflow-y-auto">
+      <div className="grid gap-4 max-h-96 overflow-y-auto scroll-container scrollbar-thin scrollbar-green smooth-scroll content-scroll hardware-accelerated">
         <AnimatePresence>
           {history.map((item, index) => (
             <motion.div

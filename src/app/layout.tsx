@@ -22,10 +22,28 @@ export default function RootLayout({
           --font-inter: 'Inter', sans-serif;
         }
         
-        /* Prevent white flash during page transitions */
-        html, body {
+        /* Ultra-smooth page setup */
+        html {
           background-color: #000000 !important;
-          overflow-x: hidden;
+          overflow-x: hidden !important;
+          overflow-y: auto !important;
+          scroll-behavior: smooth !important;
+          height: 100% !important;
+          -webkit-overflow-scrolling: touch !important;
+          overscroll-behavior: none !important;
+        }
+        
+        body {
+          background-color: #000000 !important;
+          overflow-x: hidden !important;
+          overflow-y: auto !important;
+          scroll-behavior: smooth !important;
+          height: 100% !important;
+          min-height: 100vh !important;
+          -webkit-overflow-scrolling: touch !important;
+          overscroll-behavior: none !important;
+          transform: translate3d(0, 0, 0) !important;
+          will-change: scroll-position !important;
         }
         
         
@@ -52,41 +70,57 @@ export default function RootLayout({
               key={pathname}
               initial={{ 
                 opacity: 0,
-                scale: 0.95,
-                filter: 'blur(10px)'
+                y: 8
               }}
               animate={{ 
                 opacity: 1,
-                scale: 1,
-                filter: 'blur(0px)'
+                y: 0
               }}
               exit={{ 
                 opacity: 0,
-                scale: 1.05,
-                filter: 'blur(10px)'
+                y: -5
               }}
               transition={{ 
-                duration: 0.4,
-                ease: [0.22, 1, 0.36, 1],
-                filter: { duration: 0.3 }
+                duration: 0.25,
+                ease: [0.25, 0.46, 0.45, 0.94]
               }}
-              className="min-h-screen relative z-20"
+              className="min-h-screen relative z-50 ultra-smooth-scroll critical-smooth"
+              style={{
+                willChange: 'transform, opacity',
+                transform: 'translate3d(0, 0, 0)',
+                backfaceVisibility: 'hidden',
+                scrollBehavior: 'smooth',
+                WebkitOverflowScrolling: 'touch',
+                overscrollBehavior: 'none'
+              }}
             >
-              {children}
+              <div className="smooth-scroll content-scroll ultra-smooth-scroll critical-smooth" style={{
+                transform: 'translate3d(0, 0, 0)',
+                willChange: 'scroll-position',
+                scrollBehavior: 'smooth',
+                WebkitOverflowScrolling: 'touch',
+                overscrollBehavior: 'none'
+              }}>
+                {children}
+              </div>
             </motion.div>
           </AnimatePresence>
           
-          {/* Page transition overlay */}
+          {/* Enhanced page transition overlay */}
           <motion.div
             key={`overlay-${pathname}`}
-            initial={{ opacity: 1 }}
-            animate={{ opacity: 0 }}
-            exit={{ opacity: 1 }}
+            initial={{ opacity: 0.8, backdropFilter: 'blur(0px)' }}
+            animate={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            exit={{ opacity: 0.6, backdropFilter: 'blur(2px)' }}
             transition={{ 
-              duration: 0.2,
-              ease: "easeInOut"
+              duration: 0.15,
+              ease: "easeOut"
             }}
             className="page-transition-overlay"
+            style={{
+              willChange: 'opacity, backdrop-filter',
+              pointerEvents: 'none'
+            }}
           />
         </AuthProvider>
       </body>

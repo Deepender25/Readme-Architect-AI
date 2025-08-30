@@ -8,6 +8,129 @@
 
 /* Performance optimizations for smooth scrolling and animations */
 @import './performance.css';
+@import './ultra-smooth.css';
+@import './global-smooth.css';
+@import './component-animations.css';
+@import './animation-fixes.css';
+
+/* Ultra-smooth scrolling optimizations */
+* {
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Enhanced hardware acceleration for all elements */
+html {
+  transform: translateZ(0) !important;
+  backface-visibility: hidden !important;
+  perspective: 1000px !important;
+}
+
+body {
+  transform: translate3d(0, 0, 0) !important;
+  -webkit-transform: translate3d(0, 0, 0) !important;
+  will-change: scroll-position !important;
+  overscroll-behavior: none !important;
+}
+
+/* Smooth scrolling for all scrollable containers */
+::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-radius: 10px !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.5), rgba(0, 255, 136, 0.7)) !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(0, 255, 136, 0.2) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.7), rgba(0, 255, 136, 0.9)) !important;
+  transform: scaleX(1.2) !important;
+}
+
+/* Momentum scrolling for touch devices */
+.scroll-container {
+  -webkit-overflow-scrolling: touch !important;
+  scroll-behavior: smooth !important;
+  overscroll-behavior: contain !important;
+  scroll-snap-type: y proximity !important;
+}
+
+/* Enhanced smooth animations */
+.smooth-enter {
+  animation: smoothEnter 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+}
+
+.smooth-exit {
+  animation: smoothExit 0.3s cubic-bezier(0.55, 0, 1, 0.45) forwards !important;
+}
+
+@keyframes smoothEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95) !important;
+    filter: blur(5px) !important;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) !important;
+    filter: blur(0px) !important;
+  }
+}
+
+@keyframes smoothExit {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1) !important;
+    filter: blur(0px) !important;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px) scale(1.02) !important;
+    filter: blur(3px) !important;
+  }
+}
+
+/* Buttery smooth modal and overlay animations */
+.modal-overlay {
+  animation: modalFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+
+.modal-content {
+  animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+}
+
+@keyframes modalFadeIn {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px) !important;
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(10px) !important;
+  }
+}
+
+@keyframes modalSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9) !important;
+    filter: blur(5px) !important;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) !important;
+    filter: blur(0px) !important;
+  }
+}
 
 
 
@@ -140,20 +263,30 @@
   }
 
   .glass-card {
-    background: rgba(12, 12, 12, 0.8);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 1rem;
+    background: rgba(15, 15, 15, 0.65) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.6),
+      0 1px 0 rgba(255, 255, 255, 0.05) inset,
+      0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border-radius: 1rem !important;
+    position: relative !important;
+    z-index: 10 !important;
+    isolation: isolate !important;
   }
 
   .glass-card:hover {
-    background: rgba(15, 15, 15, 0.9);
-    border-color: rgba(0, 255, 136, 0.3);
-    box-shadow: 0 16px 48px rgba(0, 255, 136, 0.15), 0 0 0 1px rgba(0, 255, 136, 0.1);
-    transform: translateY(-4px) scale(1.01);
+    background: rgba(20, 20, 20, 0.8) !important;
+    border-color: rgba(0, 255, 136, 0.4) !important;
+    box-shadow: 
+      0 20px 60px rgba(0, 255, 136, 0.15),
+      0 8px 32px rgba(0, 0, 0, 0.7),
+      0 0 0 1px rgba(0, 255, 136, 0.2) !important;
+    transform: translateY(-2px) !important;
+    z-index: 20 !important;
   }
 
   .glass-navbar {
@@ -165,19 +298,22 @@
   }
 
   .glass-button {
-    background: rgba(0, 255, 136, 0.1);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(0, 255, 136, 0.3);
-    box-shadow: 0 4px 16px rgba(0, 255, 136, 0.1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(15, 15, 15, 0.8) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    z-index: 10 !important;
   }
 
   .glass-button:hover {
-    background: rgba(0, 255, 136, 0.2);
-    border-color: rgba(0, 255, 136, 0.5);
-    box-shadow: 0 6px 24px rgba(0, 255, 136, 0.2);
-    transform: translateY(-1px);
+    background: rgba(20, 20, 20, 0.9) !important;
+    border-color: rgba(0, 255, 136, 0.5) !important;
+    box-shadow: 0 6px 24px rgba(0, 255, 136, 0.2) !important;
+    transform: translateY(-1px) !important;
+    z-index: 20 !important;
   }
 
   .glass-input {
@@ -780,11 +916,13 @@
     background: rgba(20, 20, 20, 0.9);
     border-color: rgba(0, 255, 136, 0.3);
     box-shadow: 0 8px 24px rgba(0, 255, 136, 0.15);
-    transform: translateY(-2px) scale(1.02);
+    transform: translateY(-1px);
+    z-index: 10;
+    position: relative;
   }
   
   .btn-glass:active {
-    transform: translateY(0) scale(0.98);
+    transform: translateY(0);
   }
   
   /* Enhanced Card Animations */
@@ -793,8 +931,10 @@
   }
   
   .card-hover:hover {
-    transform: translateY(-8px) scale(1.02);
+    transform: translateY(-4px);
     box-shadow: 0 20px 60px rgba(0, 255, 136, 0.15), 0 0 0 1px rgba(0, 255, 136, 0.1);
+    z-index: 10;
+    position: relative;
   }
   
   /* Rounded Corner Utilities */

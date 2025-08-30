@@ -103,8 +103,19 @@ function SwitchAccountContent() {
           <motion.div
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative group"
+            transition={{ 
+              duration: 0.5, 
+              delay: 0.2,
+              ease: [0.25, 0.46, 0.45, 0.94],
+              type: "spring",
+              stiffness: 120,
+              damping: 18
+            }}
+            className="relative group hardware-accelerated"
+            style={{
+              willChange: 'transform, opacity',
+              transform: 'translate3d(0, 0, 0)'
+            }}
           >
             {/* Glow effect */}
             <div className="absolute -inset-1 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-3xl blur opacity-75 group-hover:opacity-100 transition-opacity duration-300" />
