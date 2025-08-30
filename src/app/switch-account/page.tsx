@@ -51,57 +51,52 @@ function SwitchAccountContent() {
       
       <div className="relative z-30 flex items-center justify-center min-h-screen p-4">
         <div className="w-full max-w-lg">
-          {/* Enhanced Header */}
+          {/* Professional Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            className="text-center mb-16"
           >
-            {/* Animated Logo */}
             <motion.div
-              className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6"
-              animate={{ 
-                boxShadow: [
-                  '0 0 20px rgba(0, 255, 136, 0.4)',
-                  '0 0 40px rgba(0, 255, 136, 0.6)',
-                  '0 0 20px rgba(0, 255, 136, 0.4)'
-                ]
-              }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="space-y-6"
             >
-              <BrainCircuit className="w-10 h-10 text-white" />
+              <div className="space-y-4">
+                <motion.div
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-green-400/10 border border-green-400/30 rounded-full text-green-400 text-sm font-medium mb-4"
+                  animate={{ 
+                    boxShadow: [
+                      '0 0 10px rgba(0, 255, 136, 0.3)',
+                      '0 0 20px rgba(0, 255, 136, 0.5)',
+                      '0 0 10px rgba(0, 255, 136, 0.3)'
+                    ]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <UserX className="w-4 h-4" />
+                  Account Switching
+                </motion.div>
+                
+                <h1 className="text-5xl font-bold text-white leading-tight"
+                  style={{
+                    background: 'linear-gradient(135deg, #ffffff 0%, #00ff88 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    filter: 'drop-shadow(0 0 10px rgba(0, 255, 136, 0.3))'
+                  }}
+                >
+                  Switch Account
+                </h1>
+              </div>
+              
+              <p className="text-gray-300 text-xl font-light max-w-md mx-auto leading-relaxed">
+                Quick & secure 2-step process
+              </p>
             </motion.div>
-            
-            <motion.div
-              className="inline-flex items-center gap-2 px-4 py-2 bg-green-400/10 border border-green-400/30 rounded-full text-green-400 text-sm font-medium mb-6"
-              animate={{ 
-                boxShadow: [
-                  '0 0 10px rgba(0, 255, 136, 0.3)',
-                  '0 0 20px rgba(0, 255, 136, 0.5)',
-                  '0 0 10px rgba(0, 255, 136, 0.3)'
-                ]
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              <UserX className="w-4 h-4" />
-              Account Switching
-            </motion.div>
-            
-            <h1 className="text-4xl font-bold text-white mb-3"
-              style={{
-                background: 'linear-gradient(135deg, #ffffff 0%, #00ff88 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                filter: 'drop-shadow(0 0 10px rgba(0, 255, 136, 0.3))'
-              }}
-            >
-              Switch Account
-            </h1>
-            <p className="text-gray-300 text-lg">
-              Quick & secure 2-step process
-            </p>
           </motion.div>
 
           {/* Enhanced 2-Step Process */}
