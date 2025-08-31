@@ -463,7 +463,7 @@ export default function ModernReadmeOutput({
 
   return (
 
-    <div className={`${historyView ? 'h-full' : 'h-screen'} bg-black text-foreground relative overflow-hidden performance-optimized smooth-scroll no-lag mobile-optimized flex flex-col`}>
+    <div className={`${historyView ? 'h-full min-h-[80vh]' : 'h-screen'} bg-black text-foreground relative ${historyView ? '' : 'overflow-hidden'} performance-optimized smooth-scroll no-lag mobile-optimized flex flex-col`}>
 
 
       {/* Navbar removed to prevent duplication when used as modal/overlay */}
@@ -1092,7 +1092,7 @@ export default function ModernReadmeOutput({
 
       {/* Main Content Area */}
 
-      <div className={`relative z-10 ${historyView ? 'p-2 sm:p-4' : 'p-6'} ${historyView ? 'flex-shrink-0' : 'flex-1'} overflow-hidden`}>
+      <div className={`relative z-10 ${historyView ? 'p-2 sm:p-4' : 'p-6'} ${historyView ? 'flex-1 min-h-0' : 'flex-1'} ${historyView ? '' : 'overflow-hidden'}`}>
 
         {/* Content Section */}
 
@@ -1130,7 +1130,7 @@ export default function ModernReadmeOutput({
 
                   ref={contentRef}
 
-                  className={`relative ${historyView ? 'overflow-visible' : 'h-[calc(100vh-200px)] sm:h-[calc(100vh-220px)] overflow-y-auto'} scrollbar-thin scrollbar-green smooth-scroll content-scroll hardware-accelerated scroll-container mobile-scroll-container`}
+                  className={`relative ${historyView ? 'max-h-[calc(100vh-200px)] overflow-y-auto' : 'h-[calc(100vh-200px)] sm:h-[calc(100vh-220px)] overflow-y-auto'} scrollbar-thin scrollbar-green smooth-scroll content-scroll hardware-accelerated scroll-container mobile-scroll-container`}
 
                   style={{ scrollBehavior: 'smooth' }}
 
