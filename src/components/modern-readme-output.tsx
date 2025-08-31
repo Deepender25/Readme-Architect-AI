@@ -408,19 +408,21 @@ export default function ModernReadmeOutput({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="flex-1 min-h-0 overflow-y-auto p-4 scrollbar-thin scrollbar-green"
+          className="flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-green"
         >
-          <div className="glass rounded-2xl p-6">
-            {historyView || viewMode === 'preview' ? (
-              <div 
-                className="prose prose-invert prose-green max-w-none modern-readme-preview"
-                dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-              />
-            ) : (
-              <pre className="font-mono text-xs sm:text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
-                {content}
-              </pre>
-            )}
+          <div className="p-4 pb-8">
+            <div className="glass rounded-2xl p-6 mb-4">
+              {historyView || viewMode === 'preview' ? (
+                <div 
+                  className="prose prose-invert prose-green max-w-none modern-readme-preview"
+                  dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+                />
+              ) : (
+                <pre className="font-mono text-xs sm:text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
+                  {content}
+                </pre>
+              )}
+            </div>
           </div>
         </motion.main>
 
