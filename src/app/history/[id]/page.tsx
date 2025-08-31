@@ -20,7 +20,7 @@ import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import ModernReadmeOutput from '@/components/modern-readme-output'
 import withAuth from '@/components/withAuth'
-import LayoutWrapper from '@/components/layout-wrapper'
+import ModernNavbar from '@/components/layout/modern-navbar'
 
 interface HistoryItem {
   id: string;
@@ -97,51 +97,56 @@ function ReadmeViewContent() {
 
   if (isLoading) {
     return (
-      <LayoutWrapper>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-green-400" />
-            <div className="text-lg font-medium text-white mb-2">Loading README...</div>
-            <div className="text-sm text-gray-400">Fetching your generated documentation</div>
-          </div>
+      <div className="h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-green-400" />
+          <div className="text-lg font-medium text-white mb-2">Loading README...</div>
+          <div className="text-sm text-gray-400">Fetching your generated documentation</div>
         </div>
-      </LayoutWrapper>
+      </div>
     )
   }
 
   if (error || !historyItem) {
     return (
-      <LayoutWrapper>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center max-w-md">
-            <AlertCircle className="w-16 h-16 mx-auto mb-6 text-red-400" />
-            <div className="text-xl font-bold text-white mb-4">README Not Found</div>
-            <div className="text-gray-400 mb-6">{error || 'The requested README could not be found.'}</div>
-            <div className="flex gap-3 justify-center">
-              <Button onClick={goBack} variant="outline" className="glass-button border-green-400/20 text-green-400">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to History
-              </Button>
-              <Button onClick={goHome} variant="outline" className="glass-button border-blue-400/20 text-blue-400">
-                <Home className="w-4 h-4 mr-2" />
-                Home
-              </Button>
-            </div>
+      <div className="h-screen bg-black flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <AlertCircle className="w-16 h-16 mx-auto mb-6 text-red-400" />
+          <div className="text-xl font-bold text-white mb-4">README Not Found</div>
+          <div className="text-gray-400 mb-6">{error || 'The requested README could not be found.'}</div>
+          <div className="flex gap-3 justify-center">
+            <Button onClick={goBack} variant="outline" className="glass-button border-green-400/20 text-green-400">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to History
+            </Button>
+            <Button onClick={goHome} variant="outline" className="glass-button border-blue-400/20 text-blue-400">
+              <Home className="w-4 h-4 mr-2" />
+              Home
+            </Button>
           </div>
         </div>
-      </LayoutWrapper>
+      </div>
     )
   }
 
   return (
-    <LayoutWrapper>
-      <div className="min-h-screen bg-black flex flex-col">
+    <div className="h-screen bg-black flex flex-col overflow-hidden relative"
+         style={{
+           transform: 'translate3d(0, 0, 0)',
+           willChange: 'auto',
+           backfaceVisibility: 'hidden'
+         }}>
+        {/* Top Navbar */}
+        <div className="fixed top-0 left-0 right-0 z-[99999]">
+          <ModernNavbar />
+        </div>
+        
         {/* Enhanced Navigation Header */}
         <motion.header
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="sticky top-0 z-50 glass-navbar border-b border-green-400/20"
+          className="sticky top-16 z-50 glass-navbar border-b border-green-400/20 mt-16"
         >
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
@@ -233,7 +238,7 @@ function ReadmeViewContent() {
           transition={{ delay: 0.4, duration: 0.6 }}
           className="flex-1 min-h-0 overflow-hidden"
         >
-          <div className="h-full max-h-[calc(100vh-200px)] overflow-y-auto p-4 scrollbar-thin scrollbar-green">
+          <div className="h-full overflow-y-auto p-4 scrollbar-thin scrollbar-green">
             <div className="glass rounded-2xl p-6">
               <div 
                 className="prose prose-invert prose-green max-w-none modern-readme-preview"
@@ -245,7 +250,6 @@ function ReadmeViewContent() {
           </div>
         </motion.main>
       </div>
-    </LayoutWrapper>
   )
 }
 
