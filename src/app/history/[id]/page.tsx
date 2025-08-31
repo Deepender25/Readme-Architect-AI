@@ -14,6 +14,8 @@ import {
   BarChart3,
   Home
 } from 'lucide-react'
+import { marked } from 'marked'
+import DOMPurify from 'isomorphic-dompurify'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import ModernReadmeOutput from '@/components/modern-readme-output'
@@ -133,7 +135,7 @@ function ReadmeViewContent() {
 
   return (
     <LayoutWrapper>
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen bg-black flex flex-col">
         {/* Enhanced Navigation Header */}
         <motion.header
           initial={{ y: -50, opacity: 0 }}
@@ -229,15 +231,18 @@ function ReadmeViewContent() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
+          className="flex-1 min-h-0 overflow-hidden"
         >
-          <ModernReadmeOutput 
-            content={historyItem.readme_content}
-            repositoryUrl={historyItem.repository_url}
-            projectName={historyItem.project_name || historyItem.repository_name}
-            generationParams={historyItem.generation_params}
-            disableAutoSave={true}
-            historyView={false} // Set to false for standalone page
-          />
+          <div className="h-full max-h-[calc(100vh-200px)] overflow-y-auto p-4 scrollbar-thin scrollbar-green">
+            <div className="glass rounded-2xl p-6">
+              <div 
+                className="prose prose-invert prose-green max-w-none modern-readme-preview"
+                dangerouslySetInnerHTML={{ 
+                  __html: DOMPurify.sanitize(marked(historyItem.readme_content) as string) 
+                }}
+              />
+            </div>
+          </div>
         </motion.main>
       </div>
     </LayoutWrapper>
