@@ -1,13 +1,84 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 const EnhancedGridBackground = memo(function EnhancedGridBackground() {
+  const [documentHeight, setDocumentHeight] = useState('100vh');
+
+  useEffect(() => {
+    let updateTimeout: NodeJS.Timeout;
+    
+    const updateHeight = () => {
+      // Clear any pending update
+      clearTimeout(updateTimeout);
+      
+      // Throttle updates to prevent excessive recalculations
+      updateTimeout = setTimeout(() => {
+        // Get the full document height including scrollable content
+        const height = Math.max(
+          document.documentElement.scrollHeight,
+          document.documentElement.offsetHeight,
+          document.documentElement.clientHeight,
+          document.body.scrollHeight,
+          document.body.offsetHeight,
+          document.body.clientHeight
+        );
+        
+        // Only update if height has significantly changed (avoid micro-updates)
+        const newHeight = `${height}px`;
+        setDocumentHeight(prev => {
+          const prevNum = parseInt(prev.replace('px', ''));
+          const newNum = height;
+          // Only update if difference is more than 50px to prevent excessive re-renders
+          return Math.abs(newNum - prevNum) > 50 ? newHeight : prev;
+        });
+      }, 150); // Throttle to 150ms
+    };
+
+    // Initial height calculation
+    updateHeight();
+
+    // Throttled resize handler
+    let resizeTimeout: NodeJS.Timeout;
+    const throttledResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(updateHeight, 100);
+    };
+
+    // Update height on window resize with throttling
+    window.addEventListener('resize', throttledResize);
+    
+    // Optimized mutation observer with debouncing
+    let mutationTimeout: NodeJS.Timeout;
+    const mutationObserver = new MutationObserver(() => {
+      clearTimeout(mutationTimeout);
+      mutationTimeout = setTimeout(updateHeight, 200); // Longer delay for DOM changes
+    });
+    
+    // Only observe specific changes that might affect height
+    if (document.body) {
+      mutationObserver.observe(document.body, {
+        childList: true,
+        subtree: false, // Don't observe deep subtree changes for performance
+        attributes: false // Don't observe attribute changes
+      });
+    }
+
+    return () => {
+      clearTimeout(updateTimeout);
+      clearTimeout(resizeTimeout);
+      clearTimeout(mutationTimeout);
+      window.removeEventListener('resize', throttledResize);
+      mutationObserver.disconnect();
+    };
+  }, []);
+
   return (
     <div 
-      className="fixed inset-0 w-full h-full pointer-events-none"
+      className="absolute top-0 left-0 w-full pointer-events-none"
       style={{ 
         zIndex: 1,
+        height: documentHeight,
         minHeight: '100vh',
         minWidth: '100vw',
         overflow: 'hidden',

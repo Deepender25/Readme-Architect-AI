@@ -1554,13 +1554,35 @@ al Mobile Navigation Fixes */
   }
 }
 
-/* Enhanced grid background visibility */
+/* Enhanced grid background visibility and scrollable coverage */
 .enhanced-grid-background {
   opacity: 1 !important;
 }
 
 .enhanced-grid-background > div {
   opacity: 1 !important;
+}
+
+/* Ensure background covers full scrollable document height */
+body {
+  position: relative !important;
+  min-height: 100vh !important;
+}
+
+html {
+  position: relative !important;
+  min-height: 100vh !important;
+}
+
+/* Fix for scrollable background coverage */
+.scrollable-background {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  min-height: 100% !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
 }
 
 /* Mobile navbar specific fixes */
