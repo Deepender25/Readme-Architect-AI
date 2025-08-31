@@ -289,7 +289,7 @@ function RepositoriesContent() {
                       placeholder="Search repositories..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-400/50"
+                      className="glass-input w-full pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none"
                     />
                   </div>
 
@@ -342,7 +342,7 @@ function RepositoriesContent() {
                     onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                     variant="outline"
                     size="sm"
-                    className="border-[rgba(255,255,255,0.1)] text-gray-300 hover:border-green-400/50"
+                    className="glass-button border-none text-gray-300 hover:text-green-400"
                   >
                     {sortOrder === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
                   </Button>
@@ -352,7 +352,7 @@ function RepositoriesContent() {
                     variant="outline"
                     size="sm"
                     disabled={isRefreshing}
-                    className="border-green-400/50 text-green-400 hover:bg-green-400/10"
+                    className="glass-button border-none text-green-400 hover:bg-green-400/20"
                   >
                     <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                   </Button>
@@ -367,154 +367,151 @@ function RepositoriesContent() {
               </div>
       </ContentSection>
 
-      <ContentSection background="gradient">
-                {isLoading ? (
-                  <div className="flex items-center justify-center py-12">
-                    <div className="flex items-center gap-3 text-green-400">
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Loading your repositories...</span>
-                    </div>
-                  </div>
-                ) : error ? (
-                  <div className="text-center py-12">
-                    <AlertCircle className="w-12 h-12 mx-auto mb-4 text-red-400" />
-                    <div className="text-red-400 mb-4">{error}</div>
-                    <Button 
-                      onClick={() => fetchRepositories()} 
-                      variant="outline" 
-                      className="border-green-500/50 text-green-400"
-                    >
-                      Try Again
-                    </Button>
-                  </div>
-                ) : filteredRepos.length === 0 ? (
-                  <div className="text-center py-12 text-gray-400">
-                    <Github className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p className="text-lg mb-2">No repositories found</p>
-                    <p className="text-sm">Try adjusting your search or filter criteria</p>
-                  </div>
-                ) : (
-                  <div className="grid gap-4">
-                    <AnimatePresence>
-                      {filteredRepos.map((repo, index) => (
-                        <motion.div
-                          key={repo.full_name}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -20 }}
-                          transition={{ delay: Math.min(index * 0.02, 0.2), duration: 0.3 }}
-                          className="group relative p-6 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] rounded-xl hover:border-green-400/30 transition-all duration-200"
-                        >
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-3 mb-3">
-                                <h4 className="text-xl font-semibold text-white truncate">{repo.name}</h4>
-                                {repo.private ? (
-                                  <span className="flex items-center gap-1 px-2 py-1 text-xs bg-orange-500/20 text-orange-400 rounded-full">
-                                    <Lock className="w-3 h-3" />
-                                    Private
-                                  </span>
-                                ) : (
-                                  <span className="flex items-center gap-1 px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded-full">
-                                    <Unlock className="w-3 h-3" />
-                                    Public
-                                  </span>
-                                )}
-                              </div>
-                              
-                              {repo.description && (
-                                <p className="text-gray-300 mb-4 line-clamp-2 leading-relaxed">
-                                  {repo.description}
-                                </p>
-                              )}
-                              
-                              <div className="flex items-center gap-6 text-sm text-gray-400">
-                                {repo.language && (
-                                  <div className="flex items-center gap-2">
-                                    <div 
-                                      className="w-3 h-3 rounded-full"
-                                      style={{ backgroundColor: getLanguageColor(repo.language) }}
-                                    />
-                                    <span>{repo.language}</span>
-                                  </div>
-                                )}
-                                
-                                <div className="flex items-center gap-1">
-                                  <Star className="w-4 h-4" />
-                                  <span>{repo.stargazers_count}</span>
-                                </div>
-                                
-                                {repo.forks_count !== undefined && (
-                                  <div className="flex items-center gap-1">
-                                    <GitBranch className="w-4 h-4" />
-                                    <span>{repo.forks_count}</span>
-                                  </div>
-                                )}
-                                
-                                <div className="flex items-center gap-1">
-                                  <Clock className="w-4 h-4" />
-                                  <span>Updated {formatDate(repo.updated_at)}</span>
-                                </div>
-                              </div>
+      <ContentSection background="gradient" className="min-h-0">
+        <div className="max-h-[calc(100vh-400px)] overflow-y-auto scrollbar-thin scrollbar-green" style={{
+          transform: 'translate3d(0, 0, 0)',
+          willChange: 'scroll-position'
+        }}>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="flex items-center gap-3 text-green-400">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Loading your repositories...</span>
+              </div>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <AlertCircle className="w-12 h-12 mx-auto mb-4 text-red-400" />
+              <div className="text-red-400 mb-4">{error}</div>
+              <Button 
+                onClick={() => fetchRepositories()} 
+                variant="outline" 
+                className="glass-button border-none text-green-400"
+              >
+                Try Again
+              </Button>
+            </div>
+          ) : filteredRepos.length === 0 ? (
+            <div className="text-center py-12 text-gray-400">
+              <Github className="w-12 h-12 mx-auto mb-4 opacity-50" />
+              <p className="text-lg mb-2">No repositories found</p>
+              <p className="text-sm">
+                {repositories.length === 0 
+                  ? "Connect to GitHub to see your repositories!" 
+                  : "Try adjusting your search or filter criteria"
+                }
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-4 pb-6">
+              <AnimatePresence>
+                {filteredRepos.map((repo, index) => (
+                  <motion.div
+                    key={repo.full_name}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ delay: Math.min(index * 0.02, 0.2), duration: 0.3 }}
+                    className="glass-card p-8 group"
+                    style={{
+                      transform: 'translate3d(0, 0, 0)',
+                      willChange: 'transform',
+                      isolation: 'isolate'
+                    }}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-3">
+                          <Github className="w-5 h-5 text-green-400" />
+                          <h4 className="text-xl font-semibold text-white truncate">{repo.name}</h4>
+                          {repo.private ? (
+                            <span className="flex items-center gap-1 px-2 py-1 text-xs bg-orange-500/20 text-orange-400 rounded-full">
+                              <Lock className="w-3 h-3" />
+                              Private
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-1 px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded-full">
+                              <Unlock className="w-3 h-3" />
+                              Public
+                            </span>
+                          )}
+                        </div>
+                        
+                        {repo.description && (
+                          <p className="text-gray-300 mb-4 line-clamp-2 leading-relaxed">
+                            {repo.description}
+                          </p>
+                        )}
+                        
+                        <div className="flex items-center gap-6 text-sm text-gray-400">
+                          {repo.language && (
+                            <div className="flex items-center gap-2">
+                              <div 
+                                className="w-3 h-3 rounded-full"
+                                style={{ backgroundColor: getLanguageColor(repo.language) }}
+                              />
+                              <span>{repo.language}</span>
                             </div>
-                            
-                            <div className="flex items-center gap-2 ml-4 md:ml-6 flex-shrink-0">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => {
-                                  showToast('Opening repository on GitHub...', 'info');
-                                  if (typeof window !== 'undefined') {
-                                    window.open(repo.html_url, '_blank');
-                                  }
-                                }}
-                                className="glass-button border-none text-blue-400 hover:bg-blue-400/20 hidden sm:flex"
-                              >
-                                <ExternalLink className="w-4 h-4 sm:mr-2" />
-                                <span className="hidden sm:inline">View on GitHub</span>
-                              </Button>
-                              
-                              {/* Mobile GitHub link */}
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => {
-                                  showToast('Opening repository on GitHub...', 'info');
-                                  if (typeof window !== 'undefined') {
-                                    window.open(repo.html_url, '_blank');
-                                  }
-                                }}
-                                className="glass-button border-none text-blue-400 hover:bg-blue-400/20 sm:hidden p-2"
-                              >
-                                <ExternalLink className="w-4 h-4" />
-                              </Button>
-                              
-                              <Button
-                                size="sm"
-                                onClick={() => handleGenerateReadme(repo.html_url, repo.name)}
-                                disabled={selectedRepo === repo.name}
-                                className="bg-green-600 hover:bg-green-700 text-white min-w-[100px] sm:min-w-[140px]"
-                              >
-                                {selectedRepo === repo.name ? (
-                                  <>
-                                    <Loader2 className="w-4 h-4 sm:mr-2 animate-spin" />
-                                    <span className="hidden sm:inline">Redirecting...</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <FileText className="w-4 h-4 sm:mr-2" />
-                                    <span className="hidden sm:inline">Generate README</span>
-                                    <span className="sm:hidden">Generate</span>
-                                  </>
-                                )}
-                              </Button>
-                            </div>
+                          )}
+                          
+                          <div className="flex items-center gap-1">
+                            <Star className="w-4 h-4" />
+                            <span>{repo.stargazers_count}</span>
                           </div>
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
-                  </div>
-                )}
+                          
+                          {repo.forks_count !== undefined && (
+                            <div className="flex items-center gap-1">
+                              <GitBranch className="w-4 h-4" />
+                              <span>{repo.forks_count}</span>
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            <span>Updated {formatDate(repo.updated_at)}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-1 sm:gap-2 ml-4 md:ml-6 flex-shrink-0">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            showToast('Opening repository on GitHub...', 'info');
+                            if (typeof window !== 'undefined') {
+                              window.open(repo.html_url, '_blank');
+                            }
+                          }}
+                          className="glass-button border-none text-blue-400 hover:bg-blue-400/20 p-2 sm:px-3 sm:py-2"
+                        >
+                          <ExternalLink className="w-4 h-4 sm:mr-2" />
+                          <span className="hidden sm:inline">View on GitHub</span>
+                        </Button>
+                        
+                        <Button
+                          size="sm"
+                          onClick={() => handleGenerateReadme(repo.html_url, repo.name)}
+                          disabled={selectedRepo === repo.name}
+                          className="glass-button border-none text-green-400 hover:bg-green-400/20 p-2 sm:px-3 sm:py-2"
+                        >
+                          {selectedRepo === repo.name ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <>
+                              <FileText className="w-4 h-4 sm:mr-2" />
+                              <span className="hidden sm:inline">Generate README</span>
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          )}
+        </div>
       </ContentSection>
 
       {/* Toast Notification */}
