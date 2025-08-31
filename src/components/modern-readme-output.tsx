@@ -1092,115 +1092,57 @@ export default function ModernReadmeOutput({
 
       {/* Main Content Area */}
 
-      <div className={`relative z-10 ${historyView ? 'p-2 sm:p-4' : 'p-6'} ${historyView ? 'flex-1 min-h-0' : 'flex-1'} ${historyView ? '' : 'overflow-hidden'}`}>
+      <motion.main
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.6 }}
+        className="flex-1 min-h-0 overflow-hidden"
+      >
 
-        {/* Content Section */}
+        <div 
+          ref={contentRef}
+          className="h-full overflow-y-auto p-4 scrollbar-thin scrollbar-green"
+          onScroll={handleScroll}
+        >
+          <div className="glass rounded-2xl p-6">
 
-        <main className="flex justify-center">
 
-          <div className="container mx-auto max-w-6xl px-2 sm:px-0">
 
-            <motion.div
-
-              className="relative"
-
-              initial={{ opacity: 0, y: 20 }}
-
-              animate={{ opacity: 1, y: 0 }}
-
-              transition={{ duration: 0.6, delay: 0.4 }}
-
-            >
-
-              {/* Content Container with Enhanced Glass Effect */}
-
-              <div className="relative glass rounded-2xl sm:rounded-3xl overflow-hidden shadow-glass-lg shadow-green-400/20 no-lag mobile-glass-card">
-
-                {/* Multi-layered Glass Effect */}
-
-                <div className="absolute -inset-1 bg-gradient-to-r from-green-400/30 to-green-600/30 rounded-3xl blur-xl opacity-40" />
-
-                <div className="absolute inset-0 bg-gradient-to-br from-[rgba(255,255,255,0.08)] via-transparent to-[rgba(0,255,100,0.05)] rounded-3xl" />
-
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,255,100,0.1),transparent_50%)]" />
-
-                
-
-                <div 
-
-                  ref={contentRef}
-
-                  className={`relative ${historyView ? 'max-h-[calc(100vh-200px)] overflow-y-auto' : 'h-[calc(100vh-200px)] sm:h-[calc(100vh-220px)] overflow-y-auto'} scrollbar-thin scrollbar-green smooth-scroll content-scroll hardware-accelerated scroll-container mobile-scroll-container`}
-
-                  style={{ scrollBehavior: 'smooth' }}
-
+            <AnimatePresence mode="wait">
+              {viewMode === 'preview' ? (
+                <motion.div
+                  key="preview"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
                 >
 
-                  <AnimatePresence mode="wait">
+                  <div 
+                    ref={previewRef}
+                    className="prose prose-invert prose-green max-w-none modern-readme-preview"
+                    dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="raw"
+                  initial={{ opacity: 0, x: -20 }}
 
-                    {viewMode === 'preview' ? (
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <pre className="font-mono text-xs sm:text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
+                    {content}
+                  </pre>
+                </motion.div>
+              )}
 
-                      <motion.div
-
-                        key="preview"
-
-                        initial={{ opacity: 0, x: 20 }}
-
-                        animate={{ opacity: 1, x: 0 }}
-
-                        exit={{ opacity: 0, x: -20 }}
-
-                        transition={{ duration: 0.3 }}
-
-                        className="p-4 sm:p-8"
-
-                      >
-
-                        <div 
-
-                          ref={previewRef}
-
-                          className="prose prose-invert prose-green max-w-none modern-readme-preview content-layer"
-
-                          dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-
-                        />
-
-                      </motion.div>
-
-                    ) : (
-
-                      <motion.div
-
-                        key="raw"
-
-                        initial={{ opacity: 0, x: -20 }}
-
-                        animate={{ opacity: 1, x: 0 }}
-
-                        exit={{ opacity: 0, x: 20 }}
-
-                        transition={{ duration: 0.3 }}
-
-                        className="p-4 sm:p-8"
-
-                      >
-
-                        <pre className="font-mono text-xs sm:text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
-
-                          {content}
-
-                        </pre>
-
-                      </motion.div>
-
-                    )}
-
-                  </AnimatePresence>
-
-                </div>
-
-              </div>
+            </AnimatePresence>
+          </div>
+        </div>
+      </motion.main>
 
               {/* GitHub Save Success Message */}
 
@@ -1452,13 +1394,7 @@ export default function ModernReadmeOutput({
 
               )}
 
-            </motion.div>
 
-          </div>
-
-        </main>
-
-      </div>
 
       {/* Popup Notifications */}
 
