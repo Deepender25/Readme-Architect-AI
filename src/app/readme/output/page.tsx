@@ -6,7 +6,8 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, Home, AlertCircle, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import ModernReadmeOutput from '@/components/modern-readme-output'
-import LayoutWrapper from '@/components/layout-wrapper'
+import ModernNavbar from '@/components/layout/modern-navbar'
+import ModernFooter from '@/components/layout/modern-footer'
 
 interface ReadmeData {
   content: string;
@@ -62,111 +63,72 @@ function ReadmeOutputContent() {
 
   if (isLoading) {
     return (
-      <LayoutWrapper showBreadcrumbs={false} maxWidth="full" className="px-0">
-        <div className="min-h-screen flex items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center"
-          >
-            <div className="relative">
-              <div className="absolute -inset-2 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-full blur-lg" />
-              <div className="relative w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Loader2 className="w-8 h-8 text-black animate-spin" />
-              </div>
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
+        >
+          <div className="relative">
+            <div className="absolute -inset-2 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-full blur-lg" />
+            <div className="relative w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Loader2 className="w-8 h-8 text-black animate-spin" />
             </div>
-            <h2 className="text-xl font-semibold text-white mb-2">Loading README</h2>
-            <p className="text-gray-400">Preparing your generated documentation...</p>
-          </motion.div>
-        </div>
-      </LayoutWrapper>
+          </div>
+          <h2 className="text-xl font-semibold text-white mb-2">Loading README</h2>
+          <p className="text-gray-400">Preparing your generated documentation...</p>
+        </motion.div>
+      </div>
     )
   }
 
   if (error || !readmeData) {
     return (
-      <LayoutWrapper showBreadcrumbs={false} maxWidth="full" className="px-0">
-        <div className="min-h-screen flex items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center max-w-md mx-auto px-6"
-          >
-            <div className="relative">
-              <div className="absolute -inset-2 bg-gradient-to-r from-red-400/20 to-red-600/20 rounded-full blur-lg" />
-              <div className="relative w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <AlertCircle className="w-8 h-8 text-white" />
-              </div>
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center max-w-md mx-auto px-6"
+        >
+          <div className="relative">
+            <div className="absolute -inset-2 bg-gradient-to-r from-red-400/20 to-red-600/20 rounded-full blur-lg" />
+            <div className="relative w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <AlertCircle className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-xl font-semibold text-white mb-2">Oops! Something went wrong</h2>
-            <p className="text-gray-400 mb-6">{error || 'README data not found'}</p>
-            <div className="flex gap-3 justify-center">
-              <Button
-                onClick={handleGoHome}
-                className="bg-green-500 text-black hover:bg-green-400 font-medium"
-              >
-                <Home className="w-4 h-4 mr-2" />
-                Generate New README
-              </Button>
-              <Button
-                onClick={handleGoBack}
-                variant="outline"
-                className="border-green-400/20 text-green-400 hover:bg-green-400/10"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Go Back
-              </Button>
-            </div>
-          </motion.div>
-        </div>
-      </LayoutWrapper>
+          </div>
+          <h2 className="text-xl font-semibold text-white mb-2">Oops! Something went wrong</h2>
+          <p className="text-gray-400 mb-6">{error || 'README data not found'}</p>
+          <div className="flex gap-3 justify-center">
+            <Button
+              onClick={handleGoHome}
+              className="bg-green-500 text-black hover:bg-green-400 font-medium"
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Generate New README
+            </Button>
+            <Button
+              onClick={handleGoBack}
+              variant="outline"
+              className="border-green-400/20 text-green-400 hover:bg-green-400/10"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Go Back
+            </Button>
+          </div>
+        </motion.div>
+      </div>
     )
   }
 
   return (
-    <LayoutWrapper showBreadcrumbs={false} maxWidth="full" className="px-0">
-      {/* Navigation Bar */}
-      <motion.div
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="sticky top-0 z-50 bg-black/80 backdrop-blur-lg border-b border-green-400/20"
-      >
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                onClick={handleGoBack}
-                variant="outline"
-                size="sm"
-                className="border-green-400/20 text-green-400 hover:bg-green-400/10"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
-              <div className="text-sm text-gray-400">
-                <span className="text-green-400 font-medium">
-                  {readmeData.projectName || 'Generated README'}
-                </span>
-                <span className="mx-2">•</span>
-                <span>AI-Generated Documentation</span>
-              </div>
-            </div>
-            
-            <Button
-              onClick={handleGoHome}
-              variant="outline"
-              size="sm"
-              className="border-gray-400/20 text-gray-400 hover:bg-gray-400/10"
-            >
-              <Home className="w-4 h-4 mr-2" />
-              Home
-            </Button>
-          </div>
-        </div>
-      </motion.div>
+    <div className="min-h-screen bg-black">
+      {/* Header */}
+      <div className="fixed top-0 left-0 right-0 z-[99999]">
+        <ModernNavbar />
+      </div>
 
-      {/* README Output */}
-      <div className="relative">
+      {/* Main Content */}
+      <div className="pt-16">
         <ModernReadmeOutput
           content={readmeData.content}
           repositoryUrl={readmeData.repositoryUrl}
@@ -176,7 +138,10 @@ function ReadmeOutputContent() {
           onClose={() => handleGoBack()}
         />
       </div>
-    </LayoutWrapper>
+
+      {/* Footer */}
+      <ModernFooter />
+    </div>
   )
 }
 

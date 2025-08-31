@@ -21,6 +21,7 @@ import { useAuth } from '@/lib/auth'
 import ModernReadmeOutput from '@/components/modern-readme-output'
 import withAuth from '@/components/withAuth'
 import ModernNavbar from '@/components/layout/modern-navbar'
+import ModernFooter from '@/components/layout/modern-footer'
 
 interface HistoryItem {
   id: string;
@@ -130,7 +131,7 @@ function ReadmeViewContent() {
   }
 
   return (
-    <div className="h-screen bg-black flex flex-col overflow-hidden relative"
+    <div className="min-h-screen bg-black relative"
          style={{
            transform: 'translate3d(0, 0, 0)',
            willChange: 'auto',
@@ -146,7 +147,7 @@ function ReadmeViewContent() {
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="sticky top-16 z-50 glass-navbar border-b border-green-400/20 mt-16"
+          className="fixed top-16 left-0 right-0 z-40 glass-navbar border-b border-green-400/20 border-t-0"
         >
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
@@ -231,24 +232,29 @@ function ReadmeViewContent() {
           </div>
         </motion.header>
 
-        {/* README Content */}
+        {/* README Content - Uses main page scroll for continuous scrolling */}
         <motion.main
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="flex-1 min-h-0 overflow-hidden"
+          className="pt-36 pb-8"
         >
-          <div className="h-full overflow-y-auto p-4 scrollbar-thin scrollbar-green">
-            <div className="glass rounded-2xl p-6">
-              <div 
-                className="prose prose-invert prose-green max-w-none modern-readme-preview"
-                dangerouslySetInnerHTML={{ 
-                  __html: DOMPurify.sanitize(marked(historyItem.readme_content) as string) 
-                }}
-              />
+          <div className="container mx-auto px-4 py-6">
+            <div className="max-w-6xl mx-auto">
+              <div className="glass rounded-2xl p-8 lg:p-12">
+                <div 
+                  className="prose prose-invert prose-green max-w-none modern-readme-preview"
+                  dangerouslySetInnerHTML={{ 
+                    __html: DOMPurify.sanitize(marked(historyItem.readme_content) as string) 
+                  }}
+                />
+              </div>
             </div>
           </div>
         </motion.main>
+
+        {/* Footer */}
+        <ModernFooter />
       </div>
   )
 }
