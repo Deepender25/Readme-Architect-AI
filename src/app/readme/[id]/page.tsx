@@ -223,6 +223,8 @@ export default function ReadmePage() {
           generationParams={readmeData.generation_params}
           historyView={false}
           disableAutoSave={true} // Prevent duplicate saves
+          createdAt={readmeData.created_at}
+          updatedAt={readmeData.updated_at}
         />
       </div>
     </LayoutWrapper>

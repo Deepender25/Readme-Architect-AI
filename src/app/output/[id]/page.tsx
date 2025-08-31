@@ -224,6 +224,9 @@ export default function OutputPage() {
           projectName={historyItem.project_name || historyItem.repository_name}
           generationParams={historyItem.generation_params}
           disableAutoSave={true}
+          historyView={true}
+          createdAt={historyItem.created_at}
+          updatedAt={historyItem.updated_at}
         />
       </div>
     </LayoutWrapper>

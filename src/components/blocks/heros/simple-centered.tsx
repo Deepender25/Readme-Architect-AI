@@ -174,6 +174,7 @@ export default function SimpleCentered() {
                 projectName={projectName}
                 generationParams={generationParams}
                 onClose={handleEditorClose}
+                createdAt={new Date().toISOString()}
               />
             </motion.div>
           ) : (

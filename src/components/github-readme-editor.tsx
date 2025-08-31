@@ -329,6 +329,13 @@ export default function GitHubReadmeEditor({
     return (
       <ModernReadmeOutput
         content={content}
+        repositoryUrl={repositoryUrl}
+        projectName={projectName}
+        generationParams={{
+          include_demo: includeDemo,
+          num_screenshots: numScreenshots,
+          num_videos: numVideos
+        }}
         onClose={() => setShowModernOutput(false)}
         onEdit={() => {
           setShowModernOutput(false);
