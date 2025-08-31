@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Github, GitBranch, BrainCircuit, Bot, Wand2, Code, Sparkles, Zap, FileText, Star, ArrowRight, Play } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import ReadmeGeneratorFlow from '@/components/readme-generator-flow';
-import ModernReadmeOutput from '@/components/modern-readme-output';
 import { ScrollAnimatedDiv } from '@/components/ui/scroll-animated-div';
 
 const FeatureCard = ({ icon: Icon, title, description, delay }: { 
@@ -73,11 +72,6 @@ const StatCard = ({ number, label, delay }: { number: string, label: string, del
 export default function SimpleCentered() {
   const router = useRouter();
   const [showGenerator, setShowGenerator] = useState(false);
-  const [showEditor, setShowEditor] = useState(false);
-  const [generatedReadme, setGeneratedReadme] = useState('');
-  const [repositoryUrl, setRepositoryUrl] = useState('');
-  const [projectName, setProjectName] = useState('');
-  const [generationParams, setGenerationParams] = useState({});
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -112,11 +106,16 @@ export default function SimpleCentered() {
   };
 
   const handleGenerationComplete = async (readme: string, repoUrl: string, projName: string, genParams: any) => {
-    setGeneratedReadme(readme);
-    setRepositoryUrl(repoUrl);
-    setProjectName(projName);
-    setGenerationParams(genParams);
-    setShowEditor(true);
+    // Store the README data in sessionStorage for the new page
+    const readmeData = {
+      content: readme,
+      repositoryUrl: repoUrl,
+      projectName: projName,
+      generationParams: genParams,
+      createdAt: new Date().toISOString()
+    };
+    
+    sessionStorage.setItem('readme-output-data', JSON.stringify(readmeData));
     
     // Auto-save to history for authenticated users
     try {
@@ -145,46 +144,16 @@ export default function SimpleCentered() {
     } catch (error) {
       console.error('❌ Error auto-saving to history:', error);
     }
+    
+    // Redirect to the new README output page
+    router.push('/readme/output');
   };
 
-  const handleEditorClose = () => {
-    setShowEditor(false);
-    setShowGenerator(false);
-    setGeneratedReadme('');
-    setRepositoryUrl('');
-    setProjectName('');
-    setGenerationParams({});
-  };
 
   return (
     <div className="min-h-screen font-sans text-white overflow-hidden relative">
       <div className="relative isolate px-6 pt-0 lg:px-8 min-h-screen">
-        <AnimatePresence mode="wait">
-          {showEditor ? (
-            <motion.div
-              key="editor-content"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-              className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-lg"
-            >
-              <ModernReadmeOutput 
-                content={generatedReadme}
-                repositoryUrl={repositoryUrl}
-                projectName={projectName}
-                generationParams={generationParams}
-                onClose={handleEditorClose}
-                createdAt={new Date().toISOString()}
-              />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="hero-content"
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              className="relative z-30"
-            >
+        <div className="relative z-30">
               {/* Hero Section */}
               <div className="mx-auto max-w-6xl py-12 sm:py-16 lg:py-20">
                 <div className="text-center mb-16">
@@ -358,9 +327,7 @@ export default function SimpleCentered() {
                   </div>
                 </ScrollAnimatedDiv>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        </div>
       </div>
     </div>
   );
