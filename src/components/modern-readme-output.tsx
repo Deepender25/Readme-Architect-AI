@@ -26,7 +26,6 @@ import { Button } from '@/components/ui/button';
 import { marked } from 'marked';
 import DOMPurify from 'isomorphic-dompurify';
 import { useAuth, authenticatedFetch } from '@/lib/auth';
-import ModernNavbar from '@/components/layout/modern-navbar';
 
 interface ModernReadmeOutputProps {
   content: string;
@@ -240,7 +239,7 @@ export default function ModernReadmeOutput({
   const sanitizedContent = DOMPurify.sanitize(processedContent);
 
   return (
-    <div className="h-screen bg-black flex flex-col overflow-hidden relative"
+    <div className="min-h-screen bg-black relative"
          style={{
            transform: 'translate3d(0, 0, 0)',
            willChange: 'auto',
@@ -251,7 +250,7 @@ export default function ModernReadmeOutput({
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="sticky top-0 z-50 glass-navbar border-b border-green-400/20"
+          className="fixed top-16 left-0 right-0 z-40 glass-navbar border-b border-green-400/20 border-t-0"
         >
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
@@ -403,25 +402,27 @@ export default function ModernReadmeOutput({
           </div>
         </motion.header>
 
-        {/* README Content - Uses main scroll like individual README view */}
+        {/* README Content - Uses main page scroll for continuous scrolling */}
         <motion.main
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-green"
+          className="pt-24 pb-8"
         >
-          <div className="p-4 pb-8">
-            <div className="glass rounded-2xl p-6 mb-4">
-              {historyView || viewMode === 'preview' ? (
-                <div 
-                  className="prose prose-invert prose-green max-w-none modern-readme-preview"
-                  dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-                />
-              ) : (
-                <pre className="font-mono text-xs sm:text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
-                  {content}
-                </pre>
-              )}
+          <div className="container mx-auto px-4 py-6">
+            <div className="max-w-6xl mx-auto">
+              <div className="glass rounded-2xl p-8 lg:p-12">
+                {historyView || viewMode === 'preview' ? (
+                  <div 
+                    className="prose prose-invert prose-green max-w-none modern-readme-preview"
+                    dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+                  />
+                ) : (
+                  <pre className="font-mono text-xs sm:text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
+                    {content}
+                  </pre>
+                )}
+              </div>
             </div>
           </div>
         </motion.main>
