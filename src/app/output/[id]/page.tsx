@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Home, AlertCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, Home, AlertCircle, Loader2, Download, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ModernReadmeOutput from '@/components/modern-readme-output';
 import { authenticatedFetch, useAuth } from '@/lib/auth';
@@ -31,6 +31,8 @@ export default function OutputPage() {
   const [historyItem, setHistoryItem] = useState<HistoryItem | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [copySuccess, setCopySuccess] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const historyId = params?.id as string;
 
@@ -78,9 +80,37 @@ export default function OutputPage() {
     router.push('/');
   };
 
+  const handleCopy = async () => {
+    if (!historyItem) return;
+    try {
+      await navigator.clipboard.writeText(historyItem.readme_content);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
+  const handleDownload = () => {
+    if (!historyItem) return;
+    setIsDownloading(true);
+    
+    setTimeout(() => {
+      const blob = new Blob([historyItem.readme_content], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'README.md';
+      a.click();
+      URL.revokeObjectURL(url);
+      
+      setIsDownloading(false);
+    }, 500);
+  };
+
   if (isLoading) {
     return (
-      <LayoutWrapper showBreadcrumbs={false} maxWidth="full" className="px-0">
+      <LayoutWrapper showNavbar={false} showBreadcrumbs={false} maxWidth="full" className="px-0">
         <div className="min-h-screen flex items-center justify-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -103,7 +133,7 @@ export default function OutputPage() {
 
   if (error) {
     return (
-      <LayoutWrapper showBreadcrumbs={false} maxWidth="full" className="px-0">
+      <LayoutWrapper showNavbar={false} showBreadcrumbs={false} maxWidth="full" className="px-0">
         <div className="min-h-screen flex items-center justify-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -142,7 +172,7 @@ export default function OutputPage() {
 
   if (!historyItem) {
     return (
-      <LayoutWrapper showBreadcrumbs={false} maxWidth="full" className="px-0">
+      <LayoutWrapper showNavbar={false} showBreadcrumbs={false} maxWidth="full" className="px-0">
         <div className="min-h-screen flex items-center justify-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -175,7 +205,7 @@ export default function OutputPage() {
   }
 
   return (
-    <LayoutWrapper showBreadcrumbs={false} maxWidth="full" className="px-0">
+    <LayoutWrapper showNavbar={false} showBreadcrumbs={false} maxWidth="full" className="px-0">
       {/* Navigation Bar */}
       <motion.div
         initial={{ y: -50, opacity: 0 }}
@@ -203,15 +233,42 @@ export default function OutputPage() {
               </div>
             </div>
             
-            <Button
-              onClick={handleGoHome}
-              variant="outline"
-              size="sm"
-              className="border-gray-400/20 text-gray-400 hover:bg-gray-400/10"
-            >
-              <Home className="w-4 h-4 mr-2" />
-              Home
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={handleCopy}
+                variant="outline"
+                size="sm"
+                className={`${
+                  copySuccess 
+                    ? 'border-green-400/60 text-green-400' 
+                    : 'border-green-400/20 text-green-400 hover:bg-green-400/10'
+                }`}
+              >
+                {copySuccess ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
+                {copySuccess ? 'Copied!' : 'Copy'}
+              </Button>
+              
+              <Button
+                onClick={handleDownload}
+                disabled={isDownloading}
+                variant="outline"
+                size="sm"
+                className="border-green-400/20 text-green-400 hover:bg-green-400/10 disabled:opacity-50"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                {isDownloading ? 'Downloading...' : 'Download'}
+              </Button>
+              
+              <Button
+                onClick={handleGoHome}
+                variant="outline"
+                size="sm"
+                className="border-gray-400/20 text-gray-400 hover:bg-gray-400/10"
+              >
+                <Home className="w-4 h-4 mr-2" />
+                Home
+              </Button>
+            </div>
           </div>
         </div>
       </motion.div>
