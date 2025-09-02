@@ -245,15 +245,14 @@ export default function ModernReadmeOutput({
            willChange: 'auto',
            backfaceVisibility: 'hidden'
          }}>
-        {/* Enhanced Navigation Header - Fixed at top - Only show if not in history view */}
-        {!historyView && (
+        {/* Enhanced Navigation Header - Fixed at top */}
         <motion.header
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="fixed top-0 left-0 right-0 z-[99998] bg-black/95 backdrop-blur-xl border-b border-green-400/20 h-16"
+          className="fixed top-16 left-0 right-0 z-[99998] bg-black/95 backdrop-blur-xl border-b border-green-400/20 h-14"
         >
-          <div className="container mx-auto px-4 py-1 h-full">
+          <div className="container mx-auto px-4 py-2 h-full">
             <div className="flex items-center justify-between">
               {/* Left Section - Navigation & Title */}
               <div className="flex items-center gap-6">
@@ -402,16 +401,15 @@ export default function ModernReadmeOutput({
             </div>
           </div>
         </motion.header>
-        )}
 
         {/* README Content - Uses main page scroll for continuous scrolling */}
         <motion.main
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className={`${historyView ? 'pt-4' : 'pt-20'} pb-8`}
+          className="pt-[120px] pb-8"
         >
-          <div className="container mx-auto px-4 py-2">
+          <div className="container mx-auto px-4 py-6">
             <div className="max-w-6xl mx-auto">
               <div className="glass rounded-2xl p-8 lg:p-12">
                 {historyView || viewMode === 'preview' ? (
