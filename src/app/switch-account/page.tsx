@@ -3,14 +3,15 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Github, ArrowRight, ExternalLink, CheckCircle, UserX, RefreshCw, ArrowLeft } from 'lucide-react';
+import { Github, ArrowRight, UserX, ArrowLeft, RefreshCw } from 'lucide-react';
 import LoadingPage from '@/components/ui/loading-page';
 import EnhancedGridBackground from '@/components/enhanced-grid-background';
 
 function SwitchAccountContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [processingStep, setProcessingStep] = useState('');
 
   useEffect(() => {
     // Clear any existing auth state when component mounts
@@ -19,7 +20,10 @@ function SwitchAccountContent() {
     localStorage.removeItem('show_account_selection');
   }, []);
 
-  const handleStartLogout = () => {
+  const handleSwitchAccount = async () => {
+    setIsProcessing(true);
+    setProcessingStep('Clearing session...');
+    
     // Store the return URL for after the OAuth process
     const returnTo = searchParams.get('returnTo') || '/';
     try {
@@ -28,14 +32,79 @@ function SwitchAccountContent() {
       console.error('Failed to store return URL:', error);
     }
 
-    // Move to step 2 and open GitHub logout
-    setCurrentStep(2);
-    window.open('https://github.com/logout', '_blank');
+    try {
+      // Call logout API to clear server-side session
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (error) {
+      console.error('Logout API error:', error);
+    }
+
+    // Clear all client-side auth data
+    document.cookie = 'github_user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie = 'session_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     
-    // Auto-redirect after a delay
-    setTimeout(() => {
-      window.location.href = '/api/auth/github?force_account_selection=true';
-    }, 3000);
+    // Clear localStorage and sessionStorage
+    localStorage.clear();
+    sessionStorage.removeItem('github_user');
+    sessionStorage.removeItem('auth_token');
+    
+    setProcessingStep('Opening GitHub logout...');
+    
+    // Try to open GitHub logout in a popup to clear GitHub session
+    const logoutPopup = window.open(
+      'https://github.com/logout', 
+      'github_logout', 
+      'width=600,height=400,scrollbars=yes,resizable=yes'
+    );
+    
+    // Check if popup was blocked
+    if (!logoutPopup || logoutPopup.closed || typeof logoutPopup.closed === 'undefined') {
+      setProcessingStep('Popup blocked, using fallback...');
+      // Popup blocked - redirect directly with a longer delay
+      setTimeout(() => {
+        const timestamp = Date.now();
+        window.location.href = `/api/auth/github?force_account_selection=true&t=${timestamp}&returnTo=${encodeURIComponent(returnTo)}`;
+      }, 3000);
+    } else {
+      setProcessingStep('Logout window will close automatically...');
+      
+      // Auto-close popup after logout completes and redirect
+      setTimeout(() => {
+        setProcessingStep('Closing logout window...');
+        
+        // Close the popup automatically
+        if (!logoutPopup.closed) {
+          logoutPopup.close();
+        }
+        
+        // Small delay to ensure logout is processed, then redirect
+        setTimeout(() => {
+          setProcessingStep('Redirecting to account selection...');
+          const timestamp = Date.now();
+          window.location.href = `/api/auth/github?force_account_selection=true&t=${timestamp}&returnTo=${encodeURIComponent(returnTo)}`;
+        }, 500);
+      }, 3000); // Wait 3 seconds for logout to complete, then auto-close
+      
+      // Also monitor if user manually closes popup
+      const checkClosed = setInterval(() => {
+        if (logoutPopup.closed) {
+          clearInterval(checkClosed);
+          setProcessingStep('Redirecting to account selection...');
+          // User closed popup manually, redirect immediately
+          const timestamp = Date.now();
+          window.location.href = `/api/auth/github?force_account_selection=true&t=${timestamp}&returnTo=${encodeURIComponent(returnTo)}`;
+        }
+      }, 500);
+      
+      // Clear the interval when auto-close happens
+      setTimeout(() => {
+        clearInterval(checkClosed);
+      }, 4000);
+    }
   };
 
   const handleBackToLogin = () => {
@@ -84,88 +153,74 @@ function SwitchAccountContent() {
           </h1>
           
           <p className="text-gray-400 text-sm">
-            Secure 2-step process
+            Quick & secure account switching
           </p>
         </motion.div>
 
-        {/* Compact Process Card */}
+        {/* Simplified Process Card */}
         <motion.div
           initial={{ opacity: 0, y: 20, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.4, delay: 0.1 }}
           className="glass-card rounded-2xl p-6 border border-green-400/20"
         >
-          {/* Progress Bar */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                currentStep >= 1 ? 'bg-green-500 text-black' : 'bg-gray-600 text-white'
-              }`}>
-                {currentStep > 1 ? <CheckCircle className="w-4 h-4" /> : '1'}
+          {!isProcessing ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="space-y-6"
+            >
+              <div className="text-center">
+                <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Github className="w-8 h-8 text-green-400" />
+                </div>
+                <h3 className="font-semibold text-white mb-2">Ready to Switch?</h3>
+                <p className="text-gray-400 text-sm">
+                  We'll clear your current session and redirect you to GitHub to select a new account.
+                </p>
               </div>
-              <div className={`w-12 h-1 rounded-full transition-all duration-300 ${
-                currentStep >= 2 ? 'bg-green-500' : 'bg-gray-600'
-              }`} />
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                currentStep >= 2 ? 'bg-green-500 text-black' : 'bg-gray-600 text-white'
-              }`}>
-                2
+              
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleSwitchAccount}
+                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-black font-semibold rounded-xl transition-all duration-300"
+              >
+                <UserX className="w-5 h-5" />
+                Switch GitHub Account
+                <ArrowRight className="w-5 h-5" />
+              </motion.button>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="space-y-6 text-center"
+            >
+              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  className="w-6 h-6 border-2 border-white border-t-transparent rounded-full"
+                />
               </div>
-            </div>
-            <span className="text-xs text-gray-400">Step {currentStep} of 2</span>
-          </div>
-
-          {/* Step Content */}
-          <div className="space-y-4">
-            {currentStep === 1 && (
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="space-y-4"
-              >
-                <div className="text-center">
-                  <h3 className="font-semibold text-white mb-1">Sign Out Current Account</h3>
-                  <p className="text-gray-400 text-sm">We'll open GitHub logout in a new tab</p>
-                </div>
-                
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleStartLogout}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-500 hover:bg-green-600 text-black font-semibold rounded-xl transition-all duration-300"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  Open GitHub Logout
-                  <ArrowRight className="w-4 h-4" />
-                </motion.button>
-              </motion.div>
-            )}
-
-            {currentStep === 2 && (
-              <motion.div
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="space-y-4"
-              >
-                <div className="text-center">
-                  <h3 className="font-semibold text-white mb-1">Choose New Account</h3>
-                  <p className="text-gray-400 text-sm">Redirecting to GitHub login...</p>
-                </div>
-                
-                <div className="flex items-center justify-center gap-3 p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    className="w-4 h-4 border-2 border-green-400 border-t-transparent rounded-full"
-                  />
-                  <span className="text-green-300 font-medium text-sm">Redirecting...</span>
-                </div>
-              </motion.div>
-            )}
-          </div>
+              
+              <div>
+                <h3 className="font-semibold text-white mb-2">Switching Account...</h3>
+                <p className="text-gray-400 text-sm">
+                  {processingStep || 'Preparing account switch...'}
+                </p>
+              </div>
+              
+              <div className="flex items-center justify-center gap-3 p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
+                <RefreshCw className="w-4 h-4 text-green-400 animate-spin" />
+                <span className="text-green-300 font-medium text-sm">Processing...</span>
+              </div>
+            </motion.div>
+          )}
 
           {/* Back Button */}
-          {currentStep === 1 && (
+          {!isProcessing && (
             <div className="mt-6 pt-4 border-t border-green-400/10">
               <motion.button
                 whileHover={{ scale: 1.01, x: -2 }}
@@ -187,7 +242,7 @@ function SwitchAccountContent() {
           className="text-center mt-6"
         >
           <p className="text-gray-500 text-xs">
-            This process ensures secure account switching by clearing your current session
+            Your current session will be cleared and you'll be redirected to GitHub
           </p>
         </motion.div>
       </div>

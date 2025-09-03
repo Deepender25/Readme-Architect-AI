@@ -115,13 +115,16 @@ class handler(BaseHTTPRequestHandler):
             'state': state
         }
         
-        # For account switching, try to force fresh authentication
+        # For account switching, force fresh authentication
         if force_account_selection == 'true':
-            print("DEBUG: Adding parameters to encourage account switching")
-            # Empty login parameter tells GitHub to show login form
+            print("DEBUG: Adding parameters to force account switching")
+            # Use empty login parameter to force login screen
             github_params['login'] = ''
-            # Allow signup to ensure fresh flow
+            # Allow signup to ensure all options are available
             github_params['allow_signup'] = 'true'
+            # Add timestamp to make URL unique and bypass cache
+            import time
+            github_params['_t'] = str(int(time.time()))
         
         github_auth_url = f"https://github.com/login/oauth/authorize?{urllib.parse.urlencode(github_params)}"
         print(f"DEBUG: Redirecting to: {github_auth_url}")
