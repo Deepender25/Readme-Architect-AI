@@ -184,20 +184,31 @@ export default function ModernNavbar() {
                   >
                     <motion.button
                       ref={dropdownTriggerRef}
-                      whileHover={{ scale: 1.01 }}
-                      whileTap={{ scale: 0.99 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => setDropdownOpen(!dropdownOpen)}
-                      className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-foreground/80 hover:text-green-400 transition-all duration-300 border border-transparent hover:border-green-400/30 rounded-lg bg-green-400/5 hover:bg-green-400/15 hover:shadow-lg hover:shadow-green-400/20"
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium glass-button rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-green-400/20 group"
                     >
-                      <img
-                        src={user?.avatar_url}
-                        alt={user?.name}
-                        className="w-6 h-6 rounded-full border border-green-400/40"
-                      />
+                      <div className="relative">
+                        <img
+                          src={user?.avatar_url}
+                          alt={user?.name}
+                          className="w-8 h-8 rounded-full border-2 border-green-400/30 group-hover:border-green-400/60 transition-all duration-300"
+                        />
+                        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-black animate-pulse"></div>
+                      </div>
                       
-                      <span className="hidden xl:inline max-w-24 truncate">{user?.name}</span>
+                      <div className="hidden xl:flex flex-col items-start">
+                        <span className="text-white font-semibold text-sm leading-tight max-w-32 truncate">
+                          {user?.name}
+                        </span>
+                        <span className="text-green-400/80 text-xs leading-tight">
+                          @{user?.username}
+                        </span>
+                      </div>
+                      
                       <ChevronDown
-                        className={`w-4 h-4 transition-transform duration-200 ${
+                        className={`w-4 h-4 text-green-400/60 group-hover:text-green-400 transition-all duration-300 ${
                           dropdownOpen ? 'rotate-180' : ''
                         }`}
                       />
@@ -209,51 +220,98 @@ export default function ModernNavbar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -8, scale: 0.95 }}
                         transition={{ type: "spring", stiffness: 350, damping: 22 }}
-                        className="bg-black/95 backdrop-blur-xl border border-green-400/20 rounded-xl shadow-xl shadow-green-400/10 py-2 min-w-48"
+                        className="glass-modal rounded-2xl shadow-2xl shadow-green-400/20 py-3 min-w-64 border border-green-400/20"
                       >
-                        <div className="px-4 py-3 border-b border-green-400/10">
-                          <div className="font-medium text-sm text-white">{user?.name}</div>
-                          <div className="text-xs text-green-400">@{user?.username}</div>
+                        <div className="px-5 py-4 border-b border-green-400/10">
+                          <div className="flex items-center gap-3">
+                            <div className="relative">
+                              <img
+                                src={user?.avatar_url}
+                                alt={user?.name}
+                                className="w-12 h-12 rounded-full border-2 border-green-400/40"
+                              />
+                              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-black flex items-center justify-center">
+                                <div className="w-2 h-2 bg-white rounded-full"></div>
+                              </div>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="font-semibold text-white text-base leading-tight truncate">
+                                {user?.name}
+                              </div>
+                              <div className="text-green-400 text-sm leading-tight">
+                                @{user?.username}
+                              </div>
+                              <div className="text-gray-400 text-xs mt-0.5">
+                                GitHub Developer
+                              </div>
+                            </div>
+                          </div>
                         </div>
                         
-                        <button 
-                          onClick={() => {
-                            setDropdownOpen(false);
-                            router.push('/repositories');
-                          }}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-400/10 transition-colors"
-                        >
-                          <FolderGit2 className="w-4 h-4" />
-                          My Repositories
-                        </button>
-                        <button 
-                          onClick={() => {
-                            setDropdownOpen(false);
-                            router.push('/history');
-                          }}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-400/10 transition-colors"
-                        >
-                          <History className="w-4 h-4" />
-                          History
-                        </button>
-                        <button 
-                          onClick={() => {
-                            setDropdownOpen(false);
-                            router.push('/settings');
-                          }}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-green-400 hover:bg-green-400/10 transition-colors"
-                        >
-                          <Settings className="w-4 h-4" />
-                          Settings
-                        </button>
-                        <hr className="border-green-400/10 my-2" />
-                        <button 
-                          onClick={logout}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400/80 hover:text-red-400 hover:bg-red-400/10 transition-colors"
-                        >
-                          <LogOut className="w-4 h-4" />
-                          Sign Out
-                        </button>
+                        <div className="py-2">
+                          <button 
+                            onClick={() => {
+                              setDropdownOpen(false);
+                              router.push('/repositories');
+                            }}
+                            className="w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
+                          >
+                            <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
+                              <FolderGit2 className="w-4 h-4 text-green-400" />
+                            </div>
+                            <div className="flex-1 text-left">
+                              <div className="font-medium">My Repositories</div>
+                              <div className="text-xs text-gray-500">Manage your projects</div>
+                            </div>
+                          </button>
+                          
+                          <button 
+                            onClick={() => {
+                              setDropdownOpen(false);
+                              router.push('/history');
+                            }}
+                            className="w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
+                          >
+                            <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
+                              <History className="w-4 h-4 text-green-400" />
+                            </div>
+                            <div className="flex-1 text-left">
+                              <div className="font-medium">Generation History</div>
+                              <div className="text-xs text-gray-500">View past READMEs</div>
+                            </div>
+                          </button>
+                          
+                          <button 
+                            onClick={() => {
+                              setDropdownOpen(false);
+                              router.push('/settings');
+                            }}
+                            className="w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
+                          >
+                            <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
+                              <Settings className="w-4 h-4 text-green-400" />
+                            </div>
+                            <div className="flex-1 text-left">
+                              <div className="font-medium">Account Settings</div>
+                              <div className="text-xs text-gray-500">Preferences & privacy</div>
+                            </div>
+                          </button>
+                        </div>
+                        
+                        <div className="border-t border-green-400/10 pt-2">
+                          <button 
+                            onClick={logout}
+                            className="w-full flex items-center gap-3 px-5 py-3 text-sm text-red-400/80 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 group"
+                          >
+                            <div className="w-8 h-8 rounded-lg bg-red-400/10 flex items-center justify-center group-hover:bg-red-400/20 transition-colors">
+                              <LogOut className="w-4 h-4 text-red-400" />
+                            </div>
+                            <div className="flex-1 text-left">
+                              <div className="font-medium">Sign Out</div>
+                              <div className="text-xs text-red-400/60">End your session</div>
+                            </div>
+                          </button>
+                        </div>
                       </motion.div>
                     </DropdownPortal>
                   </motion.div>
@@ -357,15 +415,27 @@ export default function ModernNavbar() {
                     </motion.button>
                   ) : (
                     <div className="space-y-1">
-                      <div className="flex items-center gap-3 px-2 py-3 bg-green-400/5 rounded-lg">
-                        <img
-                          src={user?.avatar_url}
-                          alt={user?.name}
-                          className="w-8 h-8 rounded-full border border-green-400/40"
-                        />
-                        <div>
-                          <div className="font-medium text-sm text-white">{user?.name}</div>
-                          <div className="text-xs text-green-400">@{user?.username}</div>
+                      <div className="flex items-center gap-4 px-4 py-4 glass-card rounded-xl border border-green-400/20">
+                        <div className="relative">
+                          <img
+                            src={user?.avatar_url}
+                            alt={user?.name}
+                            className="w-12 h-12 rounded-full border-2 border-green-400/40"
+                          />
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-black flex items-center justify-center">
+                            <div className="w-2 h-2 bg-white rounded-full"></div>
+                          </div>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold text-white text-base leading-tight truncate">
+                            {user?.name}
+                          </div>
+                          <div className="text-green-400 text-sm leading-tight">
+                            @{user?.username}
+                          </div>
+                          <div className="text-gray-400 text-xs mt-0.5">
+                            GitHub Developer
+                          </div>
                         </div>
                       </div>
                       <button 
@@ -373,37 +443,57 @@ export default function ModernNavbar() {
                           setIsOpen(false);
                           router.push('/repositories');
                         }}
-                        className="w-full text-left px-3 py-2.5 text-sm text-foreground/70 hover:text-green-400 hover:bg-green-400/5 transition-colors rounded-lg flex items-center gap-3"
+                        className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 rounded-lg flex items-center gap-3 group"
                       >
-                        <FolderGit2 className="w-4 h-4" />
-                        My Repositories
+                        <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
+                          <FolderGit2 className="w-4 h-4 text-green-400" />
+                        </div>
+                        <div>
+                          <div className="font-medium">My Repositories</div>
+                          <div className="text-xs text-gray-500">Manage your projects</div>
+                        </div>
                       </button>
                       <button 
                         onClick={() => {
                           setIsOpen(false);
                           router.push('/history');
                         }}
-                        className="w-full text-left px-3 py-2.5 text-sm text-foreground/70 hover:text-green-400 hover:bg-green-400/5 transition-colors rounded-lg flex items-center gap-3"
+                        className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 rounded-lg flex items-center gap-3 group"
                       >
-                        <History className="w-4 h-4" />
-                        History
+                        <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
+                          <History className="w-4 h-4 text-green-400" />
+                        </div>
+                        <div>
+                          <div className="font-medium">Generation History</div>
+                          <div className="text-xs text-gray-500">View past READMEs</div>
+                        </div>
                       </button>
                       <button 
                         onClick={() => {
                           setIsOpen(false);
                           router.push('/settings');
                         }}
-                        className="w-full text-left px-3 py-2.5 text-sm text-foreground/70 hover:text-green-400 hover:bg-green-400/5 transition-colors rounded-lg flex items-center gap-3"
+                        className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 rounded-lg flex items-center gap-3 group"
                       >
-                        <Settings className="w-4 h-4" />
-                        Settings
+                        <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
+                          <Settings className="w-4 h-4 text-green-400" />
+                        </div>
+                        <div>
+                          <div className="font-medium">Account Settings</div>
+                          <div className="text-xs text-gray-500">Preferences & privacy</div>
+                        </div>
                       </button>
                       <button 
                         onClick={logout}
-                        className="w-full text-left px-3 py-2.5 text-sm text-red-400/80 hover:text-red-400 hover:bg-red-400/10 transition-colors rounded-lg flex items-center gap-3"
+                        className="w-full text-left px-4 py-3 text-sm text-red-400/80 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 rounded-lg flex items-center gap-3 group"
                       >
-                        <LogOut className="w-4 h-4" />
-                        Sign Out
+                        <div className="w-8 h-8 rounded-lg bg-red-400/10 flex items-center justify-center group-hover:bg-red-400/20 transition-colors">
+                          <LogOut className="w-4 h-4 text-red-400" />
+                        </div>
+                        <div>
+                          <div className="font-medium">Sign Out</div>
+                          <div className="text-xs text-red-400/60">End your session</div>
+                        </div>
                       </button>
                     </div>
                   )}
