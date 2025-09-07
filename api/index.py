@@ -536,6 +536,7 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
     - [Tech Stack & Architecture](#️-tech-stack--architecture)
     - [Project Structure](#-project-structure)
     {f"- [Demo & Screenshots](#-demo--screenshots)" if include_demo and (num_screenshots > 0 or num_videos > 0) else ""}
+    - [API Keys Setup](#-api-keys-setup) *(Include only if project requires API keys)*
     - [Getting Started](#-getting-started)
     - [Usage](#-usage)
     - [Contributing](#-contributing)
@@ -579,21 +580,74 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
     -   **Important:** Base this EXACTLY on the provided file structure data, don't make up directories that don't exist.
     -   Group similar files and highlight the most important ones with inline comments.
 
+8.  **🔑 API Keys Setup:** *(CONDITIONAL - Include this section ONLY if the project requires API keys, tokens, or external service credentials)*
+    -   **Smart Detection:** Analyze the dependencies, environment files (.env examples), and code to determine if API keys are needed.
+    -   **Look for indicators:** OpenAI, Google APIs, AWS, Stripe, Firebase, database URLs, social media APIs, payment gateways, etc.
+    -   **If API keys are required, create a comprehensive step-by-step guide with:**
+    
+    ### Required API Keys & Services
+    
+    | Service | Purpose | Required | Documentation |
+    |---------|---------|----------|---------------|
+    | Service Name | What it's used for | Yes/Optional | [Official Docs](link) |
+    
+    ### Step-by-Step Setup Instructions
+    
+    #### 1. [Service Name] API Key
+    ```bash
+    # Add clear, copy-pastable instructions
+    ```
+    
+    **Detailed Steps:**
+    1. Visit [Official Website/Console]
+    2. Create account or sign in
+    3. Navigate to API section/Dashboard
+    4. Generate new API key
+    5. Copy the key (keep it secure!)
+    6. Add to your `.env` file: `SERVICE_API_KEY=your_key_here`
+    
+    **Important Notes:**
+    - Security warnings about keeping keys private
+    - Rate limits and pricing information (if applicable)
+    - Required scopes or permissions
+    
+    #### Environment Variables Setup
+    Create a `.env` file in your project root:
+    ```bash
+    # API Keys (replace with your actual keys)
+    SERVICE_API_KEY=your_api_key_here
+    ANOTHER_API_KEY=your_other_key
+    
+    # Database (if applicable)
+    DATABASE_URL=your_database_connection_string
+    
+    # Other Configuration
+    NODE_ENV=development
+    ```
+    
+    **⚠️ Security Reminder:**
+    - Never commit `.env` files to version control
+    - Add `.env` to your `.gitignore` file
+    - Use environment variables in production
+    - Rotate keys regularly for security
+    
+    -   **If NO API keys are detected, DO NOT include this section at all.**
+
 {demo_section}
 
-8.  **🚀 Getting Started:**
+9.  **🚀 Getting Started:**
     -   **Prerequisites:** A bulleted list of software the user needs (e.g., Python 3.9+, Node.js v18+).
     -   **Installation:** A numbered, step-by-step guide with explicit, copy-pastable commands in code blocks for different package managers if inferable (e.g., `pip install -r requirements.txt`).
 
-9.  **🔧 Usage:**
+10. **🔧 Usage:**
     -   Provide clear instructions on how to run the application (e.g., `uvicorn main:app --reload`).
     -   If it's an API, provide a `curl` example. If it's a CLI, provide a command-line example.
 
-10. **🤝 Contributing:**
+11. **🤝 Contributing:**
     -   A welcoming section encouraging contributions.
     -   Briefly outline the fork -> branch -> pull request workflow.
 
-11. **📝 License:**
+12. **📝 License:**
     -   State the license (e.g., "Distributed under the MIT License. See `LICENSE` for more information.").
 
 **Final Instruction:** The output MUST be ONLY the raw Markdown content. Do not add any commentary, greetings, or explanations before or after the Markdown. Adhere strictly to the requested format and quality bar.
