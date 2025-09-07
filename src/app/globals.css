@@ -202,6 +202,31 @@ body {
     @apply px-6 py-3 bg-green-500 text-black font-semibold rounded-xl transition-all duration-300 hover:bg-green-400 hover:shadow-lg hover:shadow-green-400/30 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-black;
   }
 
+  .btn-green-primary {
+    background-color: #4ade80 !important;
+    color: #000000 !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    font-weight: bold !important;
+    border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .btn-green-primary:hover {
+    background-color: #22c55e !important;
+    color: #000000 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 8px 25px rgba(72, 222, 128, 0.4) !important;
+  }
+
+  .btn-green-primary:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+  }
+
   .btn-secondary {
     @apply px-6 py-3 bg-transparent border border-green-400/30 text-green-400 font-semibold rounded-xl hover:bg-green-400/10 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300;
   }
@@ -2313,4 +2338,74 @@ html {
   width: 16px;
   height: 16px;
   border-radius: 4px;
+}
+/* Glo
+wing border animation for professional containers */
+@keyframes glow-border {
+  0% {
+    box-shadow: 
+      0 0 5px rgba(0, 255, 136, 0.3),
+      0 0 10px rgba(0, 255, 136, 0.2),
+      0 0 15px rgba(0, 255, 136, 0.1),
+      inset 0 0 5px rgba(0, 255, 136, 0.1);
+    opacity: 0.5;
+  }
+  50% {
+    box-shadow: 
+      0 0 10px rgba(0, 255, 136, 0.6),
+      0 0 20px rgba(0, 255, 136, 0.4),
+      0 0 30px rgba(0, 255, 136, 0.2),
+      inset 0 0 10px rgba(0, 255, 136, 0.2);
+    opacity: 0.8;
+  }
+  100% {
+    box-shadow: 
+      0 0 15px rgba(0, 255, 136, 0.8),
+      0 0 25px rgba(0, 255, 136, 0.6),
+      0 0 35px rgba(0, 255, 136, 0.3),
+      inset 0 0 15px rgba(0, 255, 136, 0.3);
+    opacity: 1;
+  }
+}
+
+/* Moving glow effect for borders */
+@keyframes moving-glow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Professional transparent container with glowing borders */
+.professional-glow-container {
+  position: relative;
+  background: transparent;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 12px;
+  box-shadow: 
+    0 0 20px rgba(0, 255, 136, 0.1),
+    inset 0 0 20px rgba(0, 255, 136, 0.05);
+  animation: glow-border 3s ease-in-out infinite alternate;
+}
+
+.professional-glow-container::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg, 
+    rgba(0, 255, 136, 0.3), 
+    rgba(0, 255, 136, 0.1), 
+    rgba(0, 255, 136, 0.3), 
+    rgba(0, 255, 136, 0.1));
+  background-size: 400% 400%;
+  border-radius: 14px;
+  z-index: -1;
+  animation: moving-glow 4s ease infinite;
+  opacity: 0.6;
 }
