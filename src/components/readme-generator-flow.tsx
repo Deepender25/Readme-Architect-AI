@@ -171,12 +171,11 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
             animate="center"
             exit="exit"
             transition={{ duration: 0.3 }}
-            className="relative group"
+            className="relative"
           >
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity" />
-            <div className="relative bg-[rgba(26,26,26,0.7)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 glass-green rounded-lg flex items-center justify-center">
+            <div className="bg-black/60 backdrop-blur-md rounded-2xl p-8 border border-green-400/30 shadow-2xl shadow-green-400/10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-green-400/10 rounded-lg flex items-center justify-center">
                   <Github className="w-5 h-5 text-green-400" />
                 </div>
                 <div>
@@ -191,7 +190,7 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                   placeholder="https://github.com/username/repository"
                   value={repositoryUrl}
                   onChange={(e) => setRepositoryUrl(e.target.value)}
-                  className="w-full px-4 py-3 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-lg text-white placeholder-gray-500 text-sm transition-all focus:outline-none focus:border-green-400 focus:bg-[rgba(255,255,255,0.08)]"
+                  className="w-full px-4 py-3 bg-black/50 border border-green-400/30 rounded-lg text-white placeholder-gray-400 text-sm transition-all focus:outline-none focus:border-green-400/50 focus:bg-black/60 focus:shadow-lg focus:shadow-green-400/10"
                   onKeyPress={(e) => e.key === 'Enter' && handleUrlSubmit()}
                 />
                 
@@ -205,14 +204,14 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                   </motion.p>
                 )}
                 
-                <Button
+                <button
                   onClick={handleUrlSubmit}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white gap-2"
+                  className="w-full btn-green-primary py-3 px-4 rounded-lg gap-2 shadow-xl shadow-green-400/40 hover:shadow-green-400/60"
                   disabled={!repositoryUrl.trim()}
                 >
-                  Continue
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
+                  <span>Continue</span>
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </button>
               </div>
             </div>
           </motion.div>
@@ -227,12 +226,11 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
             animate="center"
             exit="exit"
             transition={{ duration: 0.3 }}
-            className="relative group"
+            className="relative"
           >
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity" />
-            <div className="relative bg-[rgba(26,26,26,0.7)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+            <div className="bg-black/60 backdrop-blur-md rounded-2xl p-8 border border-green-400/30 shadow-2xl shadow-green-400/10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-green-400/10 rounded-lg flex items-center justify-center">
                   <Settings className="w-5 h-5 text-green-400" />
                 </div>
                 <div>
@@ -247,26 +245,25 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                   placeholder="My Awesome Project (leave empty for auto-generation)"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
-                  className="w-full px-4 py-3 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-lg text-white placeholder-gray-500 text-sm transition-all focus:outline-none focus:border-green-400 focus:bg-[rgba(255,255,255,0.08)]"
+                  className="w-full px-4 py-3 bg-black/50 border border-green-400/30 rounded-lg text-white placeholder-gray-400 text-sm transition-all focus:outline-none focus:border-green-400/50 focus:bg-black/60 focus:shadow-lg focus:shadow-green-400/10"
                   onKeyPress={(e) => e.key === 'Enter' && handleNameSubmit()}
                 />
                 
                 <div className="flex gap-2">
-                  <Button
+                  <button
                     onClick={handleBack}
-                    variant="ghost"
-                    className="flex-1 gap-2"
+                    className="flex-1 gap-2 border border-green-400/40 hover:bg-green-400/10 text-gray-200 hover:text-white py-3 px-4 rounded-lg flex items-center justify-center bg-transparent transition-all duration-200"
                   >
-                    <ArrowLeft className="w-4 h-4" />
-                    Back
-                  </Button>
-                  <Button
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    <span>Back</span>
+                  </button>
+                  <button
                     onClick={handleNameSubmit}
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white gap-2"
+                    className="flex-1 btn-green-primary py-3 px-4 rounded-lg gap-2 shadow-xl shadow-green-400/40 hover:shadow-green-400/60"
                   >
-                    Continue
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
+                    <span>Continue</span>
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -282,12 +279,11 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
             animate="center"
             exit="exit"
             transition={{ duration: 0.3 }}
-            className="relative group"
+            className="relative"
           >
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity" />
-            <div className="relative bg-[rgba(26,26,26,0.7)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+            <div className="bg-black/60 backdrop-blur-md rounded-2xl p-8 border border-green-400/30 shadow-2xl shadow-green-400/10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-green-400/10 rounded-lg flex items-center justify-center">
                   <FileText className="w-5 h-5 text-green-400" />
                 </div>
                 <div>
@@ -297,7 +293,7 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
               </div>
               
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 rounded-lg border border-[rgba(255,255,255,0.1)] hover:border-green-400/50 transition-colors">
+                <div className="flex items-center justify-between p-3 rounded-lg border border-green-400/30 hover:border-green-400/40 transition-colors bg-black/50">
                   <span className="text-white text-sm">Include demo section with placeholders</span>
                   <div className="flex-shrink-0">
                     <ToggleSwitch
@@ -342,21 +338,20 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                 )}
                 
                 <div className="flex gap-2">
-                  <Button
+                  <button
                     onClick={handleBack}
-                    variant="ghost"
-                    className="flex-1 gap-2"
+                    className="flex-1 gap-2 border border-green-400/40 hover:bg-green-400/10 text-gray-200 hover:text-white py-3 px-4 rounded-lg flex items-center justify-center bg-transparent transition-all duration-200"
                   >
-                    <ArrowLeft className="w-4 h-4" />
-                    Back
-                  </Button>
-                  <Button
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    <span>Back</span>
+                  </button>
+                  <button
                     onClick={handleDemoSubmit}
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white gap-2"
+                    className="flex-1 btn-green-primary py-3 px-4 rounded-lg gap-2 shadow-xl shadow-green-400/40 hover:shadow-green-400/60"
                   >
-                    Generate README
-                    <FileText className="w-4 h-4" />
-                  </Button>
+                    <span>Generate README</span>
+                    <FileText className="w-4 h-4 ml-2" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -372,34 +367,31 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
             animate="center"
             exit="exit"
             transition={{ duration: 0.3 }}
-            className="relative group"
+            className="relative"
           >
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400 to-green-600 rounded-xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity" />
-            <div className="relative bg-[rgba(26,26,26,0.7)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] rounded-xl p-6">
-              <div className="text-center">
-                <LoadingAnimation 
-                  message={generationStatus || "🤖 AI is analyzing your repository and generating professional documentation..."}
-                  size="lg"
-                />
-              </div>
-              
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg"
-                >
-                  <p className="text-red-400 text-sm">{error}</p>
-                  <Button
-                    onClick={() => setCurrentStep('url')}
-                    variant="ghost"
-                    className="mt-2 text-red-400 hover:text-red-300"
-                  >
-                    Try Again
-                  </Button>
-                </motion.div>
-              )}
+            <div className="text-center">
+              <LoadingAnimation 
+                message={generationStatus || "🤖 AI is analyzing your repository and generating professional documentation..."}
+                size="lg"
+              />
             </div>
+            
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg"
+              >
+                <p className="text-red-400 text-sm">{error}</p>
+                <Button
+                  onClick={() => setCurrentStep('url')}
+                  variant="ghost"
+                  className="mt-2 text-red-400 hover:text-red-300"
+                >
+                  Try Again
+                </Button>
+              </motion.div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

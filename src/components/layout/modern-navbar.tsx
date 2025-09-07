@@ -70,10 +70,10 @@ export default function ModernNavbar() {
         }`}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl h-full performance-optimized relative">
-          <div className="flex items-center justify-between h-full">
+          <div className="flex items-center justify-between h-full gap-4">
             {/* Logo */}
             <motion.div
-              className="flex items-center gap-3 cursor-pointer shrink-0 relative"
+              className="flex items-center gap-3 cursor-pointer shrink-0 relative min-w-0"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => router.push('/')}
@@ -104,18 +104,18 @@ export default function ModernNavbar() {
                 <FileText className="w-4 h-4 text-white" />
               </motion.div>
               
-              <div className="flex flex-col">
-                <span className="font-bold text-xl tracking-tight text-white">
+              <div className="flex flex-col min-w-0">
+                <span className="font-bold text-xl tracking-tight text-white whitespace-nowrap">
                   AutoDoc AI
                 </span>
-                <span className="text-xs text-green-400/80 font-medium -mt-1">
+                <span className="text-xs text-green-400/80 font-medium -mt-0.5 whitespace-nowrap">
                   README Generator
                 </span>
               </div>
             </motion.div>
 
             {/* Desktop Navigation Links */}
-            <div className="hidden lg:flex items-center gap-1 flex-1 justify-center">
+            <div className="hidden lg:flex items-center gap-1 flex-1 justify-center max-w-xl mx-6">
               {navLinks.map((link) => {
                 const isActive = isActiveLink(link.href);
                 const Icon = link.icon;
@@ -123,7 +123,7 @@ export default function ModernNavbar() {
                   <motion.a
                     key={link.name}
                     href={link.href}
-                    className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 group ${
+                    className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 group whitespace-nowrap ${
                       isActive 
                         ? 'text-green-400 bg-green-400/10 border border-green-400/20' 
                         : 'text-foreground/70 hover:text-green-400 hover:bg-green-400/5'
@@ -153,7 +153,7 @@ export default function ModernNavbar() {
             </div>
 
             {/* Desktop Auth Section */}
-            <div className="hidden lg:flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-3 shrink-0 min-w-0">
               <AnimatePresence mode="wait">
                 {!isAuthenticated ? (
                   <motion.button
@@ -165,7 +165,7 @@ export default function ModernNavbar() {
                     whileTap={{ scale: 0.98 }}
                       onClick={login}
                       disabled={isLoading}
-                      className="relative flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-400 border border-green-400/30 rounded-lg overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50"
+                      className="relative flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-400 border border-green-400/30 rounded-lg overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50 whitespace-nowrap"
                   >
                     <Github className="w-4 h-4" />
                     <span className="relative z-10">
@@ -187,9 +187,9 @@ export default function ModernNavbar() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setDropdownOpen(!dropdownOpen)}
-                      className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium glass-button rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-green-400/20 group"
+                      className="flex items-center gap-3 px-3 py-2 text-sm font-medium glass-button rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-green-400/20 group min-w-0"
                     >
-                      <div className="relative">
+                      <div className="relative shrink-0">
                         <img
                           src={user?.avatar_url}
                           alt={user?.name}
@@ -198,11 +198,11 @@ export default function ModernNavbar() {
                         <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-black animate-pulse"></div>
                       </div>
                       
-                      <div className="hidden xl:flex flex-col items-start">
-                        <span className="text-white font-semibold text-sm leading-tight max-w-32 truncate">
+                      <div className="hidden lg:flex flex-col items-start min-w-0 max-w-[120px]">
+                        <span className="text-white font-semibold text-sm leading-tight truncate w-full">
                           {user?.name}
                         </span>
-                        <span className="text-green-400/80 text-xs leading-tight">
+                        <span className="text-green-400/80 text-xs leading-tight truncate w-full">
                           @{user?.username}
                         </span>
                       </div>
@@ -320,12 +320,12 @@ export default function ModernNavbar() {
             </div>
 
             {/* Mobile menu button */}
-            <div className="lg:hidden">
+            <div className="lg:hidden shrink-0">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className="p-2 text-foreground/70 hover:text-green-400 transition-colors rounded-lg"
+                className="p-2 text-foreground/70 hover:text-green-400 transition-colors rounded-lg glass-button"
               >
                 <AnimatePresence mode="wait">
                   {isOpen ? (
