@@ -354,6 +354,7 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
     - [Overview](#-overview)
     - [Key Features](#-key-features)
     - [Tech Stack & Architecture](#️-tech-stack--architecture)
+    - [Project Structure](#-project-structure)
     {f"- [Demo & Screenshots](#-demo--screenshots)" if include_demo and (num_screenshots > 0 or num_videos > 0) else ""}
     - [Getting Started](#-getting-started)
     - [Usage](#-usage)
@@ -376,21 +377,43 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
     -   Include columns for "Technology", "Purpose", and "Why it was Chosen".
     -   Example Row: `| FastAPI | API Framework | For its high performance, async support, and automatic docs generation. |`
 
+7.  **📁 Project Structure:**
+    -   **MANDATORY:** Create a comprehensive, well-formatted directory tree showing the project's file structure.
+    -   Use the file structure data provided in the analysis to create an accurate representation.
+    -   Format it as a code block with appropriate tree symbols (├──, └──, │).
+    -   Add brief descriptions for key directories and important files.
+    -   Example format:
+    ```
+    project-name/
+    ├── src/                    # Source code directory
+    │   ├── components/         # React components
+    │   ├── pages/             # Application pages
+    │   └── utils/             # Utility functions
+    ├── api/                   # Backend API files
+    ├── public/                # Static assets
+    ├── tests/                 # Test files
+    ├── package.json           # Dependencies and scripts
+    ├── README.md             # Project documentation
+    └── .gitignore            # Git ignore rules
+    ```
+    -   **Important:** Base this EXACTLY on the provided file structure data, don't make up directories that don't exist.
+    -   Group similar files and highlight the most important ones with inline comments.
+
 {demo_section}
 
-7.  **🚀 Getting Started:**
+8.  **🚀 Getting Started:**
     -   **Prerequisites:** A bulleted list of software the user needs (e.g., Python 3.9+, Node.js v18+).
     -   **Installation:** A numbered, step-by-step guide with explicit, copy-pastable commands in code blocks for different package managers if inferable (e.g., `pip install -r requirements.txt`).
 
-8.  **🔧 Usage:**
+9.  **🔧 Usage:**
     -   Provide clear instructions on how to run the application (e.g., `uvicorn main:app --reload`).
     -   If it's an API, provide a `curl` example. If it's a CLI, provide a command-line example.
 
-9.  **🤝 Contributing:**
+10. **🤝 Contributing:**
     -   A welcoming section encouraging contributions.
     -   Briefly outline the fork -> branch -> pull request workflow.
 
-10. **📝 License:**
+11. **📝 License:**
     -   State the license (e.g., "Distributed under the MIT License. See `LICENSE` for more information.").
 
 **Final Instruction:** The output MUST be ONLY the raw Markdown content. Do not add any commentary, greetings, or explanations before or after the Markdown. Adhere strictly to the requested format and quality bar.
