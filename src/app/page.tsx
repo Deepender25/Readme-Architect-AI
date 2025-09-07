@@ -16,11 +16,18 @@ export default function Home() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center relative z-10">
-        <div className="text-center">
-          <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
-            <div className="w-4 h-4 bg-white rounded-sm" />
+        <div className="cube-loading-container">
+          <div className="flex flex-col items-center">
+            <div className="cube-loader-global cube-loader-lg">
+              <div className="cube-global"></div>
+              <div className="cube-global"></div>
+              <div className="cube-global"></div>
+              <div className="cube-global"></div>
+            </div>
+            <div className="mt-6 text-center">
+              <p className="text-green-400 text-lg font-medium">Loading AutoDoc AI...</p>
+            </div>
           </div>
-          <p className="text-green-400">Loading AutoDoc AI...</p>
         </div>
       </div>
     }>

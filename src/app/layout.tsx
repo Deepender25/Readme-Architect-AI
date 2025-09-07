@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { AuthProvider } from '@/lib/auth';
 import EnhancedGridBackground from '@/components/enhanced-grid-background';
 import "./globals.css";
+import "@/styles/newloader.css";
 
 export default function RootLayout({
   children,

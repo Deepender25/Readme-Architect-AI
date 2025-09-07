@@ -568,7 +568,12 @@ export default function GitHubReadmeEditor({
                 className="gap-2 bg-green-600 hover:bg-green-700 text-white"
               >
                 {isGenerating ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <div className="cube-loader-global cube-loader-inline">
+                    <div className="cube-global"></div>
+                    <div className="cube-global"></div>
+                    <div className="cube-global"></div>
+                    <div className="cube-global"></div>
+                  </div>
                 ) : (
                   <GitBranch className="h-4 w-4" />
                 )}

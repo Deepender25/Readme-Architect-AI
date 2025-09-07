@@ -99,10 +99,19 @@ function ReadmeViewContent() {
   if (isLoading) {
     return (
       <div className="h-screen bg-black flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-green-400" />
-          <div className="text-lg font-medium text-white mb-2">Loading README...</div>
-          <div className="text-sm text-gray-400">Fetching your generated documentation</div>
+        <div className="cube-loading-container">
+          <div className="flex flex-col items-center">
+            <div className="cube-loader-global cube-loader-lg">
+              <div className="cube-global"></div>
+              <div className="cube-global"></div>
+              <div className="cube-global"></div>
+              <div className="cube-global"></div>
+            </div>
+            <div className="mt-6 text-center">
+              <div className="text-lg font-medium text-white mb-2">Loading README...</div>
+              <div className="text-sm text-gray-400">Fetching your generated documentation</div>
+            </div>
+          </div>
         </div>
       </div>
     )
