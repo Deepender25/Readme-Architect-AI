@@ -125,11 +125,20 @@ export default function GeneratePage() {
     <Suspense fallback={
       <LayoutWrapper>
         <ContentSection background="glass" className="text-center py-20">
-          <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 animate-pulse">
-            <FileText className="w-8 h-8 text-white" />
+          <div className="cube-loading-container">
+            <div className="flex flex-col items-center">
+              <div className="cube-loader-global">
+                <div className="cube-global"></div>
+                <div className="cube-global"></div>
+                <div className="cube-global"></div>
+                <div className="cube-global"></div>
+              </div>
+              <div className="mt-6 text-center">
+                <h2 className="text-2xl font-bold text-white mb-4">Loading Generator</h2>
+                <p className="text-gray-400">Preparing your README generation experience...</p>
+              </div>
+            </div>
           </div>
-          <h2 className="text-2xl font-bold text-white mb-4">Loading Generator</h2>
-          <p className="text-gray-400">Preparing your README generation experience...</p>
         </ContentSection>
       </LayoutWrapper>
     }>

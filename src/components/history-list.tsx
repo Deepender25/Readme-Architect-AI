@@ -99,9 +99,18 @@ export default function HistoryList({ onSelectHistory }: HistoryListProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="flex items-center gap-3 text-green-400">
-          <Loader2 className="w-5 h-5 animate-spin" />
-          <span>Loading your history...</span>
+        <div className="cube-loading-container">
+          <div className="flex flex-col items-center">
+            <div className="cube-loader-global">
+              <div className="cube-global"></div>
+              <div className="cube-global"></div>
+              <div className="cube-global"></div>
+              <div className="cube-global"></div>
+            </div>
+            <div className="mt-4 text-center text-green-400 text-sm font-medium">
+              Loading your history...
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -200,7 +209,12 @@ export default function HistoryList({ onSelectHistory }: HistoryListProps) {
                     className="opacity-0 group-hover:opacity-100 transition-opacity border-red-500/50 text-red-400 hover:bg-red-500/10"
                   >
                     {deletingId === item.id ? (
-                      <Loader2 className="w-3 h-3 animate-spin" />
+                      <div className="cube-loader-global cube-loader-inline">
+                        <div className="cube-global"></div>
+                        <div className="cube-global"></div>
+                        <div className="cube-global"></div>
+                        <div className="cube-global"></div>
+                      </div>
                     ) : (
                       <Trash2 className="w-3 h-3" />
                     )}

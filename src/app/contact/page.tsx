@@ -209,8 +209,13 @@ export default function ContactPage() {
                   >
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        Sending...
+                        <div className="cube-loader-global cube-loader-inline">
+                          <div className="cube-global"></div>
+                          <div className="cube-global"></div>
+                          <div className="cube-global"></div>
+                          <div className="cube-global"></div>
+                        </div>
+                        <span className="ml-2">Sending...</span>
                       </>
                     ) : (
                       <>

@@ -64,14 +64,20 @@ function ReadmeOutputContent() {
           animate={{ opacity: 1, scale: 1 }}
           className="text-center"
         >
-          <div className="relative">
-            <div className="absolute -inset-2 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-full blur-lg" />
-            <div className="relative w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Loader2 className="w-8 h-8 text-black animate-spin" />
+          <div className="cube-loading-container">
+            <div className="flex flex-col items-center">
+              <div className="cube-loader-global">
+                <div className="cube-global"></div>
+                <div className="cube-global"></div>
+                <div className="cube-global"></div>
+                <div className="cube-global"></div>
+              </div>
+              <div className="mt-6 text-center">
+                <h2 className="text-xl font-semibold text-white mb-2">Loading README</h2>
+                <p className="text-gray-400">Preparing your generated documentation...</p>
+              </div>
             </div>
           </div>
-          <h2 className="text-xl font-semibold text-white mb-2">Loading README</h2>
-          <p className="text-gray-400">Preparing your generated documentation...</p>
         </motion.div>
       </div>
     )
@@ -86,14 +92,20 @@ function ReadmeOutputContent() {
           animate={{ opacity: 1, scale: 1 }}
           className="text-center"
         >
-          <div className="relative">
-            <div className="absolute -inset-2 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-full blur-lg" />
-            <div className="relative w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Loader2 className="w-8 h-8 text-black animate-spin" />
+          <div className="cube-loading-container">
+            <div className="flex flex-col items-center">
+              <div className="cube-loader-global">
+                <div className="cube-global"></div>
+                <div className="cube-global"></div>
+                <div className="cube-global"></div>
+                <div className="cube-global"></div>
+              </div>
+              <div className="mt-6 text-center">
+                <h2 className="text-xl font-semibold text-white mb-2">Redirecting...</h2>
+                <p className="text-gray-400">Taking you back to the home page...</p>
+              </div>
             </div>
           </div>
-          <h2 className="text-xl font-semibold text-white mb-2">Redirecting...</h2>
-          <p className="text-gray-400">Taking you back to the home page...</p>
         </motion.div>
       </div>
     )
