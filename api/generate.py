@@ -356,6 +356,7 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
     - [Tech Stack & Architecture](#️-tech-stack--architecture)
     - [Project Structure](#-project-structure)
     {f"- [Demo & Screenshots](#-demo--screenshots)" if include_demo and (num_screenshots > 0 or num_videos > 0) else ""}
+    - [API Keys Setup](#-api-keys-setup) *(Include only if project requires API keys)*
     - [Getting Started](#-getting-started)
     - [Usage](#-usage)
     - [Contributing](#-contributing)
@@ -401,19 +402,19 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
 
 {demo_section}
 
-8.  **🚀 Getting Started:**
+9.  **🚀 Getting Started:**
     -   **Prerequisites:** A bulleted list of software the user needs (e.g., Python 3.9+, Node.js v18+).
     -   **Installation:** A numbered, step-by-step guide with explicit, copy-pastable commands in code blocks for different package managers if inferable (e.g., `pip install -r requirements.txt`).
 
-9.  **🔧 Usage:**
+10. **🔧 Usage:**
     -   Provide clear instructions on how to run the application (e.g., `uvicorn main:app --reload`).
     -   If it's an API, provide a `curl` example. If it's a CLI, provide a command-line example.
 
-10. **🤝 Contributing:**
+11. **🤝 Contributing:**
     -   A welcoming section encouraging contributions.
     -   Briefly outline the fork -> branch -> pull request workflow.
 
-11. **📝 License:**
+12. **📝 License:**
     -   State the license (e.g., "Distributed under the MIT License. See `LICENSE` for more information.").
 
 **Final Instruction:** The output MUST be ONLY the raw Markdown content. Do not add any commentary, greetings, or explanations before or after the Markdown. Adhere strictly to the requested format and quality bar.
