@@ -136,9 +136,10 @@ class handler(BaseHTTPRequestHandler):
                 if user_data and readme_content:
                     from .database import save_readme_history
                     try:
-                        # Extract repository name from URL
-                        repo_name = repo_url.split('/')[-2:] if '/' in repo_url else [repo_url]
-                        repo_name = '/'.join(repo_name).replace('.git', '')
+                        # Extract repository name from normalized URL
+                        normalized_url = self.normalize_github_url(repo_url)
+                        repo_name = normalized_url.split('/')[-2:] if '/' in normalized_url else [normalized_url]
+                        repo_name = '/'.join(repo_name)
                         
                         print(f"💾 Saving history for user: {user_data.get('username', 'unknown')}")
                         
@@ -220,13 +221,23 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps(data).encode())
 
+    def normalize_github_url(self, repo_url: str) -> str:
+        """Normalize GitHub URL by removing .git suffix and trailing slashes"""
+        normalized_url = repo_url.strip()
+        if normalized_url.endswith('/'):
+            normalized_url = normalized_url[:-1]
+        if normalized_url.endswith('.git'):
+            normalized_url = normalized_url[:-4]
+        return normalized_url
+
     def download_repo(self, repo_url: str):
         try:
-            if "github.com" in repo_url:
-                repo_url = repo_url.replace("github.com", "api.github.com/repos")
-                if repo_url.endswith("/"):
-                    repo_url = repo_url[:-1]
-                zip_url = repo_url + "/zipball"
+            # First normalize the URL
+            normalized_url = self.normalize_github_url(repo_url)
+            
+            if "github.com" in normalized_url:
+                api_url = normalized_url.replace("github.com", "api.github.com/repos")
+                zip_url = api_url + "/zipball"
             else:
                 return None, "Invalid GitHub URL"
             

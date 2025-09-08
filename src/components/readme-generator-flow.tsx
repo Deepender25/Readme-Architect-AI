@@ -74,9 +74,22 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
     }
   }, [initialValues.repositoryUrl, initialValues.projectName]);
 
+  const normalizeGitHubUrl = (url: string) => {
+    // Remove trailing slash and .git suffix for consistent processing
+    let normalizedUrl = url.trim();
+    if (normalizedUrl.endsWith('/')) {
+      normalizedUrl = normalizedUrl.slice(0, -1);
+    }
+    if (normalizedUrl.endsWith('.git')) {
+      normalizedUrl = normalizedUrl.slice(0, -4);
+    }
+    return normalizedUrl;
+  };
+
   const validateGitHubUrl = (url: string) => {
-    const githubRegex = /^https?:\/\/(www\.)?github\.com\/[\w\-\.]+\/[\w\-\.]+\/?$/;
-    return githubRegex.test(url);
+    // More comprehensive regex that accepts .git suffix and various formats
+    const githubRegex = /^https?:\/\/(www\.)?github\.com\/[\w\-\.]+\/[\w\-\.]+(\.git)?\/?$/;
+    return githubRegex.test(url.trim());
   };
 
   const handleUrlSubmit = () => {
@@ -89,6 +102,10 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
       setError('Please enter a valid GitHub repository URL');
       return;
     }
+    
+    // Normalize the URL for consistent processing
+    const normalizedUrl = normalizeGitHubUrl(repositoryUrl);
+    setRepositoryUrl(normalizedUrl);
     
     setError('');
     setCurrentStep('name');

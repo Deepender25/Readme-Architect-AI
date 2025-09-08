@@ -62,8 +62,20 @@ export async function GET(request: NextRequest) {
   }
 }
 
+function normalizeGitHubUrl(url: string): string {
+  let normalized = url.trim();
+  if (normalized.endsWith('/')) {
+    normalized = normalized.slice(0, -1);
+  }
+  if (normalized.endsWith('.git')) {
+    normalized = normalized.slice(0, -4);
+  }
+  return normalized;
+}
+
 function generateFallbackReadme(repoUrl: string, projectName: string, includeDemo: boolean, numScreenshots: number, numVideos: number): string {
-  const repoName = projectName || repoUrl.split('/').pop()?.replace('.git', '') || 'Project';
+  const normalizedUrl = normalizeGitHubUrl(repoUrl);
+  const repoName = projectName || normalizedUrl.split('/').pop() || 'Project';
   
   let readme = `<h1 align="center">${repoName}</h1>
 <p align="center">A modern, feature-rich application built with cutting-edge technologies</p>
@@ -170,7 +182,7 @@ ${repoName} is a powerful application designed to solve modern development chall
 
 1. Clone the repository:
    \`\`\`bash
-   git clone ${repoUrl}
+   git clone ${repoUrl.endsWith('.git') ? repoUrl : repoUrl + '.git'}
    cd ${repoName.toLowerCase()}
    \`\`\`
 
