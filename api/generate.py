@@ -173,6 +173,42 @@ class handler(BaseHTTPRequestHandler):
             
         except Exception as e:
             print(f"❌ Error: {str(e)}")
+            
+            # Send error notification for general API errors
+            try:
+                from .error_notifier import notify_api_error
+                
+                # Get user info if available
+                user_info = None
+                try:
+                    cookie_header = self.headers.get('Cookie', '')
+                    if 'github_user=' in cookie_header:
+                        for cookie in cookie_header.split(';'):
+                            if cookie.strip().startswith('github_user='):
+                                import base64
+                                import json
+                                cookie_value = cookie.split('=')[1].strip()
+                                user_data = json.loads(base64.b64decode(cookie_value).decode())
+                                user_info = {
+                                    'username': user_data.get('username', 'Unknown'),
+                                    'github_id': user_data.get('github_id', 'Unknown')
+                                }
+                                break
+                except Exception:
+                    user_info = {'type': 'Anonymous user'}
+                
+                notify_api_error(
+                    endpoint='/api/generate.py',
+                    error_message=str(e),
+                    request_data={
+                        'repo_url': repo_url,
+                        'project_name': project_name
+                    },
+                    user_info=user_info
+                )
+            except Exception as notify_error:
+                print(f"⚠️ Failed to send API error notification: {notify_error}")
+            
             self.send_json_response({"error": str(e)}, 500)
 
     def send_json_response(self, data, status_code=200):
@@ -458,8 +494,43 @@ MIT
                 return readme_content, None
                 
             except Exception as e:
-                print(f"❌ Gemini error: {str(e)}")
-                return None, f"AI generation failed: {str(e)}"
+                print(f"❌ Gemini AI error: {str(e)}")
+                
+                # Import error notifier and send notification
+                try:
+                    from .error_notifier import notify_ai_failure
+                    
+                    # Get user info if available from cookie
+                    user_info = None
+                    try:
+                        cookie_header = self.headers.get('Cookie', '')
+                        if 'github_user=' in cookie_header:
+                            for cookie in cookie_header.split(';'):
+                                if cookie.strip().startswith('github_user='):
+                                    import base64
+                                    import json
+                                    cookie_value = cookie.split('=')[1].strip()
+                                    user_data = json.loads(base64.b64decode(cookie_value).decode())
+                                    user_info = {
+                                        'username': user_data.get('username', 'Unknown'),
+                                        'github_id': user_data.get('github_id', 'Unknown')
+                                    }
+                                    break
+                    except Exception:
+                        user_info = {'type': 'Anonymous user'}
+                    
+                    # Send error notification
+                    notify_ai_failure(
+                        repo_url=repo_url,
+                        project_name=project_name,
+                        error_message=str(e),
+                        user_info=user_info
+                    )
+                except Exception as notify_error:
+                    print(f"⚠️ Failed to send error notification: {notify_error}")
+                
+                # Return user-friendly error message instead of fallback template
+                return None, "AI generation service is currently unavailable. Our team has been notified and is working to resolve this issue. Please try again in a few minutes."
                 
         except Exception as e:
             return None, str(e)

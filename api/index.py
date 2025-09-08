@@ -42,12 +42,11 @@ class handler(BaseHTTPRequestHandler):
 
         protected_paths = [
             '/api/repositories',
-            '/api/generate',
             '/api/history',
             '/api/history/' # for individual history items
         ]
 
-        # Centralized authentication check
+        # Centralized authentication check (exclude /api/generate and /api/stream)
         if any(parsed_url.path.startswith(p) for p in protected_paths):
             user_data = self.get_user_from_cookie()
             if not user_data:
@@ -65,6 +64,8 @@ class handler(BaseHTTPRequestHandler):
             self.handle_repositories()
         elif parsed_url.path == '/api/generate':
             self.handle_generate(query_params)
+        elif parsed_url.path == '/api/stream':
+            self.handle_stream(query_params)
         elif parsed_url.path == '/api/history':
             self.handle_history()
         elif parsed_url.path.startswith('/api/history/'):
@@ -275,8 +276,12 @@ class handler(BaseHTTPRequestHandler):
         repo_url = query_params.get('repo_url', [''])[0]
         project_name = query_params.get('project_name', [''])[0]
         include_demo = query_params.get('include_demo', ['false'])[0].lower() == 'true'
-        num_screenshots = int(query_params.get('num_screenshots', ['0'])[0])
-        num_videos = int(query_params.get('num_videos', ['0'])[0])
+        try:
+            num_screenshots = int(query_params.get('num_screenshots', ['0'])[0])
+            num_videos = int(query_params.get('num_videos', ['0'])[0])
+        except ValueError:
+            num_screenshots = 0
+            num_videos = 0
         
         if not repo_url:
             self.send_json_response({"error": "Repository URL is required"}, 400)
@@ -345,7 +350,171 @@ class handler(BaseHTTPRequestHandler):
             self.send_json_response({"readme": readme_content})
             
         except Exception as e:
+            # Send error notification for general API errors
+            try:
+                from .error_notifier import notify_api_error
+                user_data = self.get_user_from_cookie()
+                user_info = {'type': 'Anonymous user'}
+                if user_data:
+                    user_info = {
+                        'username': user_data.get('username', 'Unknown'),
+                        'github_id': user_data.get('github_id', 'Unknown')
+                    }
+                
+                notify_api_error(
+                    endpoint='/api/generate',
+                    error_message=str(e),
+                    request_data={
+                        'repo_url': repo_url,
+                        'project_name': project_name
+                    },
+                    user_info=user_info
+                )
+            except Exception as notify_error:
+                print(f"⚠️ Failed to send API error notification: {notify_error}")
+            
             self.send_json_response({"error": str(e)}, 500)
+
+    def handle_stream(self, query_params):
+        """Handle streaming README generation with real-time updates"""
+        repo_url = query_params.get('repo_url', [''])[0]
+        project_name = query_params.get('project_name', [''])[0]
+        include_demo = query_params.get('include_demo', ['false'])[0].lower() == 'true'
+        try:
+            num_screenshots = int(query_params.get('num_screenshots', ['0'])[0])
+            num_videos = int(query_params.get('num_videos', ['0'])[0])
+        except ValueError:
+            num_screenshots = 0
+            num_videos = 0
+        
+        if not repo_url:
+            self.send_json_response({"error": "Repository URL is required"}, 400)
+            return
+        
+        # Set up Server-Sent Events headers
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/event-stream')
+        self.send_header('Cache-Control', 'no-cache')
+        self.send_header('Connection', 'keep-alive')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        self.end_headers()
+        
+        def send_stream_event(data):
+            try:
+                event_data = json.dumps(data)
+                self.wfile.write(f"data: {event_data}\n\n".encode('utf-8'))
+                self.wfile.flush()
+            except Exception as e:
+                print(f"Error sending stream event: {e}")
+        
+        try:
+            # Send initial status
+            send_stream_event({"status": "🔄 Connecting to repository..."})
+            
+            # Download repository
+            send_stream_event({"status": "📥 Downloading repository files..."})
+            repo_path, error = self.download_repo(repo_url)
+            if error:
+                send_stream_event({"error": error})
+                return
+            
+            # Analyze codebase
+            send_stream_event({"status": "🔍 Analyzing codebase structure..."})
+            analysis, error = self.analyze_codebase(repo_path)
+            if error:
+                send_stream_event({"error": error})
+                return
+            
+            # Generate README
+            send_stream_event({"status": "🤖 Generating professional documentation..."})
+            readme_content, error = self.generate_readme_with_gemini(
+                analysis, project_name, include_demo, num_screenshots, num_videos
+            )
+            if error:
+                # Log error and send notification for streaming failures
+                try:
+                    from .error_notifier import notify_ai_failure
+                    user_data = self.get_user_from_cookie()
+                    user_info = {'type': 'Anonymous user'}
+                    if user_data:
+                        user_info = {
+                            'username': user_data.get('username', 'Unknown'),
+                            'github_id': user_data.get('github_id', 'Unknown')
+                        }
+                    
+                    notify_ai_failure(
+                        repo_url=repo_url,
+                        project_name=project_name,
+                        error_message=error,
+                        user_info=user_info
+                    )
+                except Exception as notify_error:
+                    print(f"⚠️ Failed to send error notification in stream: {notify_error}")
+                
+                send_stream_event({"error": error})
+                return
+            
+            # Clean up temporary files
+            if repo_path and os.path.exists(repo_path):
+                shutil.rmtree(os.path.dirname(repo_path), ignore_errors=True)
+            
+            # Save to history if user is authenticated
+            user_data = self.get_user_from_cookie()
+            if user_data and readme_content:
+                try:
+                    from .database import save_readme_history
+                    repo_name = repo_url.split('/')[-2:] if '/' in repo_url else [repo_url]
+                    repo_name = '/'.join(repo_name).replace('.git', '')
+                    
+                    success = save_readme_history(
+                        user_id=str(user_data.get('github_id', '')),
+                        username=user_data.get('username', ''),
+                        repository_url=repo_url,
+                        repository_name=repo_name,
+                        readme_content=readme_content,
+                        project_name=project_name if project_name else None,
+                        generation_params={
+                            'include_demo': include_demo,
+                            'num_screenshots': num_screenshots,
+                            'num_videos': num_videos
+                        }
+                    )
+                    
+                    if success:
+                        print("✅ History saved successfully in streaming")
+                except Exception as e:
+                    print(f"⚠️ Failed to save history in streaming: {e}")
+            
+            # Send final result
+            send_stream_event({"readme": readme_content})
+            
+        except Exception as e:
+            # Send error notification for stream errors
+            try:
+                from .error_notifier import notify_api_error
+                user_data = self.get_user_from_cookie()
+                user_info = {'type': 'Anonymous user'}
+                if user_data:
+                    user_info = {
+                        'username': user_data.get('username', 'Unknown'),
+                        'github_id': user_data.get('github_id', 'Unknown')
+                    }
+                
+                notify_api_error(
+                    endpoint='/api/stream',
+                    error_message=str(e),
+                    request_data={
+                        'repo_url': repo_url,
+                        'project_name': project_name
+                    },
+                    user_info=user_info
+                )
+            except Exception as notify_error:
+                print(f"⚠️ Failed to send stream error notification: {notify_error}")
+            
+            send_stream_event({"error": str(e)})
 
     def get_user_from_cookie(self):
         cookie_header = self.headers.get('Cookie', '')
@@ -669,7 +838,38 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
             return readme_content, None
             
         except Exception as e:
-            return None, str(e)
+            print(f"❌ Gemini AI error: {str(e)}")
+            
+            # Import error notifier and send notification
+            try:
+                from .error_notifier import notify_ai_failure
+                
+                # Get user info if available from cookie
+                user_info = None
+                try:
+                    user_data = self.get_user_from_cookie()
+                    if user_data:
+                        user_info = {
+                            'username': user_data.get('username', 'Unknown'),
+                            'github_id': user_data.get('github_id', 'Unknown')
+                        }
+                    else:
+                        user_info = {'type': 'Anonymous user'}
+                except Exception:
+                    user_info = {'type': 'Anonymous user'}
+                
+                # Send error notification
+                notify_ai_failure(
+                    repo_url='Not available in index.py context',
+                    project_name=project_name,
+                    error_message=str(e),
+                    user_info=user_info
+                )
+            except Exception as notify_error:
+                print(f"⚠️ Failed to send error notification: {notify_error}")
+            
+            # Return user-friendly error message instead of fallback template
+            return None, "AI generation service is currently unavailable. Our team has been notified and is working to resolve this issue. Please try again in a few minutes."
 
     def handle_history(self):
         """Handle history requests"""
