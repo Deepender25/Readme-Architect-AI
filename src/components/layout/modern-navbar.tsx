@@ -69,15 +69,16 @@ export default function ModernNavbar() {
             : 'glass-light border-b border-transparent'
         }`}
       >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl h-full performance-optimized relative">
-          <div className="flex items-center justify-between h-full gap-4">
-            {/* Logo */}
-            <motion.div
-              className="flex items-center gap-3 cursor-pointer shrink-0 relative min-w-0"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => router.push('/')}
-            >
+        <div className="w-full px-4 sm:px-6 lg:px-8 h-full performance-optimized relative">
+          <div className="flex items-center h-full w-full">
+            {/* Logo - Far Left */}
+            <div className="flex-shrink-0">
+              <motion.div
+                className="flex items-center gap-3 cursor-pointer relative"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => router.push('/')}
+              >
               <motion.div
                 className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/30"
                 animate={{
@@ -112,10 +113,11 @@ export default function ModernNavbar() {
                   README Generator
                 </span>
               </div>
-            </motion.div>
+              </motion.div>
+            </div>
 
-            {/* Desktop Navigation Links */}
-            <div className="hidden lg:flex items-center gap-1 flex-1 justify-center max-w-xl mx-6">
+            {/* Desktop Navigation Links - Centered */}
+            <div className="hidden lg:flex items-center gap-8 flex-1 justify-center">
               {navLinks.map((link) => {
                 const isActive = isActiveLink(link.href);
                 const Icon = link.icon;
@@ -123,7 +125,7 @@ export default function ModernNavbar() {
                   <motion.a
                     key={link.name}
                     href={link.href}
-                    className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 group whitespace-nowrap ${
+                    className={`relative flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium transition-all duration-300 group whitespace-nowrap ${
                       isActive 
                         ? 'text-green-400 bg-green-400/10 border border-green-400/20' 
                         : 'text-foreground/70 hover:text-green-400 hover:bg-green-400/5'
@@ -152,8 +154,8 @@ export default function ModernNavbar() {
               })}
             </div>
 
-            {/* Desktop Auth Section */}
-            <div className="hidden lg:flex items-center gap-3 shrink-0 min-w-0">
+            {/* Desktop Auth Section - Far Right */}
+            <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
               <AnimatePresence mode="wait">
                 {!isAuthenticated ? (
                   <motion.button
@@ -165,7 +167,7 @@ export default function ModernNavbar() {
                     whileTap={{ scale: 0.98 }}
                       onClick={login}
                       disabled={isLoading}
-                      className="relative flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-400 border border-green-400/30 rounded-lg overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50 whitespace-nowrap"
+                      className="relative flex items-center gap-2 px-6 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50 whitespace-nowrap"
                   >
                     <Github className="w-4 h-4" />
                     <span className="relative z-10">
@@ -187,7 +189,7 @@ export default function ModernNavbar() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setDropdownOpen(!dropdownOpen)}
-                      className="flex items-center gap-3 px-3 py-2 text-sm font-medium glass-button rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-green-400/20 group min-w-0"
+                      className="flex items-center gap-3 px-5 py-3 text-sm font-medium glass-button rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-green-400/20 group min-w-0"
                     >
                       <div className="relative shrink-0">
                         <img
@@ -319,8 +321,32 @@ export default function ModernNavbar() {
               </AnimatePresence>
             </div>
 
-            {/* Mobile menu button */}
-            <div className="lg:hidden shrink-0">
+            {/* Mobile Navigation Links - Hidden on mobile, centered on tablet */}
+            <div className="hidden md:flex lg:hidden items-center gap-6 flex-1 justify-center">
+              {navLinks.slice(0, 2).map((link) => {
+                const isActive = isActiveLink(link.href);
+                const Icon = link.icon;
+                return (
+                  <motion.a
+                    key={link.name}
+                    href={link.href}
+                    className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 group whitespace-nowrap ${
+                      isActive 
+                        ? 'text-green-400 bg-green-400/10 border border-green-400/20' 
+                        : 'text-foreground/70 hover:text-green-400 hover:bg-green-400/5'
+                    }`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {link.name}
+                  </motion.a>
+                );
+              })}
+            </div>
+
+            {/* Mobile menu button - Far Right */}
+            <div className="lg:hidden flex-shrink-0 ml-auto">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -366,7 +392,7 @@ export default function ModernNavbar() {
             transition={{ duration: 0.25, ease: "easeInOut" }}
             className="lg:hidden mobile-nav-visible mobile-hamburger-menu"
           >
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+            <div className="w-full px-4 sm:px-6 lg:px-8">
               <div className="py-4 space-y-1">
                 {navLinks.map((link, index) => {
                   const isActive = isActiveLink(link.href);
