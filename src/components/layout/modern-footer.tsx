@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Github, Instagram, Mail, Heart, FileText, Zap, Code2, Star, Clock } from 'lucide-react';
+import { Github, Instagram, Mail, Heart, FileText, Zap, Code2, Star, Clock, ArrowRight } from 'lucide-react';
 
 export default function ModernFooter() {
   const currentYear = new Date().getFullYear();
@@ -34,105 +34,98 @@ export default function ModernFooter() {
   ];
 
   return (
-    <footer className="relative border-t border-green-400/20 bg-black/40 backdrop-blur-xl">
-      <div className="absolute inset-0 bg-gradient-to-t from-green-400/5 to-transparent" />
+    <footer className="relative mt-16 border-t border-green-400/20 bg-black/80 backdrop-blur-xl">
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-t from-green-400/10 via-green-400/5 to-transparent" />
       
-      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="py-12 lg:py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
-            {/* Brand Section */}
-            <div className="lg:col-span-2">
+        <div className="py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            
+            {/* Brand Section - Takes up more space */}
+            <div className="lg:col-span-5">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="flex items-center gap-3 mb-6"
+                className="space-y-6"
               >
-                <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/30">
-                  <FileText className="w-5 h-5 text-white" />
+                {/* Brand Header */}
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/30">
+                    <FileText className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-2xl text-white">AutoDoc AI</h3>
+                    <p className="text-green-400 font-medium">README Generator</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-xl text-white">AutoDoc AI</h3>
-                  <p className="text-sm text-green-400">README Generator</p>
-                </div>
-              </motion.div>
-              
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-gray-400 text-sm leading-relaxed mb-6 max-w-md"
-              >
-                Transform your repositories with AI-powered README generation. 
-                Create professional documentation in seconds with our advanced 
-                machine learning algorithms.
-              </motion.p>
+                
+                {/* Description */}
+                <p className="text-gray-300 text-base leading-relaxed max-w-md">
+                  Transform your repositories with AI-powered README generation. 
+                  Create professional documentation in seconds with our advanced 
+                  machine learning algorithms.
+                </p>
 
-              {/* Stats */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="flex items-center gap-6 mb-6"
-              >
-                <div className="flex items-center gap-2 text-sm">
-                  <Star className="w-4 h-4 text-green-400" />
-                  <span className="text-green-400 font-semibold">10K+</span>
-                  <span className="text-gray-400">READMEs</span>
+                {/* Stats */}
+                <div className="flex items-center gap-8">
+                  <div className="flex items-center gap-2">
+                    <Star className="w-5 h-5 text-green-400" />
+                    <span className="text-green-400 font-bold text-lg">10K+</span>
+                    <span className="text-gray-300">READMEs</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-green-400" />
+                    <span className="text-green-400 font-bold text-lg">99%</span>
+                    <span className="text-gray-300">Accuracy</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Zap className="w-4 h-4 text-green-400" />
-                  <span className="text-green-400 font-semibold">99%</span>
-                  <span className="text-gray-400">Accuracy</span>
-                </div>
-              </motion.div>
 
-              {/* Social Links */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="flex items-center gap-3"
-              >
-                {socialLinks.map((social) => {
-                  const Icon = social.icon;
-                  return (
-                    <motion.a
-                      key={social.name}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ scale: 1.1, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="p-2 bg-green-400/10 border border-green-400/20 rounded-lg text-green-400 hover:bg-green-400/20 hover:border-green-400/40 transition-all duration-300"
-                    >
-                      <Icon className="w-4 h-4" />
-                    </motion.a>
-                  );
-                })}
+                {/* Social Links */}
+                <div className="flex items-center gap-4">
+                  {socialLinks.map((social) => {
+                    const Icon = social.icon;
+                    return (
+                      <motion.a
+                        key={social.name}
+                        href={social.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        whileHover={{ scale: 1.1, y: -2 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="p-3 bg-green-400/10 border border-green-400/20 rounded-xl text-green-400 hover:bg-green-400/20 hover:border-green-400/40 transition-all duration-300 group"
+                      >
+                        <Icon className="w-5 h-5" />
+                      </motion.a>
+                    );
+                  })}
+                </div>
               </motion.div>
             </div>
 
-            {/* Links Sections */}
-            <div className="grid grid-cols-1 sm:grid-cols-4 lg:grid-cols-4 gap-8 lg:col-span-3">
-              {/* Navigation Links */}
+            {/* Navigation Links - Simplified layout */}
+            <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-4 gap-8">
+              
+              {/* Navigation */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
-                <h4 className="font-semibold text-white mb-4 flex items-center gap-2">
-                  <Code2 className="w-4 h-4 text-green-400" />
+                <h4 className="font-bold text-white mb-6 text-lg flex items-center gap-2">
+                  <Code2 className="w-5 h-5 text-green-400" />
                   Navigation
                 </h4>
-                <ul className="space-y-3">
+                <ul className="space-y-4">
                   {footerLinks.navigation.map((link) => (
                     <li key={link.name}>
                       <a
                         href={link.href}
-                        className="text-gray-400 hover:text-green-400 transition-colors duration-300 text-sm"
+                        className="text-gray-300 hover:text-green-400 transition-colors duration-300 text-base flex items-center gap-2 group"
                       >
+                        <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                         {link.name}
                       </a>
                     </li>
@@ -140,59 +133,26 @@ export default function ModernFooter() {
                 </ul>
               </motion.div>
 
-              {/* Pricing Links */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.15 }}
-              >
-                <h4 className="font-semibold text-white mb-4 flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-green-400" />
-                  Pricing
-                </h4>
-                <ul className="space-y-3">
-                  {footerLinks.pricing.map((link) => (
-                    <li key={link.name}>
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-400 text-sm">
-                          {link.name}
-                        </span>
-                        {link.comingSoon && (
-                          <span className="text-xs bg-green-400/20 text-green-400 px-2 py-1 rounded-full flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            Coming Soon
-                          </span>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-
-              {/* Resources Links */}
+              {/* Pricing */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <h4 className="font-semibold text-white mb-4">Resources</h4>
-                <ul className="space-y-3">
-                  {footerLinks.resources.map((link) => (
+                <h4 className="font-bold text-white mb-6 text-lg flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-green-400" />
+                  Pricing
+                </h4>
+                <ul className="space-y-4">
+                  {footerLinks.pricing.map((link) => (
                     <li key={link.name}>
-                      <div className="flex items-center gap-2">
-                        <a
-                          href={link.href}
-                          className="text-gray-400 hover:text-green-400 transition-colors duration-300 text-sm"
-                          target={link.href.startsWith('http') ? '_blank' : undefined}
-                          rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                        >
-                          {link.name}
-                        </a>
+                      <div className="space-y-2">
+                        <span className="text-gray-300 text-base">{link.name}</span>
                         {link.comingSoon && (
-                          <span className="text-xs bg-green-400/20 text-green-400 px-2 py-1 rounded-full flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
+                          <div className="inline-flex items-center gap-2 bg-green-400/20 text-green-400 px-3 py-1 rounded-full text-sm">
+                            <Clock className="w-4 h-4" />
                             Coming Soon
-                          </span>
+                          </div>
                         )}
                       </div>
                     </li>
@@ -200,20 +160,53 @@ export default function ModernFooter() {
                 </ul>
               </motion.div>
 
-              {/* Fun Project Links */}
+              {/* Resources */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
-                <h4 className="font-semibold text-white mb-4">Fun Project</h4>
-                <ul className="space-y-3">
+                <h4 className="font-bold text-white mb-6 text-lg">Resources</h4>
+                <ul className="space-y-4">
+                  {footerLinks.resources.map((link) => (
+                    <li key={link.name}>
+                      <div className="space-y-2">
+                        <a
+                          href={link.href}
+                          className="text-gray-300 hover:text-green-400 transition-colors duration-300 text-base flex items-center gap-2 group"
+                          target={link.href.startsWith('http') ? '_blank' : undefined}
+                          rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                        >
+                          <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          {link.name}
+                        </a>
+                        {link.comingSoon && (
+                          <div className="inline-flex items-center gap-2 bg-green-400/20 text-green-400 px-3 py-1 rounded-full text-sm ml-6">
+                            <Clock className="w-4 h-4" />
+                            Coming Soon
+                          </div>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+
+              {/* Fun Project */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <h4 className="font-bold text-white mb-6 text-lg">Fun Project</h4>
+                <ul className="space-y-4">
                   {footerLinks.funProject.map((link) => (
                     <li key={link.name}>
                       <a
                         href={link.href}
-                        className="text-gray-400 hover:text-green-400 transition-colors duration-300 text-sm"
+                        className="text-gray-300 hover:text-green-400 transition-colors duration-300 text-base flex items-center gap-2 group"
                       >
+                        <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                         {link.name}
                       </a>
                     </li>
@@ -228,33 +221,44 @@ export default function ModernFooter() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="py-6 border-t border-green-400/20"
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="py-8 border-t border-green-400/20"
         >
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-sm text-gray-400">
-              <span>© {currentYear} AutoDoc AI. Made with</span>
-              <motion.div
-                animate={{ 
-                  scale: [1, 1.2, 1],
-                  color: ['#10b981', '#ef4444', '#10b981']
-                }}
-                transition={{ 
-                  duration: 2, 
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              >
-                <Heart className="w-4 h-4 fill-current" />
-              </motion.div>
-              <span>for developers</span>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            {/* Copyright */}
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-gray-300">
+              <span className="font-medium">© {currentYear} AutoDoc AI.</span>
+              <div className="flex items-center gap-2">
+                <span>Made with</span>
+                <motion.div
+                  animate={{ 
+                    scale: [1, 1.3, 1],
+                    color: ['#10b981', '#ef4444', '#10b981']
+                  }}
+                  transition={{ 
+                    duration: 2.5, 
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <Heart className="w-5 h-5 fill-current" />
+                </motion.div>
+                <span>for developers</span>
+              </div>
             </div>
             
-            <div className="flex items-center gap-6 text-sm text-gray-400">
-              <a href="/privacy" className="hover:text-green-400 transition-colors">
+            {/* Legal Links */}
+            <div className="flex items-center gap-8 text-gray-300">
+              <a 
+                href="/privacy" 
+                className="hover:text-green-400 transition-colors duration-300 font-medium"
+              >
                 Privacy Policy
               </a>
-              <a href="/terms" className="hover:text-green-400 transition-colors">
+              <a 
+                href="/terms" 
+                className="hover:text-green-400 transition-colors duration-300 font-medium"
+              >
                 Terms of Service
               </a>
             </div>
