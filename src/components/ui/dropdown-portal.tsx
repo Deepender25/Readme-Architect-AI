@@ -44,21 +44,27 @@ export default function DropdownPortal({ children, isOpen, triggerRef }: Dropdow
         let maxHeight = 'none'
         let isAbove = false
         
-        // More aggressive cutoff detection - if less than 350px space below
-        if (viewportHeight - rect.bottom < 350) {
-          // Position above the trigger
-          top = rect.top - dropdownHeight - 8
-          isAbove = true
-          
-          // If positioning above would go off-screen, adjust
-          if (top < padding) {
-            top = padding
-            maxHeight = `${rect.top - padding - 8}px`
+        // Check available space and position accordingly
+        const availableSpaceBelow = viewportHeight - rect.bottom - padding
+        const availableSpaceAbove = rect.top - padding
+        
+        if (availableSpaceBelow < 350) {
+          // Position above if there's more space or at least 200px
+          if (availableSpaceAbove > availableSpaceBelow || availableSpaceAbove >= 200) {
+            // Position at top of trigger and use transform to move up
+            top = rect.top - 8
+            isAbove = true
+            
+            // Don't let it go off the top of the screen
+            if (top - dropdownHeight < padding) {
+              top = dropdownHeight + padding
+              maxHeight = `${Math.min(availableSpaceAbove, 400)}px`
+            }
+          } else {
+            // Keep below but limit height
+            maxHeight = `${Math.max(200, availableSpaceBelow)}px`
           }
         }
-        
-        // Ensure dropdown doesn't go beyond viewport boundaries
-        top = Math.max(padding, Math.min(top, viewportHeight - padding - 100))
         
         setPosition({ top, left, maxHeight, isAbove })
       }
@@ -88,7 +94,9 @@ export default function DropdownPortal({ children, isOpen, triggerRef }: Dropdow
         maxHeight: position.maxHeight,
         overflowY: position.maxHeight !== 'none' ? 'auto' : 'visible',
         overflowX: 'visible',
-        pointerEvents: 'auto'
+        pointerEvents: 'auto',
+        transform: position.isAbove ? 'translateY(-100%)' : 'none',
+        transformOrigin: position.isAbove ? 'bottom' : 'top'
       }}
     >
       <div className={position.maxHeight !== 'none' ? 'max-h-full overflow-y-auto scrollbar-thin scrollbar-thumb-green-400/20 scrollbar-track-transparent' : ''}>
