@@ -31,10 +31,10 @@ export default function AccountSwitcher() {
           className="w-8 h-8 rounded-full border-2 border-green-500/50"
         />
         <div className="hidden sm:block text-left">
-          <p className="text-sm font-medium text-white truncate max-w-32">
+          <p className="text-sm font-medium text-white whitespace-nowrap">
             {user.name}
           </p>
-          <p className="text-xs text-gray-400 truncate max-w-32">
+          <p className="text-xs text-gray-400 whitespace-nowrap">
             @{user.username}
           </p>
         </div>
@@ -70,11 +70,11 @@ export default function AccountSwitcher() {
                     alt={user.name}
                     className="w-12 h-12 rounded-full border-2 border-green-500/50"
                   />
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-white truncate">{user.name}</h3>
-                    <p className="text-sm text-gray-400 truncate">@{user.username}</p>
+                  <div className="flex-1">
+                    <h3 className="font-medium text-white">{user.name}</h3>
+                    <p className="text-sm text-gray-400">@{user.username}</p>
                     {user.email && (
-                      <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                      <p className="text-xs text-gray-500">{user.email}</p>
                     )}
                   </div>
                 </div>

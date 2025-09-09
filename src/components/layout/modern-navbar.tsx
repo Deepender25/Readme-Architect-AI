@@ -189,7 +189,7 @@ export default function ModernNavbar() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setDropdownOpen(!dropdownOpen)}
-                      className="flex items-center gap-3 px-5 py-3 text-sm font-medium glass-button rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-green-400/20 group min-w-0"
+                      className="flex items-center gap-3 px-5 py-3 text-sm font-medium glass-button rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-green-400/20 group"
                     >
                       <div className="relative shrink-0">
                         <img
@@ -200,11 +200,11 @@ export default function ModernNavbar() {
                         <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-black animate-pulse"></div>
                       </div>
                       
-                      <div className="hidden lg:flex flex-col items-start min-w-0 max-w-[120px]">
-                        <span className="text-white font-semibold text-sm leading-tight truncate w-full">
+                      <div className="hidden lg:flex flex-col items-start min-w-0">
+                        <span className="text-white font-semibold text-sm leading-tight whitespace-nowrap">
                           {user?.name}
                         </span>
-                        <span className="text-green-400/80 text-xs leading-tight truncate w-full">
+                        <span className="text-green-400/80 text-xs leading-tight whitespace-nowrap">
                           @{user?.username}
                         </span>
                       </div>
@@ -236,8 +236,8 @@ export default function ModernNavbar() {
                                 <div className="w-2 h-2 bg-white rounded-full"></div>
                               </div>
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="font-semibold text-white text-base leading-tight truncate">
+                            <div className="flex-1">
+                              <div className="font-semibold text-white text-base leading-tight">
                                 {user?.name}
                               </div>
                               <div className="text-green-400 text-sm leading-tight">
@@ -452,8 +452,8 @@ export default function ModernNavbar() {
                             <div className="w-2 h-2 bg-white rounded-full"></div>
                           </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-white text-base leading-tight truncate">
+                        <div className="flex-1">
+                          <div className="font-semibold text-white text-base leading-tight">
                             {user?.name}
                           </div>
                           <div className="text-green-400 text-sm leading-tight">
