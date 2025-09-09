@@ -22,7 +22,7 @@ export default function DropdownPortal({ children, isOpen, triggerRef }: Dropdow
       const updatePosition = () => {
         const rect = triggerRef.current!.getBoundingClientRect()
         const dropdownWidth = 256 // min-w-64 = 256px
-        const dropdownHeight = 420 // Updated estimated height for our dropdown
+        const dropdownHeight = 380 // Estimated height for our dropdown content
         const viewportWidth = window.innerWidth
         const viewportHeight = window.innerHeight
         const padding = 16 // Safe padding from viewport edges
@@ -37,31 +37,23 @@ export default function DropdownPortal({ children, isOpen, triggerRef }: Dropdow
         }
         
         // Calculate available space
-        const spaceBelow = viewportHeight - rect.bottom - 8 - padding
-        const spaceAbove = rect.top - 8 - padding
+        const spaceBelow = viewportHeight - rect.bottom - padding
+        const spaceAbove = rect.top - padding
         
         let top = rect.bottom + 8
         let maxHeight = 'none'
         let isAbove = false
         
-        // Determine best position
-        if (spaceBelow < 300) { // If less than 300px space below
-          if (spaceAbove > spaceBelow && spaceAbove > 200) {
-            // Position above if more space and at least 200px available
-            top = rect.top - 8
-            isAbove = true
-            
-            // Transform from bottom of dropdown area
-            top = top - Math.min(dropdownHeight, spaceAbove)
-            
-            // Ensure it doesn't go off top of screen
-            if (top < padding) {
-              top = padding
-              maxHeight = `${rect.top - 8 - padding}px`
-            }
-          } else {
-            // Keep below but limit height
-            maxHeight = `${Math.max(200, spaceBelow)}px`
+        // More aggressive cutoff detection - if less than 350px space below
+        if (viewportHeight - rect.bottom < 350) {
+          // Position above the trigger
+          top = rect.top - dropdownHeight - 8
+          isAbove = true
+          
+          // If positioning above would go off-screen, adjust
+          if (top < padding) {
+            top = padding
+            maxHeight = `${rect.top - padding - 8}px`
           }
         }
         
