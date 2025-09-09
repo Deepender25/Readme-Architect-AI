@@ -59,8 +59,13 @@ A modern Next.js application for generating professional README files using AI, 
 ├── src/                         # Next.js application
 │   ├── app/                     # App router pages and API routes
 │   ├── components/              # React components
-│   └── lib/                     # Utility functions
-├── static/                      # Static assets for legacy interface
+│   ├── assets/                  # Static assets and resources
+│   └── styles/                  # CSS and styling files
+├── database/                    # Database migrations and schemas
+├── docs/                        # Documentation
+│   └── development/             # Development notes and implementation logs
+├── scripts/                     # Build, deploy and utility scripts
+├── static/                      # Legacy interface assets
 └── vercel.json                  # Deployment configuration
 ```
 
