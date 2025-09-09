@@ -28,7 +28,7 @@ export default function DropdownPortal({ children, isOpen, triggerRef }: Dropdow
         const padding = 16 // Safe padding from viewport edges
         
         // Calculate horizontal position
-        let left = rect.right - dropdownWidth
+        let left = rect.right - dropdownWidth - 50 // Add extra 50px margin from right edge
         if (left < padding) {
           left = rect.left
         }
