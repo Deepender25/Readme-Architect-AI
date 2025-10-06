@@ -489,8 +489,8 @@ MIT
             
             try:
                 # Use gemini-2.5-flash for better results (from main.py)
-                print("🤖 Initializing Gemini 2.5 Flash model...")
-                model = genai.GenerativeModel('gemini-2.5-flash')
+                print("🤖 Initializing Gemini 2.5 Pro model...")
+                model = genai.GenerativeModel('gemini-2.5-pro')
                 
                 print("🤖 Sending enhanced prompt to Gemini...")
                 response = model.generate_content(prompt)
