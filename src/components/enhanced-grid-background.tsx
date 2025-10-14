@@ -96,7 +96,7 @@ const EnhancedGridBackground = memo(function EnhancedGridBackground() {
         }}
       />
       
-      {/* Main grid pattern - enhanced visibility */}
+      {/* Main grid pattern - smaller squares like reference */}
       <div 
         className="absolute inset-0 w-full h-full"
         style={{
@@ -104,52 +104,56 @@ const EnhancedGridBackground = memo(function EnhancedGridBackground() {
             linear-gradient(rgba(0, 255, 136, 0.12) 1px, transparent 1px),
             linear-gradient(90deg, rgba(0, 255, 136, 0.12) 1px, transparent 1px)
           `,
-          backgroundSize: '40px 40px',
+          backgroundSize: '30px 30px',
           backgroundPosition: '0 0',
           zIndex: 2
         }}
       />
       
-      {/* Secondary finer grid - enhanced visibility */}
+      {/* Secondary finer grid - smaller detail */}
       <div 
         className="absolute inset-0 w-full h-full"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(0, 255, 136, 0.08) 0.5px, transparent 0.5px),
-            linear-gradient(90deg, rgba(0, 255, 136, 0.08) 0.5px, transparent 0.5px)
+            linear-gradient(rgba(0, 255, 136, 0.06) 0.5px, transparent 0.5px),
+            linear-gradient(90deg, rgba(0, 255, 136, 0.06) 0.5px, transparent 0.5px)
           `,
-          backgroundSize: '20px 20px',
+          backgroundSize: '15px 15px',
           backgroundPosition: '0 0',
           zIndex: 2
         }}
       />
       
-      {/* Dramatic fade overlay - creates random faded areas */}
+      {/* Enhanced fade effect - dramatic variations like reference */}
       <div 
         className="absolute inset-0 w-full h-full"
         style={{
           background: `
-            radial-gradient(circle at 20% 30%, rgba(0,0,0,0.8) 0%, transparent 40%),
-            radial-gradient(circle at 80% 20%, rgba(0,0,0,0.7) 0%, transparent 35%),
-            radial-gradient(circle at 60% 80%, rgba(0,0,0,0.6) 0%, transparent 45%),
-            radial-gradient(circle at 15% 70%, rgba(0,0,0,0.5) 0%, transparent 30%),
-            radial-gradient(ellipse at 90% 60%, rgba(0,0,0,0.4) 0%, transparent 50%),
-            linear-gradient(135deg, rgba(0,0,0,0.3) 0%, transparent 20%, rgba(0,0,0,0.2) 60%, transparent 80%)
+            radial-gradient(circle at 25% 20%, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.6) 12%, rgba(0,0,0,0.3) 25%, rgba(0,0,0,0.1) 40%, transparent 60%),
+            radial-gradient(ellipse at 75% 30%, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.55) 15%, rgba(0,0,0,0.25) 30%, rgba(0,0,0,0.08) 45%, transparent 65%),
+            radial-gradient(circle at 40% 70%, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.5) 18%, rgba(0,0,0,0.2) 35%, transparent 55%),
+            radial-gradient(ellipse at 15% 60%, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.45) 16%, rgba(0,0,0,0.15) 32%, transparent 50%),
+            radial-gradient(circle at 85% 80%, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.4) 14%, rgba(0,0,0,0.12) 30%, transparent 48%),
+            radial-gradient(ellipse at 60% 15%, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.35) 13%, rgba(0,0,0,0.1) 28%, transparent 45%),
+            radial-gradient(circle at 10% 35%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 17%, rgba(0,0,0,0.08) 35%, transparent 52%),
+            radial-gradient(ellipse at 90% 50%, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.25) 19%, transparent 40%),
+            linear-gradient(45deg, rgba(0,0,0,0.2) 0%, transparent 15%, rgba(0,0,0,0.4) 35%, transparent 50%, rgba(0,0,0,0.3) 70%, transparent 85%),
+            linear-gradient(-45deg, transparent 0%, rgba(0,0,0,0.35) 20%, transparent 40%, rgba(0,0,0,0.25) 60%, transparent 80%)
           `,
-          zIndex: 2
+          zIndex: 3
         }}
       />
       
-      {/* Highlight areas - subtle grid enhancement */}
+      {/* Subtle highlight areas - gentle grid enhancement */}
       <div 
         className="absolute inset-0 w-full h-full"
         style={{
           background: `
-            radial-gradient(circle at 40% 60%, rgba(0, 255, 136, 0.08) 0%, transparent 25%),
-            radial-gradient(ellipse at 70% 30%, rgba(0, 255, 136, 0.06) 0%, transparent 35%),
-            radial-gradient(circle at 25% 85%, rgba(0, 255, 136, 0.05) 0%, transparent 20%)
+            radial-gradient(circle at 55% 45%, rgba(0, 255, 136, 0.03) 0%, rgba(0, 255, 136, 0.015) 30%, transparent 60%),
+            radial-gradient(ellipse at 25% 75%, rgba(0, 255, 136, 0.025) 0%, transparent 45%),
+            radial-gradient(circle at 75% 25%, rgba(0, 255, 136, 0.02) 0%, transparent 35%)
           `,
-          zIndex: 1
+          zIndex: 4
         }}
       />
       
