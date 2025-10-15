@@ -85,6 +85,7 @@ class handler(BaseHTTPRequestHandler):
         
         print(f"🔄 Processing: {repo_url}")
         
+        repo_path = None
         try:
             # Download repository
             repo_path, error = self.download_repo(repo_url)
@@ -105,13 +106,6 @@ class handler(BaseHTTPRequestHandler):
             if error:
                 self.send_json_response({"error": error}, 500)
                 return
-            
-            # Clean up temporary files
-            if repo_path and os.path.exists(repo_path):
-                try:
-                    shutil.rmtree(os.path.dirname(repo_path), ignore_errors=True)
-                except:
-                    pass
             
             print(f"✅ README generated successfully ({len(readme_content)} chars)")
             
@@ -211,6 +205,17 @@ class handler(BaseHTTPRequestHandler):
                 print(f"⚠️ Failed to send API error notification: {notify_error}")
             
             self.send_json_response({"error": str(e)}, 500)
+        
+        finally:
+            # Always clean up temporary files
+            if repo_path and os.path.exists(repo_path):
+                try:
+                    temp_root = os.path.dirname(repo_path)
+                    if temp_root.startswith(('/tmp', tempfile.gettempdir())):
+                        print(f"🧹 Cleaning up temporary directory: {temp_root}")
+                        shutil.rmtree(temp_root, ignore_errors=True)
+                except Exception as cleanup_error:
+                    print(f"⚠️ Cleanup warning: {cleanup_error}")
 
     def send_json_response(self, data, status_code=200):
         self.send_response(status_code)
@@ -231,6 +236,7 @@ class handler(BaseHTTPRequestHandler):
         return normalized_url
 
     def download_repo(self, repo_url: str):
+        temp_dir = None
         try:
             # First normalize the URL
             normalized_url = self.normalize_github_url(repo_url)
@@ -241,28 +247,100 @@ class handler(BaseHTTPRequestHandler):
             else:
                 return None, "Invalid GitHub URL"
             
-            response = requests.get(zip_url, timeout=30)
+            # Check available disk space before proceeding
+            try:
+                statvfs = os.statvfs('/tmp')
+                free_space = statvfs.f_frsize * statvfs.f_bavail
+                if free_space < 50 * 1024 * 1024:  # Less than 50MB available
+                    return None, "Insufficient disk space available for repository processing"
+            except:
+                pass  # Skip check if statvfs not available
+            
+            print(f"📥 Downloading repository: {repo_url}")
+            response = requests.get(zip_url, timeout=30, stream=True)
             if response.status_code != 200:
                 return None, f"Failed to download repository: {response.status_code}"
             
-            temp_dir = tempfile.mkdtemp()
+            # Check content length to avoid downloading huge repositories
+            content_length = response.headers.get('content-length')
+            if content_length and int(content_length) > 100 * 1024 * 1024:  # 100MB limit
+                return None, "Repository is too large to process (>100MB)"
+            
+            temp_dir = tempfile.mkdtemp(prefix='readme_gen_')
             zip_path = os.path.join(temp_dir, "repo.zip")
             
+            # Download with size limit
+            total_size = 0
+            max_size = 100 * 1024 * 1024  # 100MB limit
+            
             with open(zip_path, 'wb') as f:
-                f.write(response.content)
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:
+                        total_size += len(chunk)
+                        if total_size > max_size:
+                            raise Exception("Repository is too large to process")
+                        f.write(chunk)
+            
+            print(f"📦 Downloaded {total_size} bytes, extracting...")
             
             extract_dir = os.path.join(temp_dir, "extracted")
             with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                zip_ref.extractall(extract_dir)
+                # Get list of files and check total size
+                file_list = zip_ref.filelist
+                total_uncompressed = sum(f.file_size for f in file_list)
+                
+                if total_uncompressed > 200 * 1024 * 1024:  # 200MB uncompressed limit
+                    return None, "Repository is too large when extracted (>200MB)"
+                
+                # Extract with selective filtering to save space
+                extracted_count = 0
+                max_files = 500  # Limit number of files to extract
+                
+                for member in file_list:
+                    if extracted_count >= max_files:
+                        break
+                    
+                    # Skip large binary files and unnecessary directories
+                    if (member.filename.endswith(('.exe', '.dll', '.so', '.dylib', '.bin', '.jar')) or
+                        any(skip in member.filename for skip in ['.git/', 'node_modules/', '__pycache__/', '.venv/', 'target/', 'dist/', 'build/']) or
+                        member.file_size > 10 * 1024 * 1024):  # Skip files larger than 10MB
+                        continue
+                    
+                    try:
+                        zip_ref.extract(member, extract_dir)
+                        extracted_count += 1
+                    except:
+                        continue  # Skip problematic files
+            
+            # Delete zip file immediately to save space
+            try:
+                os.remove(zip_path)
+            except:
+                pass
             
             extracted_items = os.listdir(extract_dir)
             if extracted_items:
                 repo_dir = os.path.join(extract_dir, extracted_items[0])
+                print(f"✅ Repository extracted to: {repo_dir}")
                 return repo_dir, None
             
             return None, "Failed to extract repository"
+            
         except Exception as e:
-            return None, str(e)
+            error_msg = str(e)
+            if "No space left on device" in error_msg:
+                error_msg = "Server storage is full. Please try again later."
+            elif "too large" in error_msg:
+                error_msg = "Repository is too large to process. Please try with a smaller repository."
+            
+            # Clean up on error
+            if temp_dir and os.path.exists(temp_dir):
+                try:
+                    shutil.rmtree(temp_dir, ignore_errors=True)
+                except:
+                    pass
+            
+            return None, error_msg
 
     def analyze_codebase(self, repo_path: str):
         try:
