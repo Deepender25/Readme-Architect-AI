@@ -48,7 +48,9 @@ export async function GET(request: NextRequest) {
       );
     }
     
-    // Simple fallback README generation
+    console.log('🔄 Generating fallback README for:', repoUrl);
+    
+    // Enhanced fallback README generation
     const fallbackReadme = generateFallbackReadme(repoUrl, projectName, includeDemo, numScreenshots, numVideos);
     
     return NextResponse.json({ readme: fallbackReadme });
@@ -76,9 +78,10 @@ function normalizeGitHubUrl(url: string): string {
 function generateFallbackReadme(repoUrl: string, projectName: string, includeDemo: boolean, numScreenshots: number, numVideos: number): string {
   const normalizedUrl = normalizeGitHubUrl(repoUrl);
   const repoName = projectName || normalizedUrl.split('/').pop() || 'Project';
+  const ownerName = normalizedUrl.split('/').slice(-2, -1)[0] || 'Owner';
   
   let readme = `<h1 align="center">${repoName}</h1>
-<p align="center">A modern, feature-rich application built with cutting-edge technologies</p>
+<p align="center">A comprehensive, well-documented project showcasing modern development practices</p>
 
 <p align="center">
   <img alt="Build" src="https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge">

@@ -241,7 +241,8 @@ export async function GET(request: NextRequest) {
               throw new Error('Python API not accessible');
             }
           } catch (apiError) {
-            console.log('🔄 Using fallback README generation');
+            console.log('🔄 Python API failed, using enhanced fallback generation');
+            sendEvent({ status: 'AI service unavailable, using template generation...' });
             
             // Use fallback generation
             const readmeContent = generateSimpleReadme({
