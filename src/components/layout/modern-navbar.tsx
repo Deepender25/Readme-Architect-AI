@@ -165,7 +165,7 @@ export default function ModernNavbar() {
                     exit={{ opacity: 0, scale: 0.95 }}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                      onClick={login}
+                      onClick={() => login()}
                       disabled={isLoading}
                       className="relative flex items-center gap-2 px-6 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50 whitespace-nowrap"
                   >
@@ -189,19 +189,19 @@ export default function ModernNavbar() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setDropdownOpen(!dropdownOpen)}
-                      className="flex items-center gap-3 px-5 py-3 text-sm font-medium glass-button rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-green-400/20 group"
+                      className="flex items-center gap-2 px-3 py-2 text-sm font-medium glass-button rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-green-400/20 group"
                     >
                       <div className="relative shrink-0">
                         <img
                           src={user?.avatar_url}
                           alt={user?.name}
-                          className="w-8 h-8 rounded-full border-2 border-green-400/30 group-hover:border-green-400/60 transition-all duration-300"
+                          className="w-7 h-7 rounded-full border-2 border-green-400/30 group-hover:border-green-400/60 transition-all duration-300"
                         />
-                        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-black animate-pulse"></div>
+                        <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-black animate-pulse"></div>
                       </div>
                       
                       <div className="hidden lg:flex flex-col items-start min-w-0">
-                        <span className="text-white font-semibold text-sm leading-tight whitespace-nowrap">
+                        <span className="text-white font-medium text-xs leading-tight whitespace-nowrap">
                           {user?.name}
                         </span>
                         <span className="text-green-400/80 text-xs leading-tight whitespace-nowrap">
@@ -210,7 +210,7 @@ export default function ModernNavbar() {
                       </div>
                       
                       <ChevronDown
-                        className={`w-4 h-4 text-green-400/60 group-hover:text-green-400 transition-all duration-300 ${
+                        className={`w-3.5 h-3.5 text-green-400/60 group-hover:text-green-400 transition-all duration-300 ${
                           dropdownOpen ? 'rotate-180' : ''
                         }`}
                       />
@@ -432,7 +432,7 @@ export default function ModernNavbar() {
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.15 }}
-                      onClick={login}
+                      onClick={() => login()}
                       disabled={isLoading}
                       className="flex items-center gap-2 w-full px-4 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-lg hover:bg-green-400/10 transition-colors disabled:opacity-50"
                     >
