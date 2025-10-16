@@ -26,7 +26,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
-import ProfessionalDropdown from '@/components/ui/professional-dropdown'
+
 import withAuth from '@/components/withAuth'
 import LayoutWrapper from '@/components/layout-wrapper'
 import PageHeader from '@/components/layout/page-header'
@@ -279,102 +279,87 @@ function RepositoriesContent() {
       </ContentSection>
 
       <ContentSection background="glass" className="mb-8">
-        <div className="space-y-6">
-          {/* Search Bar - Full Width */}
-          <div className="relative max-w-2xl">
+        <div className="space-y-4">
+          {/* Search Bar */}
+          <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
               placeholder="Search repositories..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="glass-input w-full pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-green-400/50"
+              className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-green-400/50 transition-all"
             />
           </div>
 
-          {/* Filters and Controls */}
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <div className="flex flex-wrap gap-3 items-center">
-              {/* Language Filter */}
-              <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-400 font-medium">Language</label>
-                <ProfessionalDropdown
-                  options={[
-                    { value: 'all', label: 'All Languages', icon: <Code className="w-4 h-4" /> },
-                    ...getUniqueLanguages().map(lang => ({ 
-                      value: lang, 
-                      label: lang,
-                      icon: <div className="w-3 h-3 rounded-full" style={{ backgroundColor: getLanguageColor(lang) }} />
-                    }))
-                  ]}
-                  value={filterLanguage}
-                  onChange={setFilterLanguage}
-                  placeholder="Language"
-                  className="w-[160px]"
-                />
-              </div>
-
-              {/* Visibility Filter */}
-              <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-400 font-medium">Visibility</label>
-                <ProfessionalDropdown
-                  options={[
-                    { value: 'all', label: 'All Repositories', icon: <Github className="w-4 h-4" /> },
-                    { value: 'public', label: 'Public Only', icon: <Unlock className="w-4 h-4" /> },
-                    { value: 'private', label: 'Private Only', icon: <Lock className="w-4 h-4" /> }
-                  ]}
-                  value={filterVisibility}
-                  onChange={(value) => setFilterVisibility(value as 'all' | 'public' | 'private')}
-                  placeholder="Visibility"
-                  className="w-[160px]"
-                />
-              </div>
-
-              {/* Sort Controls */}
-              <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-400 font-medium">Sort By</label>
-                <div className="flex gap-2 items-center">
-                  <ProfessionalDropdown
-                    options={[
-                      { value: 'updated', label: 'Last Updated', icon: <Clock className="w-4 h-4" /> },
-                      { value: 'name', label: 'Name', icon: <FileText className="w-4 h-4" /> },
-                      { value: 'stars', label: 'Stars', icon: <Star className="w-4 h-4" /> },
-                      { value: 'size', label: 'Size', icon: <Activity className="w-4 h-4" /> }
-                    ]}
-                    value={sortBy}
-                    onChange={(value) => setSortBy(value as 'name' | 'updated' | 'stars' | 'size')}
-                    placeholder="Sort By"
-                    className="w-[140px]"
-                  />
-
-                  <Button
-                    onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                    variant="outline"
-                    size="sm"
-                    className="glass-button border-none text-gray-300 hover:text-green-400 h-[42px] px-3"
-                    title={`Sort ${sortOrder === 'asc' ? 'Descending' : 'Ascending'}`}
-                  >
-                    {sortOrder === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
-                  </Button>
-                </div>
-              </div>
+          {/* Filters Row */}
+          <div className="repositories-filters flex flex-wrap items-center gap-4">
+            {/* Language Filter */}
+            <div className="flex items-center gap-2">
+              <Code className="w-4 h-4 text-gray-400" />
+              <select
+                value={filterLanguage}
+                onChange={(e) => setFilterLanguage(e.target.value)}
+                className="bg-gray-800/50 border border-gray-600/50 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-green-400/50 transition-all min-w-[140px]"
+              >
+                <option value="all">All Languages</option>
+                {getUniqueLanguages().map(lang => (
+                  <option key={lang} value={lang}>{lang}</option>
+                ))}
+              </select>
             </div>
+
+            {/* Visibility Filter */}
+            <div className="flex items-center gap-2">
+              <Github className="w-4 h-4 text-gray-400" />
+              <select
+                value={filterVisibility}
+                onChange={(e) => setFilterVisibility(e.target.value as 'all' | 'public' | 'private')}
+                className="bg-gray-800/50 border border-gray-600/50 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-green-400/50 transition-all min-w-[140px]"
+              >
+                <option value="all">All Repositories</option>
+                <option value="public">Public Only</option>
+                <option value="private">Private Only</option>
+              </select>
+            </div>
+
+            {/* Sort By */}
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-gray-400" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as 'name' | 'updated' | 'stars' | 'size')}
+                className="bg-gray-800/50 border border-gray-600/50 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-green-400/50 transition-all min-w-[120px]"
+              >
+                <option value="updated">Last Updated</option>
+                <option value="name">Name</option>
+                <option value="stars">Stars</option>
+                <option value="size">Size</option>
+              </select>
+            </div>
+
+            {/* Sort Order */}
+            <Button
+              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+              variant="outline"
+              size="sm"
+              className="bg-gray-800/50 border border-gray-600/50 text-gray-300 hover:text-green-400 hover:border-green-400/50 px-3 py-2"
+              title={`Sort ${sortOrder === 'asc' ? 'Descending' : 'Ascending'}`}
+            >
+              {sortOrder === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
+            </Button>
 
             {/* Refresh Button */}
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-400 font-medium opacity-0">Actions</label>
-              <Button
-                onClick={() => fetchRepositories(true)}
-                variant="outline"
-                size="sm"
-                disabled={isRefreshing}
-                className="glass-button border-none text-green-400 hover:bg-green-400/20 h-[42px] px-4"
-                title="Refresh repositories"
-              >
-                <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-                Refresh
-              </Button>
-            </div>
+            <Button
+              onClick={() => fetchRepositories(true)}
+              variant="outline"
+              size="sm"
+              disabled={isRefreshing}
+              className="bg-gray-800/50 border border-gray-600/50 text-green-400 hover:bg-green-400/20 hover:border-green-400/50 px-3 py-2 ml-auto"
+              title="Refresh repositories"
+            >
+              <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            </Button>
           </div>
 
           {/* Results Summary */}
