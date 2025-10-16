@@ -2446,8 +2446,9 @@ select option {
 select option:checked {
   background-color: rgb(34, 197, 94) !important;
   color: white !important;
-}/
-* Enhanced Responsive Utilities for Repositories Page */
+}
+
+/* Enhanced Responsive Utilities for Repositories Page */
 @media (max-width: 475px) {
   .repositories-filters select {
     font-size: 0.875rem;
