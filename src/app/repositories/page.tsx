@@ -507,7 +507,7 @@ function RepositoriesContent() {
               </p>
             </div>
           ) : (
-            <div className="grid gap-4 pb-6">
+            <div className="grid gap-3 pb-6 w-full overflow-hidden">
               <AnimatePresence>
                 {filteredRepos.map((repo, index) => (
                   <motion.div
@@ -516,7 +516,7 @@ function RepositoriesContent() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ delay: Math.min(index * 0.02, 0.2), duration: 0.3 }}
-                    className="glass-card p-4 sm:p-6 lg:p-8 group"
+                    className="glass-card p-3 sm:p-4 lg:p-5 group max-w-full"
                     style={{
                       transform: 'translate3d(0, 0, 0)',
                       willChange: 'transform',
@@ -547,7 +547,7 @@ function RepositoriesContent() {
                           </p>
                         )}
                         
-                        <div className="flex flex-wrap items-center gap-3 sm:gap-4 lg:gap-6 text-xs sm:text-sm text-gray-400">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 lg:gap-4 text-xs sm:text-sm text-gray-400">
                           {repo.language && (
                             <div className="flex items-center gap-1.5">
                               <div 
@@ -578,7 +578,7 @@ function RepositoriesContent() {
                         </div>
                       </div>
                       
-                      <div className="flex items-center gap-2 sm:gap-3 sm:ml-4 lg:ml-6 flex-shrink-0">
+                      <div className="flex items-center gap-2 sm:ml-3 lg:ml-4 flex-shrink-0 min-w-0">
                         <Button
                           size="sm"
                           variant="outline"
@@ -588,7 +588,7 @@ function RepositoriesContent() {
                               window.open(repo.html_url, '_blank');
                             }
                           }}
-                          className="glass-button border-none text-blue-400 hover:bg-blue-400/20 px-2.5 py-2 sm:px-3 sm:py-2 flex-1 sm:flex-initial"
+                          className="glass-button border-none text-blue-400 hover:bg-blue-400/20 px-2 py-1.5 sm:px-2.5 sm:py-2 flex-1 sm:flex-initial min-w-0"
                         >
                           <ExternalLink className="w-4 h-4 sm:mr-2 flex-shrink-0" />
                           <span className="hidden sm:inline whitespace-nowrap">View on GitHub</span>
@@ -599,7 +599,7 @@ function RepositoriesContent() {
                           size="sm"
                           onClick={() => handleGenerateReadme(repo.html_url, repo.name)}
                           disabled={selectedRepo === repo.name}
-                          className="glass-button border-none text-green-400 hover:bg-green-400/20 px-2.5 py-2 sm:px-3 sm:py-2 flex-1 sm:flex-initial"
+                          className="glass-button border-none text-green-400 hover:bg-green-400/20 px-2 py-1.5 sm:px-2.5 sm:py-2 flex-1 sm:flex-initial min-w-0"
                         >
                           {selectedRepo === repo.name ? (
                             <div className="cube-loader-global cube-loader-inline">
