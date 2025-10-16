@@ -5,6 +5,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Unified Design System - temporarily disabled due to layer conflicts */
+/* @import '../styles/design-system.css'; */
+
 
 /* Performance optimizations for smooth scrolling and animations */
 @import './performance.css';
@@ -158,6 +161,64 @@ body {
 }
 
 @layer utilities {
+  
+  /* ===== UNIFIED BUTTON SYSTEM ===== */
+  .btn-unified {
+    /* Base styles */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.2;
+    border: 1px solid transparent;
+    border-radius: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    min-height: 44px;
+    padding: 0.75rem 1.5rem;
+    
+    /* Hardware acceleration */
+    transform: translateZ(0);
+    will-change: transform, box-shadow;
+    
+    /* Default glass styling */
+    background: rgba(15, 15, 15, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btn-unified:hover:not(:disabled) {
+    background: rgba(20, 20, 20, 0.9);
+    border-color: rgba(0, 255, 136, 0.3);
+    box-shadow: 0 8px 24px rgba(0, 255, 136, 0.15);
+    transform: translateY(-1px);
+  }
+  
+  .btn-unified:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.3);
+    transform: translateY(-1px);
+  }
+  
+  .btn-unified:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  .btn-unified:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+    transform: none;
+  }
 
   /* Performance optimizations */
   html {
@@ -197,42 +258,25 @@ body {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Standardized Button Styles */
+  /* Legacy button styles - use unified design system instead */
   .btn-primary {
-    @apply px-6 py-3 bg-green-500 text-black font-semibold rounded-xl transition-all duration-300 hover:bg-green-400 hover:shadow-lg hover:shadow-green-400/30 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-black;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-black bg-green-400 border border-green-400 rounded-lg transition-all duration-300 hover:bg-green-300 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-green-400/30 disabled:opacity-40 disabled:cursor-not-allowed;
   }
 
   .btn-green-primary {
-    background-color: #4ade80 !important;
-    color: #000000 !important;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-    font-weight: bold !important;
-    border: none !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    transition: all 0.2s ease !important;
-  }
-
-  .btn-green-primary:hover {
-    background-color: #22c55e !important;
-    color: #000000 !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 0 8px 25px rgba(72, 222, 128, 0.4) !important;
-  }
-
-  .btn-green-primary:disabled {
-    opacity: 0.6 !important;
-    cursor: not-allowed !important;
-    transform: none !important;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-black bg-green-400 border border-green-400 rounded-lg transition-all duration-300 hover:bg-green-300 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-green-400/30 disabled:opacity-40 disabled:cursor-not-allowed;
   }
 
   .btn-secondary {
-    @apply px-6 py-3 bg-transparent border border-green-400/30 text-green-400 font-semibold rounded-xl hover:bg-green-400/10 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-green-400 bg-transparent border border-green-400/20 rounded-lg transition-all duration-300 hover:bg-green-400/10 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-green-400/30 disabled:opacity-40 disabled:cursor-not-allowed;
   }
 
   .btn-ghost {
-    @apply px-4 py-2 bg-green-400/5 text-green-400 font-medium rounded-lg hover:bg-green-400/15 hover:text-green-300 transition-all duration-300;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-white/70 bg-transparent border border-transparent rounded-lg transition-all duration-300 hover:bg-green-400/10 hover:text-green-400 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-green-400/30 disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  .btn-destructive {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-red-400 bg-red-400/10 border border-red-400/30 rounded-lg transition-all duration-300 hover:bg-red-400/20 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-red-400/30 disabled:opacity-40 disabled:cursor-not-allowed;
   }
 
   .glass:hover {
@@ -298,81 +342,48 @@ body {
   }
 
   .glass-card {
-    background: rgba(15, 15, 15, 0.65) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.6),
-      0 1px 0 rgba(255, 255, 255, 0.05) inset,
-      0 0 0 1px rgba(255, 255, 255, 0.05) !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    border-radius: 1rem !important;
-    position: relative !important;
-    z-index: 10 !important;
-    isolation: isolate !important;
-  }
-
-  .glass-card:hover {
-    background: rgba(20, 20, 20, 0.8) !important;
-    border-color: rgba(0, 255, 136, 0.4) !important;
-    box-shadow:
-      0 20px 60px rgba(0, 255, 136, 0.15),
-      0 8px 32px rgba(0, 0, 0, 0.7),
-      0 0 0 1px rgba(0, 255, 136, 0.2) !important;
-    transform: translateY(-2px) !important;
-    z-index: 20 !important;
+    @apply bg-black/85 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl transition-all duration-300 hover:bg-black/90 hover:border-green-400/20 hover:-translate-y-1;
   }
 
   .glass-navbar {
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(32px);
-    -webkit-backdrop-filter: blur(32px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur-strong));
+    -webkit-backdrop-filter: blur(var(--glass-blur-strong));
+    border-bottom: 1px solid var(--glass-border);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
   }
 
   .glass-button {
-    background: rgba(15, 15, 15, 0.8) !important;
-    backdrop-filter: blur(15px) !important;
-    -webkit-backdrop-filter: blur(15px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    position: relative !important;
-    z-index: 10 !important;
-  }
-
-  .glass-button:hover {
-    background: rgba(20, 20, 20, 0.9) !important;
-    border-color: rgba(0, 255, 136, 0.5) !important;
-    box-shadow: 0 6px 24px rgba(0, 255, 136, 0.2) !important;
-    transform: translateY(-1px) !important;
-    z-index: 20 !important;
+    @apply btn-unified btn-glass;
   }
 
   .glass-input {
-    background: rgba(15, 15, 15, 0.8);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 0.75rem;
-  }
-
-  .glass-input:focus {
-    background: rgba(18, 18, 18, 0.9);
-    border-color: rgba(0, 255, 136, 0.5);
-    box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1), inset 0 2px 8px rgba(0, 0, 0, 0.3);
+    @apply w-full px-4 py-3 bg-black/60 backdrop-blur-xl border border-white/10 rounded-lg text-white transition-all duration-300 hover:border-white/20 focus:outline-none focus:bg-black/80 focus:border-green-400 min-h-[44px];
   }
 
   .glass-modal {
-    background: rgba(15, 15, 15, 0.9);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    @apply bg-black/95 backdrop-blur-2xl border border-green-400/20 rounded-2xl shadow-2xl max-w-[90vw] max-h-[90vh] overflow-auto;
+  }
+
+  /* Consistent form elements */
+  .form-group {
+    @apply flex flex-col gap-2;
+  }
+
+  .form-label {
+    @apply text-sm font-medium text-gray-300;
+  }
+
+  .form-input {
+    @apply w-full px-4 py-3 bg-black/60 backdrop-blur-xl border border-white/10 rounded-lg text-white transition-all duration-300 hover:border-white/20 focus:outline-none focus:bg-black/80 focus:border-green-400 min-h-[44px];
+  }
+
+  .form-select {
+    @apply w-full px-4 py-3 bg-black/60 backdrop-blur-xl border border-white/10 rounded-lg text-white transition-all duration-300 hover:border-white/20 focus:outline-none focus:bg-black/80 focus:border-green-400 min-h-[44px] cursor-pointer;
+  }
+
+  .form-textarea {
+    @apply w-full px-4 py-3 bg-black/60 backdrop-blur-xl border border-white/10 rounded-lg text-white transition-all duration-300 hover:border-white/20 focus:outline-none focus:bg-black/80 focus:border-green-400 min-h-[44px] resize-none;
   }
 
   /* Enhanced Smooth Animations */
@@ -1169,11 +1180,16 @@ body {
 
 /* Enhanced dropdown styling */
 .simple-dropdown-menu {
-  background: rgba(15, 15, 15, 0.95) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(0, 255, 136, 0.3) !important;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 255, 136, 0.1) !important;
+  @apply bg-black/95 backdrop-blur-2xl border border-green-400/20 rounded-xl shadow-2xl p-2 max-h-80 overflow-y-auto;
+}
+
+/* Consistent modal styling */
+.modal-backdrop {
+  @apply fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4;
+}
+
+.modal-dialog {
+  @apply bg-black/95 backdrop-blur-2xl border border-green-400/20 rounded-2xl shadow-2xl max-w-[90vw] max-h-[90vh] overflow-auto;
 }
 
 /* Ensure grid background is visible */

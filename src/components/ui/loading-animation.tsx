@@ -26,9 +26,9 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
   };
 
   return (
-    <div className={`flex flex-col items-center justify-center py-8 ${className}`}>
+    <div className={`flex flex-col items-center justify-center py-8 text-green-400 ${className}`}>
       {/* Cube Loading Animation */}
-      <div className="loading-container">
+      <div className="flex justify-center items-center">
         <div className={`cube-loader ${sizeClasses[size]}`}>
           <div className={`cube ${cubeClasses[size]}`}></div>
           <div className={`cube ${cubeClasses[size]}`}></div>
