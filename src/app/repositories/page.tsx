@@ -279,52 +279,61 @@ function RepositoriesContent() {
       </ContentSection>
 
       <ContentSection background="glass" className="mb-8">
-              <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-                <div className="flex flex-col sm:flex-row gap-4 flex-1">
-                  {/* Search */}
-                  <div className="relative flex-1 max-w-md">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="Search repositories..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="glass-input w-full pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none"
-                    />
-                  </div>
+        <div className="space-y-6">
+          {/* Search Bar - Full Width */}
+          <div className="relative max-w-2xl">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search repositories..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="glass-input w-full pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-green-400/50"
+            />
+          </div>
 
-                  {/* Language Filter */}
-                  <ProfessionalDropdown
-                    options={[
-                      { value: 'all', label: 'All Languages', icon: <Code className="w-4 h-4" /> },
-                      ...getUniqueLanguages().map(lang => ({ 
-                        value: lang, 
-                        label: lang,
-                        icon: <div className="w-3 h-3 rounded-full" style={{ backgroundColor: getLanguageColor(lang) }} />
-                      }))
-                    ]}
-                    value={filterLanguage}
-                    onChange={setFilterLanguage}
-                    placeholder="Language"
-                    className="min-w-[160px]"
-                  />
+          {/* Filters and Controls */}
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div className="flex flex-wrap gap-3 items-center">
+              {/* Language Filter */}
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-gray-400 font-medium">Language</label>
+                <ProfessionalDropdown
+                  options={[
+                    { value: 'all', label: 'All Languages', icon: <Code className="w-4 h-4" /> },
+                    ...getUniqueLanguages().map(lang => ({ 
+                      value: lang, 
+                      label: lang,
+                      icon: <div className="w-3 h-3 rounded-full" style={{ backgroundColor: getLanguageColor(lang) }} />
+                    }))
+                  ]}
+                  value={filterLanguage}
+                  onChange={setFilterLanguage}
+                  placeholder="Language"
+                  className="w-[160px]"
+                />
+              </div>
 
-                  {/* Visibility Filter */}
-                  <ProfessionalDropdown
-                    options={[
-                      { value: 'all', label: 'All Repositories', icon: <Github className="w-4 h-4" /> },
-                      { value: 'public', label: 'Public Only', icon: <Unlock className="w-4 h-4" /> },
-                      { value: 'private', label: 'Private Only', icon: <Lock className="w-4 h-4" /> }
-                    ]}
-                    value={filterVisibility}
-                    onChange={(value) => setFilterVisibility(value as 'all' | 'public' | 'private')}
-                    placeholder="Visibility"
-                    className="min-w-[160px]"
-                  />
-                </div>
+              {/* Visibility Filter */}
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-gray-400 font-medium">Visibility</label>
+                <ProfessionalDropdown
+                  options={[
+                    { value: 'all', label: 'All Repositories', icon: <Github className="w-4 h-4" /> },
+                    { value: 'public', label: 'Public Only', icon: <Unlock className="w-4 h-4" /> },
+                    { value: 'private', label: 'Private Only', icon: <Lock className="w-4 h-4" /> }
+                  ]}
+                  value={filterVisibility}
+                  onChange={(value) => setFilterVisibility(value as 'all' | 'public' | 'private')}
+                  placeholder="Visibility"
+                  className="w-[160px]"
+                />
+              </div>
 
-                <div className="flex gap-2">
-                  {/* Sort Controls */}
+              {/* Sort Controls */}
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-gray-400 font-medium">Sort By</label>
+                <div className="flex gap-2 items-center">
                   <ProfessionalDropdown
                     options={[
                       { value: 'updated', label: 'Last Updated', icon: <Clock className="w-4 h-4" /> },
@@ -335,36 +344,70 @@ function RepositoriesContent() {
                     value={sortBy}
                     onChange={(value) => setSortBy(value as 'name' | 'updated' | 'stars' | 'size')}
                     placeholder="Sort By"
-                    className="min-w-[140px]"
+                    className="w-[140px]"
                   />
 
                   <Button
                     onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                     variant="outline"
                     size="sm"
-                    className="glass-button border-none text-gray-300 hover:text-green-400"
+                    className="glass-button border-none text-gray-300 hover:text-green-400 h-[42px] px-3"
+                    title={`Sort ${sortOrder === 'asc' ? 'Descending' : 'Ascending'}`}
                   >
                     {sortOrder === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
                   </Button>
-
-                  <Button
-                    onClick={() => fetchRepositories(true)}
-                    variant="outline"
-                    size="sm"
-                    disabled={isRefreshing}
-                    className="glass-button border-none text-green-400 hover:bg-green-400/20"
-                  >
-                    <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                  </Button>
                 </div>
               </div>
+            </div>
 
-              <div className="mt-4 flex items-center gap-4 text-sm text-gray-400">
-                <span>Showing {filteredRepos.length} of {repositories.length} repositories</span>
-                {searchTerm && <span>• Filtered by: "{searchTerm}"</span>}
-                {filterLanguage !== 'all' && <span>• Language: {filterLanguage}</span>}
-                {filterVisibility !== 'all' && <span>• Visibility: {filterVisibility}</span>}
-              </div>
+            {/* Refresh Button */}
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-400 font-medium opacity-0">Actions</label>
+              <Button
+                onClick={() => fetchRepositories(true)}
+                variant="outline"
+                size="sm"
+                disabled={isRefreshing}
+                className="glass-button border-none text-green-400 hover:bg-green-400/20 h-[42px] px-4"
+                title="Refresh repositories"
+              >
+                <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+            </div>
+          </div>
+
+          {/* Results Summary */}
+          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400 pt-2 border-t border-gray-700/50">
+            <span className="font-medium">
+              Showing {filteredRepos.length} of {repositories.length} repositories
+            </span>
+            {searchTerm && (
+              <span className="flex items-center gap-1">
+                <span>•</span>
+                <span>Search: "{searchTerm}"</span>
+              </span>
+            )}
+            {filterLanguage !== 'all' && (
+              <span className="flex items-center gap-2">
+                <span>•</span>
+                <div className="flex items-center gap-1">
+                  <div 
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: getLanguageColor(filterLanguage) }}
+                  />
+                  <span>{filterLanguage}</span>
+                </div>
+              </span>
+            )}
+            {filterVisibility !== 'all' && (
+              <span className="flex items-center gap-1">
+                <span>•</span>
+                <span className="capitalize">{filterVisibility} only</span>
+              </span>
+            )}
+          </div>
+        </div>
       </ContentSection>
 
       <ContentSection background="gradient" className="min-h-0">

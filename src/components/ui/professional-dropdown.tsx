@@ -175,19 +175,20 @@ export default function ProfessionalDropdown({
     <div className="professional-dropdown-portal">
       <div
         ref={dropdownRef}
-        className="professional-dropdown-menu professional-dropdown-content"
+        className="professional-dropdown-menu professional-dropdown-content glass-modal border border-green-400/20 shadow-2xl shadow-green-400/10"
         style={getDropdownPosition()}
       >
-        <div className="py-1 max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-green">
+        <div className="py-2 max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-green">
           {options.map((option) => (
             <button
               key={option.value}
               onClick={() => handleSelect(option.value)}
               className={`
                 professional-dropdown-option w-full flex items-center gap-3 px-4 py-3 text-sm text-left
+                transition-all duration-150 ease-out
                 ${value === option.value
-                  ? 'selected bg-green-600/20 text-green-400 font-medium'
-                  : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  ? 'selected bg-green-400/20 text-green-400 font-medium'
+                  : 'text-gray-300 hover:bg-gray-700/50 hover:text-white'
                 }
               `}
             >
@@ -220,12 +221,11 @@ export default function ProfessionalDropdown({
         onClick={toggleDropdown}
         disabled={disabled}
         className={`
-          w-full flex items-center justify-between px-4 py-2.5 
-          bg-gray-800/50 hover:bg-gray-700/50 
-          border border-gray-600/50 hover:border-green-400/50 
-          rounded-lg transition-all duration-200 text-left
-          ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-          ${isOpen ? 'border-green-400/50 bg-gray-700/50' : ''}
+          w-full flex items-center justify-between px-4 py-3
+          glass-button border-none
+          transition-all duration-200 text-left h-[42px]
+          ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-700/50'}
+          ${isOpen ? 'bg-gray-700/50 ring-2 ring-green-400/50' : 'bg-gray-800/50'}
         `}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
@@ -250,7 +250,7 @@ export default function ProfessionalDropdown({
         {/* Chevron */}
         <ChevronDown 
           className={`
-            w-4 h-4 text-gray-400 transition-transform duration-200 flex-shrink-0 ml-2
+            w-4 h-4 text-gray-400 transition-all duration-200 flex-shrink-0 ml-2
             ${isOpen ? 'rotate-180 text-green-400' : 'rotate-0'}
           `} 
         />

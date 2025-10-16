@@ -1799,14 +1799,16 @@ html {
 
 .professional-dropdown-option {
   transition: all 0.15s ease-out !important;
+  border-radius: 6px !important;
+  margin: 2px 4px !important;
 }
 
 .professional-dropdown-option:hover {
-  background: rgba(55, 65, 81, 0.8) !important;
+  background: rgba(55, 65, 81, 0.5) !important;
 }
 
 .professional-dropdown-option:active {
-  background: rgba(75, 85, 99, 0.9) !important;
+  background: rgba(75, 85, 99, 0.7) !important;
 }
 
 .professional-dropdown-option.selected {
