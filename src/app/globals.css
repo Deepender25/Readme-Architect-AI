@@ -2426,4 +2426,24 @@ wing border animation for professional containers */
   z-index: -1;
   animation: moving-glow 4s ease infinite;
   opacity: 0.6;
+}/* Re
+pository Filters - No Horizontal Scroll */
+.repositories-filters {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.repositories-filters::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ensure select elements are properly styled */
+select option {
+  background-color: rgb(31, 41, 55) !important;
+  color: white !important;
+}
+
+select option:checked {
+  background-color: rgb(34, 197, 94) !important;
+  color: white !important;
 }
