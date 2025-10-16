@@ -235,43 +235,43 @@ function RepositoriesContent() {
       />
 
       <ContentSection background="none" padding="none" className="mb-6 sm:mb-8">
-        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <div className="glass-card p-3 sm:p-4">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Github className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400 flex-shrink-0" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
+          <div className="glass-card p-2 sm:p-3 lg:p-4">
+            <div className="flex flex-col sm:flex-row items-center sm:gap-2 lg:gap-3 text-center sm:text-left">
+              <Github className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-blue-400 flex-shrink-0 mb-1 sm:mb-0" />
               <div className="min-w-0">
-                <div className="text-lg sm:text-2xl font-bold text-white">{repositories.length}</div>
-                <div className="text-xs sm:text-sm text-gray-400">Repositories</div>
+                <div className="text-base sm:text-lg lg:text-2xl font-bold text-white">{repositories.length}</div>
+                <div className="text-xs sm:text-xs lg:text-sm text-gray-400">Repositories</div>
               </div>
             </div>
           </div>
           
-          <div className="glass-card p-3 sm:p-4">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Star className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-400 flex-shrink-0" />
+          <div className="glass-card p-2 sm:p-3 lg:p-4">
+            <div className="flex flex-col sm:flex-row items-center sm:gap-2 lg:gap-3 text-center sm:text-left">
+              <Star className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-yellow-400 flex-shrink-0 mb-1 sm:mb-0" />
               <div className="min-w-0">
-                <div className="text-lg sm:text-2xl font-bold text-white">{stats.totalStars}</div>
-                <div className="text-xs sm:text-sm text-gray-400">Total Stars</div>
+                <div className="text-base sm:text-lg lg:text-2xl font-bold text-white">{stats.totalStars}</div>
+                <div className="text-xs sm:text-xs lg:text-sm text-gray-400">Total Stars</div>
               </div>
             </div>
           </div>
           
-          <div className="glass-card p-3 sm:p-4">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Code className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400 flex-shrink-0" />
+          <div className="glass-card p-2 sm:p-3 lg:p-4">
+            <div className="flex flex-col sm:flex-row items-center sm:gap-2 lg:gap-3 text-center sm:text-left">
+              <Code className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-purple-400 flex-shrink-0 mb-1 sm:mb-0" />
               <div className="min-w-0">
-                <div className="text-lg sm:text-2xl font-bold text-white">{stats.languages}</div>
-                <div className="text-xs sm:text-sm text-gray-400">Languages</div>
+                <div className="text-base sm:text-lg lg:text-2xl font-bold text-white">{stats.languages}</div>
+                <div className="text-xs sm:text-xs lg:text-sm text-gray-400">Languages</div>
               </div>
             </div>
           </div>
           
-          <div className="glass-card p-3 sm:p-4">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Lock className="w-6 h-6 sm:w-8 sm:h-8 text-orange-400 flex-shrink-0" />
+          <div className="glass-card p-2 sm:p-3 lg:p-4">
+            <div className="flex flex-col sm:flex-row items-center sm:gap-2 lg:gap-3 text-center sm:text-left">
+              <Lock className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-orange-400 flex-shrink-0 mb-1 sm:mb-0" />
               <div className="min-w-0">
-                <div className="text-lg sm:text-2xl font-bold text-white">{stats.privateCount}</div>
-                <div className="text-xs sm:text-sm text-gray-400">Private</div>
+                <div className="text-base sm:text-lg lg:text-2xl font-bold text-white">{stats.privateCount}</div>
+                <div className="text-xs sm:text-xs lg:text-sm text-gray-400">Private</div>
               </div>
             </div>
           </div>
