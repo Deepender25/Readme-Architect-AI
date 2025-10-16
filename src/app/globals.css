@@ -2511,3 +2511,54 @@ select option:checked {
     min-height: 44px;
   }
 }
+
+/* Mobile 2x2 Grid Layout for Stats Cards */
+@media (max-width: 640px) {
+  .repositories-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  
+  .repositories-stats-card {
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .repositories-stats-card .icon {
+    margin-bottom: 0.25rem;
+  }
+  
+  .repositories-stats-card .number {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  
+  .repositories-stats-card .label {
+    font-size: 0.75rem;
+    line-height: 1;
+    margin-top: 0.125rem;
+  }
+}
+
+/* Ensure proper aspect ratio for mobile cards */
+@media (max-width: 475px) {
+  .repositories-stats-card {
+    min-height: 70px;
+    padding: 0.5rem 0.25rem;
+  }
+  
+  .repositories-stats-card .number {
+    font-size: 0.875rem;
+  }
+  
+  .repositories-stats-card .label {
+    font-size: 0.6875rem;
+  }
+}
