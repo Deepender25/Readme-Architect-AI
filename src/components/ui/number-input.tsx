@@ -9,6 +9,7 @@ interface NumberInputProps {
   min?: number;
   max?: number;
   label?: string;
+  className?: string;
 }
 
 export const NumberInput: React.FC<NumberInputProps> = ({ 
@@ -16,7 +17,8 @@ export const NumberInput: React.FC<NumberInputProps> = ({
   onChange, 
   min = 1, 
   max = 10, 
-  label 
+  label,
+  className = ""
 }) => {
   const handleDecrement = () => {
     if (value > min) {
@@ -38,25 +40,25 @@ export const NumberInput: React.FC<NumberInputProps> = ({
   };
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className={`flex flex-col gap-2 ${className}`}>
       {label && (
-        <label className="text-xs font-medium text-gray-300">{label}</label>
+        <label className="text-sm font-medium text-gray-300">{label}</label>
       )}
-      <div className="relative flex items-center w-20">
+      <div className="relative flex items-center w-24">
         <button 
           type="button" 
           onClick={handleDecrement}
           disabled={value <= min}
-          className="bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] disabled:opacity-50 disabled:cursor-not-allowed border border-[rgba(255,255,255,0.1)] rounded-l-md p-1.5 h-8 focus:ring-green-500 focus:ring-1 focus:outline-none transition-all"
+          className="inline-flex items-center justify-center w-10 h-10 p-0 text-white/70 bg-transparent border border-white/10 rounded-l-lg hover:bg-green-400/10 hover:text-green-400 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          <Minus className="w-2.5 h-2.5 text-white" />
+          <Minus className="w-3 h-3" />
         </button>
         
         <input 
           type="text" 
           value={value}
           onChange={handleInputChange}
-          className="bg-[rgba(255,255,255,0.05)] border-x-0 border-[rgba(255,255,255,0.1)] h-8 text-center text-white text-xs focus:ring-green-500 focus:border-green-500 block w-full py-1 transition-all"
+          className="w-full h-10 px-3 text-center text-white bg-black/60 backdrop-blur-xl border-t border-b border-white/10 focus:outline-none focus:bg-black/80 focus:border-green-400 transition-all duration-300"
           min={min}
           max={max}
         />
@@ -65,9 +67,9 @@ export const NumberInput: React.FC<NumberInputProps> = ({
           type="button" 
           onClick={handleIncrement}
           disabled={value >= max}
-          className="bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] disabled:opacity-50 disabled:cursor-not-allowed border border-[rgba(255,255,255,0.1)] rounded-r-md p-1.5 h-8 focus:ring-green-500 focus:ring-1 focus:outline-none transition-all"
+          className="inline-flex items-center justify-center w-10 h-10 p-0 text-white/70 bg-transparent border border-white/10 rounded-r-lg hover:bg-green-400/10 hover:text-green-400 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          <Plus className="w-2.5 h-2.5 text-white" />
+          <Plus className="w-3 h-3" />
         </button>
       </div>
     </div>

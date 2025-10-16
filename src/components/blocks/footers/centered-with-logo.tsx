@@ -10,27 +10,22 @@ export function CenteredWithLogo() {
   const pages = [
     {
       title: "Features",
-      href: "#",
+      href: "/features",
       icon: Star
     },
     {
-      title: "Pricing", 
-      href: "#",
-      icon: Zap
-    },
-    {
       title: "Documentation",
-      href: "#",
+      href: "/documentation",
       icon: Code
     },
     {
       title: "GitHub",
-      href: "#",
+      href: "https://github.com/Deepender25/Readme-Architect-AI",
       icon: Github
     },
     {
       title: "Support",
-      href: "#",
+      href: "/contact",
       icon: Heart
     },
   ];
@@ -105,15 +100,15 @@ export function CenteredWithLogo() {
       
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 mb-12 lg:mb-16">
           {/* Logo and Description */}
           <ScrollAnimatedDiv
             delay={0}
             duration={0.8}
             yOffset={60}
-            className="lg:col-span-1"
+            className="md:col-span-2 lg:col-span-1"
           >
-            <div className="space-y-6">
+            <div className="space-y-4 lg:space-y-6">
               <Logo />
               <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
                 Transform your repositories with AI-powered README generation. 
@@ -131,9 +126,9 @@ export function CenteredWithLogo() {
             delay={0.2}
             duration={0.8}
             yOffset={60}
-            className="lg:col-span-1"
+            className="md:col-span-1 lg:col-span-1"
           >
-            <div className="space-y-6">
+            <div className="space-y-4 lg:space-y-6">
               <h3 className="text-white font-semibold text-lg">Quick Links</h3>
               <ul className="space-y-4">
                 {pages.map((page, idx) => (
@@ -164,9 +159,9 @@ export function CenteredWithLogo() {
             delay={0.4}
             duration={0.8}
             yOffset={60}
-            className="lg:col-span-1"
+            className="md:col-span-1 lg:col-span-1"
           >
-            <div className="space-y-6">
+            <div className="space-y-4 lg:space-y-6">
               <h3 className="text-white font-semibold text-lg">Connect</h3>
               <div className="flex gap-4">
                 {socialLinks.map((social, idx) => (
@@ -184,7 +179,7 @@ export function CenteredWithLogo() {
               {/* Newsletter Signup */}
               <div className="space-y-3">
                 <p className="text-gray-400 text-sm">Stay updated with new features</p>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="email"
                     placeholder="your@email.com"
@@ -193,7 +188,7 @@ export function CenteredWithLogo() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-sm rounded-lg transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,255,136,0.4)]"
+                    className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-sm rounded-lg transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,255,136,0.4)] whitespace-nowrap"
                   >
                     Subscribe
                   </motion.button>
@@ -224,18 +219,19 @@ export function CenteredWithLogo() {
           yOffset={30}
           className="flex flex-col sm:flex-row justify-between items-center gap-4"
         >
-          <div className="flex items-center gap-2 text-gray-400 text-sm">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-gray-400 text-sm">
             <span>© 2024 AutoDoc AI. Built with</span>
             <Heart className="w-4 h-4 text-red-400 fill-current animate-pulse" />
             <span>for developers.</span>
           </div>
           
-          <div className="flex items-center gap-6 text-xs text-gray-500">
-            <Link href="#" className="hover:text-green-400 transition-colors">Privacy Policy</Link>
-            <Link href="#" className="hover:text-green-400 transition-colors">Terms of Service</Link>
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs text-gray-500">
+            <Link href="/privacy" className="hover:text-green-400 transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-green-400 transition-colors">Terms of Service</Link>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <span>All systems operational</span>
+              <span className="hidden sm:inline">All systems operational</span>
+              <span className="sm:hidden">Online</span>
             </div>
           </div>
         </ScrollAnimatedDiv>

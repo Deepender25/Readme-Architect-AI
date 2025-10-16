@@ -190,24 +190,24 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
             transition={{ duration: 0.3 }}
             className="relative"
           >
-            <div className="bg-black/60 backdrop-blur-md rounded-2xl p-8 border border-green-400/30 shadow-2xl shadow-green-400/10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-green-400/10 rounded-lg flex items-center justify-center">
-                  <Github className="w-5 h-5 text-green-400" />
+            <div className="bg-black/85 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-green-400/10 rounded-xl border border-green-400/20 flex items-center justify-center">
+                  <Github className="w-6 h-6 text-green-400" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white">Repository URL</h3>
+                  <h3 className="text-xl font-semibold text-white">Repository URL</h3>
                   <p className="text-sm text-gray-400">Enter your GitHub repository URL</p>
                 </div>
               </div>
               
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <input
                   type="url"
                   placeholder="https://github.com/username/repository"
                   value={repositoryUrl}
                   onChange={(e) => setRepositoryUrl(e.target.value)}
-                  className="w-full px-4 py-3 bg-black/50 border border-green-400/30 rounded-lg text-white placeholder-gray-400 text-sm transition-all focus:outline-none focus:border-green-400/50 focus:bg-black/60 focus:shadow-lg focus:shadow-green-400/10"
+                  className="w-full px-4 py-3 bg-black/60 backdrop-blur-xl border border-white/10 rounded-lg text-white transition-all duration-300 hover:border-white/20 focus:outline-none focus:bg-black/80 focus:border-green-400 min-h-[44px]"
                   onKeyPress={(e) => e.key === 'Enter' && handleUrlSubmit()}
                 />
                 
@@ -215,20 +215,21 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                   <motion.p
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-red-400 text-sm"
+                    className="text-red-400 text-sm font-medium"
                   >
                     {error}
                   </motion.p>
                 )}
                 
-                <button
+                <Button
                   onClick={handleUrlSubmit}
-                  className="w-full btn-green-primary py-3 px-4 rounded-lg gap-2 shadow-xl shadow-green-400/40 hover:shadow-green-400/60"
+                  className="w-full"
+                  size="lg"
                   disabled={!repositoryUrl.trim()}
                 >
                   <span>Continue</span>
                   <ArrowRight className="w-4 h-4 ml-2" />
-                </button>
+                </Button>
               </div>
             </div>
           </motion.div>
@@ -245,42 +246,45 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
             transition={{ duration: 0.3 }}
             className="relative"
           >
-            <div className="bg-black/60 backdrop-blur-md rounded-2xl p-8 border border-green-400/30 shadow-2xl shadow-green-400/10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-green-400/10 rounded-lg flex items-center justify-center">
-                  <Settings className="w-5 h-5 text-green-400" />
+            <div className="bg-black/85 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-green-400/10 rounded-xl border border-green-400/20 flex items-center justify-center">
+                  <Settings className="w-6 h-6 text-green-400" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white">Project Name</h3>
+                  <h3 className="text-xl font-semibold text-white">Project Name</h3>
                   <p className="text-sm text-gray-400">Give your project a custom name (optional)</p>
                 </div>
               </div>
               
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <input
                   type="text"
                   placeholder="My Awesome Project (leave empty for auto-generation)"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
-                  className="w-full px-4 py-3 bg-black/50 border border-green-400/30 rounded-lg text-white placeholder-gray-400 text-sm transition-all focus:outline-none focus:border-green-400/50 focus:bg-black/60 focus:shadow-lg focus:shadow-green-400/10"
+                  className="w-full px-4 py-3 bg-black/60 backdrop-blur-xl border border-white/10 rounded-lg text-white transition-all duration-300 hover:border-white/20 focus:outline-none focus:bg-black/80 focus:border-green-400 min-h-[44px]"
                   onKeyPress={(e) => e.key === 'Enter' && handleNameSubmit()}
                 />
                 
-                <div className="flex gap-2">
-                  <button
+                <div className="flex gap-3">
+                  <Button
                     onClick={handleBack}
-                    className="flex-1 gap-2 border border-green-400/40 hover:bg-green-400/10 text-gray-200 hover:text-white py-3 px-4 rounded-lg flex items-center justify-center bg-transparent transition-all duration-200"
+                    variant="secondary"
+                    size="lg"
+                    className="flex-1"
                   >
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     <span>Back</span>
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={handleNameSubmit}
-                    className="flex-1 btn-green-primary py-3 px-4 rounded-lg gap-2 shadow-xl shadow-green-400/40 hover:shadow-green-400/60"
+                    size="lg"
+                    className="flex-1"
                   >
                     <span>Continue</span>
                     <ArrowRight className="w-4 h-4 ml-2" />
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -298,38 +302,36 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
             transition={{ duration: 0.3 }}
             className="relative"
           >
-            <div className="bg-black/60 backdrop-blur-md rounded-2xl p-8 border border-green-400/30 shadow-2xl shadow-green-400/10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-green-400/10 rounded-lg flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-green-400" />
+            <div className="bg-black/85 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-green-400/10 rounded-xl border border-green-400/20 flex items-center justify-center">
+                  <FileText className="w-6 h-6 text-green-400" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white">Demo Section</h3>
+                  <h3 className="text-xl font-semibold text-white">Demo Section</h3>
                   <p className="text-sm text-gray-400">Add placeholders for screenshots and videos</p>
                 </div>
               </div>
               
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 rounded-lg border border-green-400/30 hover:border-green-400/40 transition-colors bg-black/50">
-                  <span className="text-white text-sm">Include demo section with placeholders</span>
-                  <div className="flex-shrink-0">
-                    <ToggleSwitch
-                      checked={includeDemo}
-                      onChange={setIncludeDemo}
-                    />
-                  </div>
+              <div className="space-y-6">
+                <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-lg p-4 flex items-center justify-between">
+                  <span className="text-white font-medium">Include demo section with placeholders</span>
+                  <ToggleSwitch
+                    checked={includeDemo}
+                    onChange={setIncludeDemo}
+                  />
                 </div>
                 
                 {includeDemo && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
-                    className="space-y-3 pl-4 border-l-2 border-green-500/30"
+                    className="space-y-4 pl-6 border-l-2 border-green-400/30"
                   >
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Image className="w-3.5 h-3.5 text-green-400" />
-                        <span className="text-xs text-gray-300">Screenshots:</span>
+                      <div className="flex items-center gap-3">
+                        <Image className="w-4 h-4 text-green-400" />
+                        <span className="text-sm text-gray-300 font-medium">Screenshots:</span>
                       </div>
                       <NumberInput
                         value={numScreenshots}
@@ -340,9 +342,9 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Video className="w-3.5 h-3.5 text-green-400" />
-                        <span className="text-xs text-gray-300">Videos:</span>
+                      <div className="flex items-center gap-3">
+                        <Video className="w-4 h-4 text-green-400" />
+                        <span className="text-sm text-gray-300 font-medium">Videos:</span>
                       </div>
                       <NumberInput
                         value={numVideos}
@@ -354,21 +356,24 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                   </motion.div>
                 )}
                 
-                <div className="flex gap-2">
-                  <button
+                <div className="flex gap-3">
+                  <Button
                     onClick={handleBack}
-                    className="flex-1 gap-2 border border-green-400/40 hover:bg-green-400/10 text-gray-200 hover:text-white py-3 px-4 rounded-lg flex items-center justify-center bg-transparent transition-all duration-200"
+                    variant="secondary"
+                    size="lg"
+                    className="flex-1"
                   >
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     <span>Back</span>
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={handleDemoSubmit}
-                    className="flex-1 btn-green-primary py-3 px-4 rounded-lg gap-2 shadow-xl shadow-green-400/40 hover:shadow-green-400/60"
+                    size="lg"
+                    className="flex-1"
                   >
                     <span>Generate README</span>
                     <FileText className="w-4 h-4 ml-2" />
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>

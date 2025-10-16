@@ -98,7 +98,7 @@ export default function CustomDropdown({
       
       {/* Dropdown content */}
       <div
-        className="fixed z-[999999] bg-[rgba(26,26,26,0.95)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] rounded-lg shadow-xl overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200"
+        className="fixed z-[999999] bg-black/95 backdrop-blur-xl border border-green-400/20 rounded-xl shadow-2xl p-2 max-h-80 overflow-y-auto animate-in fade-in-0 zoom-in-95 duration-200"
         style={{
           top: position.top,
           left: position.left,
@@ -106,24 +106,22 @@ export default function CustomDropdown({
           minWidth: '160px'
         }}
       >
-        <div className="py-1 max-h-60 overflow-y-auto">
-          {options.map((option) => (
-            <div
-              key={option.value}
-              className={`px-4 py-2.5 text-sm cursor-pointer transition-colors duration-150 ${
-                value === option.value
-                  ? 'bg-green-400/20 text-green-400 font-medium'
-                  : 'text-gray-300 hover:bg-[rgba(255,255,255,0.05)] hover:text-white'
-              }`}
-              onClick={() => {
-                onChange(option.value);
-                setIsOpen(false);
-              }}
-            >
-              {option.label}
-            </div>
-          ))}
-        </div>
+        {options.map((option) => (
+          <div
+            key={option.value}
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm cursor-pointer transition-all duration-200 min-h-[40px] ${
+              value === option.value 
+                ? 'bg-green-400/10 text-green-400 font-semibold' 
+                : 'text-white/80 hover:bg-green-400/10 hover:text-white hover:translate-x-0.5'
+            }`}
+            onClick={() => {
+              onChange(option.value);
+              setIsOpen(false);
+            }}
+          >
+            {option.label}
+          </div>
+        ))}
       </div>
     </>,
     document.body
@@ -133,23 +131,17 @@ export default function CustomDropdown({
     <div className={`relative ${className}`}>
       <div
         ref={buttonRef}
-        className="relative group rounded-lg bg-[rgba(26,26,26,0.7)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] overflow-hidden cursor-pointer hover:border-green-400/50 transition-all duration-200"
+        className="w-full px-4 py-3 bg-black/60 backdrop-blur-xl border border-white/10 rounded-lg text-white transition-all duration-300 cursor-pointer flex items-center justify-between gap-3 hover:border-green-400/30 hover:bg-black/80 focus:outline-none focus:bg-black/80 focus:border-green-400 min-h-[44px]"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {/* Glow effect */}
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-        
-        {/* Dropdown button */}
-        <div className="relative flex items-center justify-between px-4 py-2.5 text-white">
-          <span className={`text-sm font-medium ${!selectedOption ? 'text-gray-400' : 'text-white'}`}>
-            {selectedOption ? selectedOption.label : placeholder}
-          </span>
-          <ChevronDown 
-            className={`w-4 h-4 text-green-400 transition-transform duration-200 ${
-              isOpen ? 'rotate-180' : 'rotate-0'
-            }`} 
-          />
-        </div>
+        <span className={`text-sm font-medium flex-1 ${!selectedOption ? 'text-gray-400' : 'text-white'}`}>
+          {selectedOption ? selectedOption.label : placeholder}
+        </span>
+        <ChevronDown 
+          className={`w-4 h-4 text-green-400 transition-transform duration-300 flex-shrink-0 ${
+            isOpen ? 'rotate-180' : 'rotate-0'
+          }`} 
+        />
       </div>
 
       {/* Render dropdown via portal */}
