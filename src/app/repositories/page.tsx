@@ -523,11 +523,11 @@ function RepositoriesContent() {
                       isolation: 'isolate'
                     }}
                   >
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 sm:gap-3 mb-3">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
                           <Github className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" />
-                          <h4 className="text-lg sm:text-xl font-semibold text-white truncate flex-1">{repo.name}</h4>
+                          <h4 className="text-base sm:text-lg lg:text-xl font-semibold text-white truncate flex-1">{repo.name}</h4>
                           {repo.private ? (
                             <span className="flex items-center gap-1 px-2 py-1 text-xs bg-orange-500/20 text-orange-400 rounded-full flex-shrink-0">
                               <Lock className="w-3 h-3" />
@@ -542,7 +542,7 @@ function RepositoriesContent() {
                         </div>
                         
                         {repo.description && (
-                          <p className="text-gray-300 mb-4 line-clamp-2 leading-relaxed text-sm sm:text-base">
+                          <p className="text-gray-300 mb-3 sm:mb-4 line-clamp-2 leading-relaxed text-sm sm:text-base">
                             {repo.description}
                           </p>
                         )}
@@ -554,7 +554,7 @@ function RepositoriesContent() {
                                 className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full flex-shrink-0"
                                 style={{ backgroundColor: getLanguageColor(repo.language) }}
                               />
-                              <span className="truncate max-w-[80px] sm:max-w-none">{repo.language}</span>
+                              <span className="truncate max-w-[70px] sm:max-w-none">{repo.language}</span>
                             </div>
                           )}
                           
@@ -578,7 +578,7 @@ function RepositoriesContent() {
                         </div>
                       </div>
                       
-                      <div className="flex items-center gap-2 sm:ml-3 lg:ml-4 flex-shrink-0 min-w-0">
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2 sm:ml-3 lg:ml-4 flex-shrink-0 min-w-0 w-full sm:w-auto">
                         <Button
                           size="sm"
                           variant="outline"
@@ -588,18 +588,18 @@ function RepositoriesContent() {
                               window.open(repo.html_url, '_blank');
                             }
                           }}
-                          className="glass-button border-none text-blue-400 hover:bg-blue-400/20 px-2 py-1.5 sm:px-2.5 sm:py-2 flex-1 sm:flex-initial min-w-0"
+                          className="glass-button border-none text-blue-400 hover:bg-blue-400/20 px-3 py-2 sm:px-2.5 sm:py-2 flex-1 sm:flex-initial min-w-0 text-sm sm:text-xs"
                         >
                           <ExternalLink className="w-4 h-4 sm:mr-2 flex-shrink-0" />
                           <span className="hidden sm:inline whitespace-nowrap">View on GitHub</span>
-                          <span className="sm:hidden text-xs">GitHub</span>
+                          <span className="sm:hidden">View on GitHub</span>
                         </Button>
                         
                         <Button
                           size="sm"
                           onClick={() => handleGenerateReadme(repo.html_url, repo.name)}
                           disabled={selectedRepo === repo.name}
-                          className="glass-button border-none text-green-400 hover:bg-green-400/20 px-2 py-1.5 sm:px-2.5 sm:py-2 flex-1 sm:flex-initial min-w-0"
+                          className="glass-button border-none text-green-400 hover:bg-green-400/20 px-3 py-2 sm:px-2.5 sm:py-2 flex-1 sm:flex-initial min-w-0 text-sm sm:text-xs"
                         >
                           {selectedRepo === repo.name ? (
                             <div className="cube-loader-global cube-loader-inline">
@@ -612,7 +612,7 @@ function RepositoriesContent() {
                             <>
                               <FileText className="w-4 h-4 sm:mr-2 flex-shrink-0" />
                               <span className="hidden sm:inline whitespace-nowrap">Generate README</span>
-                              <span className="sm:hidden text-xs">Generate</span>
+                              <span className="sm:hidden">Generate README</span>
                             </>
                           )}
                         </Button>
