@@ -51,6 +51,7 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
   const [numScreenshots, setNumScreenshots] = useState(2);
   const [numVideos, setNumVideos] = useState(1);
   const [error, setError] = useState('');
+  const [errorDetails, setErrorDetails] = useState('');
   const [generationStatus, setGenerationStatus] = useState('');
 
   // Debug effect to monitor component state
@@ -108,6 +109,7 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
     setRepositoryUrl(normalizedUrl);
     
     setError('');
+    setErrorDetails('');
     setCurrentStep('name');
   };
 
@@ -144,6 +146,7 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
           onComplete(event.readme, repositoryUrl, projectName, generationParams);
         } else if (event.error) {
           setError(event.error);
+          setErrorDetails(event.details || '');
           setCurrentStep('url');
         }
       }
@@ -152,6 +155,7 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
 
   const handleBack = () => {
     setError('');
+    setErrorDetails('');
     switch (currentStep) {
       case 'name':
         setCurrentStep('url');
@@ -212,13 +216,16 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                 />
                 
                 {error && (
-                  <motion.p
+                  <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-red-400 text-sm font-medium"
+                    className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg"
                   >
-                    {error}
-                  </motion.p>
+                    <p className="text-red-400 text-sm font-medium mb-1">{error}</p>
+                    {errorDetails && (
+                      <p className="text-red-300 text-xs">{errorDetails}</p>
+                    )}
+                  </motion.div>
                 )}
                 
                 <Button
@@ -404,7 +411,10 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                 animate={{ opacity: 1, y: 0 }}
                 className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg"
               >
-                <p className="text-red-400 text-sm">{error}</p>
+                <p className="text-red-400 text-sm font-medium mb-1">{error}</p>
+                {errorDetails && (
+                  <p className="text-red-300 text-xs mb-2">{errorDetails}</p>
+                )}
                 <Button
                   onClick={() => setCurrentStep('url')}
                   variant="ghost"
