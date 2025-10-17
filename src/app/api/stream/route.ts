@@ -4,176 +4,7 @@ import { NextRequest } from 'next/server';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-// Simple fallback README generator for when Python API is not accessible
-function generateSimpleReadme(params: {
-  repoUrl: string;
-  projectName: string;
-  includeDemo: boolean;
-  numScreenshots: number;
-  numVideos: number;
-}) {
-  const repoName = params.repoUrl.split('/').pop()?.replace('.git', '') || 'Repository';
-  const projectTitle = params.projectName || repoName;
-
-  let demoSection = '';
-  if (params.includeDemo && (params.numScreenshots > 0 || params.numVideos > 0)) {
-    demoSection = `
-
-## 📸 Demo & Screenshots
-
-`;
-    
-    if (params.numScreenshots > 0) {
-      demoSection += `### 🖼️ Screenshots
-
-`;
-      for (let i = 1; i <= params.numScreenshots; i++) {
-        demoSection += `![Screenshot ${i}](https://placehold.co/800x450/2d2d4d/ffffff?text=App+Screenshot+${i})
-*Caption for screenshot ${i}.*
-
-`;
-      }
-    }
-
-    if (params.numVideos > 0) {
-      demoSection += `### 🎬 Video Demos
-
-`;
-      for (let i = 1; i <= params.numVideos; i++) {
-        demoSection += `[![Video Demo ${i}](https://placehold.co/800x450/2d2d4d/c5a8ff?text=Watch+Video+Demo+${i})](https://example.com/your-video-link-${i})
-*Caption for video demo ${i}.*
-
-`;
-      }
-    }
-  }
-
-  return `<h1 align="center">${projectTitle}</h1>
-<p align="center">A modern, well-documented project built with best practices</p>
-
-<p align="center">
-  <img alt="Build" src="https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge">
-  <img alt="Issues" src="https://img.shields.io/badge/Issues-0%20Open-blue?style=for-the-badge">
-  <img alt="Contributions" src="https://img.shields.io/badge/Contributions-Welcome-orange?style=for-the-badge">
-  <img alt="License" src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge">
-</p>
-<!-- 
-  **Note:** These are static placeholder badges. Replace them with your project's actual badges.
-  You can generate your own at https://shields.io
--->
-
-## 📚 Table of Contents
-- [⭐ Overview](#-overview)
-- [✨ Key Features](#-key-features)
-- [🛠️ Tech Stack](#️-tech-stack)${params.includeDemo && (params.numScreenshots > 0 || params.numVideos > 0) ? '\n- [📸 Demo & Screenshots](#-demo--screenshots)' : ''}
-- [🚀 Getting Started](#-getting-started)
-- [🔧 Usage](#-usage)
-- [🤝 Contributing](#-contributing)
-- [📝 License](#-license)
-
-## ⭐ Overview
-
-${projectTitle} is a modern application that demonstrates contemporary development practices and cutting-edge technology integration.
-
-> **The Problem:** Many projects lack comprehensive documentation, making it difficult for developers to understand, contribute to, and maintain the codebase effectively.
-
-**The Solution:** This project provides a well-structured, documented, and maintainable codebase that serves as a reference for best practices in modern software development.
-
-**Architecture:** Based on the repository structure, this project appears to be a modern application featuring a robust architecture with clean separation of concerns and scalable design patterns.
-
-## ✨ Key Features
-
-- **Modern Architecture** - Built with contemporary design patterns and best practices
-- **Comprehensive Documentation** - Well-documented codebase with clear examples and usage instructions  
-- **Scalable Design** - Architected for growth and easy maintenance
-- **Developer Experience** - Optimized for developer productivity and ease of contribution
-- **Quality Assurance** - Includes testing, linting, and continuous integration practices
-- **Performance Optimized** - Built with performance and efficiency in mind
-
-## 🛠️ Tech Stack
-
-| Technology | Purpose | Why it was Chosen |
-|:-----------|:--------|:------------------|
-| **Modern Framework** | Core Application Framework | Provides excellent developer experience and performance optimization |
-| **TypeScript** | Type Safety | Ensures code reliability and better developer experience |
-| **Testing Framework** | Quality Assurance | Maintains code quality and prevents regressions |
-| **CI/CD Pipeline** | Automated Deployment | Ensures consistent and reliable deployments |${demoSection}
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js 18+ or Python 3.9+ (depending on the project)
-- Package manager (npm, yarn, or pip)
-- Git for version control
-
-### Installation
-
-1. **Clone the repository:**
-   \`\`\`bash
-   git clone ${params.repoUrl}
-   cd ${repoName}
-   \`\`\`
-
-2. **Install dependencies:**
-   \`\`\`bash
-   # For Node.js projects
-   npm install
-   # or
-   yarn install
-   
-   # For Python projects
-   pip install -r requirements.txt
-   \`\`\`
-
-3. **Set up environment variables:**
-   \`\`\`bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   \`\`\`
-
-4. **Start the development server:**
-   \`\`\`bash
-   # For Node.js projects
-   npm run dev
-   # or
-   yarn dev
-   
-   # For Python projects
-   python main.py
-   \`\`\`
-
-## 🔧 Usage
-
-1. **Basic Usage:**
-   Follow the installation steps above to get the project running locally.
-
-2. **Configuration:**
-   Customize the application by modifying the configuration files according to your needs.
-
-3. **Development:**
-   The project includes hot-reload capabilities for efficient development workflow.
-
-## 🤝 Contributing
-
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also open an issue with the tag "enhancement".
-
-1. Fork the Project
-2. Create your Feature Branch (\`git checkout -b feature/AmazingFeature\`)
-3. Commit your Changes (\`git commit -m 'Add some AmazingFeature'\`)
-4. Push to the Branch (\`git push origin feature/AmazingFeature\`)
-5. Open a Pull Request
-
-## 📝 License
-
-Distributed under the MIT License. See \`LICENSE\` for more information.
-
----
-
-**Generated with ❤️ by AutoDoc AI**`;
-}
+// No fallback README generation - return proper errors instead
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -198,68 +29,60 @@ export async function GET(request: NextRequest) {
 
       const generateReadme = async () => {
         try {
-          // Step 1: Cloning
-          sendEvent({ status: 'Cloning repository...' });
+          // Try to connect to Python API
+          const host = request.headers.get('host');
+          const protocol = host?.includes('localhost') ? 'http' : 'https';
+          const baseUrl = `${protocol}://${host}`;
+          const pythonApiUrl = `${baseUrl}/api/python/generate?${searchParams.toString()}`;
           
-          // Step 2: Analyzing
-          sendEvent({ status: 'Analyzing codebase structure...' });
+          sendEvent({ status: 'Connecting to AI service...' });
           
-          // Step 3: Building prompt
-          sendEvent({ status: 'Building AI prompt...' });
-          
-          // Step 4: Generating
-          sendEvent({ status: 'Generating README with Gemini AI...' });
+          const response = await fetch(pythonApiUrl, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Cookie': request.headers.get('Cookie') || '',
+              'User-Agent': 'NextJS-Internal-Request',
+            },
+          });
 
-          // Step 5: Try Python API, fallback to simple generation if it fails
-          try {
-            // Try to call the Python API first
-            const pythonApiUrl = `/api/python/generate?${searchParams.toString()}`;
-            console.log('🔗 Attempting Python API call:', pythonApiUrl);
-            
-            const baseUrl = `https://${request.headers.get('host')}`;
-            const fullUrl = `${baseUrl}${pythonApiUrl}`;
-            
-            const response = await fetch(fullUrl, {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'User-Agent': 'AutoDoc-Stream/1.0',
-              },
-            });
-
-            if (response.ok) {
-              const data = await response.json();
-              console.log('✅ Python API Success, README length:', data.readme?.length || 0);
-              
-              if (data.readme) {
-                sendEvent({ readme: data.readme });
-              } else {
-                throw new Error('No README content received from Python API');
-              }
-            } else {
-              console.log('⚠️ Python API not available, using fallback generation');
-              throw new Error('Python API not accessible');
-            }
-          } catch (apiError) {
-            console.log('🔄 Python API failed, using enhanced fallback generation');
-            sendEvent({ status: 'AI service unavailable, using template generation...' });
-            
-            // Use fallback generation
-            const readmeContent = generateSimpleReadme({
-              repoUrl,
-              projectName,
-              includeDemo,
-              numScreenshots,
-              numVideos
-            });
-            
-            sendEvent({ readme: readmeContent });
+          if (!response.ok) {
+            throw new Error(`AI service returned ${response.status}: ${response.statusText}`);
           }
 
-          controller.close();
+          const data = await response.json();
+          
+          if (data.error) {
+            throw new Error(data.error);
+          }
+          
+          if (data.readme) {
+            sendEvent({ readme: data.readme });
+          } else {
+            throw new Error('No README content received from AI service');
+          }
+          
         } catch (error) {
-          console.error('💥 Stream Error:', error);
-          sendEvent({ error: error instanceof Error ? error.message : 'Generation failed' });
+          console.error('Stream generation error:', error);
+          
+          // Send email notification about the error
+          try {
+            await sendErrorNotification(error, {
+              repoUrl,
+              projectName,
+              userAgent: request.headers.get('User-Agent') || 'Unknown',
+              timestamp: new Date().toISOString(),
+              host: request.headers.get('host')
+            });
+          } catch (emailError) {
+            console.error('Failed to send error notification email:', emailError);
+          }
+          
+          sendEvent({ 
+            error: 'Sorry, we are experiencing technical difficulties. Please try again later.',
+            details: 'Our AI-powered README generation service is currently unavailable. We have been notified of this issue and are working to resolve it.'
+          });
+        } finally {
           controller.close();
         }
       };
@@ -278,6 +101,81 @@ export async function GET(request: NextRequest) {
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
   });
+}
+
+// Email notification function for errors
+async function sendErrorNotification(error: any, context: any) {
+  try {
+    const emailData = {
+      to: process.env.ADMIN_EMAIL || 'yadavdeepender65@gmail.com', // Your email
+      subject: '🚨 README Generator Service Error - Immediate Attention Required',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #dc2626; border-bottom: 2px solid #dc2626; padding-bottom: 10px;">
+            🚨 README Generator Service Error
+          </h2>
+          
+          <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin: 16px 0;">
+            <h3 style="color: #991b1b; margin-top: 0;">Error Details</h3>
+            <p><strong>Time:</strong> ${context.timestamp}</p>
+            <p><strong>Repository:</strong> <a href="${context.repoUrl}" target="_blank">${context.repoUrl}</a></p>
+            <p><strong>Project Name:</strong> ${context.projectName || 'Not specified'}</p>
+            <p><strong>Host:</strong> ${context.host}</p>
+            <p><strong>User Agent:</strong> ${context.userAgent}</p>
+          </div>
+          
+          <div style="background: #fff1f2; border: 1px solid #fda4af; border-radius: 8px; padding: 16px; margin: 16px 0;">
+            <h3 style="color: #be123c; margin-top: 0;">Error Message</h3>
+            <p style="font-family: monospace; background: #f9fafb; padding: 12px; border-radius: 4px; border-left: 4px solid #dc2626;">
+              ${error.message || error}
+            </p>
+            
+            ${error.stack ? `
+            <h4 style="color: #be123c;">Stack Trace</h4>
+            <pre style="background: #f9fafb; padding: 12px; border-radius: 4px; overflow-x: auto; font-size: 12px; border-left: 4px solid #dc2626;">
+${error.stack}
+            </pre>
+            ` : ''}
+          </div>
+          
+          <div style="background: #eff6ff; border: 1px solid #93c5fd; border-radius: 8px; padding: 16px; margin: 16px 0;">
+            <h3 style="color: #1d4ed8; margin-top: 0;">Action Required</h3>
+            <p>This error occurred in the README generation service. Please:</p>
+            <ul>
+              <li>Check the AI service status and API keys</li>
+              <li>Verify the Python backend is running properly</li>
+              <li>Review server logs for additional context</li>
+              <li>Test the repository URL manually if needed</li>
+            </ul>
+          </div>
+          
+          <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e7eb;">
+          <p style="color: #6b7280; font-size: 14px; text-align: center;">
+            This is an automated error notification from your README Generator service.
+          </p>
+        </div>
+      `
+    };
+
+    // Send the email notification
+    const protocol = context.host?.includes('localhost') ? 'http' : 'https';
+    const baseUrl = `${protocol}://${context.host}`;
+    
+    const response = await fetch(`${baseUrl}/api/send-email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(emailData)
+    });
+    
+    if (response.ok) {
+      console.log('✅ Error notification email sent successfully');
+    } else {
+      console.error('❌ Failed to send error notification email:', response.status);
+    }
+    
+  } catch (emailError) {
+    console.error('Failed to send error notification:', emailError);
+  }
 }
 
 export async function POST(request: NextRequest) {

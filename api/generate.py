@@ -545,25 +545,7 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
 **Final Instruction:** The output MUST be ONLY the raw Markdown content. Do not add any commentary, greetings, or explanations before or after the Markdown. Adhere strictly to the requested format and quality bar.
 """
 
-            # Create a fallback README in case the API fails
-            fallback_readme = f"""# {project_name or "Project README"}
-
-## Overview
-This is an auto-generated README for your project.
-
-## Features
-- Feature 1
-- Feature 2
-- Feature 3
-
-## Getting Started
-1. Clone the repository
-2. Install dependencies
-3. Run the application
-
-## License
-MIT
-"""
+            # No fallback README - return proper errors instead
             
             try:
                 # Use gemini-2.5-flash for better results (from main.py)
