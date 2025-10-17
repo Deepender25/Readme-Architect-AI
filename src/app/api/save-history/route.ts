@@ -41,7 +41,8 @@ export async function POST(request: NextRequest) {
       repository_name: body.repository_name || '',
       project_name: body.project_name || null,
       readme_content: body.readme_content || '',
-      generation_params: body.generation_params || {}
+      generation_params: body.generation_params || {},
+      session_id: body.session_id || null // Add session tracking
     };
 
     console.log('💾 Saving to GitHub database...');
@@ -108,6 +109,35 @@ async function saveToGitHubDatabase(data: any): Promise<boolean> {
       }
     } catch (e) {
       console.log('📝 Creating new history file (parse error)');
+    }
+
+    // Check for duplicates based on repository_url and readme_content
+    // Also check for recent duplicates (within last 5 minutes) to prevent rapid saves
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+    
+    const isDuplicate = existingData.some((entry: any) => {
+      const isSameRepo = entry.repository_url === data.repository_url && entry.user_id === data.user_id;
+      const isSameContent = entry.readme_content === data.readme_content;
+      const isRecent = entry.created_at > fiveMinutesAgo;
+      
+      // Exact duplicate (same repo + same content)
+      if (isSameRepo && isSameContent) {
+        console.log('🔄 Exact duplicate detected (same repo + same content)');
+        return true;
+      }
+      
+      // Recent duplicate (same repo within 5 minutes)
+      if (isSameRepo && isRecent) {
+        console.log('🔄 Recent duplicate detected (same repo within 5 minutes)');
+        return true;
+      }
+      
+      return false;
+    });
+
+    if (isDuplicate) {
+      console.log('🔄 Duplicate entry detected, skipping save');
+      return true; // Return success to avoid errors, but don't save duplicate
     }
 
     // Create new history entry

@@ -121,6 +121,9 @@ export default function SimpleCentered() {
     try {
       console.log('💾 Auto-saving README to history...');
       
+      // Generate a unique session ID for this generation
+      const sessionId = `gen_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
       const response = await fetch('/api/save-history', {
         method: 'POST',
         headers: {
@@ -132,6 +135,7 @@ export default function SimpleCentered() {
           project_name: projName,
           readme_content: readme,
           generation_params: genParams,
+          session_id: sessionId,
         }),
       });
 

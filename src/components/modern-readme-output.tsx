@@ -100,6 +100,13 @@ export default function ModernReadmeOutput({
   useEffect(() => {
     const autoSaveToDatabase = async () => {
       if (disableAutoSave || !isAuthenticated || !user || !repositoryUrl || autoSaved) return;
+      
+      // Check if this is a fresh generation from /readme/output page
+      // If so, skip auto-save as it's already saved by the generation process
+      if (typeof window !== 'undefined' && window.location.pathname === '/readme/output') {
+        console.log('Skipping auto-save for fresh generation (already saved by generation process)');
+        return;
+      }
 
       try {
         const repositoryName = repositoryUrl.split('/').pop()?.replace('.git', '') || 'Unknown';
