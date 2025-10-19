@@ -357,7 +357,7 @@ function ReadmeViewContent() {
         </motion.header>
 
         {/* Spacer to prevent overlap - Different heights for mobile vs desktop */}
-        <div className="h-80 sm:h-40"></div>
+        <div className="h-96 sm:h-40"></div>
 
         {/* README Content */}
         <motion.main
