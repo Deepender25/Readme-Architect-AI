@@ -26,7 +26,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
-import ProfessionalDropdown from '@/components/ui/professional-dropdown'
+
 import withAuth from '@/components/withAuth'
 import LayoutWrapper from '@/components/layout-wrapper'
 import PageHeader from '@/components/layout/page-header'
@@ -312,79 +312,150 @@ function HistoryContent() {
         </div>
       </ContentSection>
 
-      <ContentSection background="glass" className="mb-8">
-              <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-                <div className="flex flex-col sm:flex-row gap-4 flex-1">
-                  {/* Search */}
-                  <div className="relative flex-1 max-w-md">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="Search history..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="glass-input w-full pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none"
-                    />
-                  </div>
+      <ContentSection background="glass" className="mb-6 sm:mb-8">
+        <div className="space-y-4">
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search history..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-gray-800/50 border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-green-400/50 transition-all text-sm sm:text-base"
+            />
+          </div>
 
-                  {/* Demo Filter */}
-                  <ProfessionalDropdown
-                    options={[
-                      { value: 'all', label: 'All READMEs', icon: <FileText className="w-4 h-4" /> },
-                      { value: 'with', label: 'With Demo', icon: <BarChart3 className="w-4 h-4" /> },
-                      { value: 'without', label: 'Without Demo', icon: <FileText className="w-4 h-4" /> }
-                    ]}
+          {/* Filters Section */}
+          <div className="space-y-3 sm:space-y-0">
+            {/* Mobile: Stack filters vertically */}
+            <div className="sm:hidden space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <select
                     value={filterDemo}
-                    onChange={(value) => setFilterDemo(value as 'all' | 'with' | 'without')}
-                    placeholder="Demo Filter"
-                    className="min-w-[160px]"
-                  />
+                    onChange={(e) => setFilterDemo(e.target.value as 'all' | 'with' | 'without')}
+                    className="flex-1 bg-gray-800/50 border border-gray-600/50 rounded-lg px-2 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-green-400/50 transition-all"
+                  >
+                    <option value="all">All READMEs</option>
+                    <option value="with">With Demo</option>
+                    <option value="without">Without Demo</option>
+                  </select>
                 </div>
 
-                <div className="flex gap-2">
-                  {/* Sort Controls */}
-                  <ProfessionalDropdown
-                    options={[
-                      { value: 'created', label: 'Date Created', icon: <Calendar className="w-4 h-4" /> },
-                      { value: 'updated', label: 'Last Updated', icon: <Clock className="w-4 h-4" /> },
-                      { value: 'name', label: 'Name', icon: <FileText className="w-4 h-4" /> }
-                    ]}
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <select
                     value={sortBy}
-                    onChange={(value) => setSortBy(value as 'created' | 'updated' | 'name')}
-                    placeholder="Sort By"
-                    className="min-w-[140px]"
-                  />
-
-                  <Button
-                    onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                    variant="outline"
-                    size="sm"
-                    className="glass-button border-none text-gray-300 hover:text-green-400"
+                    onChange={(e) => setSortBy(e.target.value as 'created' | 'updated' | 'name')}
+                    className="flex-1 bg-gray-800/50 border border-gray-600/50 rounded-lg px-2 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-green-400/50 transition-all"
                   >
-                    {sortOrder === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
-                  </Button>
-
-                  <Button
-                    onClick={() => fetchHistory(true)}
-                    variant="outline"
-                    size="sm"
-                    disabled={isRefreshing}
-                    className="glass-button border-none text-green-400 hover:bg-green-400/20"
-                  >
-                    <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                  </Button>
+                    <option value="created">Date Created</option>
+                    <option value="updated">Last Updated</option>
+                    <option value="name">Name</option>
+                  </select>
                 </div>
               </div>
 
-              <div className="mt-4 flex items-center gap-4 text-sm text-gray-400">
-                <span>Showing {filteredHistory.length} of {history.length} items</span>
-                {searchTerm && <span>• Filtered by: "{searchTerm}"</span>}
-                {filterDemo !== 'all' && <span>• Demo: {filterDemo}</span>}
+              <div className="flex items-center gap-3">
+                <Button
+                  onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                  variant="outline"
+                  size="sm"
+                  className="bg-gray-800/50 border border-gray-600/50 text-gray-300 hover:text-green-400 hover:border-green-400/50 px-2.5 py-2 flex-shrink-0"
+                  title={`Sort ${sortOrder === 'asc' ? 'Descending' : 'Ascending'}`}
+                >
+                  {sortOrder === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
+                </Button>
+
+                <Button
+                  onClick={() => fetchHistory(true)}
+                  variant="outline"
+                  size="sm"
+                  disabled={isRefreshing}
+                  className="bg-gray-800/50 border border-gray-600/50 text-green-400 hover:bg-green-400/20 hover:border-green-400/50 px-2.5 py-2 flex-shrink-0"
+                  title="Refresh history"
+                >
+                  <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                </Button>
               </div>
+            </div>
+
+            {/* Desktop: Horizontal layout */}
+            <div className="hidden sm:flex history-filters flex-wrap items-center gap-3 lg:gap-4">
+              <div className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-gray-400" />
+                <select
+                  value={filterDemo}
+                  onChange={(e) => setFilterDemo(e.target.value as 'all' | 'with' | 'without')}
+                  className="bg-gray-800/50 border border-gray-600/50 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-green-400/50 transition-all min-w-[120px] lg:min-w-[140px]"
+                >
+                  <option value="all">All READMEs</option>
+                  <option value="with">With Demo</option>
+                  <option value="without">Without Demo</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-gray-400" />
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as 'created' | 'updated' | 'name')}
+                  className="bg-gray-800/50 border border-gray-600/50 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-green-400/50 transition-all min-w-[100px] lg:min-w-[120px]"
+                >
+                  <option value="created">Date Created</option>
+                  <option value="updated">Last Updated</option>
+                  <option value="name">Name</option>
+                </select>
+              </div>
+
+              <Button
+                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                variant="outline"
+                size="sm"
+                className="bg-gray-800/50 border border-gray-600/50 text-gray-300 hover:text-green-400 hover:border-green-400/50 px-3 py-2"
+                title={`Sort ${sortOrder === 'asc' ? 'Descending' : 'Ascending'}`}
+              >
+                {sortOrder === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
+              </Button>
+
+              <Button
+                onClick={() => fetchHistory(true)}
+                variant="outline"
+                size="sm"
+                disabled={isRefreshing}
+                className="bg-gray-800/50 border border-gray-600/50 text-green-400 hover:bg-green-400/20 hover:border-green-400/50 px-3 py-2 ml-auto"
+                title="Refresh history"
+              >
+                <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              </Button>
+            </div>
+          </div>
+
+          {/* Results Summary */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-400 pt-2 border-t border-gray-700/50">
+            <span className="font-medium">
+              Showing {filteredHistory.length} of {history.length} items
+            </span>
+            {searchTerm && (
+              <span className="flex items-center gap-1">
+                <span className="hidden sm:inline">•</span>
+                <span className="truncate max-w-[150px] sm:max-w-none">Search: "{searchTerm}"</span>
+              </span>
+            )}
+            {filterDemo !== 'all' && (
+              <span className="flex items-center gap-1">
+                <span className="hidden sm:inline">•</span>
+                <span className="capitalize">{filterDemo === 'with' ? 'With Demo' : filterDemo === 'without' ? 'Without Demo' : filterDemo}</span>
+              </span>
+            )}
+          </div>
+        </div>
       </ContentSection>
 
       <ContentSection background="gradient" className="min-h-0">
-        <div className="max-h-[calc(100vh-400px)] overflow-y-auto scrollbar-thin scrollbar-green" style={{
+        <div className="max-h-[calc(100vh-300px)] sm:max-h-[calc(100vh-400px)] overflow-y-auto scrollbar-thin scrollbar-green" style={{
           transform: 'translate3d(0, 0, 0)',
           willChange: 'scroll-position'
         }}>
@@ -428,7 +499,7 @@ function HistoryContent() {
               </p>
             </div>
           ) : (
-            <div className="grid gap-4 pb-6">
+            <div className="history-grid grid gap-3 pb-6 w-full overflow-x-hidden">
               <AnimatePresence>
                 {filteredHistory.map((item, index) => (
                   <motion.div
@@ -437,81 +508,86 @@ function HistoryContent() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ delay: Math.min(index * 0.02, 0.2), duration: 0.3 }}
-                    className="glass-card p-8 group"
+                    className="glass-card p-2 sm:p-4 lg:p-6 group max-w-full w-full overflow-hidden"
                     style={{
                       transform: 'translate3d(0, 0, 0)',
                       willChange: 'transform',
                       isolation: 'isolate'
                     }}
                   >
-                    <div className="flex items-start justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 w-full min-w-0">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-3 mb-3">
-                          <Github className="w-5 h-5 text-green-400" />
-                          <h4 className="text-xl font-semibold text-white truncate">
+                        <div className="flex items-center gap-1.5 sm:gap-3 mb-1.5 sm:mb-3 w-full min-w-0">
+                          <Github className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" />
+                          <h4 className="text-sm sm:text-lg lg:text-xl font-semibold text-white truncate flex-1 min-w-0">
                             {item.project_name || item.repository_name}
                           </h4>
                           {item.generation_params.include_demo && (
-                            <span className="flex items-center gap-1 px-2 py-1 text-xs bg-purple-500/20 text-purple-400 rounded-full">
-                              <BarChart3 className="w-3 h-3" />
-                              Demo Included
+                            <span className="flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs bg-purple-500/20 text-purple-400 rounded-full flex-shrink-0">
+                              <BarChart3 className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                              <span className="hidden sm:inline">Demo Included</span>
                             </span>
                           )}
                         </div>
                         
-                        <p className="text-gray-300 mb-4 truncate">
+                        <p className="text-gray-300 mb-2 sm:mb-4 line-clamp-2 leading-relaxed text-xs sm:text-base">
                           {item.repository_url}
                         </p>
                         
-                        <div className="flex items-center gap-6 text-sm text-gray-400">
-                          <div className="flex items-center gap-1">
-                            <Calendar className="w-4 h-4" />
-                            <span>Created {formatDate(item.created_at)}</span>
+                        <div className="flex flex-wrap items-center gap-1.5 sm:gap-3 lg:gap-4 text-xs sm:text-sm text-gray-400">
+                          <div className="flex items-center gap-0.5 sm:gap-1">
+                            <Calendar className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                            <span className="hidden sm:inline">Created {formatDate(item.created_at)}</span>
+                            <span className="sm:hidden">{formatDate(item.created_at)}</span>
                           </div>
                           
                           {item.updated_at !== item.created_at && (
-                            <div className="flex items-center gap-1">
-                              <Clock className="w-4 h-4" />
-                              <span>Updated {formatDate(item.updated_at)}</span>
+                            <div className="flex items-center gap-0.5 sm:gap-1">
+                              <Clock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                              <span className="hidden sm:inline">Updated {formatDate(item.updated_at)}</span>
+                              <span className="sm:hidden">Updated {formatDate(item.updated_at)}</span>
                             </div>
                           )}
                           
-                          <div className="flex items-center gap-1">
-                            <FileText className="w-4 h-4" />
+                          <div className="flex items-center gap-0.5 sm:gap-1">
+                            <FileText className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
                             <span>{Math.round(item.readme_content.length / 1000)}k chars</span>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="flex items-center gap-1 sm:gap-2 ml-4 md:ml-6 flex-shrink-0">
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 sm:gap-2 sm:ml-3 lg:ml-4 flex-shrink-0 min-w-0 w-full sm:w-auto">
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => copyToClipboard(item.readme_content, item.project_name || item.repository_name)}
-                          className="glass-button border-none text-blue-400 hover:bg-blue-400/20 p-2 sm:px-3 sm:py-2"
+                          className="glass-button border-none text-blue-400 hover:bg-blue-400/20 px-1.5 py-1 sm:px-2.5 sm:py-2 flex-1 sm:flex-initial min-w-0 text-xs sm:text-xs overflow-hidden"
                         >
-                          <Copy className="w-4 h-4 sm:mr-2" />
-                          <span className="hidden sm:inline">Copy</span>
+                          <Copy className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-2 flex-shrink-0" />
+                          <span className="hidden sm:inline whitespace-nowrap">Copy</span>
+                          <span className="sm:hidden">Copy</span>
                         </Button>
                         
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => downloadReadme(item)}
-                          className="glass-button border-none text-green-400 hover:bg-green-400/20 p-2 sm:px-3 sm:py-2"
+                          className="glass-button border-none text-green-400 hover:bg-green-400/20 px-1.5 py-1 sm:px-2.5 sm:py-2 flex-1 sm:flex-initial min-w-0 text-xs sm:text-xs overflow-hidden"
                         >
-                          <Download className="w-4 h-4 sm:mr-2" />
-                          <span className="hidden sm:inline">Download</span>
+                          <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-2 flex-shrink-0" />
+                          <span className="hidden sm:inline whitespace-nowrap">Download</span>
+                          <span className="sm:hidden">Download</span>
                         </Button>
                         
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => viewReadme(item)}
-                          className="glass-button border-none text-purple-400 hover:bg-purple-400/20 p-2 sm:px-3 sm:py-2"
+                          className="glass-button border-none text-purple-400 hover:bg-purple-400/20 px-1.5 py-1 sm:px-2.5 sm:py-2 flex-1 sm:flex-initial min-w-0 text-xs sm:text-xs overflow-hidden"
                         >
-                          <Eye className="w-4 h-4 sm:mr-2" />
-                          <span className="hidden sm:inline">View</span>
+                          <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-2 flex-shrink-0" />
+                          <span className="hidden sm:inline whitespace-nowrap">View</span>
+                          <span className="sm:hidden">View</span>
                         </Button>
                         
                         <Button
@@ -519,7 +595,7 @@ function HistoryContent() {
                           variant="outline"
                           onClick={() => deleteHistoryItem(item.id)}
                           disabled={deletingId === item.id}
-                          className="glass-button border-none text-red-400 hover:bg-red-400/20 p-2 sm:px-3 sm:py-2"
+                          className="glass-button border-none text-red-400 hover:bg-red-400/20 px-1.5 py-1 sm:px-2.5 sm:py-2 flex-1 sm:flex-initial min-w-0 text-xs sm:text-xs overflow-hidden"
                         >
                           {deletingId === item.id ? (
                             <div className="cube-loader-global cube-loader-inline">
@@ -529,7 +605,7 @@ function HistoryContent() {
                               <div className="cube-global"></div>
                             </div>
                           ) : (
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                           )}
                         </Button>
                       </div>
@@ -549,10 +625,10 @@ function HistoryContent() {
           initial={{ opacity: 0, y: 50, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 50, scale: 0.9 }}
-          className="fixed bottom-6 right-6 z-50"
+          className="fixed bottom-4 left-4 right-4 sm:bottom-6 sm:left-auto sm:right-6 sm:max-w-md z-50"
         >
           <div className={`
-            flex items-center gap-3 px-6 py-4 rounded-lg shadow-lg backdrop-blur-xl border
+            flex items-center gap-3 px-4 py-3 sm:px-6 sm:py-4 rounded-lg shadow-lg backdrop-blur-xl border
             ${toast.type === 'success' ? 'bg-green-400/20 border-green-400/50 text-green-400' : ''}
             ${toast.type === 'error' ? 'bg-red-400/20 border-red-400/50 text-red-400' : ''}
             ${toast.type === 'info' ? 'bg-blue-400/20 border-blue-400/50 text-blue-400' : ''}
