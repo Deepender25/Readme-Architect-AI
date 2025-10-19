@@ -18,7 +18,7 @@ import { marked } from 'marked'
 import DOMPurify from 'isomorphic-dompurify'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
-import ModernReadmeOutput from '@/components/modern-readme-output'
+
 import withAuth from '@/components/withAuth'
 import ModernNavbar from '@/components/layout/modern-navbar'
 import ModernFooter from '@/components/layout/modern-footer'
@@ -204,17 +204,17 @@ function ReadmeViewContent() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="border-t border-green-400/10 pt-3 pb-2"
+              className="border-t border-green-400/10 pt-3 pb-3"
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-300 min-w-0">
-                  <Github className="w-3 h-3 sm:w-4 sm:h-4 text-green-400 flex-shrink-0" />
-                  <span className="font-medium flex-shrink-0">Repository:</span>
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+                <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-300">
+                  <Github className="w-4 h-4 text-green-400 flex-shrink-0" />
+                  <span className="font-medium">Repository:</span>
                   <a 
                     href={historyItem.repository_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-green-400 hover:text-green-300 underline truncate min-w-0"
+                    className="text-green-400 hover:text-green-300 underline"
                     title={historyItem.repository_url}
                   >
                     {historyItem.repository_url.replace('https://github.com/', '')}
@@ -222,22 +222,22 @@ function ReadmeViewContent() {
                 </div>
 
                 <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-300">
-                  <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400 flex-shrink-0" />
+                  <Calendar className="w-4 h-4 text-blue-400 flex-shrink-0" />
                   <span className="font-medium">Created:</span>
-                  <span className="truncate">{formatDate(historyItem.created_at)}</span>
+                  <span>{formatDate(historyItem.created_at)}</span>
                 </div>
 
                 {historyItem.updated_at !== historyItem.created_at && (
                   <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-300">
-                    <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-orange-400 flex-shrink-0" />
+                    <Clock className="w-4 h-4 text-orange-400 flex-shrink-0" />
                     <span className="font-medium">Updated:</span>
-                    <span className="truncate">{formatDate(historyItem.updated_at)}</span>
+                    <span>{formatDate(historyItem.updated_at)}</span>
                   </div>
                 )}
 
                 {historyItem.generation_params.include_demo && (
-                  <div className="flex items-center gap-2 px-2 sm:px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs sm:text-sm w-fit">
-                    <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                  <div className="flex items-center gap-2 px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs sm:text-sm">
+                    <BarChart3 className="w-4 h-4 flex-shrink-0" />
                     <span>Demo Included</span>
                   </div>
                 )}
@@ -251,13 +251,13 @@ function ReadmeViewContent() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="pt-32 sm:pt-36 lg:pt-40 pb-8"
+          className="pt-36 pb-8"
         >
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-5xl mx-auto">
-              <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 xl:p-12">
+              <div className="glass rounded-xl sm:rounded-2xl p-6 sm:p-8 lg:p-10 xl:p-12">
                 <div 
-                  className="prose prose-invert prose-green max-w-none modern-readme-preview prose-sm sm:prose-base lg:prose-lg"
+                  className="prose prose-invert prose-green max-w-none modern-readme-preview"
                   dangerouslySetInnerHTML={{ 
                     __html: DOMPurify.sanitize(marked(historyItem.readme_content) as string) 
                   }}
