@@ -98,7 +98,7 @@ function ReadmeViewContent() {
 
   if (isLoading) {
     return (
-      <div className="h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-black flex items-center justify-center px-4">
         <div className="cube-loading-container">
           <div className="flex flex-col items-center">
             <div className="cube-loader-global cube-loader-lg">
@@ -119,17 +119,17 @@ function ReadmeViewContent() {
 
   if (error || !historyItem) {
     return (
-      <div className="h-screen bg-black flex items-center justify-center">
-        <div className="text-center max-w-md">
-          <AlertCircle className="w-16 h-16 mx-auto mb-6 text-red-400" />
-          <div className="text-xl font-bold text-white mb-4">README Not Found</div>
-          <div className="text-gray-400 mb-6">{error || 'The requested README could not be found.'}</div>
-          <div className="flex gap-3 justify-center">
-            <Button onClick={goBack} variant="outline" className="glass-button border-green-400/20 text-green-400">
+      <div className="min-h-screen bg-black flex items-center justify-center px-4">
+        <div className="text-center max-w-md w-full">
+          <AlertCircle className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 text-red-400" />
+          <div className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4">README Not Found</div>
+          <div className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">{error || 'The requested README could not be found.'}</div>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button onClick={goBack} variant="outline" className="glass-button border-green-400/20 text-green-400 w-full sm:w-auto">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to History
             </Button>
-            <Button onClick={goHome} variant="outline" className="glass-button border-blue-400/20 text-blue-400">
+            <Button onClick={goHome} variant="outline" className="glass-button border-blue-400/20 text-blue-400 w-full sm:w-auto">
               <Home className="w-4 h-4 mr-2" />
               Home
             </Button>
@@ -158,29 +158,30 @@ function ReadmeViewContent() {
           transition={{ duration: 0.5 }}
           className="fixed top-16 left-0 right-0 z-40 glass-navbar border-b border-green-400/20 border-t-0"
         >
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Main Header Row */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-3 sm:py-4">
               {/* Left Section - Navigation & Title */}
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
                 <Button
                   onClick={goBack}
                   variant="outline"
                   size="sm"
-                  className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10"
+                  className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10 flex-shrink-0"
                 >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to History
+                  <ArrowLeft className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Back to History</span>
                 </Button>
                 
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-400/20 rounded-lg">
-                    <FileText className="w-5 h-5 text-green-400" />
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                  <div className="p-1.5 sm:p-2 bg-green-400/20 rounded-lg flex-shrink-0">
+                    <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
                   </div>
-                  <div>
-                    <h1 className="text-lg font-bold text-white">
+                  <div className="min-w-0 flex-1">
+                    <h1 className="text-base sm:text-lg font-bold text-white truncate">
                       {historyItem.project_name || historyItem.repository_name}
                     </h1>
-                    <p className="text-sm text-gray-400">Generated README</p>
+                    <p className="text-xs sm:text-sm text-gray-400">Generated README</p>
                   </div>
                 </div>
               </div>
@@ -190,10 +191,11 @@ function ReadmeViewContent() {
                 onClick={goHome}
                 variant="outline" 
                 size="sm"
-                className="glass-button border-blue-400/20 text-blue-400 hover:bg-blue-400/10"
+                className="glass-button border-blue-400/20 text-blue-400 hover:bg-blue-400/10 flex-shrink-0 w-full sm:w-auto"
               >
-                <Home className="w-4 h-4 mr-2" />
-                Home
+                <Home className="w-4 h-4 sm:mr-2" />
+                <span className="sm:hidden">Home</span>
+                <span className="hidden sm:inline">Home</span>
               </Button>
             </div>
 
@@ -202,41 +204,44 @@ function ReadmeViewContent() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="flex flex-wrap items-center gap-6 mt-4 pt-4 border-t border-green-400/10"
+              className="border-t border-green-400/10 pt-3 pb-2"
             >
-              <div className="flex items-center gap-2 text-sm text-gray-300">
-                <Github className="w-4 h-4 text-green-400" />
-                <span className="font-medium">Repository:</span>
-                <a 
-                  href={historyItem.repository_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-green-400 hover:text-green-300 underline"
-                >
-                  {historyItem.repository_url}
-                </a>
-              </div>
-
-              <div className="flex items-center gap-2 text-sm text-gray-300">
-                <Calendar className="w-4 h-4 text-blue-400" />
-                <span className="font-medium">Created:</span>
-                <span>{formatDate(historyItem.created_at)}</span>
-              </div>
-
-              {historyItem.updated_at !== historyItem.created_at && (
-                <div className="flex items-center gap-2 text-sm text-gray-300">
-                  <Clock className="w-4 h-4 text-orange-400" />
-                  <span className="font-medium">Updated:</span>
-                  <span>{formatDate(historyItem.updated_at)}</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-300 min-w-0">
+                  <Github className="w-3 h-3 sm:w-4 sm:h-4 text-green-400 flex-shrink-0" />
+                  <span className="font-medium flex-shrink-0">Repository:</span>
+                  <a 
+                    href={historyItem.repository_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-green-400 hover:text-green-300 underline truncate min-w-0"
+                    title={historyItem.repository_url}
+                  >
+                    {historyItem.repository_url.replace('https://github.com/', '')}
+                  </a>
                 </div>
-              )}
 
-              {historyItem.generation_params.include_demo && (
-                <div className="flex items-center gap-2 px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm">
-                  <BarChart3 className="w-4 h-4" />
-                  <span>Demo Included</span>
+                <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-300">
+                  <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400 flex-shrink-0" />
+                  <span className="font-medium">Created:</span>
+                  <span className="truncate">{formatDate(historyItem.created_at)}</span>
                 </div>
-              )}
+
+                {historyItem.updated_at !== historyItem.created_at && (
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-300">
+                    <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-orange-400 flex-shrink-0" />
+                    <span className="font-medium">Updated:</span>
+                    <span className="truncate">{formatDate(historyItem.updated_at)}</span>
+                  </div>
+                )}
+
+                {historyItem.generation_params.include_demo && (
+                  <div className="flex items-center gap-2 px-2 sm:px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs sm:text-sm w-fit">
+                    <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                    <span>Demo Included</span>
+                  </div>
+                )}
+              </div>
             </motion.div>
           </div>
         </motion.header>
@@ -246,13 +251,13 @@ function ReadmeViewContent() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="pt-36 pb-8"
+          className="pt-32 sm:pt-36 lg:pt-40 pb-8"
         >
-          <div className="container mx-auto px-4 py-6">
-            <div className="max-w-6xl mx-auto">
-              <div className="glass rounded-2xl p-8 lg:p-12">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-5xl mx-auto">
+              <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 xl:p-12">
                 <div 
-                  className="prose prose-invert prose-green max-w-none modern-readme-preview"
+                  className="prose prose-invert prose-green max-w-none modern-readme-preview prose-sm sm:prose-base lg:prose-lg"
                   dangerouslySetInnerHTML={{ 
                     __html: DOMPurify.sanitize(marked(historyItem.readme_content) as string) 
                   }}
