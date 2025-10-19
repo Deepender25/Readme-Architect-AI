@@ -158,29 +158,31 @@ function ReadmeViewContent() {
           transition={{ duration: 0.5 }}
           className="fixed top-16 left-0 right-0 z-40 glass-navbar border-b border-green-400/20 border-t-0"
         >
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full px-6 sm:px-8 lg:px-12 xl:px-16">
             {/* Single Horizontal Line Layout */}
-            <div className="flex items-center justify-between py-4">
+            <div className="flex items-center justify-between py-5">
               {/* Far Left - Back Button */}
-              <Button
-                onClick={goBack}
-                variant="outline"
-                size="sm"
-                className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10 flex-shrink-0 h-9"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to History
-              </Button>
+              <div className="flex-shrink-0">
+                <Button
+                  onClick={goBack}
+                  variant="outline"
+                  size="sm"
+                  className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10 h-10 px-4"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back to History
+                </Button>
+              </div>
 
               {/* Center - Title, Icon, and Metadata */}
-              <div className="flex items-center gap-4 min-w-0 flex-1 justify-center">
+              <div className="flex items-center gap-8 min-w-0 flex-1 justify-center mx-8">
                 {/* Project Icon and Title */}
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-br from-green-400/20 to-green-500/10 rounded-lg border border-green-400/20 flex-shrink-0 shadow-lg">
-                    <FileText className="w-5 h-5 text-green-400" />
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-gradient-to-br from-green-400/20 to-green-500/10 rounded-xl border border-green-400/20 flex-shrink-0 shadow-lg">
+                    <FileText className="w-6 h-6 text-green-400" />
                   </div>
                   <div className="text-center">
-                    <h1 className="text-lg font-bold text-white leading-tight">
+                    <h1 className="text-xl font-bold text-white leading-tight">
                       {historyItem.project_name || historyItem.repository_name}
                     </h1>
                     <div className="flex items-center justify-center gap-2 mt-1">
@@ -191,9 +193,9 @@ function ReadmeViewContent() {
                 </div>
 
                 {/* Metadata Badges */}
-                <div className="hidden lg:flex items-center gap-3">
-                  <div className="flex items-center gap-2 px-2 py-1 bg-green-400/10 rounded-md text-xs">
-                    <Github className="w-3 h-3 text-green-400" />
+                <div className="hidden xl:flex items-center gap-4">
+                  <div className="flex items-center gap-2 px-3 py-2 bg-green-400/10 rounded-lg text-sm border border-green-400/20">
+                    <Github className="w-4 h-4 text-green-400" />
                     <a 
                       href={historyItem.repository_url}
                       target="_blank"
@@ -205,21 +207,21 @@ function ReadmeViewContent() {
                     </a>
                   </div>
 
-                  <div className="flex items-center gap-2 px-2 py-1 bg-blue-400/10 rounded-md text-xs">
-                    <Calendar className="w-3 h-3 text-blue-400" />
+                  <div className="flex items-center gap-2 px-3 py-2 bg-blue-400/10 rounded-lg text-sm border border-blue-400/20">
+                    <Calendar className="w-4 h-4 text-blue-400" />
                     <span className="text-blue-400 font-medium">{formatDate(historyItem.created_at)}</span>
                   </div>
 
                   {historyItem.updated_at !== historyItem.created_at && (
-                    <div className="flex items-center gap-2 px-2 py-1 bg-orange-400/10 rounded-md text-xs">
-                      <Clock className="w-3 h-3 text-orange-400" />
+                    <div className="flex items-center gap-2 px-3 py-2 bg-orange-400/10 rounded-lg text-sm border border-orange-400/20">
+                      <Clock className="w-4 h-4 text-orange-400" />
                       <span className="text-orange-400 font-medium">{formatDate(historyItem.updated_at)}</span>
                     </div>
                   )}
 
                   {historyItem.generation_params.include_demo && (
-                    <div className="flex items-center gap-2 px-2 py-1 bg-purple-500/20 text-purple-400 rounded-md text-xs">
-                      <BarChart3 className="w-3 h-3" />
+                    <div className="flex items-center gap-2 px-3 py-2 bg-purple-500/20 text-purple-400 rounded-lg text-sm border border-purple-400/30">
+                      <BarChart3 className="w-4 h-4" />
                       <span className="font-medium">Demo</span>
                     </div>
                   )}
@@ -227,27 +229,29 @@ function ReadmeViewContent() {
               </div>
 
               {/* Far Right - Home Button */}
-              <Button
-                onClick={goHome}
-                variant="outline" 
-                size="sm"
-                className="glass-button border-blue-400/20 text-blue-400 hover:bg-blue-400/10 flex-shrink-0 h-9"
-              >
-                <Home className="w-4 h-4 mr-2" />
-                Home
-              </Button>
+              <div className="flex-shrink-0">
+                <Button
+                  onClick={goHome}
+                  variant="outline" 
+                  size="sm"
+                  className="glass-button border-blue-400/20 text-blue-400 hover:bg-blue-400/10 h-10 px-4"
+                >
+                  <Home className="w-4 h-4 mr-2" />
+                  Home
+                </Button>
+              </div>
             </div>
 
-            {/* Mobile Metadata Row - Only visible on smaller screens */}
+            {/* Mobile/Tablet Metadata Row - Only visible on smaller screens */}
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="lg:hidden border-t border-gray-700/20 pt-3 pb-2"
+              className="xl:hidden border-t border-gray-700/20 pt-4 pb-3"
             >
-              <div className="flex flex-wrap items-center justify-center gap-3">
-                <div className="flex items-center gap-2 px-2 py-1 bg-green-400/10 rounded-md text-xs">
-                  <Github className="w-3 h-3 text-green-400" />
+              <div className="flex flex-wrap items-center justify-center gap-4">
+                <div className="flex items-center gap-2 px-3 py-2 bg-green-400/10 rounded-lg text-sm border border-green-400/20">
+                  <Github className="w-4 h-4 text-green-400" />
                   <a 
                     href={historyItem.repository_url}
                     target="_blank"
@@ -259,14 +263,14 @@ function ReadmeViewContent() {
                   </a>
                 </div>
 
-                <div className="flex items-center gap-2 px-2 py-1 bg-blue-400/10 rounded-md text-xs">
-                  <Calendar className="w-3 h-3 text-blue-400" />
+                <div className="flex items-center gap-2 px-3 py-2 bg-blue-400/10 rounded-lg text-sm border border-blue-400/20">
+                  <Calendar className="w-4 h-4 text-blue-400" />
                   <span className="text-blue-400 font-medium">{formatDate(historyItem.created_at)}</span>
                 </div>
 
                 {historyItem.generation_params.include_demo && (
-                  <div className="flex items-center gap-2 px-2 py-1 bg-purple-500/20 text-purple-400 rounded-md text-xs">
-                    <BarChart3 className="w-3 h-3" />
+                  <div className="flex items-center gap-2 px-3 py-2 bg-purple-500/20 text-purple-400 rounded-lg text-sm border border-purple-400/30">
+                    <BarChart3 className="w-4 h-4" />
                     <span className="font-medium">Demo</span>
                   </div>
                 )}
