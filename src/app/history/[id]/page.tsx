@@ -151,7 +151,7 @@ function ReadmeViewContent() {
           <ModernNavbar />
         </div>
         
-        {/* Enhanced Navigation Header */}
+        {/* Enhanced Navigation Header - Single Line Layout */}
         <motion.header
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -159,37 +159,74 @@ function ReadmeViewContent() {
           className="fixed top-16 left-0 right-0 z-40 glass-navbar border-b border-green-400/20 border-t-0"
         >
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Main Header Row */}
-            <div className="flex items-center justify-between py-4 border-b border-gray-700/20">
-              {/* Left Section - Navigation & Title */}
-              <div className="flex items-center gap-6 min-w-0 flex-1">
-                <Button
-                  onClick={goBack}
-                  variant="outline"
-                  size="sm"
-                  className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10 flex-shrink-0 h-9"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to History
-                </Button>
-                
-                <div className="flex items-center gap-4 min-w-0 flex-1">
-                  <div className="p-2.5 bg-gradient-to-br from-green-400/20 to-green-500/10 rounded-xl border border-green-400/20 flex-shrink-0 shadow-lg">
-                    <FileText className="w-6 h-6 text-green-400" />
+            {/* Single Horizontal Line Layout */}
+            <div className="flex items-center justify-between py-4">
+              {/* Far Left - Back Button */}
+              <Button
+                onClick={goBack}
+                variant="outline"
+                size="sm"
+                className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10 flex-shrink-0 h-9"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to History
+              </Button>
+
+              {/* Center - Title, Icon, and Metadata */}
+              <div className="flex items-center gap-4 min-w-0 flex-1 justify-center">
+                {/* Project Icon and Title */}
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-gradient-to-br from-green-400/20 to-green-500/10 rounded-lg border border-green-400/20 flex-shrink-0 shadow-lg">
+                    <FileText className="w-5 h-5 text-green-400" />
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <h1 className="text-xl font-bold text-white truncate leading-tight">
+                  <div className="text-center">
+                    <h1 className="text-lg font-bold text-white leading-tight">
                       {historyItem.project_name || historyItem.repository_name}
                     </h1>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center justify-center gap-2 mt-1">
                       <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                       <p className="text-sm text-green-400 font-medium">Generated README</p>
                     </div>
                   </div>
                 </div>
+
+                {/* Metadata Badges */}
+                <div className="hidden lg:flex items-center gap-3">
+                  <div className="flex items-center gap-2 px-2 py-1 bg-green-400/10 rounded-md text-xs">
+                    <Github className="w-3 h-3 text-green-400" />
+                    <a 
+                      href={historyItem.repository_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-400 hover:text-green-300 font-medium transition-colors"
+                      title={historyItem.repository_url}
+                    >
+                      {historyItem.repository_url.replace('https://github.com/', '')}
+                    </a>
+                  </div>
+
+                  <div className="flex items-center gap-2 px-2 py-1 bg-blue-400/10 rounded-md text-xs">
+                    <Calendar className="w-3 h-3 text-blue-400" />
+                    <span className="text-blue-400 font-medium">{formatDate(historyItem.created_at)}</span>
+                  </div>
+
+                  {historyItem.updated_at !== historyItem.created_at && (
+                    <div className="flex items-center gap-2 px-2 py-1 bg-orange-400/10 rounded-md text-xs">
+                      <Clock className="w-3 h-3 text-orange-400" />
+                      <span className="text-orange-400 font-medium">{formatDate(historyItem.updated_at)}</span>
+                    </div>
+                  )}
+
+                  {historyItem.generation_params.include_demo && (
+                    <div className="flex items-center gap-2 px-2 py-1 bg-purple-500/20 text-purple-400 rounded-md text-xs">
+                      <BarChart3 className="w-3 h-3" />
+                      <span className="font-medium">Demo</span>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              {/* Right Section - Home Button */}
+              {/* Far Right - Home Button */}
               <Button
                 onClick={goHome}
                 variant="outline" 
@@ -201,46 +238,36 @@ function ReadmeViewContent() {
               </Button>
             </div>
 
-            {/* Metadata Row */}
+            {/* Mobile Metadata Row - Only visible on smaller screens */}
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="py-4"
+              className="lg:hidden border-t border-gray-700/20 pt-3 pb-2"
             >
-              <div className="flex flex-wrap items-center gap-4">
-                <div className="flex items-center gap-2 px-3 py-2 bg-green-400/10 rounded-lg border border-green-400/20 text-sm">
-                  <Github className="w-4 h-4 text-green-400" />
-                  <span className="text-gray-300 font-medium">Repository:</span>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <div className="flex items-center gap-2 px-2 py-1 bg-green-400/10 rounded-md text-xs">
+                  <Github className="w-3 h-3 text-green-400" />
                   <a 
                     href={historyItem.repository_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-green-400 hover:text-green-300 font-semibold transition-colors"
+                    className="text-green-400 hover:text-green-300 font-medium transition-colors"
                     title={historyItem.repository_url}
                   >
                     {historyItem.repository_url.replace('https://github.com/', '')}
                   </a>
                 </div>
 
-                <div className="flex items-center gap-2 px-3 py-2 bg-blue-400/10 rounded-lg border border-blue-400/20 text-sm">
-                  <Calendar className="w-4 h-4 text-blue-400" />
-                  <span className="text-gray-300 font-medium">Created:</span>
-                  <span className="text-blue-400 font-semibold">{formatDate(historyItem.created_at)}</span>
+                <div className="flex items-center gap-2 px-2 py-1 bg-blue-400/10 rounded-md text-xs">
+                  <Calendar className="w-3 h-3 text-blue-400" />
+                  <span className="text-blue-400 font-medium">{formatDate(historyItem.created_at)}</span>
                 </div>
 
-                {historyItem.updated_at !== historyItem.created_at && (
-                  <div className="flex items-center gap-2 px-3 py-2 bg-orange-400/10 rounded-lg border border-orange-400/20 text-sm">
-                    <Clock className="w-4 h-4 text-orange-400" />
-                    <span className="text-gray-300 font-medium">Updated:</span>
-                    <span className="text-orange-400 font-semibold">{formatDate(historyItem.updated_at)}</span>
-                  </div>
-                )}
-
                 {historyItem.generation_params.include_demo && (
-                  <div className="flex items-center gap-2 px-3 py-2 bg-purple-500/20 text-purple-400 rounded-lg border border-purple-400/30 text-sm">
-                    <BarChart3 className="w-4 h-4" />
-                    <span className="font-semibold">Demo Included</span>
+                  <div className="flex items-center gap-2 px-2 py-1 bg-purple-500/20 text-purple-400 rounded-md text-xs">
+                    <BarChart3 className="w-3 h-3" />
+                    <span className="font-medium">Demo</span>
                   </div>
                 )}
               </div>
@@ -249,7 +276,7 @@ function ReadmeViewContent() {
         </motion.header>
 
         {/* Spacer to prevent overlap */}
-        <div className="h-44"></div>
+        <div className="h-32"></div>
 
         {/* README Content */}
         <motion.main
