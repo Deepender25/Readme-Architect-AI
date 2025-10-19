@@ -206,7 +206,7 @@ function ReadmeViewContent() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="py-3"
+              className="py-4"
             >
               <div className="flex flex-wrap items-center gap-4">
                 <div className="flex items-center gap-2 px-3 py-2 bg-green-400/10 rounded-lg border border-green-400/20 text-sm">
@@ -248,12 +248,15 @@ function ReadmeViewContent() {
           </div>
         </motion.header>
 
-        {/* README Content - Uses main page scroll for continuous scrolling */}
+        {/* Spacer to prevent overlap */}
+        <div className="h-44"></div>
+
+        {/* README Content */}
         <motion.main
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="pt-36 pb-8"
+          className="pb-8"
         >
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-5xl mx-auto">
