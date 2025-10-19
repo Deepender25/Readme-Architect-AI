@@ -173,15 +173,18 @@ function ReadmeViewContent() {
                   <span className="hidden sm:inline">Back to History</span>
                 </Button>
                 
-                <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                  <div className="p-1.5 sm:p-2 bg-green-400/20 rounded-lg flex-shrink-0">
-                    <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div className="p-2 bg-gradient-to-br from-green-400/20 to-green-500/10 rounded-xl border border-green-400/20 flex-shrink-0">
+                    <FileText className="w-5 h-5 text-green-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h1 className="text-base sm:text-lg font-bold text-white truncate">
+                    <h1 className="text-lg sm:text-xl font-bold text-white truncate mb-1">
                       {historyItem.project_name || historyItem.repository_name}
                     </h1>
-                    <p className="text-xs sm:text-sm text-gray-400">Generated README</p>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                      <p className="text-sm text-green-400 font-medium">Generated README</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -204,41 +207,41 @@ function ReadmeViewContent() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="border-t border-green-400/10 pt-3 pb-3"
+              className="mt-4 p-3 bg-gray-900/30 rounded-lg border border-gray-700/30"
             >
               <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-300">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-green-400/10 rounded-lg border border-green-400/20">
                   <Github className="w-4 h-4 text-green-400 flex-shrink-0" />
-                  <span className="font-medium">Repository:</span>
+                  <span className="text-xs sm:text-sm text-gray-300 font-medium">Repository:</span>
                   <a 
                     href={historyItem.repository_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-green-400 hover:text-green-300 underline"
+                    className="text-green-400 hover:text-green-300 font-medium transition-colors"
                     title={historyItem.repository_url}
                   >
                     {historyItem.repository_url.replace('https://github.com/', '')}
                   </a>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-300">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-400/10 rounded-lg border border-blue-400/20">
                   <Calendar className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                  <span className="font-medium">Created:</span>
-                  <span>{formatDate(historyItem.created_at)}</span>
+                  <span className="text-xs sm:text-sm text-gray-300 font-medium">Created:</span>
+                  <span className="text-xs sm:text-sm text-blue-400 font-medium">{formatDate(historyItem.created_at)}</span>
                 </div>
 
                 {historyItem.updated_at !== historyItem.created_at && (
-                  <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-300">
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-orange-400/10 rounded-lg border border-orange-400/20">
                     <Clock className="w-4 h-4 text-orange-400 flex-shrink-0" />
-                    <span className="font-medium">Updated:</span>
-                    <span>{formatDate(historyItem.updated_at)}</span>
+                    <span className="text-xs sm:text-sm text-gray-300 font-medium">Updated:</span>
+                    <span className="text-xs sm:text-sm text-orange-400 font-medium">{formatDate(historyItem.updated_at)}</span>
                   </div>
                 )}
 
                 {historyItem.generation_params.include_demo && (
-                  <div className="flex items-center gap-2 px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs sm:text-sm">
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-500/20 text-purple-400 rounded-lg border border-purple-400/30">
                     <BarChart3 className="w-4 h-4 flex-shrink-0" />
-                    <span>Demo Included</span>
+                    <span className="text-xs sm:text-sm font-medium">Demo Included</span>
                   </div>
                 )}
               </div>
@@ -251,7 +254,7 @@ function ReadmeViewContent() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="pt-36 pb-8"
+          className="pt-40 pb-8"
         >
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-5xl mx-auto">
