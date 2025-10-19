@@ -358,8 +358,8 @@ function ReadmeViewContent() {
           </div>
         </motion.header>
 
-        {/* Spacer to prevent overlap */}
-        <div className="h-40"></div>
+        {/* Spacer to prevent overlap - Different heights for mobile vs desktop */}
+        <div className="h-52 sm:h-40"></div>
 
         {/* README Content */}
         <motion.main
@@ -368,11 +368,12 @@ function ReadmeViewContent() {
           transition={{ delay: 0.4, duration: 0.6 }}
           className="pb-8"
         >
-          <div className="container mx-auto px-3 sm:px-6 lg:px-8">
-            <div className="max-w-5xl mx-auto">
-              <div className="glass rounded-lg sm:rounded-xl lg:rounded-2xl p-4 sm:p-6 lg:p-10 xl:p-12">
+          <div className="w-full px-2 sm:container sm:mx-auto sm:px-6 lg:px-8">
+            <div className="sm:max-w-5xl sm:mx-auto">
+              <div className="glass rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-6 lg:p-10 xl:p-12">
                 <div 
-                  className="prose prose-invert prose-green max-w-none modern-readme-preview prose-sm sm:prose-base"
+                  className="prose prose-invert prose-green max-w-none modern-readme-preview prose-sm sm:prose-base overflow-x-auto"
+                  style={{ wordBreak: 'break-word' }}
                   dangerouslySetInnerHTML={{ 
                     __html: DOMPurify.sanitize(marked(historyItem.readme_content) as string) 
                   }}
