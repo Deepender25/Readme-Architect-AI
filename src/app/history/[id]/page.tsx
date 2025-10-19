@@ -327,13 +327,13 @@ function ReadmeViewContent() {
               className="sm:hidden border-t border-gray-700/20 pt-3 pb-2"
             >
               <div className="flex items-center justify-center gap-3 flex-wrap">
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 px-2 py-1 bg-green-400/10 rounded-md text-xs border border-green-400/20">
                   <Github className="w-3 h-3 text-green-400" />
                   <a 
                     href={historyItem.repository_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-green-400 hover:text-green-300 font-medium transition-colors text-xs"
+                    className="text-green-400 hover:text-green-300 font-medium transition-colors"
                     title={historyItem.repository_url}
                   >
                     {historyItem.repository_url.replace('https://github.com/', '').split('/')[1] || historyItem.repository_url.replace('https://github.com/', '')}
