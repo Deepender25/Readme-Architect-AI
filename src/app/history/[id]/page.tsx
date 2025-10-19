@@ -327,28 +327,28 @@ function ReadmeViewContent() {
               className="sm:hidden border-t border-gray-700/20 pt-3 pb-2"
             >
               <div className="flex items-center justify-center gap-3 flex-wrap">
-                <div className="flex items-center gap-1 px-2 py-1 bg-green-400/10 rounded-md text-xs border border-green-400/20">
-                  <Github className="w-3 h-3 text-green-400" />
+                <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-green-400/10 rounded-md text-xs border border-green-400/20">
+                  <Github className="w-3 h-3 text-green-400 flex-shrink-0" />
                   <a 
                     href={historyItem.repository_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-green-400 hover:text-green-300 font-medium transition-colors"
+                    className="text-green-400 hover:text-green-300 font-medium transition-colors leading-none"
                     title={historyItem.repository_url}
                   >
                     {historyItem.repository_url.replace('https://github.com/', '').split('/')[1] || historyItem.repository_url.replace('https://github.com/', '')}
                   </a>
                 </div>
 
-                <div className="flex items-center gap-1 px-2 py-1 bg-blue-400/10 rounded-md text-xs border border-blue-400/20">
-                  <Calendar className="w-3 h-3 text-blue-400" />
-                  <span className="text-blue-400 font-medium">{new Date(historyItem.created_at).toLocaleDateString()}</span>
+                <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-blue-400/10 rounded-md text-xs border border-blue-400/20">
+                  <Calendar className="w-3 h-3 text-blue-400 flex-shrink-0" />
+                  <span className="text-blue-400 font-medium leading-none">{new Date(historyItem.created_at).toLocaleDateString()}</span>
                 </div>
 
                 {historyItem.generation_params.include_demo && (
-                  <div className="flex items-center gap-1 px-2 py-1 bg-purple-500/20 text-purple-400 rounded-md text-xs border border-purple-400/30">
-                    <BarChart3 className="w-3 h-3" />
-                    <span className="font-medium">Demo</span>
+                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-purple-500/20 text-purple-400 rounded-md text-xs border border-purple-400/30">
+                    <BarChart3 className="w-3 h-3 flex-shrink-0" />
+                    <span className="font-medium leading-none">Demo</span>
                   </div>
                 )}
               </div>
