@@ -280,7 +280,7 @@ function ReadmeViewContent() {
         </motion.header>
 
         {/* Spacer to prevent overlap */}
-        <div className="h-32"></div>
+        <div className="h-40"></div>
 
         {/* README Content */}
         <motion.main
