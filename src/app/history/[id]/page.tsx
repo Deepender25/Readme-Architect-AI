@@ -160,25 +160,25 @@ function ReadmeViewContent() {
         >
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {/* Main Header Row */}
-            <div className="flex items-center justify-between py-4">
+            <div className="flex items-center justify-between py-4 border-b border-gray-700/20">
               {/* Left Section - Navigation & Title */}
-              <div className="flex items-center gap-4 min-w-0 flex-1">
+              <div className="flex items-center gap-6 min-w-0 flex-1">
                 <Button
                   onClick={goBack}
                   variant="outline"
                   size="sm"
-                  className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10 flex-shrink-0"
+                  className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10 flex-shrink-0 h-9"
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to History
                 </Button>
                 
-                <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <div className="p-2 bg-gradient-to-br from-green-400/20 to-green-500/10 rounded-lg border border-green-400/20 flex-shrink-0">
-                    <FileText className="w-5 h-5 text-green-400" />
+                <div className="flex items-center gap-4 min-w-0 flex-1">
+                  <div className="p-2.5 bg-gradient-to-br from-green-400/20 to-green-500/10 rounded-xl border border-green-400/20 flex-shrink-0 shadow-lg">
+                    <FileText className="w-6 h-6 text-green-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h1 className="text-xl font-bold text-white truncate">
+                    <h1 className="text-xl font-bold text-white truncate leading-tight">
                       {historyItem.project_name || historyItem.repository_name}
                     </h1>
                     <div className="flex items-center gap-2 mt-1">
@@ -194,7 +194,7 @@ function ReadmeViewContent() {
                 onClick={goHome}
                 variant="outline" 
                 size="sm"
-                className="glass-button border-blue-400/20 text-blue-400 hover:bg-blue-400/10 flex-shrink-0"
+                className="glass-button border-blue-400/20 text-blue-400 hover:bg-blue-400/10 flex-shrink-0 h-9"
               >
                 <Home className="w-4 h-4 mr-2" />
                 Home
@@ -206,41 +206,41 @@ function ReadmeViewContent() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="border-t border-gray-700/30 pt-3 pb-2"
+              className="py-3"
             >
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2 px-2 py-1 bg-green-400/10 rounded-md text-xs">
-                  <Github className="w-3 h-3 text-green-400" />
-                  <span className="text-gray-300">Repository:</span>
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center gap-2 px-3 py-2 bg-green-400/10 rounded-lg border border-green-400/20 text-sm">
+                  <Github className="w-4 h-4 text-green-400" />
+                  <span className="text-gray-300 font-medium">Repository:</span>
                   <a 
                     href={historyItem.repository_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-green-400 hover:text-green-300 font-medium"
+                    className="text-green-400 hover:text-green-300 font-semibold transition-colors"
                     title={historyItem.repository_url}
                   >
                     {historyItem.repository_url.replace('https://github.com/', '')}
                   </a>
                 </div>
 
-                <div className="flex items-center gap-2 px-2 py-1 bg-blue-400/10 rounded-md text-xs">
-                  <Calendar className="w-3 h-3 text-blue-400" />
-                  <span className="text-gray-300">Created:</span>
-                  <span className="text-blue-400 font-medium">{formatDate(historyItem.created_at)}</span>
+                <div className="flex items-center gap-2 px-3 py-2 bg-blue-400/10 rounded-lg border border-blue-400/20 text-sm">
+                  <Calendar className="w-4 h-4 text-blue-400" />
+                  <span className="text-gray-300 font-medium">Created:</span>
+                  <span className="text-blue-400 font-semibold">{formatDate(historyItem.created_at)}</span>
                 </div>
 
                 {historyItem.updated_at !== historyItem.created_at && (
-                  <div className="flex items-center gap-2 px-2 py-1 bg-orange-400/10 rounded-md text-xs">
-                    <Clock className="w-3 h-3 text-orange-400" />
-                    <span className="text-gray-300">Updated:</span>
-                    <span className="text-orange-400 font-medium">{formatDate(historyItem.updated_at)}</span>
+                  <div className="flex items-center gap-2 px-3 py-2 bg-orange-400/10 rounded-lg border border-orange-400/20 text-sm">
+                    <Clock className="w-4 h-4 text-orange-400" />
+                    <span className="text-gray-300 font-medium">Updated:</span>
+                    <span className="text-orange-400 font-semibold">{formatDate(historyItem.updated_at)}</span>
                   </div>
                 )}
 
                 {historyItem.generation_params.include_demo && (
-                  <div className="flex items-center gap-2 px-2 py-1 bg-purple-500/20 text-purple-400 rounded-md text-xs">
-                    <BarChart3 className="w-3 h-3" />
-                    <span className="font-medium">Demo Included</span>
+                  <div className="flex items-center gap-2 px-3 py-2 bg-purple-500/20 text-purple-400 rounded-lg border border-purple-400/30 text-sm">
+                    <BarChart3 className="w-4 h-4" />
+                    <span className="font-semibold">Demo Included</span>
                   </div>
                 )}
               </div>
@@ -253,7 +253,7 @@ function ReadmeViewContent() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="pt-32 pb-8"
+          className="pt-36 pb-8"
         >
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-5xl mx-auto">
