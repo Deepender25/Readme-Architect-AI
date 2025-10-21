@@ -260,8 +260,8 @@ export default function ModernReadmeOutput({
           transition={{ duration: 0.5 }}
           className="fixed top-0 left-0 right-0 z-[99998] bg-black/95 backdrop-blur-xl border-b border-green-400/20 h-16"
         >
-          <div className="w-full px-6 py-1 h-full">
-            <div className="flex items-center justify-between w-full">
+          <div className="w-full px-6 py-3 h-full">
+            <div className="flex items-center justify-between w-full h-full">
               {/* Left Section - Back Button */}
               <div className="flex items-center">
                 {onClose && (
