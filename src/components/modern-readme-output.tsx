@@ -687,7 +687,7 @@ export default function ModernReadmeOutput({
         )}
 
         {/* Spacer to prevent overlap - Different heights for mobile vs desktop */}
-        <div className={`${historyView ? 'h-4' : 'h-48 sm:h-32 lg:h-20'}`}></div>
+        <div className={`${historyView ? 'h-4' : 'h-80 sm:h-48 lg:h-32'}`}></div>
 
         {/* README Content - Uses main page scroll for continuous scrolling */}
         <motion.main
