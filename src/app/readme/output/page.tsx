@@ -53,7 +53,7 @@ function ReadmeOutputContent() {
   }, [searchParams, router])
 
   const handleGoBack = () => {
-    router.back()
+    router.push('/')
   }
 
   if (isLoading) {
