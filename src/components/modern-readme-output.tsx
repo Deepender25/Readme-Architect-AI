@@ -260,8 +260,8 @@ export default function ModernReadmeOutput({
           transition={{ duration: 0.5 }}
           className="fixed top-0 left-0 right-0 z-[99998] bg-black/95 backdrop-blur-xl border-b border-green-400/20 h-16"
         >
-          <div className="container mx-auto px-4 py-1 h-full">
-            <div className="flex items-center justify-between">
+          <div className="w-full px-6 py-1 h-full">
+            <div className="flex items-center justify-between w-full">
               {/* Left Section - Back Button */}
               <div className="flex items-center">
                 {onClose && (
@@ -271,7 +271,8 @@ export default function ModernReadmeOutput({
                     size="sm"
                     className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10"
                   >
-                    <ArrowLeft className="w-4 h-4" />
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back
                   </Button>
                 )}
               </div>
@@ -299,6 +300,7 @@ export default function ModernReadmeOutput({
                       }`}
                     >
                       <Eye className="w-4 h-4" />
+                      Preview
                     </button>
                     <button
                       onClick={() => setViewMode('raw')}
@@ -309,6 +311,7 @@ export default function ModernReadmeOutput({
                       }`}
                     >
                       <Code className="w-4 h-4" />
+                      Raw
                     </button>
                   </div>
                 )}
@@ -324,7 +327,8 @@ export default function ModernReadmeOutput({
                       : 'border-green-400/30 text-green-400 hover:bg-green-400/10'
                   }`}
                 >
-                  {copySuccess ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  {copySuccess ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
+                  {copySuccess ? 'Copied!' : 'Copy'}
                 </Button>
 
                 {/* Download Button */}
@@ -339,13 +343,14 @@ export default function ModernReadmeOutput({
                     <motion.div
                       animate={{ rotate: 360 }}
                       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      className="w-4 h-4"
+                      className="w-4 h-4 mr-2"
                     >
                       <Zap className="w-4 h-4" />
                     </motion.div>
                   ) : (
-                    <Download className="w-4 h-4" />
+                    <Download className="w-4 h-4 mr-2" />
                   )}
+                  {isDownloading ? 'Downloading...' : 'Download'}
                 </Button>
 
                 {/* Save to GitHub Button */}
@@ -361,15 +366,16 @@ export default function ModernReadmeOutput({
                       <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        className="w-4 h-4"
+                        className="w-4 h-4 mr-2"
                       >
                         <Zap className="w-4 h-4" />
                       </motion.div>
                     ) : saveSuccess ? (
-                      <Check className="w-4 h-4" />
+                      <Check className="w-4 h-4 mr-2" />
                     ) : (
-                      <Save className="w-4 h-4" />
+                      <Save className="w-4 h-4 mr-2" />
                     )}
+                    {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save to GitHub'}
                   </Button>
                 )}
 
@@ -381,7 +387,8 @@ export default function ModernReadmeOutput({
                     size="sm"
                     className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10"
                   >
-                    <Sparkles className="w-4 h-4" />
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Edit
                   </Button>
                 )}
               </div>
@@ -394,7 +401,8 @@ export default function ModernReadmeOutput({
                   size="sm"
                   className="glass-button border-blue-400/20 text-blue-400 hover:bg-blue-400/10"
                 >
-                  <Home className="w-4 h-4" />
+                  <Home className="w-4 h-4 mr-2" />
+                  Home
                 </Button>
               </div>
             </div>
