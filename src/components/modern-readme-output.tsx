@@ -258,18 +258,19 @@ export default function ModernReadmeOutput({
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="fixed top-0 left-0 right-0 z-[99998] bg-black/95 backdrop-blur-xl border-b border-green-400/20 h-16"
+          className="fixed top-0 left-0 right-0 z-[99998] bg-black/95 backdrop-blur-xl border-b border-green-400/20"
         >
-          <div className="w-full px-6 py-3 h-full">
-            <div className="flex items-center justify-between w-full h-full">
-              {/* Left Section - Back Button */}
-              <div className="flex items-center">
+          <div className="w-full px-3 sm:px-6 lg:px-12 xl:px-16">
+            {/* Desktop Layout - Hidden on mobile */}
+            <div className="hidden sm:flex items-center justify-between py-5">
+              {/* Far Left - Back Button */}
+              <div className="flex-shrink-0">
                 {onClose && (
                   <Button
                     onClick={goBack}
                     variant="outline"
                     size="sm"
-                    className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10"
+                    className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10 h-10 px-4"
                   >
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Back
@@ -277,17 +278,305 @@ export default function ModernReadmeOutput({
                 )}
               </div>
 
-              {/* Center Section - Title and Action Buttons */}
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-400/20 rounded-lg">
+              {/* Center - Title and Action Buttons */}
+              <div className="flex items-center gap-4 min-w-0 flex-1 justify-center mx-8">
+                {/* Project Icon and Title */}
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-gradient-to-br from-green-400/20 to-green-500/10 rounded-xl border border-green-400/20 flex-shrink-0 shadow-lg">
+                    <FileText className="w-6 h-6 text-green-400" />
+                  </div>
+                  <div className="text-center">
+                    <h1 className="text-xl font-bold text-white leading-tight">
+                      {projectName || 'Generated README'}
+                    </h1>
+                    <div className="flex items-center justify-center gap-2 mt-1">
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                      <p className="text-sm text-green-400 font-medium">Live Preview</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="hidden lg:flex items-center gap-3">
+                  {/* View Mode Toggle */}
+                  {!historyView && (
+                    <div className="flex items-center bg-gray-900/50 rounded-lg p-1 border border-green-400/20">
+                      <button
+                        onClick={() => setViewMode('preview')}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                          viewMode === 'preview'
+                            ? 'bg-green-400 text-black shadow-lg'
+                            : 'text-gray-400 hover:text-white'
+                        }`}
+                      >
+                        <Eye className="w-4 h-4" />
+                        Preview
+                      </button>
+                      <button
+                        onClick={() => setViewMode('raw')}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                          viewMode === 'raw'
+                            ? 'bg-green-400 text-black shadow-lg'
+                            : 'text-gray-400 hover:text-white'
+                        }`}
+                      >
+                        <Code className="w-4 h-4" />
+                        Raw
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Copy Button */}
+                  <Button
+                    onClick={handleCopy}
+                    variant="outline"
+                    size="sm"
+                    className={`glass-button ${
+                      copySuccess 
+                        ? 'border-green-400/60 text-green-400' 
+                        : 'border-green-400/30 text-green-400 hover:bg-green-400/10'
+                    }`}
+                  >
+                    {copySuccess ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
+                    {copySuccess ? 'Copied!' : 'Copy'}
+                  </Button>
+
+                  {/* Download Button */}
+                  <Button
+                    onClick={handleDownload}
+                    disabled={isDownloading}
+                    variant="outline"
+                    size="sm"
+                    className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10"
+                  >
+                    {isDownloading ? (
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="w-4 h-4 mr-2"
+                      >
+                        <Zap className="w-4 h-4" />
+                      </motion.div>
+                    ) : (
+                      <Download className="w-4 h-4 mr-2" />
+                    )}
+                    {isDownloading ? 'Downloading...' : 'Download'}
+                  </Button>
+
+                  {/* Save to GitHub Button */}
+                  {canSaveToRepo() && (
+                    <Button
+                      onClick={handleSaveToGitHub}
+                      disabled={isSaving}
+                      variant="outline"
+                      size="sm"
+                      className="glass-button border-blue-400/30 text-blue-400 hover:bg-blue-400/10"
+                    >
+                      {isSaving ? (
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                          className="w-4 h-4 mr-2"
+                        >
+                          <Zap className="w-4 h-4" />
+                        </motion.div>
+                      ) : saveSuccess ? (
+                        <Check className="w-4 h-4 mr-2" />
+                      ) : (
+                        <Save className="w-4 h-4 mr-2" />
+                      )}
+                      {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save to GitHub'}
+                    </Button>
+                  )}
+
+                  {/* Edit Button */}
+                  {onEdit && (
+                    <Button
+                      onClick={onEdit}
+                      variant="outline"
+                      size="sm"
+                      className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10"
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Edit
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {/* Far Right - Home Button */}
+              <div className="flex-shrink-0">
+                <Button
+                  onClick={goHome}
+                  variant="outline" 
+                  size="sm"
+                  className="glass-button border-blue-400/20 text-blue-400 hover:bg-blue-400/10 h-10 px-4"
+                >
+                  <Home className="w-4 h-4 mr-2" />
+                  Home
+                </Button>
+              </div>
+            </div>
+
+            {/* Mobile Layout - Only visible on mobile */}
+            <div className="sm:hidden py-4">
+              {/* Mobile Header Row */}
+              <div className="flex items-center justify-between mb-4">
+                {onClose && (
+                  <Button
+                    onClick={goBack}
+                    variant="outline"
+                    size="sm"
+                    className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10 h-9 px-3"
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-1" />
+                    <span className="text-xs">Back</span>
+                  </Button>
+                )}
+
+                <Button
+                  onClick={goHome}
+                  variant="outline" 
+                  size="sm"
+                  className="glass-button border-blue-400/20 text-blue-400 hover:bg-blue-400/10 h-9 px-3"
+                >
+                  <Home className="w-4 h-4 mr-1" />
+                  <span className="text-xs">Home</span>
+                </Button>
+              </div>
+
+              {/* Mobile Title Section */}
+              <div className="text-center mb-4">
+                <div className="flex items-center justify-center gap-3 mb-2">
+                  <div className="p-2 bg-gradient-to-br from-green-400/20 to-green-500/10 rounded-lg border border-green-400/20 shadow-lg">
                     <FileText className="w-5 h-5 text-green-400" />
                   </div>
-                  <h1 className="text-lg font-bold text-white">
+                  <h1 className="text-lg font-bold text-white leading-tight">
                     {projectName || 'Generated README'}
                   </h1>
                 </div>
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <p className="text-sm text-green-400 font-medium">Live Preview</p>
+                </div>
+              </div>
 
+              {/* Mobile Action Buttons */}
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                {/* View Mode Toggle */}
+                {!historyView && (
+                  <div className="flex items-center bg-gray-900/50 rounded-lg p-1 border border-green-400/20">
+                    <button
+                      onClick={() => setViewMode('preview')}
+                      className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-all ${
+                        viewMode === 'preview'
+                          ? 'bg-green-400 text-black shadow-lg'
+                          : 'text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      <Eye className="w-3 h-3" />
+                      Preview
+                    </button>
+                    <button
+                      onClick={() => setViewMode('raw')}
+                      className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-all ${
+                        viewMode === 'raw'
+                          ? 'bg-green-400 text-black shadow-lg'
+                          : 'text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      <Code className="w-3 h-3" />
+                      Raw
+                    </button>
+                  </div>
+                )}
+
+                {/* Copy Button */}
+                <Button
+                  onClick={handleCopy}
+                  variant="outline"
+                  size="sm"
+                  className={`glass-button text-xs h-8 px-3 ${
+                    copySuccess 
+                      ? 'border-green-400/60 text-green-400' 
+                      : 'border-green-400/30 text-green-400 hover:bg-green-400/10'
+                  }`}
+                >
+                  {copySuccess ? <Check className="w-3 h-3 mr-1" /> : <Copy className="w-3 h-3 mr-1" />}
+                  {copySuccess ? 'Copied!' : 'Copy'}
+                </Button>
+
+                {/* Download Button */}
+                <Button
+                  onClick={handleDownload}
+                  disabled={isDownloading}
+                  variant="outline"
+                  size="sm"
+                  className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10 text-xs h-8 px-3"
+                >
+                  {isDownloading ? (
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="w-3 h-3 mr-1"
+                    >
+                      <Zap className="w-3 h-3" />
+                    </motion.div>
+                  ) : (
+                    <Download className="w-3 h-3 mr-1" />
+                  )}
+                  {isDownloading ? 'Downloading...' : 'Download'}
+                </Button>
+
+                {/* Save to GitHub Button */}
+                {canSaveToRepo() && (
+                  <Button
+                    onClick={handleSaveToGitHub}
+                    disabled={isSaving}
+                    variant="outline"
+                    size="sm"
+                    className="glass-button border-blue-400/30 text-blue-400 hover:bg-blue-400/10 text-xs h-8 px-3"
+                  >
+                    {isSaving ? (
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="w-3 h-3 mr-1"
+                      >
+                        <Zap className="w-3 h-3" />
+                      </motion.div>
+                    ) : saveSuccess ? (
+                      <Check className="w-3 h-3 mr-1" />
+                    ) : (
+                      <Save className="w-3 h-3 mr-1" />
+                    )}
+                    {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save to GitHub'}
+                  </Button>
+                )}
+
+                {/* Edit Button */}
+                {onEdit && (
+                  <Button
+                    onClick={onEdit}
+                    variant="outline"
+                    size="sm"
+                    className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10 text-xs h-8 px-3"
+                  >
+                    <Sparkles className="w-3 h-3 mr-1" />
+                    Edit
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Tablet Action Buttons Row - Only visible on tablet screens */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="hidden sm:block lg:hidden border-t border-gray-700/20 pt-4 pb-3"
+            >
+              <div className="flex flex-wrap items-center justify-center gap-3">
                 {/* View Mode Toggle */}
                 {!historyView && (
                   <div className="flex items-center bg-gray-900/50 rounded-lg p-1 border border-green-400/20">
@@ -392,41 +681,32 @@ export default function ModernReadmeOutput({
                   </Button>
                 )}
               </div>
-
-              {/* Right Section - Home Button */}
-              <div className="flex items-center">
-                <Button
-                  onClick={goHome}
-                  variant="outline" 
-                  size="sm"
-                  className="glass-button border-blue-400/20 text-blue-400 hover:bg-blue-400/10"
-                >
-                  <Home className="w-4 h-4 mr-2" />
-                  Home
-                </Button>
-              </div>
-            </div>
+            </motion.div>
           </div>
         </motion.header>
         )}
+
+        {/* Spacer to prevent overlap - Different heights for mobile vs desktop */}
+        <div className={`${historyView ? 'h-4' : 'h-48 sm:h-32 lg:h-20'}`}></div>
 
         {/* README Content - Uses main page scroll for continuous scrolling */}
         <motion.main
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className={`${historyView ? 'pt-4' : 'pt-20'} pb-8`}
+          className="pb-8"
         >
-          <div className="container mx-auto px-4 py-2">
-            <div className="max-w-6xl mx-auto">
-              <div className="glass rounded-2xl p-8 lg:p-12">
+          <div className="w-full px-2 sm:container sm:mx-auto sm:px-6 lg:px-8">
+            <div className="sm:max-w-6xl sm:mx-auto">
+              <div className="glass rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-6 lg:p-10 xl:p-12">
                 {historyView || viewMode === 'preview' ? (
                   <div 
-                    className="prose prose-invert prose-green max-w-none modern-readme-preview"
+                    className="prose prose-invert prose-green max-w-none modern-readme-preview prose-sm sm:prose-base overflow-x-auto"
+                    style={{ wordBreak: 'break-word' }}
                     dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                   />
                 ) : (
-                  <pre className="font-mono text-xs sm:text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
+                  <pre className="font-mono text-xs sm:text-sm text-gray-300 whitespace-pre-wrap leading-relaxed overflow-x-auto">
                     {content}
                   </pre>
                 )}
