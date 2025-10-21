@@ -563,9 +563,7 @@ function HistoryContent() {
                           onClick={() => copyToClipboard(item.readme_content, item.project_name || item.repository_name)}
                           className="glass-button border-none text-blue-400 hover:bg-blue-400/20 px-1.5 py-1 sm:px-2.5 sm:py-2 flex-1 sm:flex-initial min-w-0 text-xs sm:text-xs overflow-hidden"
                         >
-                          <Copy className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-2 flex-shrink-0" />
-                          <span className="hidden sm:inline whitespace-nowrap">Copy</span>
-                          <span className="sm:hidden">Copy</span>
+                          <Copy className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
                         </Button>
                         
                         <Button
@@ -574,9 +572,7 @@ function HistoryContent() {
                           onClick={() => downloadReadme(item)}
                           className="glass-button border-none text-green-400 hover:bg-green-400/20 px-1.5 py-1 sm:px-2.5 sm:py-2 flex-1 sm:flex-initial min-w-0 text-xs sm:text-xs overflow-hidden"
                         >
-                          <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-2 flex-shrink-0" />
-                          <span className="hidden sm:inline whitespace-nowrap">Download</span>
-                          <span className="sm:hidden">Download</span>
+                          <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
                         </Button>
                         
                         <Button
@@ -585,9 +581,7 @@ function HistoryContent() {
                           onClick={() => viewReadme(item)}
                           className="glass-button border-none text-purple-400 hover:bg-purple-400/20 px-1.5 py-1 sm:px-2.5 sm:py-2 flex-1 sm:flex-initial min-w-0 text-xs sm:text-xs overflow-hidden"
                         >
-                          <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-2 flex-shrink-0" />
-                          <span className="hidden sm:inline whitespace-nowrap">View</span>
-                          <span className="sm:hidden">View</span>
+                          <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
                         </Button>
                         
                         <Button
