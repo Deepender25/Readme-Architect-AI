@@ -262,8 +262,8 @@ export default function ModernReadmeOutput({
         >
           <div className="container mx-auto px-4 py-1 h-full">
             <div className="flex items-center justify-between">
-              {/* Left Section - Navigation & Title */}
-              <div className="flex items-center gap-6">
+              {/* Left Section - Back Button */}
+              <div className="flex items-center">
                 {onClose && (
                   <Button
                     onClick={goBack}
@@ -271,29 +271,25 @@ export default function ModernReadmeOutput({
                     size="sm"
                     className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10"
                   >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Back
+                    <ArrowLeft className="w-4 h-4" />
                   </Button>
                 )}
-                
+              </div>
+
+              {/* Center Section - Title and Action Buttons */}
+              <div className="flex items-center gap-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-green-400/20 rounded-lg">
                     <FileText className="w-5 h-5 text-green-400" />
                   </div>
-                  <div>
-                    <h1 className="text-lg font-bold text-white">
-                      {projectName || 'Generated README'}
-                    </h1>
-                    <p className="text-sm text-gray-400">AI-Generated Documentation</p>
-                  </div>
+                  <h1 className="text-lg font-bold text-white">
+                    {projectName || 'Generated README'}
+                  </h1>
                 </div>
-              </div>
 
-              {/* Right Section - Action Buttons */}
-              <div className="flex items-center gap-2">
                 {/* View Mode Toggle */}
                 {!historyView && (
-                  <div className="flex items-center bg-gray-900/50 rounded-lg p-1 border border-green-400/20 mr-2">
+                  <div className="flex items-center bg-gray-900/50 rounded-lg p-1 border border-green-400/20">
                     <button
                       onClick={() => setViewMode('preview')}
                       className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
@@ -303,7 +299,6 @@ export default function ModernReadmeOutput({
                       }`}
                     >
                       <Eye className="w-4 h-4" />
-                      Preview
                     </button>
                     <button
                       onClick={() => setViewMode('raw')}
@@ -314,7 +309,6 @@ export default function ModernReadmeOutput({
                       }`}
                     >
                       <Code className="w-4 h-4" />
-                      Raw
                     </button>
                   </div>
                 )}
@@ -330,8 +324,7 @@ export default function ModernReadmeOutput({
                       : 'border-green-400/30 text-green-400 hover:bg-green-400/10'
                   }`}
                 >
-                  {copySuccess ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
-                  {copySuccess ? 'Copied!' : 'Copy'}
+                  {copySuccess ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 </Button>
 
                 {/* Download Button */}
@@ -346,14 +339,13 @@ export default function ModernReadmeOutput({
                     <motion.div
                       animate={{ rotate: 360 }}
                       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      className="w-4 h-4 mr-2"
+                      className="w-4 h-4"
                     >
                       <Zap className="w-4 h-4" />
                     </motion.div>
                   ) : (
-                    <Download className="w-4 h-4 mr-2" />
+                    <Download className="w-4 h-4" />
                   )}
-                  {isDownloading ? 'Downloading...' : 'Download'}
                 </Button>
 
                 {/* Save to GitHub Button */}
@@ -369,16 +361,15 @@ export default function ModernReadmeOutput({
                       <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        className="w-4 h-4 mr-2"
+                        className="w-4 h-4"
                       >
                         <Zap className="w-4 h-4" />
                       </motion.div>
                     ) : saveSuccess ? (
-                      <Check className="w-4 h-4 mr-2" />
+                      <Check className="w-4 h-4" />
                     ) : (
-                      <Save className="w-4 h-4 mr-2" />
+                      <Save className="w-4 h-4" />
                     )}
-                    {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save to GitHub'}
                   </Button>
                 )}
 
@@ -390,20 +381,20 @@ export default function ModernReadmeOutput({
                     size="sm"
                     className="glass-button border-green-400/30 text-green-400 hover:bg-green-400/10"
                   >
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Edit
+                    <Sparkles className="w-4 h-4" />
                   </Button>
                 )}
+              </div>
 
-                {/* Home Button */}
+              {/* Right Section - Home Button */}
+              <div className="flex items-center">
                 <Button
                   onClick={goHome}
                   variant="outline" 
                   size="sm"
                   className="glass-button border-blue-400/20 text-blue-400 hover:bg-blue-400/10"
                 >
-                  <Home className="w-4 h-4 mr-2" />
-                  Home
+                  <Home className="w-4 h-4" />
                 </Button>
               </div>
             </div>
