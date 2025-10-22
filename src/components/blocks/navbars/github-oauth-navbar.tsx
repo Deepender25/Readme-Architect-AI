@@ -3,13 +3,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Github, Menu, X, User, Settings, FileText, LogOut, ChevronDown, FolderGit2, History } from 'lucide-react';
+import { Menu, X, Settings, FileText, LogOut, ChevronDown, FolderGit2, History } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import DropdownPortal from '@/components/ui/dropdown-portal';
 
-interface GitHubOAuthNavbarProps {
-  // Props are now optional since we use the auth hook
-}
+
 
 export default function GitHubOAuthNavbar() {
   const { user, isAuthenticated, isLoading, login, logout } = useAuth();
@@ -35,7 +33,7 @@ export default function GitHubOAuthNavbar() {
       const target = event.target as Node;
       const isClickInsideTrigger = dropdownTriggerRef.current?.contains(target);
       const isClickInsideDropdown = target && (target as Element).closest('[data-dropdown-portal="true"]');
-      
+
       if (!isClickInsideTrigger && !isClickInsideDropdown) {
         setDropdownOpen(false);
       }
@@ -62,19 +60,17 @@ export default function GitHubOAuthNavbar() {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-[9998] smooth-transition h-16 no-lag hardware-accelerated ${
-        isScrolled
+      className={`fixed top-0 w-full z-[9998] smooth-transition h-16 no-lag hardware-accelerated ${isScrolled
           ? 'glass-navbar shadow-lg shadow-green-500/20'
           : 'glass-light border-b border-transparent'
-      }`}
+        }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl h-full performance-optimized relative">
         <div className="flex items-center justify-between h-full">
           {/* Logo - properly aligned and animated */}
           <motion.div
-            className={`flex items-center gap-3 cursor-pointer shrink-0 relative ${
-              pathname === '/' ? 'scale-105' : ''
-            }`}
+            className={`flex items-center gap-3 cursor-pointer shrink-0 relative ${pathname === '/' ? 'scale-105' : ''
+              }`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => router.push('/')}
@@ -104,13 +100,12 @@ export default function GitHubOAuthNavbar() {
             >
               <FileText className="w-4 h-4 text-white" />
             </motion.div>
-            
-            <span className={`font-bold text-2xl tracking-tight transition-all duration-300 ${
-              pathname === '/' ? 'text-green-300' : 'text-green-400'
-            }`}>
+
+            <span className={`font-bold text-2xl tracking-tight transition-all duration-300 ${pathname === '/' ? 'text-green-300' : 'text-green-400'
+              }`}>
               AutoDoc AI
             </span>
-            
+
             {/* Home page active indicator */}
             {pathname === '/' && (
               <motion.div
@@ -128,16 +123,15 @@ export default function GitHubOAuthNavbar() {
                 <motion.a
                   key={link.name}
                   href={link.href}
-                  className={`relative text-sm font-medium transition-all duration-300 px-3 py-2 group ${
-                    isActive 
-                      ? 'text-green-400 font-semibold' 
+                  className={`relative text-sm font-medium transition-all duration-300 px-3 py-2 group ${isActive
+                      ? 'text-green-400 font-semibold'
                       : 'text-foreground/70 hover:text-green-400'
-                  }`}
+                    }`}
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                 >
                   {link.name}
-                  
+
                   {isActive && (
                     <motion.div
                       className="absolute bottom-0.5 left-0 right-0 h-0.5 bg-gradient-to-r from-green-500 to-green-400 rounded-full"
@@ -161,18 +155,20 @@ export default function GitHubOAuthNavbar() {
                   exit={{ opacity: 0, scale: 0.95 }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={login}
+                  onClick={() => login()}
                   disabled={isLoading}
                   className="relative flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-500 border border-green-500/50 rounded-lg overflow-hidden group hover:border-green-500/80 transition-all duration-200 disabled:opacity-50"
                 >
-                  <Github className="w-4 h-4" />
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clipRule="evenodd" />
+                  </svg>
                   <span className="relative z-10">
                     {isLoading ? 'Loading...' : 'Sign in with GitHub'}
                   </span>
-                  
+
                   {/* Subtle glow effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-green-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
+
                   {/* Pulse animation */}
                   <motion.div
                     className="absolute inset-0 border border-green-400/50 rounded-lg"
@@ -211,15 +207,14 @@ export default function GitHubOAuthNavbar() {
                       alt={user?.name}
                       className="w-7 h-7 rounded-full border border-green-500/60 shadow-sm shadow-green-500/20"
                     />
-                    
+
                     <span className="hidden lg:inline">{user?.name}</span>
                     <ChevronDown
-                      className={`w-4 h-4 transition-transform duration-200 ${
-                        dropdownOpen ? 'rotate-180' : ''
-                      }`}
+                      className={`w-4 h-4 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''
+                        }`}
                     />
                   </motion.button>
-                  
+
                   <DropdownPortal isOpen={dropdownOpen} triggerRef={dropdownTriggerRef}>
                     <motion.div
                       initial={{ opacity: 0, y: -8, scale: 0.95 }}
@@ -228,7 +223,7 @@ export default function GitHubOAuthNavbar() {
                       transition={{ type: "spring", stiffness: 350, damping: 22 }}
                       className="bg-black/95 backdrop-blur-xl border border-green-500/20 rounded-lg shadow-xl shadow-green-500/20 py-2"
                     >
-                      <button 
+                      <button
                         onClick={() => {
                           setDropdownOpen(false);
                           router.push('/repositories');
@@ -238,7 +233,7 @@ export default function GitHubOAuthNavbar() {
                         <FolderGit2 className="w-4 h-4" />
                         My Repositories
                       </button>
-                      <button 
+                      <button
                         onClick={() => {
                           setDropdownOpen(false);
                           router.push('/history');
@@ -248,7 +243,7 @@ export default function GitHubOAuthNavbar() {
                         <History className="w-4 h-4" />
                         History
                       </button>
-                      <button 
+                      <button
                         onClick={() => {
                           setDropdownOpen(false);
                           router.push('/settings');
@@ -259,8 +254,8 @@ export default function GitHubOAuthNavbar() {
                         Settings
                       </button>
                       <hr className="border-border my-2" />
-                      <button 
-                        onClick={logout}
+                      <button
+                        onClick={() => logout()}
                         className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500/80 hover:text-red-400 hover:bg-red-500/10 transition-colors"
                       >
                         <LogOut className="w-4 h-4" />
@@ -328,15 +323,14 @@ export default function GitHubOAuthNavbar() {
                       initial={{ opacity: 0, x: -16 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.03 }}
-                      className={`relative block px-4 py-3 transition-all duration-300 rounded-lg ${
-                        isActive 
-                          ? 'text-green-400 bg-green-500/10 font-semibold border-l-2 border-green-400' 
+                      className={`relative block px-4 py-3 transition-all duration-300 rounded-lg ${isActive
+                          ? 'text-green-400 bg-green-500/10 font-semibold border-l-2 border-green-400'
                           : 'text-foreground/70 hover:text-green-400 hover:bg-green-500/5'
-                      }`}
+                        }`}
                       onClick={() => setIsOpen(false)}
                     >
                       {link.name}
-                      
+
                       {/* Active state indicator for mobile */}
                       {isActive && (
                         <motion.div
@@ -346,7 +340,7 @@ export default function GitHubOAuthNavbar() {
                           transition={{ delay: 0.2 }}
                         />
                       )}
-                      
+
                       {/* Pulsing effect for active mobile item */}
                       {isActive && (
                         <motion.div
@@ -364,18 +358,20 @@ export default function GitHubOAuthNavbar() {
                     </motion.a>
                   );
                 })}
-                
+
                 <div className="px-4 pt-4">
                   {!isAuthenticated ? (
                     <motion.button
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.15 }}
-                      onClick={login}
+                      onClick={() => login()}
                       disabled={isLoading}
                       className="flex items-center gap-2 w-full px-4 py-3 text-sm font-medium text-green-500 border border-green-500/50 rounded-lg hover:bg-green-500/10 transition-colors disabled:opacity-50"
                     >
-                      <Github className="w-4 h-4" />
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clipRule="evenodd" />
+                      </svg>
                       {isLoading ? 'Loading...' : 'Sign in with GitHub'}
                     </motion.button>
                   ) : (
@@ -391,7 +387,7 @@ export default function GitHubOAuthNavbar() {
                           <div className="text-xs text-muted-foreground">@{user?.username}</div>
                         </div>
                       </div>
-                      <button 
+                      <button
                         onClick={() => {
                           setIsOpen(false);
                           router.push('/repositories');
@@ -401,7 +397,7 @@ export default function GitHubOAuthNavbar() {
                         <FolderGit2 className="w-4 h-4" />
                         My Repositories
                       </button>
-                      <button 
+                      <button
                         onClick={() => {
                           setIsOpen(false);
                           router.push('/history');
@@ -411,7 +407,7 @@ export default function GitHubOAuthNavbar() {
                         <History className="w-4 h-4" />
                         History
                       </button>
-                      <button 
+                      <button
                         onClick={() => {
                           setIsOpen(false);
                           router.push('/settings');
@@ -421,8 +417,8 @@ export default function GitHubOAuthNavbar() {
                         <Settings className="w-4 h-4" />
                         Settings
                       </button>
-                      <button 
-                        onClick={logout}
+                      <button
+                        onClick={() => logout()}
                         className="w-full text-left px-3 py-2.5 text-sm text-red-500/80 hover:text-red-400 hover:bg-red-500/10 transition-colors rounded-lg flex items-center gap-3"
                       >
                         <LogOut className="w-4 h-4" />
