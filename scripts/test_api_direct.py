@@ -30,7 +30,7 @@ def test_google_ai():
         
         # Test with a simple prompt
         print("🤖 Testing Google AI connection...")
-        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        model = genai.GenerativeModel('gemini-flash-latest')
         
         test_prompt = "Say 'Hello, API is working!' in exactly 5 words."
         response = model.generate_content(test_prompt)
@@ -335,7 +335,7 @@ Generate a professional README.md with proper sections: title, overview, feature
 Return only the markdown content.
 """
                     
-                    model = genai.GenerativeModel('gemini-2.0-flash-exp')
+                    model = genai.GenerativeModel('gemini-flash-latest')
                     response = model.generate_content(prompt)
                     
                     if response.parts and response.text:

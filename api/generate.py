@@ -548,9 +548,9 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
             # No fallback README - return proper errors instead
             
             try:
-                # Use gemini-2.5-flash for better results (from main.py)
-                print("🤖 Initializing Gemini 2.5 Pro model...")
-                model = genai.GenerativeModel('gemini-2.5-pro')
+                # Use gemini-flash-latest for best performance and reliability
+                print("🤖 Initializing Gemini Flash Latest model...")
+                model = genai.GenerativeModel('gemini-flash-latest')
                 
                 print("🤖 Sending enhanced prompt to Gemini...")
                 response = model.generate_content(prompt)

@@ -822,8 +822,8 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
 **Final Instruction:** The output MUST be ONLY the raw Markdown content. Do not add any commentary, greetings, or explanations before or after the Markdown. Adhere strictly to the requested format and quality bar.
 """
 
-            print("🤖 Initializing Gemini 2.5 Flash model...")
-            model = genai.GenerativeModel('gemini-2.5-flash')
+            print("🤖 Initializing Gemini Flash Latest model...")
+            model = genai.GenerativeModel('gemini-flash-latest')
             
             print("🤖 Sending enhanced prompt to Gemini...")
             response = model.generate_content(prompt)
