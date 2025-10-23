@@ -321,9 +321,9 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
               </div>
               
               <div className="space-y-6">
-                {/* Main toggle section */}
+                {/* Compact toggle section */}
                 <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between">
                     <span className="text-white font-medium">Include demo section with placeholders</span>
                     <ToggleSwitch
                       checked={includeDemo}
@@ -331,19 +331,17 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                     />
                   </div>
                   
-                  {/* Horizontal expansion for demo options */}
+                  {/* Compact horizontal demo options */}
                   {includeDemo && (
                     <motion.div
-                      initial={{ opacity: 0, width: 0 }}
-                      animate={{ opacity: 1, width: 'auto' }}
-                      transition={{ duration: 0.4, ease: "easeOut" }}
-                      className="flex items-center gap-6 pt-4 border-t border-white/10"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      transition={{ duration: 0.3, ease: "easeOut" }}
+                      className="flex items-center justify-center gap-8 mt-3 pt-3 border-t border-white/10"
                     >
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2">
-                          <Image className="w-4 h-4 text-green-400" />
-                          <span className="text-sm text-gray-300 font-medium">Screenshots:</span>
-                        </div>
+                      <div className="flex items-center gap-2">
+                        <Image className="w-4 h-4 text-green-400" />
+                        <span className="text-sm text-gray-300 font-medium">Screenshots:</span>
                         <NumberInput
                           value={numScreenshots}
                           onChange={setNumScreenshots}
@@ -352,11 +350,9 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                         />
                       </div>
                       
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2">
-                          <Video className="w-4 h-4 text-green-400" />
-                          <span className="text-sm text-gray-300 font-medium">Videos:</span>
-                        </div>
+                      <div className="flex items-center gap-2">
+                        <Video className="w-4 h-4 text-green-400" />
+                        <span className="text-sm text-gray-300 font-medium">Videos:</span>
                         <NumberInput
                           value={numVideos}
                           onChange={setNumVideos}
@@ -368,13 +364,13 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                   )}
                 </div>
                 
-                {/* Action buttons with consistent height */}
-                <div className="flex gap-3 h-12">
+                {/* Action buttons - matching Project Name page exactly */}
+                <div className="flex gap-3">
                   <Button
                     onClick={handleBack}
                     variant="secondary"
                     size="lg"
-                    className="flex-1 h-full"
+                    className="flex-1"
                   >
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     <span>Back</span>
@@ -382,7 +378,7 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                   <Button
                     onClick={handleDemoSubmit}
                     size="lg"
-                    className="flex-1 h-full"
+                    className="flex-1"
                   >
                     <span>Generate README</span>
                     <FileText className="w-4 h-4 ml-2" />
