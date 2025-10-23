@@ -258,7 +258,14 @@ export default function ModernReadmeOutput({
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="fixed top-0 left-0 right-0 z-[99998] bg-black/95 backdrop-blur-xl border-b border-green-400/20"
+          className="fixed top-0 left-0 right-0 z-[99998] backdrop-blur-2xl border-b border-white/10"
+          style={{
+            background: 'rgba(255, 255, 255, 0.02)',
+            backdropFilter: 'blur(20px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+            borderImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent) 1',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+          }}
         >
           <div className="w-full px-3 sm:px-6 lg:px-12 xl:px-16">
             {/* Desktop Layout - Hidden on mobile */}
