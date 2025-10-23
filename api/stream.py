@@ -8,6 +8,10 @@ import requests
 import zipfile
 import ast
 import time
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Google AI Configuration
 try:
