@@ -163,8 +163,7 @@ def save_readme_history(
             "project_name": project_name,
             "readme_content": readme_content,
             "generation_params": generation_params or {},
-            "created_at": datetime.utcnow().isoformat(),
-            "updated_at": datetime.utcnow().isoformat()
+            "created_at": datetime.utcnow().isoformat()
         }
         
         print(f"📝 Created new entry with ID: {new_entry['id']}")
@@ -311,7 +310,6 @@ def update_history_item(
         for item in history_list:
             if item.get('id') == history_id:
                 item['readme_content'] = readme_content
-                item['updated_at'] = datetime.utcnow().isoformat()
                 if project_name is not None:
                     item['project_name'] = project_name
                 item_found = True

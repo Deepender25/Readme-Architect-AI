@@ -37,7 +37,6 @@ interface ModernReadmeOutputProps {
   disableAutoSave?: boolean;
   historyView?: boolean;
   createdAt?: string;
-  updatedAt?: string;
 }
 
 export default function ModernReadmeOutput({ 
@@ -49,8 +48,7 @@ export default function ModernReadmeOutput({
   onEdit,
   disableAutoSave = false,
   historyView = false,
-  createdAt,
-  updatedAt
+  createdAt
 }: ModernReadmeOutputProps) {
   const [viewMode, setViewMode] = useState<'preview' | 'raw'>('preview');
   const [copySuccess, setCopySuccess] = useState(false);
