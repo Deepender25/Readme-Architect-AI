@@ -19,17 +19,14 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
 }) => {
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      <label className="toggle-switch-unified">
+      <label className="switch">
         <input 
           type="checkbox" 
           checked={checked}
           onChange={(e) => onChange(e.target.checked)}
           disabled={disabled}
-          className="sr-only"
         />
-        <span className={`toggle-slider ${checked ? 'checked' : ''} ${disabled ? 'disabled' : ''}`}>
-          <span className="toggle-thumb" />
-        </span>
+        <span className="slider" />
       </label>
       {label && (
         <span className={`text-sm font-medium ${disabled ? 'text-gray-500' : 'text-white'}`}>
@@ -38,63 +35,57 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
       )}
 
       <style jsx>{`
-        .toggle-switch-unified {
+        /* From Uiverse.io by OfficialRedx09 */
+        /* The switch - the box around the slider */
+        .switch {
+          font-size: 17px;
           position: relative;
           display: inline-block;
-          width: 48px;
-          height: 24px;
-          cursor: ${disabled ? 'not-allowed' : 'pointer'};
+          width: 3.5em;
+          height: 2em;
         }
 
-        .toggle-slider {
+        /* Hide default HTML checkbox */
+        .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        /* The slider */
+        .slider {
           position: absolute;
+          cursor: pointer;
           inset: 0;
-          background: rgba(255, 255, 255, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 24px;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
+          border: 2px solid #383838;
+          border-radius: 50px;
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .toggle-slider.checked {
-          background: var(--primary-green);
-          border-color: var(--primary-green);
-          box-shadow: 0 0 16px rgba(0, 255, 136, 0.3);
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 1.4em;
+          width: 1.4em;
+          left: 0.2em;
+          bottom: 0.2em;
+          background-color: rgb(0, 233, 116);
+          border-radius: inherit;
+          transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        .toggle-slider.disabled {
+        .switch input:checked + .slider {
+          box-shadow: 0 0 20px rgba(9, 241, 79, 0.8);
+          border: 2px solid #04e763;
+        }
+
+        .switch input:checked + .slider:before {
+          transform: translateX(1.5em);
+        }
+
+        .switch input:disabled + .slider {
           opacity: 0.4;
           cursor: not-allowed;
-        }
-
-        .toggle-thumb {
-          position: absolute;
-          top: 2px;
-          left: 2px;
-          width: 18px;
-          height: 18px;
-          background: white;
-          border-radius: 50%;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .toggle-slider.checked .toggle-thumb {
-          transform: translateX(24px);
-          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .toggle-switch-unified:hover .toggle-slider:not(.disabled) {
-          border-color: rgba(0, 255, 136, 0.4);
-        }
-
-        .toggle-switch-unified:hover .toggle-slider.checked:not(.disabled) {
-          box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
-        }
-
-        .toggle-switch-unified:focus-within .toggle-slider:not(.disabled) {
-          box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.3);
         }
       `}</style>
     </div>
