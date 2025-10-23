@@ -12,7 +12,6 @@ interface HistoryItem {
   repository_url: string;
   project_name: string | null;
   created_at: string;
-  updated_at: string;
   readme_content: string;
   generation_params: {
     include_demo: boolean;

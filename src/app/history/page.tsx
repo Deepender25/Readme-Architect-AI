@@ -38,7 +38,6 @@ interface HistoryItem {
   repository_url: string;
   project_name: string | null;
   created_at: string;
-  updated_at: string;
   readme_content: string;
   generation_params: {
     include_demo: boolean;
@@ -56,7 +55,7 @@ function HistoryContent() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState<'created' | 'updated' | 'name'>('created');
+  const [sortBy, setSortBy] = useState<'created' | 'name'>('created');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [filterDemo, setFilterDemo] = useState<'all' | 'with' | 'without'>('all');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
@@ -136,9 +135,6 @@ function HistoryContent() {
           break;
         case 'created':
           comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-          break;
-        case 'updated':
-          comparison = new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime();
           break;
       }
       
@@ -348,11 +344,10 @@ function HistoryContent() {
                   <Clock className="w-4 h-4 text-gray-400 flex-shrink-0" />
                   <select
                     value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as 'created' | 'updated' | 'name')}
+                    onChange={(e) => setSortBy(e.target.value as 'created' | 'name')}
                     className="flex-1 bg-gray-800/50 border border-gray-600/50 rounded-lg px-2 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-green-400/50 transition-all"
                   >
                     <option value="created">Date Created</option>
-                    <option value="updated">Last Updated</option>
                     <option value="name">Name</option>
                   </select>
                 </div>
@@ -401,11 +396,10 @@ function HistoryContent() {
                 <Clock className="w-4 h-4 text-gray-400" />
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as 'created' | 'updated' | 'name')}
+                  onChange={(e) => setSortBy(e.target.value as 'created' | 'name')}
                   className="bg-gray-800/50 border border-gray-600/50 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-green-400/50 transition-all min-w-[100px] lg:min-w-[120px]"
                 >
                   <option value="created">Date Created</option>
-                  <option value="updated">Last Updated</option>
                   <option value="name">Name</option>
                 </select>
               </div>
@@ -540,14 +534,6 @@ function HistoryContent() {
                             <span className="hidden sm:inline">Created {formatDate(item.created_at)}</span>
                             <span className="sm:hidden">{formatDate(item.created_at)}</span>
                           </div>
-                          
-                          {item.updated_at !== item.created_at && (
-                            <div className="flex items-center gap-0.5 sm:gap-1">
-                              <Clock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                              <span className="hidden sm:inline">Updated {formatDate(item.updated_at)}</span>
-                              <span className="sm:hidden">Updated {formatDate(item.updated_at)}</span>
-                            </div>
-                          )}
                           
                           <div className="flex items-center gap-0.5 sm:gap-1">
                             <FileText className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
