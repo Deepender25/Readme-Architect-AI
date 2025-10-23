@@ -58,7 +58,7 @@ function ReadmeOutputContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center relative z-10">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -86,7 +86,7 @@ function ReadmeOutputContent() {
   // If no readmeData, the useEffect will handle redirect to home
   if (!readmeData) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center relative z-10">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -112,14 +112,14 @@ function ReadmeOutputContent() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-transparent relative">
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-[99999]">
         <ModernNavbar />
       </div>
 
       {/* Main Content */}
-      <div className="pt-16">
+      <div className="pt-16 relative z-10">
         <ModernReadmeOutput
           content={readmeData.content}
           repositoryUrl={readmeData.repositoryUrl}
@@ -131,7 +131,9 @@ function ReadmeOutputContent() {
       </div>
 
       {/* Footer */}
-      <ModernFooter />
+      <div className="relative z-10">
+        <ModernFooter />
+      </div>
     </div>
   )
 }
@@ -139,7 +141,7 @@ function ReadmeOutputContent() {
 export default function ReadmeOutputPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center relative z-10">
+      <div className="min-h-screen bg-transparent flex items-center justify-center relative z-10">
         <div className="text-center">
           <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <div className="w-4 h-4 bg-white rounded-sm" />

@@ -75,9 +75,9 @@ const EnhancedGridBackground = memo(function EnhancedGridBackground() {
 
   return (
     <div 
-      className="absolute top-0 left-0 w-full pointer-events-none"
+      className="fixed top-0 left-0 w-full pointer-events-none"
       style={{ 
-        zIndex: 1,
+        zIndex: 0,
         height: documentHeight,
         minHeight: '100vh',
         minWidth: '100vw',
