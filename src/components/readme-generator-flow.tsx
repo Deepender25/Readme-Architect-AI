@@ -380,8 +380,7 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                     size="lg"
                     className="flex-1"
                   >
-                    <span>Generate README</span>
-                    <FileText className="w-4 h-4 ml-2" />
+                    <span>Generate</span>
                   </Button>
                 </div>
               </div>
