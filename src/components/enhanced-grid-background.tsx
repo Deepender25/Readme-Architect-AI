@@ -52,30 +52,41 @@ const EnhancedGridBackground = memo(function EnhancedGridBackground() {
     let mutationTimeout: NodeJS.Timeout;
     const mutationObserver = new MutationObserver(() => {
       clearTimeout(mutationTimeout);
-      mutationTimeout = setTimeout(updateHeight, 200); // Longer delay for DOM changes
+      mutationTimeout = setTimeout(updateHeight, 100); // Shorter delay for better responsiveness
     });
     
-    // Only observe specific changes that might affect height
+    // Observe changes that might affect height
     if (document.body) {
       mutationObserver.observe(document.body, {
         childList: true,
-        subtree: false, // Don't observe deep subtree changes for performance
+        subtree: true, // Observe deep changes for content updates
         attributes: false // Don't observe attribute changes
       });
     }
+
+    // Force update on scroll to catch dynamic content
+    let scrollTimeout: NodeJS.Timeout;
+    const handleScroll = () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(updateHeight, 300);
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
       clearTimeout(updateTimeout);
       clearTimeout(resizeTimeout);
       clearTimeout(mutationTimeout);
+      clearTimeout(scrollTimeout);
       window.removeEventListener('resize', throttledResize);
+      window.removeEventListener('scroll', handleScroll);
       mutationObserver.disconnect();
     };
   }, []);
 
   return (
     <div 
-      className="fixed top-0 left-0 w-full pointer-events-none"
+      className="absolute top-0 left-0 w-full pointer-events-none"
       style={{ 
         zIndex: 0,
         height: documentHeight,
