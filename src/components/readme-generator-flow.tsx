@@ -49,7 +49,7 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
   const [projectName, setProjectName] = useState(initialValues.projectName);
   const [includeDemo, setIncludeDemo] = useState(false);
   const [numScreenshots, setNumScreenshots] = useState(2);
-  const [numVideos, setNumVideos] = useState(1);
+  const [numVideos, setNumVideos] = useState(0);
   const [error, setError] = useState('');
   const [errorDetails, setErrorDetails] = useState('');
   const [generationStatus, setGenerationStatus] = useState('');
@@ -356,7 +356,7 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                         <NumberInput
                           value={numVideos}
                           onChange={setNumVideos}
-                          min={1}
+                          min={0}
                           max={10}
                         />
                       </div>
