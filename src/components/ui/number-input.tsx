@@ -49,7 +49,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
           type="button" 
           onClick={handleDecrement}
           disabled={value <= min}
-          className="inline-flex items-center justify-center w-10 h-10 p-0 text-white/70 bg-transparent border border-white/10 rounded-l-lg hover:bg-green-400/10 hover:text-green-400 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="inline-flex items-center justify-center w-7 md:w-10 h-10 p-0 text-white/70 bg-transparent border border-white/10 rounded-l-lg hover:bg-green-400/10 hover:text-green-400 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <Minus className="w-3 h-3" />
         </button>
@@ -58,7 +58,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
           type="text" 
           value={value}
           onChange={handleInputChange}
-          className="w-full h-10 px-3 text-center text-green-300 md:text-white bg-gray-800 md:bg-black/60 backdrop-blur-xl border-t border-b border-green-400/30 md:border-white/10 focus:outline-none focus:bg-gray-700 md:focus:bg-black/80 focus:border-green-400 transition-all duration-300 font-bold md:font-medium text-lg md:text-base"
+          className="w-full h-10 px-1 md:px-3 text-center text-green-300 md:text-white bg-gray-800 md:bg-black/60 backdrop-blur-xl border-t border-b border-green-400/30 md:border-white/10 focus:outline-none focus:bg-gray-700 md:focus:bg-black/80 focus:border-green-400 transition-all duration-300 font-bold md:font-medium text-lg md:text-base"
           min={min}
           max={max}
         />
@@ -67,7 +67,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
           type="button" 
           onClick={handleIncrement}
           disabled={value >= max}
-          className="inline-flex items-center justify-center w-10 h-10 p-0 text-white/70 bg-transparent border border-white/10 rounded-r-lg hover:bg-green-400/10 hover:text-green-400 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="inline-flex items-center justify-center w-7 md:w-10 h-10 p-0 text-white/70 bg-transparent border border-white/10 rounded-r-lg hover:bg-green-400/10 hover:text-green-400 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <Plus className="w-3 h-3" />
         </button>
