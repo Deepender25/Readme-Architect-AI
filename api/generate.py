@@ -7,6 +7,10 @@ import shutil
 import requests
 import zipfile
 import ast
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Google AI Configuration
 try:
