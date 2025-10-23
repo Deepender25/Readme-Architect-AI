@@ -29,7 +29,6 @@ interface HistoryItem {
   repository_url: string;
   project_name: string | null;
   created_at: string;
-  updated_at: string;
   readme_content: string;
   generation_params: {
     include_demo: boolean;
@@ -211,13 +210,6 @@ function ReadmeViewContent() {
                     <Calendar className="w-4 h-4 text-blue-400" />
                     <span className="text-blue-400 font-medium">{formatDate(historyItem.created_at)}</span>
                   </div>
-
-                  {historyItem.updated_at !== historyItem.created_at && (
-                    <div className="flex items-center gap-2 px-3 py-2 bg-orange-400/10 rounded-lg text-sm border border-orange-400/20">
-                      <Clock className="w-4 h-4 text-orange-400" />
-                      <span className="text-orange-400 font-medium">{formatDate(historyItem.updated_at)}</span>
-                    </div>
-                  )}
 
                   {historyItem.generation_params.include_demo && (
                     <div className="flex items-center gap-2 px-3 py-2 bg-purple-500/20 text-purple-400 rounded-lg text-sm border border-purple-400/30">
