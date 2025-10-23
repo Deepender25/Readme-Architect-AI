@@ -58,7 +58,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
           type="text" 
           value={value}
           onChange={handleInputChange}
-          className="w-full h-10 px-1 md:px-3 text-center text-green-300 md:text-white bg-gray-800 md:bg-black/60 backdrop-blur-xl border-t border-b border-green-400/30 md:border-white/10 focus:outline-none focus:bg-gray-700 md:focus:bg-black/80 focus:border-green-400 transition-all duration-300 font-bold md:font-medium text-lg md:text-base"
+          className="w-full h-10 px-1 md:px-3 text-center text-green-400 md:text-white bg-black/40 md:bg-black/60 backdrop-blur-xl border-t border-b border-green-400/50 md:border-white/10 focus:outline-none focus:bg-black/60 md:focus:bg-black/80 focus:border-green-400 transition-all duration-300 font-bold md:font-medium text-lg md:text-base shadow-sm"
           min={min}
           max={max}
         />
