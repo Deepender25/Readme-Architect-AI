@@ -97,7 +97,7 @@ function ReadmeViewContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center px-4">
+      <div className="min-h-screen bg-transparent flex items-center justify-center px-4 relative z-10">
         <div className="cube-loading-container">
           <div className="flex flex-col items-center">
             <div className="cube-loader-global cube-loader-lg">
@@ -118,7 +118,7 @@ function ReadmeViewContent() {
 
   if (error || !historyItem) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center px-4">
+      <div className="min-h-screen bg-transparent flex items-center justify-center px-4 relative z-10">
         <div className="text-center max-w-md w-full">
           <AlertCircle className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 text-red-400" />
           <div className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4">README Not Found</div>
@@ -139,7 +139,7 @@ function ReadmeViewContent() {
   }
 
   return (
-    <div className="min-h-screen bg-black relative"
+    <div className="min-h-screen bg-transparent relative"
          style={{
            transform: 'translate3d(0, 0, 0)',
            willChange: 'auto',
@@ -356,7 +356,7 @@ function ReadmeViewContent() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="pb-8"
+          className="pb-8 relative z-10"
         >
           <div className="w-full px-2 sm:container sm:mx-auto sm:px-6 lg:px-8">
             <div className="sm:max-w-5xl sm:mx-auto">
@@ -374,7 +374,9 @@ function ReadmeViewContent() {
         </motion.main>
 
         {/* Footer */}
-        <ModernFooter />
+        <div className="relative z-10">
+          <ModernFooter />
+        </div>
       </div>
   )
 }
@@ -384,7 +386,7 @@ const ReadmeViewPage = withAuth(ReadmeViewContent)
 export default function ReadmeViewPageWrapper() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-black">
+      <div className="min-h-screen bg-transparent flex items-center justify-center relative z-10">
         <div className="text-center">
           <Loader2 className="w-8 h-8 mx-auto mb-4 animate-spin text-green-400" />
           <p className="text-green-400">Loading README...</p>
