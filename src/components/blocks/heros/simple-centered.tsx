@@ -88,18 +88,47 @@ export default function SimpleCentered() {
     
     // Only scroll on desktop devices (screen width >= 1024px)
     if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
-      // Small delay to allow the generator to render
+      // Wait for the generator to render and DOM to update
       setTimeout(() => {
-        // Calculate scroll position to hide the header (navbar height + some padding)
-        const navbarHeight = 64; // 16 * 4 = 64px (pt-16)
-        const additionalScroll = 20; // Extra scroll to ensure header is fully hidden
+        // Ensure there's enough content to scroll by temporarily adding height if needed
+        const originalBodyHeight = document.body.style.minHeight;
+        document.body.style.minHeight = '200vh'; // Ensure scrollable content
+        
+        // Calculate scroll position to hide the header
+        const navbarHeight = 80;
+        const additionalScroll = 40;
         const scrollPosition = navbarHeight + additionalScroll;
         
-        window.scrollTo({
-          top: scrollPosition,
-          behavior: 'smooth'
-        });
-      }, 100);
+        console.log('🚀 Desktop scroll initiated');
+        console.log('Target scroll position:', scrollPosition);
+        console.log('Current scroll:', window.scrollY);
+        console.log('Document height:', document.documentElement.scrollHeight);
+        console.log('Window height:', window.innerHeight);
+        
+        // Force scroll using multiple methods
+        const performScroll = () => {
+          // Method 1: Direct scrollTo
+          window.scrollTo({
+            top: scrollPosition,
+            left: 0,
+            behavior: 'smooth'
+          });
+          
+          // Method 2: Alternative scroll for better compatibility
+          document.documentElement.scrollTop = scrollPosition;
+          document.body.scrollTop = scrollPosition; // For Safari
+        };
+        
+        performScroll();
+        
+        // Verify scroll worked and restore original height after scroll
+        setTimeout(() => {
+          console.log('Final scroll position:', window.scrollY);
+          // Restore original body height after scroll animation
+          document.body.style.minHeight = originalBodyHeight;
+        }, 1000);
+        
+      }, 200); // Increased delay to ensure DOM updates
     }
   };
 
@@ -117,16 +146,34 @@ export default function SimpleCentered() {
       if (generatorElement) {
         // Only apply header-hiding scroll on desktop devices
         if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+          // Ensure scrollable content
+          const originalBodyHeight = document.body.style.minHeight;
+          document.body.style.minHeight = '200vh';
+          
           // Calculate position to hide header while showing the generator
-          const navbarHeight = 64; // 16 * 4 = 64px (pt-16)
-          const additionalScroll = 20; // Extra scroll to ensure header is fully hidden
+          const navbarHeight = 80;
+          const additionalScroll = 40;
           const elementTop = generatorElement.offsetTop;
           const scrollPosition = Math.max(elementTop - 20, navbarHeight + additionalScroll);
           
+          console.log('🎯 Get Started Now scroll initiated');
+          console.log('Target scroll position:', scrollPosition);
+          
+          // Force scroll
           window.scrollTo({
             top: scrollPosition,
+            left: 0,
             behavior: 'smooth'
           });
+          
+          // Alternative methods for better compatibility
+          document.documentElement.scrollTop = scrollPosition;
+          document.body.scrollTop = scrollPosition;
+          
+          // Restore height after scroll
+          setTimeout(() => {
+            document.body.style.minHeight = originalBodyHeight;
+          }, 1000);
         } else {
           // On mobile, just scroll to the element normally
           generatorElement.scrollIntoView({ 
@@ -135,7 +182,7 @@ export default function SimpleCentered() {
           });
         }
       }
-    }, 100);
+    }, 200);
   };
 
   const handleGenerationComplete = async (readme: string, repoUrl: string, projName: string, genParams: any) => {
