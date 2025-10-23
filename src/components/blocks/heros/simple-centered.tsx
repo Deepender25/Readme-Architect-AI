@@ -94,10 +94,9 @@ export default function SimpleCentered() {
         const originalBodyHeight = document.body.style.minHeight;
         document.body.style.minHeight = '200vh'; // Ensure scrollable content
         
-        // Calculate scroll position to hide the header
-        const navbarHeight = 80;
-        const additionalScroll = 40;
-        const scrollPosition = navbarHeight + additionalScroll;
+        // Calculate scroll position to hide the header perfectly
+        const navbarHeight = 80; // Just enough to hide the navbar
+        const scrollPosition = navbarHeight;
         
         console.log('🚀 Desktop scroll initiated');
         console.log('Target scroll position:', scrollPosition);
@@ -150,11 +149,10 @@ export default function SimpleCentered() {
           const originalBodyHeight = document.body.style.minHeight;
           document.body.style.minHeight = '200vh';
           
-          // Calculate position to hide header while showing the generator
-          const navbarHeight = 80;
-          const additionalScroll = 40;
+          // Calculate position to hide header perfectly while showing the generator
+          const navbarHeight = 80; // Just enough to hide the navbar
           const elementTop = generatorElement.offsetTop;
-          const scrollPosition = Math.max(elementTop - 20, navbarHeight + additionalScroll);
+          const scrollPosition = Math.max(elementTop - 20, navbarHeight);
           
           console.log('🎯 Get Started Now scroll initiated');
           console.log('Target scroll position:', scrollPosition);
