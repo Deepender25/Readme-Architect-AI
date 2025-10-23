@@ -44,7 +44,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
       {label && (
         <label className="text-sm font-medium text-gray-300">{label}</label>
       )}
-      <div className="relative flex items-center w-24">
+      <div className="relative flex items-center w-28 md:w-24">
         <button 
           type="button" 
           onClick={handleDecrement}
@@ -58,7 +58,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
           type="text" 
           value={value}
           onChange={handleInputChange}
-          className="w-full h-10 px-3 text-center text-white bg-black/60 backdrop-blur-xl border-t border-b border-white/10 focus:outline-none focus:bg-black/80 focus:border-green-400 transition-all duration-300"
+          className="w-full h-10 px-3 text-center text-white bg-black/80 md:bg-black/60 backdrop-blur-xl border-t border-b border-white/20 md:border-white/10 focus:outline-none focus:bg-black/90 md:focus:bg-black/80 focus:border-green-400 transition-all duration-300 font-medium"
           min={min}
           max={max}
         />
