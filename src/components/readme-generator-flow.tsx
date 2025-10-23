@@ -180,7 +180,7 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
       delay={0.6}
       duration={0.8}
       yOffset={40}
-      className="max-w-md mx-auto"
+      className="max-w-lg mx-auto"
     >
       <AnimatePresence mode="wait">
         {/* Step 1: Repository URL */}
@@ -321,54 +321,60 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
               </div>
               
               <div className="space-y-6">
-                <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-lg p-4 flex items-center justify-between">
-                  <span className="text-white font-medium">Include demo section with placeholders</span>
-                  <ToggleSwitch
-                    checked={includeDemo}
-                    onChange={setIncludeDemo}
-                  />
+                {/* Main toggle section */}
+                <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-white font-medium">Include demo section with placeholders</span>
+                    <ToggleSwitch
+                      checked={includeDemo}
+                      onChange={setIncludeDemo}
+                    />
+                  </div>
+                  
+                  {/* Horizontal expansion for demo options */}
+                  {includeDemo && (
+                    <motion.div
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: 'auto' }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                      className="flex items-center gap-6 pt-4 border-t border-white/10"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          <Image className="w-4 h-4 text-green-400" />
+                          <span className="text-sm text-gray-300 font-medium">Screenshots:</span>
+                        </div>
+                        <NumberInput
+                          value={numScreenshots}
+                          onChange={setNumScreenshots}
+                          min={1}
+                          max={10}
+                        />
+                      </div>
+                      
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          <Video className="w-4 h-4 text-green-400" />
+                          <span className="text-sm text-gray-300 font-medium">Videos:</span>
+                        </div>
+                        <NumberInput
+                          value={numVideos}
+                          onChange={setNumVideos}
+                          min={1}
+                          max={10}
+                        />
+                      </div>
+                    </motion.div>
+                  )}
                 </div>
                 
-                {includeDemo && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    className="space-y-4 pl-6 border-l-2 border-green-400/30"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Image className="w-4 h-4 text-green-400" />
-                        <span className="text-sm text-gray-300 font-medium">Screenshots:</span>
-                      </div>
-                      <NumberInput
-                        value={numScreenshots}
-                        onChange={setNumScreenshots}
-                        min={1}
-                        max={10}
-                      />
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Video className="w-4 h-4 text-green-400" />
-                        <span className="text-sm text-gray-300 font-medium">Videos:</span>
-                      </div>
-                      <NumberInput
-                        value={numVideos}
-                        onChange={setNumVideos}
-                        min={1}
-                        max={10}
-                      />
-                    </div>
-                  </motion.div>
-                )}
-                
-                <div className="flex gap-3">
+                {/* Action buttons with consistent height */}
+                <div className="flex gap-3 h-12">
                   <Button
                     onClick={handleBack}
                     variant="secondary"
                     size="lg"
-                    className="flex-1"
+                    className="flex-1 h-full"
                   >
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     <span>Back</span>
@@ -376,7 +382,7 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                   <Button
                     onClick={handleDemoSubmit}
                     size="lg"
-                    className="flex-1"
+                    className="flex-1 h-full"
                   >
                     <span>Generate README</span>
                     <FileText className="w-4 h-4 ml-2" />
