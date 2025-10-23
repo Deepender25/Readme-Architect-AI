@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { AuthProvider } from '@/lib/auth';
 import EnhancedGridBackground from '@/components/enhanced-grid-background';
+import { Analytics } from '@vercel/analytics/react';
 import "./globals.css";
 import "@/styles/newloader.css";
 
@@ -124,6 +125,9 @@ export default function RootLayout({
             }}
           />
         </AuthProvider>
+        
+        {/* Vercel Analytics */}
+        <Analytics />
       </body>
     </html>
   );
