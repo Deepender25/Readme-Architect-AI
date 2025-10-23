@@ -83,7 +83,25 @@ export default function SimpleCentered() {
     }
   }, []);
 
-  const handleStartGeneration = () => setShowGenerator(true);
+  const handleStartGeneration = () => {
+    setShowGenerator(true);
+    
+    // Only scroll on desktop devices (screen width >= 1024px)
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+      // Small delay to allow the generator to render
+      setTimeout(() => {
+        // Calculate scroll position to hide the header (navbar height + some padding)
+        const navbarHeight = 64; // 16 * 4 = 64px (pt-16)
+        const additionalScroll = 20; // Extra scroll to ensure header is fully hidden
+        const scrollPosition = navbarHeight + additionalScroll;
+        
+        window.scrollTo({
+          top: scrollPosition,
+          behavior: 'smooth'
+        });
+      }, 100);
+    }
+  };
 
   const handleViewExamples = () => {
     router.push('/examples');
@@ -97,10 +115,25 @@ export default function SimpleCentered() {
     setTimeout(() => {
       const generatorElement = document.getElementById('readme-generator');
       if (generatorElement) {
-        generatorElement.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
+        // Only apply header-hiding scroll on desktop devices
+        if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+          // Calculate position to hide header while showing the generator
+          const navbarHeight = 64; // 16 * 4 = 64px (pt-16)
+          const additionalScroll = 20; // Extra scroll to ensure header is fully hidden
+          const elementTop = generatorElement.offsetTop;
+          const scrollPosition = Math.max(elementTop - 20, navbarHeight + additionalScroll);
+          
+          window.scrollTo({
+            top: scrollPosition,
+            behavior: 'smooth'
+          });
+        } else {
+          // On mobile, just scroll to the element normally
+          generatorElement.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
       }
     }, 100);
   };
