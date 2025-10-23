@@ -331,17 +331,19 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                     />
                   </div>
                   
-                  {/* Compact horizontal demo options */}
+                  {/* Responsive demo options - vertical on mobile, horizontal on desktop */}
                   {includeDemo && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       transition={{ duration: 0.3, ease: "easeOut" }}
-                      className="flex items-center justify-center gap-8 mt-3 pt-3 border-t border-white/10"
+                      className="flex flex-col md:flex-row md:items-center md:justify-center gap-4 md:gap-8 mt-3 pt-3 border-t border-white/10"
                     >
-                      <div className="flex items-center gap-2">
-                        <Image className="w-4 h-4 text-green-400" />
-                        <span className="text-sm text-gray-300 font-medium">Screenshots:</span>
+                      <div className="flex items-center justify-between md:justify-start gap-2">
+                        <div className="flex items-center gap-2">
+                          <Image className="w-4 h-4 text-green-400" />
+                          <span className="text-sm text-gray-300 font-medium">Screenshots:</span>
+                        </div>
                         <NumberInput
                           value={numScreenshots}
                           onChange={setNumScreenshots}
@@ -350,9 +352,11 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                         />
                       </div>
                       
-                      <div className="flex items-center gap-2">
-                        <Video className="w-4 h-4 text-green-400" />
-                        <span className="text-sm text-gray-300 font-medium">Videos:</span>
+                      <div className="flex items-center justify-between md:justify-start gap-2">
+                        <div className="flex items-center gap-2">
+                          <Video className="w-4 h-4 text-green-400" />
+                          <span className="text-sm text-gray-300 font-medium">Videos:</span>
+                        </div>
                         <NumberInput
                           value={numVideos}
                           onChange={setNumVideos}
