@@ -246,7 +246,7 @@ export default function ModernReadmeOutput({
   const sanitizedContent = DOMPurify.sanitize(processedContent);
 
   return (
-    <div className="min-h-screen bg-black relative"
+    <div className="min-h-screen bg-transparent relative"
          style={{
            transform: 'translate3d(0, 0, 0)',
            willChange: 'auto',
