@@ -331,15 +331,15 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                     />
                   </div>
                   
-                  {/* Responsive demo options - vertical on mobile, horizontal on desktop */}
+                  {/* Responsive demo options - optimized mobile layout, unchanged desktop */}
                   {includeDemo && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       transition={{ duration: 0.3, ease: "easeOut" }}
-                      className="flex flex-col md:flex-row md:items-center md:justify-center gap-4 md:gap-8 mt-3 pt-3 border-t border-white/10"
+                      className="space-y-3 md:space-y-0 md:flex md:items-center md:justify-center md:gap-8 mt-3 pt-3 border-t border-white/10"
                     >
-                      <div className="flex items-center justify-between md:justify-start gap-2">
+                      <div className="flex items-center justify-between md:justify-start gap-2 px-2 py-2 md:px-0 md:py-0 rounded-lg md:rounded-none bg-black/20 md:bg-transparent">
                         <div className="flex items-center gap-2">
                           <Image className="w-4 h-4 text-green-400" />
                           <span className="text-sm text-gray-300 font-medium">Screenshots:</span>
@@ -352,7 +352,7 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                         />
                       </div>
                       
-                      <div className="flex items-center justify-between md:justify-start gap-2">
+                      <div className="flex items-center justify-between md:justify-start gap-2 px-2 py-2 md:px-0 md:py-0 rounded-lg md:rounded-none bg-black/20 md:bg-transparent">
                         <div className="flex items-center gap-2">
                           <Video className="w-4 h-4 text-green-400" />
                           <span className="text-sm text-gray-300 font-medium">Videos:</span>
