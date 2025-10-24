@@ -5,7 +5,9 @@ import { usePathname } from 'next/navigation';
 import { AuthProvider } from '@/lib/auth';
 import EnhancedGridBackground from '@/components/enhanced-grid-background';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import Head from 'next/head';
+import { organizationSchema, webApplicationSchema } from '@/lib/structured-data';
 import "./globals.css";
 import "@/styles/newloader.css";
 
@@ -19,30 +21,118 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Page Title */}
-        <title>AutoDoc AI - AI-Powered README Generator</title>
-        <meta name="description" content="Generate professional README files for your GitHub repositories using AI. Create beautiful documentation in seconds." />
+        {/* Primary Meta Tags */}
+        <title>AutoDoc AI - Free AI README Generator | Create Professional GitHub Documentation in 30 Seconds</title>
+        <meta name="title" content="AutoDoc AI - Free AI README Generator | Create Professional GitHub Documentation in 30 Seconds" />
+        <meta name="description" content="Generate stunning GitHub READMEs instantly with AI. Trusted by 10,000+ developers worldwide. Free README generator with 99% accuracy. Transform your repositories with professional documentation in under 30 seconds." />
+        <meta name="keywords" content="README generator, AI README generator, free README generator, GitHub README generator, automatic README creator, GitHub documentation, AI documentation generator, README maker, repository documentation, GitHub tools" />
+        <meta name="author" content="AutoDoc AI Team" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="language" content="English" />
+        <meta name="revisit-after" content="7 days" />
+        <meta name="distribution" content="global" />
+        <meta name="rating" content="general" />
         
-        {/* Favicon - Larger sizes first for better browser tab display */}
+        {/* Canonical URL */}
+        <link rel="canonical" href="https://autodocai.vercel.app" />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://autodocai.vercel.app" />
+        <meta property="og:title" content="AutoDoc AI - Free AI README Generator | Create Professional GitHub Documentation" />
+        <meta property="og:description" content="Generate stunning GitHub READMEs instantly with AI. Trusted by 10,000+ developers worldwide. Free README generator with 99% accuracy." />
+        <meta property="og:image" content="https://autodocai.vercel.app/og-image.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="AutoDoc AI - AI-Powered README Generator" />
+        <meta property="og:site_name" content="AutoDoc AI" />
+        <meta property="og:locale" content="en_US" />
+        
+        {/* Twitter */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://autodocai.vercel.app" />
+        <meta property="twitter:title" content="AutoDoc AI - Free AI README Generator" />
+        <meta property="twitter:description" content="Generate stunning GitHub READMEs instantly with AI. Trusted by 10,000+ developers worldwide." />
+        <meta property="twitter:image" content="https://autodocai.vercel.app/og-image.png" />
+        <meta property="twitter:image:alt" content="AutoDoc AI - AI-Powered README Generator" />
+        <meta property="twitter:creator" content="@autodocai" />
+        <meta property="twitter:site" content="@autodocai" />
+        
+        {/* Additional Meta Tags */}
+        <meta name="application-name" content="AutoDoc AI" />
+        <meta name="apple-mobile-web-app-title" content="AutoDoc AI" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="format-detection" content="telephone=no" />
+        
+        {/* Favicon - Comprehensive favicon setup */}
         <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png" />
         <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png" />
+        <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png" />
         
         {/* Web App Manifest */}
         <link rel="manifest" href="/site.webmanifest" />
         
-        {/* Meta tags for better favicon support */}
-        <meta name="msapplication-TileColor" content="#000000" />
-        <meta name="msapplication-TileImage" content="/favicon-64x64.png" />
+        {/* Microsoft Tiles */}
+        <meta name="msapplication-TileColor" content="#00ff88" />
+        <meta name="msapplication-TileImage" content="/mstile-144x144.png" />
+        <meta name="msapplication-config" content="/browserconfig.xml" />
         <meta name="theme-color" content="#00ff88" />
         
-        {/* Apple Touch Icon for better mobile support */}
-        <link rel="apple-touch-icon" sizes="64x64" href="/favicon-64x64.png" />
+        {/* Preconnect to external domains for performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://api.github.com" />
+        <link rel="dns-prefetch" href="https://github.com" />
         
-        {/* Fonts */}
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" />
+        {/* Fonts with optimized loading */}
+        <link 
+          rel="stylesheet" 
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          media="print"
+          onLoad="this.media='all'"
+        />
+        <noscript>
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" />
+        </noscript>
+        
+        {/* Structured Data - Organization */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+        
+        {/* Structured Data - Web Application */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(webApplicationSchema),
+          }}
+        />
+        
+        {/* Google Search Console Verification */}
+        <meta name="google-site-verification" content="your-google-verification-code" />
+        
+        {/* Bing Webmaster Tools Verification */}
+        <meta name="msvalidate.01" content="your-bing-verification-code" />
+        
+        {/* Yandex Verification */}
+        <meta name="yandex-verification" content="your-yandex-verification-code" />
         <style>{`
         :root {
           --font-inter: Inter, sans-serif;
@@ -150,8 +240,9 @@ export default function RootLayout({
           />
         </AuthProvider>
         
-        {/* Vercel Analytics */}
+        {/* Vercel Analytics & Speed Insights */}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

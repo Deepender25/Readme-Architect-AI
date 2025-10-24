@@ -1,15 +1,40 @@
 {
-  "name": "AutoDoc AI",
+  "name": "AutoDoc AI - README Generator",
   "short_name": "AutoDoc AI",
-  "description": "AI-Powered README Generator for GitHub repositories",
+  "description": "AI-powered README generator for GitHub repositories. Create professional documentation in seconds.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#00ff88",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["productivity", "developer", "utilities"],
+  "screenshots": [
+    {
+      "src": "/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "AutoDoc AI README Generator Interface"
+    },
+    {
+      "src": "/screenshot-narrow.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "AutoDoc AI Mobile Interface"
+    }
+  ],
   "icons": [
     {
-      "src": "/favicon-64x64.png",
-      "sizes": "64x64",
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
       "type": "image/png"
     },
     {
@@ -18,9 +43,67 @@
       "type": "image/png"
     },
     {
-      "src": "/favicon.ico",
-      "sizes": "16x16 32x32",
-      "type": "image/x-icon"
+      "src": "/favicon-64x64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "Generate README",
+      "short_name": "Generate",
+      "description": "Start generating a new README file",
+      "url": "/generate",
+      "icons": [
+        {
+          "src": "/shortcut-generate.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "View Examples",
+      "short_name": "Examples",
+      "description": "Browse README examples",
+      "url": "/examples",
+      "icons": [
+        {
+          "src": "/shortcut-examples.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Documentation",
+      "short_name": "Docs",
+      "description": "Read the documentation",
+      "url": "/documentation",
+      "icons": [
+        {
+          "src": "/shortcut-docs.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
 }
