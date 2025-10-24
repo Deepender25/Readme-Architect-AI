@@ -105,7 +105,7 @@ export default function ModernNavbar() {
                 <img
                   src="/Logo.png"
                   alt="AutoDoc AI Logo"
-                  className="w-10 h-10 object-contain"
+                  className="w-12 h-12 object-contain"
                 />
               </motion.div>
               
