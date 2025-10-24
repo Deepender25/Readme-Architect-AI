@@ -2,7 +2,6 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import Head from 'next/head';
 import LayoutWrapper from '@/components/layout-wrapper';
 import GitHubReadmeEditor from '@/components/github-readme-editor';
 import PageHeader from '@/components/layout/page-header';
@@ -123,14 +122,7 @@ function GenerateContent() {
 
 export default function GeneratePage() {
   return (
-    <>
-      <Head>
-        <title>Generate README - Create Professional GitHub Documentation with AI | AutoDoc AI</title>
-        <meta name="description" content="Create professional README files for your GitHub repositories using AI. Paste your repository URL and get comprehensive documentation in under 30 seconds. Free AI-powered README generator." />
-        <meta name="robots" content="noindex, follow" />
-      </Head>
-      
-      <Suspense fallback={
+    <Suspense fallback={
         <LayoutWrapper>
           <ContentSection background="glass" className="text-center py-20">
             <div className="cube-loading-container">
@@ -152,6 +144,5 @@ export default function GeneratePage() {
       }>
         <GenerateContent />
       </Suspense>
-    </>
   );
 }

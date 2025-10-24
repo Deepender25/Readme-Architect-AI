@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import Head from 'next/head'
 import { MessageCircle, Mail, Github, Instagram, MapPin, Clock, Send, Heart, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
 import LayoutWrapper from '@/components/layout-wrapper'
 
@@ -74,13 +73,7 @@ export default function ContactPage() {
   }
 
   return (
-    <>
-      <Head>
-        <title>Contact Us - Get Help with AutoDoc AI | AutoDoc AI</title>
-        <meta name="description" content="Get in touch with the AutoDoc AI team. Support, feedback, feature requests, and partnership inquiries welcome. Fast response times and community-driven development." />
-      </Head>
-      
-      <LayoutWrapper showBreadcrumbs={true} maxWidth="7xl">
+    <LayoutWrapper showBreadcrumbs={true} maxWidth="7xl">
       <div className="min-h-screen py-12">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
@@ -446,6 +439,5 @@ export default function ContactPage() {
         </div>
       </div>
     </LayoutWrapper>
-    </>
   )
 }
