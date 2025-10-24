@@ -80,20 +80,20 @@ export default function ModernNavbar() {
                 onClick={() => router.push('/')}
               >
               <motion.div
-                className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/30"
+                className="relative"
                 animate={{
-                  boxShadow: pathname === '/' ? [
-                    '0 0 8px rgba(0, 255, 136, 0.4)',
-                    '0 0 16px rgba(0, 255, 136, 0.8)',
-                    '0 0 24px rgba(0, 255, 136, 1)',
-                    '0 0 16px rgba(0, 255, 136, 0.8)',
-                    '0 0 8px rgba(0, 255, 136, 0.4)'
+                  filter: pathname === '/' ? [
+                    'drop-shadow(0 0 8px rgba(0, 255, 136, 0.4))',
+                    'drop-shadow(0 0 16px rgba(0, 255, 136, 0.8))',
+                    'drop-shadow(0 0 24px rgba(0, 255, 136, 1))',
+                    'drop-shadow(0 0 16px rgba(0, 255, 136, 0.8))',
+                    'drop-shadow(0 0 8px rgba(0, 255, 136, 0.4))'
                   ] : [
-                    '0 0 0px rgba(0, 255, 136, 0.2)',
-                    '0 0 8px rgba(0, 255, 136, 0.4)',
-                    '0 0 16px rgba(0, 255, 136, 0.6)',
-                    '0 0 8px rgba(0, 255, 136, 0.4)',
-                    '0 0 0px rgba(0, 255, 136, 0.2)'
+                    'drop-shadow(0 0 0px rgba(0, 255, 136, 0.2))',
+                    'drop-shadow(0 0 8px rgba(0, 255, 136, 0.4))',
+                    'drop-shadow(0 0 16px rgba(0, 255, 136, 0.6))',
+                    'drop-shadow(0 0 8px rgba(0, 255, 136, 0.4))',
+                    'drop-shadow(0 0 0px rgba(0, 255, 136, 0.2))'
                   ]
                 }}
                 transition={{
@@ -102,17 +102,12 @@ export default function ModernNavbar() {
                   ease: "easeInOut"
                 }}
               >
-                <FileText className="w-4 h-4 text-white" />
+                <img
+                  src="/Logo.png"
+                  alt="AutoDoc AI Logo"
+                  className="w-10 h-10 object-contain"
+                />
               </motion.div>
-              
-              <div className="flex flex-col min-w-0">
-                <span className="font-bold text-xl tracking-tight text-white whitespace-nowrap">
-                  AutoDoc AI
-                </span>
-                <span className="text-xs text-green-400/80 font-medium -mt-0.5 whitespace-nowrap">
-                  README Generator
-                </span>
-              </div>
               </motion.div>
             </div>
 

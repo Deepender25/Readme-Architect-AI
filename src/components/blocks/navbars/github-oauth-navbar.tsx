@@ -76,20 +76,20 @@ export default function GitHubOAuthNavbar() {
             onClick={() => router.push('/')}
           >
             <motion.div
-              className="w-7 h-7 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-lg shadow-green-500/30"
+              className="relative"
               animate={{
-                boxShadow: pathname === '/' ? [
-                  '0 0 8px rgba(0, 255, 136, 0.4)',
-                  '0 0 16px rgba(0, 255, 136, 0.8)',
-                  '0 0 24px rgba(0, 255, 136, 1)',
-                  '0 0 16px rgba(0, 255, 136, 0.8)',
-                  '0 0 8px rgba(0, 255, 136, 0.4)'
+                filter: pathname === '/' ? [
+                  'drop-shadow(0 0 8px rgba(0, 255, 136, 0.4))',
+                  'drop-shadow(0 0 16px rgba(0, 255, 136, 0.8))',
+                  'drop-shadow(0 0 24px rgba(0, 255, 136, 1))',
+                  'drop-shadow(0 0 16px rgba(0, 255, 136, 0.8))',
+                  'drop-shadow(0 0 8px rgba(0, 255, 136, 0.4))'
                 ] : [
-                  '0 0 0px rgba(0, 255, 136, 0.2)',
-                  '0 0 8px rgba(0, 255, 136, 0.4)',
-                  '0 0 16px rgba(0, 255, 136, 0.6)',
-                  '0 0 8px rgba(0, 255, 136, 0.4)',
-                  '0 0 0px rgba(0, 255, 136, 0.2)'
+                  'drop-shadow(0 0 0px rgba(0, 255, 136, 0.2))',
+                  'drop-shadow(0 0 8px rgba(0, 255, 136, 0.4))',
+                  'drop-shadow(0 0 16px rgba(0, 255, 136, 0.6))',
+                  'drop-shadow(0 0 8px rgba(0, 255, 136, 0.4))',
+                  'drop-shadow(0 0 0px rgba(0, 255, 136, 0.2))'
                 ]
               }}
               transition={{
@@ -98,13 +98,12 @@ export default function GitHubOAuthNavbar() {
                 ease: "easeInOut"
               }}
             >
-              <FileText className="w-4 h-4 text-white" />
+              <img
+                src="/Logo.png"
+                alt="AutoDoc AI Logo"
+                className="w-8 h-8 object-contain"
+              />
             </motion.div>
-
-            <span className={`font-bold text-2xl tracking-tight transition-all duration-300 ${pathname === '/' ? 'text-green-300' : 'text-green-400'
-              }`}>
-              AutoDoc AI
-            </span>
 
             {/* Home page active indicator */}
             {pathname === '/' && (
