@@ -359,8 +359,12 @@ class handler(BaseHTTPRequestHandler):
             self.send_json_response({"error": "Repository URL is required"}, 400)
             return
         
+        # Get user authentication for private repository access
+        user_data = self.get_user_from_cookie()
+        access_token = user_data.get('access_token') if user_data else None
+        
         try:
-            repo_path, error = self.download_repo(repo_url)
+            repo_path, error = self.download_repo(repo_url, access_token)
             if error:
                 self.send_json_response({"error": error}, 400)
                 return
@@ -485,9 +489,13 @@ class handler(BaseHTTPRequestHandler):
             # Send initial status
             send_stream_event({"status": "🔄 Connecting to repository..."})
             
+            # Get user authentication for private repository access
+            user_data = self.get_user_from_cookie()
+            access_token = user_data.get('access_token') if user_data else None
+            
             # Download repository
             send_stream_event({"status": "📥 Downloading repository files..."})
-            repo_path, error = self.download_repo(repo_url)
+            repo_path, error = self.download_repo(repo_url, access_token)
             if error:
                 send_stream_event({"error": error})
                 return
@@ -645,7 +653,7 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps(data).encode())
 
-    def download_repo(self, repo_url: str):
+    def download_repo(self, repo_url: str, access_token: str = None):
         try:
             if "github.com" in repo_url:
                 repo_url = repo_url.replace("github.com", "api.github.com/repos")
@@ -655,8 +663,23 @@ class handler(BaseHTTPRequestHandler):
             else:
                 return None, "Invalid GitHub URL"
             
-            response = requests.get(zip_url, timeout=30)
-            if response.status_code != 200:
+            # Prepare headers with authentication if token is provided
+            headers = {}
+            if access_token:
+                headers['Authorization'] = f'token {access_token}'
+                print(f"🔐 Using authenticated access for repository download")
+            else:
+                print(f"🌐 Using public access for repository download")
+            
+            response = requests.get(zip_url, headers=headers, timeout=30)
+            if response.status_code == 404:
+                if access_token:
+                    return None, "Repository not found or you don't have access to this private repository"
+                else:
+                    return None, "Repository not found. If this is a private repository, please make sure you're logged in"
+            elif response.status_code == 401:
+                return None, "Authentication failed. Please log in again to access private repositories"
+            elif response.status_code != 200:
                 return None, f"Failed to download repository: {response.status_code}"
             
             temp_dir = tempfile.mkdtemp()

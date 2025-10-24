@@ -89,10 +89,27 @@ class handler(BaseHTTPRequestHandler):
         
         print(f"🔄 Processing: {repo_url}")
         
+        # Get user authentication for private repository access
+        user_data = None
+        access_token = None
+        try:
+            cookie_header = self.headers.get('Cookie', '')
+            if 'github_user=' in cookie_header:
+                for cookie in cookie_header.split(';'):
+                    if cookie.strip().startswith('github_user='):
+                        import base64
+                        import json
+                        cookie_value = cookie.split('=')[1].strip()
+                        user_data = json.loads(base64.b64decode(cookie_value).decode())
+                        access_token = user_data.get('access_token')
+                        break
+        except Exception as e:
+            print(f"⚠️ Could not extract user authentication: {e}")
+        
         repo_path = None
         try:
             # Download repository
-            repo_path, error = self.download_repo(repo_url)
+            repo_path, error = self.download_repo(repo_url, access_token)
             if error:
                 self.send_json_response({"error": error}, 400)
                 return
@@ -239,7 +256,7 @@ class handler(BaseHTTPRequestHandler):
             normalized_url = normalized_url[:-4]
         return normalized_url
 
-    def download_repo(self, repo_url: str):
+    def download_repo(self, repo_url: str, access_token: str = None):
         temp_dir = None
         try:
             # First normalize the URL
@@ -260,9 +277,24 @@ class handler(BaseHTTPRequestHandler):
             except:
                 pass  # Skip check if statvfs not available
             
+            # Prepare headers with authentication if token is provided
+            headers = {}
+            if access_token:
+                headers['Authorization'] = f'token {access_token}'
+                print(f"🔐 Using authenticated access for repository download")
+            else:
+                print(f"🌐 Using public access for repository download")
+            
             print(f"📥 Downloading repository: {repo_url}")
-            response = requests.get(zip_url, timeout=30, stream=True)
-            if response.status_code != 200:
+            response = requests.get(zip_url, headers=headers, timeout=30, stream=True)
+            if response.status_code == 404:
+                if access_token:
+                    return None, "Repository not found or you don't have access to this private repository"
+                else:
+                    return None, "Repository not found. If this is a private repository, please make sure you're logged in"
+            elif response.status_code == 401:
+                return None, "Authentication failed. Please log in again to access private repositories"
+            elif response.status_code != 200:
                 return None, f"Failed to download repository: {response.status_code}"
             
             # Check content length to avoid downloading huge repositories
