@@ -108,6 +108,15 @@ export default function ModernNavbar() {
                   className="w-10 h-10 object-contain"
                 />
               </motion.div>
+              
+              <div className="flex flex-col min-w-0">
+                <span className="font-bold text-xl tracking-tight text-white whitespace-nowrap">
+                  AutoDoc AI
+                </span>
+                <span className="text-xs text-green-400/80 font-medium -mt-0.5 whitespace-nowrap">
+                  README Generator
+                </span>
+              </div>
               </motion.div>
             </div>
 
