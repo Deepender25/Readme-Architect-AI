@@ -253,8 +253,26 @@ class handler(BaseHTTPRequestHandler):
                 except:
                     return_to_url = '/'
             
-            # Redirect to intended page or home
-            redirect_url = f'{return_to_url}?auth_success=true'
+            # Encode user data for frontend
+            import urllib.parse
+            import json
+            
+            # Prepare user data for frontend
+            frontend_user_data = {
+                'github_id': str(user_data['id']),
+                'username': user_data['login'],
+                'name': user_data.get('name', user_data['login']),
+                'avatar_url': user_data['avatar_url'],
+                'html_url': user_data['html_url'],
+                'email': email,
+                'access_token': access_token
+            }
+            
+            # Encode user data as URL parameter
+            encoded_user_data = urllib.parse.quote(json.dumps(frontend_user_data))
+            
+            # Redirect to intended page or home with user data
+            redirect_url = f'{return_to_url}?auth_success={encoded_user_data}'
             
             print(f"DEBUG: Redirecting to: {redirect_url}")
             
