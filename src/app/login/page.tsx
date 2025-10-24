@@ -218,8 +218,10 @@ function LoginPageContent() {
                           <Bot className="w-3 h-3 text-black" />
                         </div>
                       </div>
-                      <h3 className="text-xl font-semibold text-white mb-1">{previousAccount.name}</h3>
-                      <p className="text-green-400 font-medium">@{previousAccount.username}</p>
+                      <h3 className="text-xl font-semibold text-white mb-1">{previousAccount.name || 'GitHub User'}</h3>
+                      <p className="text-green-400 font-medium">
+                        {previousAccount.username ? `@${previousAccount.username}` : 'GitHub Account'}
+                      </p>
                       <p className="text-gray-400 text-sm mt-2">Welcome back! Continue where you left off</p>
                     </motion.div>
                     
@@ -240,7 +242,7 @@ function LoginPageContent() {
                           <RefreshCw className="w-5 h-5 animate-spin" />
                         ) : (
                           <>
-                            <span>Continue as {previousAccount.name}</span>
+                            <span>Continue as {previousAccount.name || previousAccount.username || 'Previous User'}</span>
                             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                           </>
                         )}

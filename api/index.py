@@ -97,21 +97,27 @@ class handler(BaseHTTPRequestHandler):
         parsed_url = urlparse(self.path)
         query_params = parse_qs(parsed_url.query)
         force_account_selection = query_params.get('force_account_selection', [False])[0]
+        return_to = query_params.get('returnTo', [''])[0]
         
         print(f"DEBUG: Force account selection: {force_account_selection}")
+        print(f"DEBUG: Return to: {return_to}")
         
         # Use the exact redirect URI from environment
         redirect_uri = "https://autodocai.vercel.app/api/auth/callback"
         print(f"DEBUG: Using redirect_uri: {redirect_uri}")
         
-        # Build state parameter
+        # Build state parameter with return URL
+        import time
         if force_account_selection == 'true':
             # Use unique state for account switching to force fresh auth flow
-            import time
             state = f'oauth_switch_{int(time.time())}'
+            if return_to:
+                state = f'{state}|returnTo={return_to}'
             print(f"DEBUG: Account switching - using unique state: {state}")
         else:
             state = 'oauth_login'
+            if return_to:
+                state = f'{state}|returnTo={return_to}'
             print(f"DEBUG: Regular login - using state: {state}")
         
         # Build GitHub OAuth URL
@@ -125,12 +131,11 @@ class handler(BaseHTTPRequestHandler):
         # For account switching, force fresh authentication
         if force_account_selection == 'true':
             print("DEBUG: Adding parameters to force account switching")
-            # Use empty login parameter to force login screen
-            github_params['login'] = ''
+            # Use prompt=select_account to force account selection
+            github_params['prompt'] = 'select_account'
             # Allow signup to ensure all options are available
             github_params['allow_signup'] = 'true'
             # Add timestamp to make URL unique and bypass cache
-            import time
             github_params['_t'] = str(int(time.time()))
         
         github_auth_url = f"https://github.com/login/oauth/authorize?{urllib.parse.urlencode(github_params)}"
@@ -236,8 +241,20 @@ class handler(BaseHTTPRequestHandler):
             
             print(f"DEBUG: Created session for user: {user_data['login']}")
             
-            # Redirect to home page with auth success
-            redirect_url = f'/?auth_success=true'
+            # Parse state parameter to get return URL
+            state_list = query_params.get('state', [None])
+            state = state_list[0] if state_list else None
+            return_to_url = '/'
+            
+            if state and '|returnTo=' in state:
+                try:
+                    return_to_url = state.split('|returnTo=')[1]
+                    print(f"DEBUG: Extracted return URL from state: {return_to_url}")
+                except:
+                    return_to_url = '/'
+            
+            # Redirect to intended page or home
+            redirect_url = f'{return_to_url}?auth_success=true'
             
             print(f"DEBUG: Redirecting to: {redirect_url}")
             
