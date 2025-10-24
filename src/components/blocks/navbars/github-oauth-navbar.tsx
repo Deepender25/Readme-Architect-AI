@@ -100,8 +100,23 @@ export default function GitHubOAuthNavbar() {
             >
               <img
                 src="/Logo.png"
+                srcSet="/Logo.png 1x, /Logo-2x.png 2x"
                 alt="AutoDoc AI Logo"
                 className="w-10 h-10 object-contain"
+                style={{
+                  imageRendering: 'auto',
+                  WebkitImageRendering: 'auto',
+                  MozImageRendering: 'auto',
+                  msImageRendering: 'auto',
+                  imageRendering: '-webkit-optimize-contrast',
+                  WebkitBackfaceVisibility: 'hidden',
+                  backfaceVisibility: 'hidden',
+                  WebkitTransform: 'translateZ(0)',
+                  transform: 'translateZ(0)',
+                  filter: 'contrast(1.05) saturate(1.05)',
+                  WebkitFontSmoothing: 'antialiased',
+                  MozOsxFontSmoothing: 'grayscale',
+                }}
               />
             </motion.div>
 
