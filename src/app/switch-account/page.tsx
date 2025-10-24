@@ -22,88 +22,100 @@ function SwitchAccountContent() {
 
   const handleSwitchAccount = async () => {
     setIsProcessing(true);
-    setProcessingStep('Clearing session...');
+    setProcessingStep('Clearing current session...');
     
     // Store the return URL for after the OAuth process
     const returnTo = searchParams.get('returnTo') || '/';
+    
     try {
-      sessionStorage.setItem('oauth_return_to', returnTo);
-    } catch (error) {
-      console.error('Failed to store return URL:', error);
-    }
-
-    try {
-      // Call logout API to clear server-side session
+      // Call logout API to clear server-side session and cookies
+      setProcessingStep('Logging out from server...');
       await fetch('/api/auth/logout', {
         method: 'POST',
         credentials: 'include'
       });
+      
+      setProcessingStep('Clearing local session data...');
+      
+      // Clear new session system cookies
+      const cookiesToClear = [
+        'session_token',
+        'user_id', 
+        'github_user', 
+        'auth_token', 
+        'session_id'
+      ];
+      
+      // Clear cookies with multiple domain/path combinations to ensure removal
+      const domains = ['', `.${window.location.hostname}`, window.location.hostname];
+      const paths = ['/', '/api', '/auth'];
+      
+      cookiesToClear.forEach(cookieName => {
+        domains.forEach(domain => {
+          paths.forEach(path => {
+            const cookieString = domain ? 
+              `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=${domain}` :
+              `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}`;
+            document.cookie = cookieString;
+          });
+        });
+      });
+      
+      // Clear any session-specific cookies
+      const allCookies = document.cookie.split(';');
+      allCookies.forEach(cookie => {
+        const [name] = cookie.trim().split('=');
+        if (name.startsWith('gh_session_')) {
+          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+        }
+      });
+      
+      // Clear localStorage items related to auth
+      const authKeys = [
+        'active_sessions',
+        'show_account_selection',
+        'oauth_return_to'
+      ];
+      
+      authKeys.forEach(key => {
+        try {
+          localStorage.removeItem(key);
+        } catch (error) {
+          console.warn(`Failed to remove ${key} from localStorage:`, error);
+        }
+      });
+      
+      setProcessingStep('Redirecting to GitHub account selection...');
+      
+      // Wait a moment to ensure logout is complete, then redirect
+      setTimeout(() => {
+        const timestamp = Date.now();
+        // Use GitHub's built-in logout followed by account selection
+        const logoutUrl = `https://github.com/logout`;
+        const authUrl = `/api/auth/github?force_account_selection=true&t=${timestamp}&returnTo=${encodeURIComponent(returnTo)}`;
+        
+        // First open logout in a hidden iframe, then redirect
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = logoutUrl;
+        document.body.appendChild(iframe);
+        
+        // After logout iframe loads, redirect to auth
+        setTimeout(() => {
+          document.body.removeChild(iframe);
+          window.location.href = authUrl;
+        }, 2000);
+      }, 1000);
+      
     } catch (error) {
-      console.error('Logout API error:', error);
-    }
-
-    // Clear all client-side auth data
-    document.cookie = 'github_user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    document.cookie = 'session_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    
-    // Clear localStorage and sessionStorage
-    localStorage.clear();
-    sessionStorage.removeItem('github_user');
-    sessionStorage.removeItem('auth_token');
-    
-    setProcessingStep('Opening GitHub logout...');
-    
-    // Try to open GitHub logout in a popup to clear GitHub session
-    const logoutPopup = window.open(
-      'https://github.com/logout', 
-      'github_logout', 
-      'width=600,height=400,scrollbars=yes,resizable=yes'
-    );
-    
-    // Check if popup was blocked
-    if (!logoutPopup || logoutPopup.closed || typeof logoutPopup.closed === 'undefined') {
-      setProcessingStep('Popup blocked, using fallback...');
-      // Popup blocked - redirect directly with a longer delay
+      console.error('Logout error:', error);
+      setProcessingStep('Error occurred, redirecting anyway...');
+      
+      // Even if logout fails, still redirect to account selection
       setTimeout(() => {
         const timestamp = Date.now();
         window.location.href = `/api/auth/github?force_account_selection=true&t=${timestamp}&returnTo=${encodeURIComponent(returnTo)}`;
-      }, 3000);
-    } else {
-      setProcessingStep('Logout window will close automatically...');
-      
-      // Auto-close popup after logout completes and redirect
-      setTimeout(() => {
-        setProcessingStep('Closing logout window...');
-        
-        // Close the popup automatically
-        if (!logoutPopup.closed) {
-          logoutPopup.close();
-        }
-        
-        // Small delay to ensure logout is processed, then redirect
-        setTimeout(() => {
-          setProcessingStep('Redirecting to account selection...');
-          const timestamp = Date.now();
-          window.location.href = `/api/auth/github?force_account_selection=true&t=${timestamp}&returnTo=${encodeURIComponent(returnTo)}`;
-        }, 500);
-      }, 3000); // Wait 3 seconds for logout to complete, then auto-close
-      
-      // Also monitor if user manually closes popup
-      const checkClosed = setInterval(() => {
-        if (logoutPopup.closed) {
-          clearInterval(checkClosed);
-          setProcessingStep('Redirecting to account selection...');
-          // User closed popup manually, redirect immediately
-          const timestamp = Date.now();
-          window.location.href = `/api/auth/github?force_account_selection=true&t=${timestamp}&returnTo=${encodeURIComponent(returnTo)}`;
-        }
-      }, 500);
-      
-      // Clear the interval when auto-close happens
-      setTimeout(() => {
-        clearInterval(checkClosed);
-      }, 4000);
+      }, 2000);
     }
   };
 
