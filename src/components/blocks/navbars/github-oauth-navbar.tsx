@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Settings, FileText, LogOut, ChevronDown, FolderGit2, History } from 'lucide-react';
+import Image from 'next/image';
 import { useAuth } from '@/lib/auth';
 import DropdownPortal from '@/components/ui/dropdown-portal';
 
@@ -98,24 +99,20 @@ export default function GitHubOAuthNavbar() {
                 ease: "easeInOut"
               }}
             >
-              <img
+              <Image
                 src="/Logo.png"
-                srcSet="/Logo.png 1x, /Logo-2x.png 2x"
                 alt="AutoDoc AI Logo"
-                className="w-10 h-10 object-contain"
+                width={40}
+                height={40}
+                className="object-contain"
+                priority
+                quality={100}
                 style={{
-                  imageRendering: 'auto',
-                  WebkitImageRendering: 'auto',
-                  MozImageRendering: 'auto',
-                  msImageRendering: 'auto',
-                  imageRendering: '-webkit-optimize-contrast',
-                  WebkitBackfaceVisibility: 'hidden',
-                  backfaceVisibility: 'hidden',
-                  WebkitTransform: 'translateZ(0)',
-                  transform: 'translateZ(0)',
-                  filter: 'contrast(1.05) saturate(1.05)',
-                  WebkitFontSmoothing: 'antialiased',
-                  MozOsxFontSmoothing: 'grayscale',
+                  imageRendering: 'smooth',
+                  WebkitImageRendering: '-webkit-optimize-contrast',
+                  filter: 'none',
+                  maxWidth: '100%',
+                  height: 'auto',
                 }}
               />
             </motion.div>
