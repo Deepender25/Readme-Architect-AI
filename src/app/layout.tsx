@@ -23,10 +23,11 @@ export default function RootLayout({
         <title>AutoDoc AI - AI-Powered README Generator</title>
         <meta name="description" content="Generate professional README files for your GitHub repositories using AI. Create beautiful documentation in seconds." />
         
-        {/* Favicon */}
+        {/* Favicon - Larger sizes first for better browser tab display */}
+        <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
         <link rel="shortcut icon" href="/favicon.ico" />
         
         {/* Web App Manifest */}
@@ -34,7 +35,11 @@ export default function RootLayout({
         
         {/* Meta tags for better favicon support */}
         <meta name="msapplication-TileColor" content="#000000" />
+        <meta name="msapplication-TileImage" content="/favicon-64x64.png" />
         <meta name="theme-color" content="#00ff88" />
+        
+        {/* Apple Touch Icon for better mobile support */}
+        <link rel="apple-touch-icon" sizes="64x64" href="/favicon-64x64.png" />
         
         {/* Fonts */}
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" />
