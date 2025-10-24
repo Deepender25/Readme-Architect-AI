@@ -1,0 +1,16 @@
+{
+  "name": "AutoDoc AI",
+  "short_name": "AutoDoc AI",
+  "description": "AI-Powered README Generator for GitHub repositories",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00ff88",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32 48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}
