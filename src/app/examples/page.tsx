@@ -2,16 +2,15 @@
 
 import { Suspense } from 'react'
 import { motion } from 'framer-motion'
+import Head from 'next/head'
+import { articleSchema } from '@/lib/structured-data'
 import { 
-  Github, 
   Code, 
   FileText, 
   Star, 
   GitBranch, 
   Eye, 
   Download,
-  ExternalLink,
-  CheckCircle,
   Zap,
   Sparkles,
   ArrowRight,
@@ -208,8 +207,27 @@ Visit our [documentation](./docs) for detailed guides and API references.`
 
 export default function ExamplesPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ExamplesContent />
-    </Suspense>
+    <>
+      <Head>
+        <title>README Examples - Professional Documentation Templates & Samples | AutoDoc AI</title>
+        <meta name="description" content="Browse real examples of AI-generated READMEs. See professional documentation templates for JavaScript, Python, React, Node.js, and more. Get inspiration for your GitHub repositories." />
+        
+        {/* Structured Data for Examples */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(articleSchema(
+              'Professional README Examples & Templates',
+              'Explore real-world examples of AI-generated READMEs. See how AutoDoc AI creates professional documentation for different types of projects and programming languages.',
+              'https://autodocai.vercel.app/examples'
+            )),
+          }}
+        />
+      </Head>
+      
+      <Suspense fallback={<div>Loading...</div>}>
+        <ExamplesContent />
+      </Suspense>
+    </>
   );
 }

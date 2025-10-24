@@ -1,12 +1,19 @@
 "use client"
 
 import { motion } from 'framer-motion'
+import Head from 'next/head'
 import { Shield, Eye, Lock, Database, Users, Globe } from 'lucide-react'
 import LayoutWrapper from '@/components/layout-wrapper'
 
 export default function PrivacyPolicyPage() {
   return (
-    <LayoutWrapper showBreadcrumbs={true} maxWidth="7xl">
+    <>
+      <Head>
+        <title>Privacy Policy - How We Protect Your Data | AutoDoc AI</title>
+        <meta name="description" content="Learn how AutoDoc AI protects your privacy and handles your data. Transparent privacy policy for our README generation service. GDPR compliant and secure." />
+      </Head>
+      
+      <LayoutWrapper showBreadcrumbs={true} maxWidth="7xl">
       <div className="min-h-screen py-12">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
@@ -207,5 +214,6 @@ export default function PrivacyPolicyPage() {
         </div>
       </div>
     </LayoutWrapper>
+    </>
   )
 }
