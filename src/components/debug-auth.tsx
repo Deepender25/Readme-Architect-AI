@@ -32,7 +32,7 @@ export default function DebugAuth() {
             Auth Login
           </button>
           <button 
-            onClick={logout}
+            onClick={() => logout()}
             className="bg-red-600 px-2 py-1 rounded text-xs"
           >
             Logout
