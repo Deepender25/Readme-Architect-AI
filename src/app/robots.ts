@@ -19,15 +19,14 @@ export default function robots(): MetadataRoute.Robots {
         ],
         disallow: [
           '/api/',
-          '/debug-auth',
           '/login',
-          '/repositories',
-          '/history',
           '/settings',
           '/switch-account',
           '/readme/output',
           '/_next/',
           '/static/',
+          '/auth/',
+          '/output/',
         ],
       },
       {

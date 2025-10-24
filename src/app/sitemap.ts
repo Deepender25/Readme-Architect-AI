@@ -1,54 +1,87 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const baseUrl = 'https://autodocai.vercel.app'
+  const currentDate = new Date()
+  
   return [
     {
-      url: 'https://autodocai.vercel.app',
-      lastModified: new Date(),
+      url: baseUrl,
+      lastModified: currentDate,
       changeFrequency: 'daily',
-      priority: 1,
+      priority: 1.0,
     },
     {
-      url: 'https://autodocai.vercel.app/generate',
-      lastModified: new Date(),
+      url: `${baseUrl}/generate`,
+      lastModified: currentDate,
       changeFrequency: 'daily',
       priority: 0.9,
     },
     {
-      url: 'https://autodocai.vercel.app/features',
-      lastModified: new Date(),
+      url: `${baseUrl}/features`,
+      lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
-      url: 'https://autodocai.vercel.app/examples',
-      lastModified: new Date(),
+      url: `${baseUrl}/examples`,
+      lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
-      url: 'https://autodocai.vercel.app/documentation',
-      lastModified: new Date(),
+      url: `${baseUrl}/documentation`,
+      lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 0.7,
     },
     {
-      url: 'https://autodocai.vercel.app/contact',
-      lastModified: new Date(),
+      url: `${baseUrl}/repositories`,
+      lastModified: currentDate,
+      changeFrequency: 'daily',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/history`,
+      lastModified: currentDate,
+      changeFrequency: 'daily',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.6,
     },
     {
-      url: 'https://autodocai.vercel.app/privacy',
-      lastModified: new Date(),
+      url: `${baseUrl}/about`,
+      lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.5,
     },
     {
-      url: 'https://autodocai.vercel.app/terms',
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
+      url: `${baseUrl}/blog`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/tutorials`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/privacy`,
+      lastModified: currentDate,
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/terms`,
+      lastModified: currentDate,
+      changeFrequency: 'yearly',
+      priority: 0.3,
     },
   ]
 }
