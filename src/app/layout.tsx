@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { AuthProvider } from '@/lib/auth';
 import EnhancedGridBackground from '@/components/enhanced-grid-background';
 import { Analytics } from '@vercel/analytics/react';
+import Head from 'next/head';
 import "./globals.css";
 import "@/styles/newloader.css";
 
@@ -18,6 +19,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Page Title */}
+        <title>AutoDoc AI - AI-Powered README Generator</title>
+        <meta name="description" content="Generate professional README files for your GitHub repositories using AI. Create beautiful documentation in seconds." />
+        
+        {/* Favicon */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        
+        {/* Web App Manifest */}
+        <link rel="manifest" href="/site.webmanifest" />
+        
+        {/* Meta tags for better favicon support */}
+        <meta name="msapplication-TileColor" content="#000000" />
+        <meta name="theme-color" content="#00ff88" />
+        
+        {/* Fonts */}
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" />
         <style>{`
         :root {
