@@ -1,19 +1,12 @@
 "use client"
 
 import { motion } from 'framer-motion'
-import Head from 'next/head'
 import { FileText, AlertTriangle, CheckCircle, Scale, Gavel, Clock } from 'lucide-react'
 import LayoutWrapper from '@/components/layout-wrapper'
 
 export default function TermsOfServicePage() {
   return (
-    <>
-      <Head>
-        <title>Terms of Service - AutoDoc AI Usage Terms | AutoDoc AI</title>
-        <meta name="description" content="Terms and conditions for using AutoDoc AI README generator. Service agreement, usage rights, and legal information for our AI-powered documentation tool." />
-      </Head>
-      
-      <LayoutWrapper showBreadcrumbs={true} maxWidth="7xl">
+    <LayoutWrapper showBreadcrumbs={true} maxWidth="7xl">
       <div className="min-h-screen py-12">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
@@ -269,6 +262,5 @@ export default function TermsOfServicePage() {
         </div>
       </div>
     </LayoutWrapper>
-    </>
   )
 }
