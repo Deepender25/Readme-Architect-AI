@@ -17,9 +17,13 @@ const authRoutes = [
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // Check if user has authentication cookie
-  const authCookie = request.cookies.get('github_user');
-  const isAuthenticated = !!authCookie?.value;
+  // Check for both new session system and legacy authentication
+  const sessionToken = request.cookies.get('session_token');
+  const userId = request.cookies.get('user_id');
+  const legacyAuthCookie = request.cookies.get('github_user');
+  
+  // User is authenticated if they have either the new session system or legacy cookie
+  const isAuthenticated = !!(sessionToken?.value && userId?.value) || !!legacyAuthCookie?.value;
   
   // Handle protected routes
   if (protectedRoutes.some(route => pathname.startsWith(route))) {
