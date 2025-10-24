@@ -2,6 +2,8 @@
 
 import { Suspense } from 'react'
 import { motion } from 'framer-motion'
+import Head from 'next/head'
+import { articleSchema } from '@/lib/structured-data'
 import { 
   Zap, 
   Github, 
@@ -270,8 +272,27 @@ function FeaturesContent() {
 
 export default function FeaturesPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <FeaturesContent />
-    </Suspense>
+    <>
+      <Head>
+        <title>Features - AI README Generator Capabilities & Tools | AutoDoc AI</title>
+        <meta name="description" content="Discover powerful features of AutoDoc AI: AI-powered analysis, GitHub integration, professional templates, multi-language support, real-time preview, and lightning-fast generation." />
+        
+        {/* Structured Data for Features */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(articleSchema(
+              'AI README Generator Features & Capabilities',
+              'Explore the powerful features that make AutoDoc AI the ultimate documentation tool for developers. AI-powered analysis, GitHub integration, and professional templates.',
+              'https://autodocai.vercel.app/features'
+            )),
+          }}
+        />
+      </Head>
+      
+      <Suspense fallback={<div>Loading...</div>}>
+        <FeaturesContent />
+      </Suspense>
+    </>
   )
 }

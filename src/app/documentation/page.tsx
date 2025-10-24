@@ -2,31 +2,29 @@
 
 import { Suspense } from 'react'
 import { motion } from 'framer-motion'
+import Head from 'next/head'
+import { articleSchema, faqSchema } from '@/lib/structured-data'
 import { 
   BookOpen, 
   Code, 
   FileText, 
   Zap, 
-  Github, 
+  GitBranch, 
   Settings, 
   HelpCircle,
   ArrowRight,
   CheckCircle,
   Lightbulb,
   Rocket,
-  Shield,
-  Clock,
-  Users,
   Star,
-  Download,
-  ExternalLink
+  Download
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import LayoutWrapper from '@/components/layout-wrapper'
-import PageHeader from '@/components/layout/page-header'
-import ContentSection from '@/components/layout/content-section'
+import { useRouter } from 'next/navigation'
 
 function DocumentationContent() {
+  const router = useRouter()
 
   const sections = [
     {
@@ -111,7 +109,7 @@ function DocumentationContent() {
       step: 1,
       title: "Connect GitHub",
       description: "Sign in with your GitHub account to access your repositories",
-      icon: Github
+      icon: GitBranch
     },
     {
       step: 2,
@@ -334,7 +332,7 @@ function DocumentationContent() {
                   
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Button
-                      onClick={() => navigateWithPreload('/')}
+                      onClick={() => router.push('/')}
                       className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg shadow-green-500/25 transition-all duration-300 hover:shadow-green-500/40 hover:scale-105"
                     >
                       <Zap className="w-5 h-5 mr-2" />
@@ -343,7 +341,7 @@ function DocumentationContent() {
                     </Button>
                     
                     <Button
-                      onClick={() => navigateWithPreload('/examples')}
+                      onClick={() => router.push('/examples')}
                       variant="outline"
                       className="border-green-400/50 text-green-400 hover:bg-green-400/10 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 hover:border-green-400"
                     >
@@ -362,8 +360,35 @@ function DocumentationContent() {
 
 export default function DocumentationPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <DocumentationContent />
-    </Suspense>
+    <>
+      <Head>
+        <title>Documentation - Complete Guide to AutoDoc AI README Generator | AutoDoc AI</title>
+        <meta name="description" content="Complete guide to using AutoDoc AI README generator. Learn how to create perfect GitHub documentation, customize templates, integrate with repositories, and optimize your workflow." />
+        
+        {/* Structured Data for Documentation */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(articleSchema(
+              'Complete Guide to AutoDoc AI README Generator',
+              'Learn how to create perfect GitHub documentation with AutoDoc AI. Step-by-step tutorials, best practices, and advanced configuration options.',
+              'https://autodocai.vercel.app/documentation'
+            )),
+          }}
+        />
+        
+        {/* FAQ Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(faqSchema),
+          }}
+        />
+      </Head>
+      
+      <Suspense fallback={<div>Loading...</div>}>
+        <DocumentationContent />
+      </Suspense>
+    </>
   )
 }
