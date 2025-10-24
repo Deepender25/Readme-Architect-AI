@@ -43,7 +43,8 @@ class handler(BaseHTTPRequestHandler):
         protected_paths = [
             '/api/repositories',
             '/api/history',
-            '/api/history/' # for individual history items
+            '/api/history/', # for individual history items
+            '/api/sessions' # for session management
         ]
 
         # Centralized authentication check (exclude /api/generate and /api/stream)
@@ -71,6 +72,11 @@ class handler(BaseHTTPRequestHandler):
         elif parsed_url.path.startswith('/api/history/'):
             history_id = parsed_url.path.split('/')[-1]
             self.handle_history_item(history_id)
+        elif parsed_url.path == '/api/sessions':
+            self.handle_sessions()
+        elif parsed_url.path.startswith('/api/sessions/'):
+            session_action = parsed_url.path.split('/')[-1]
+            self.handle_session_action(session_action)
         elif parsed_url.path == '/api/python/contact':
             self.handle_contact()
         else:
@@ -195,37 +201,68 @@ class handler(BaseHTTPRequestHandler):
             except:
                 email = None
             
+            # Create user session data
             user_session_data = {
                 'github_id': user_data['id'],
                 'username': user_data['login'],
                 'name': user_data.get('name', user_data['login']),
                 'avatar_url': user_data['avatar_url'],
                 'html_url': user_data['html_url'],
-                'email': email,
-                'access_token': access_token
+                'email': email
             }
             
-            session_data = base64.b64encode(json.dumps(user_session_data).encode()).decode()
+            # Create secure session using session manager
+            from .session_manager import create_user_session
+            
+            # Get client IP (best effort)
+            client_ip = self.headers.get('X-Forwarded-For', self.headers.get('X-Real-IP', self.client_address[0]))
+            
+            # Create session
+            session_token, success = create_user_session(
+                user_id=str(user_data['id']),
+                username=user_data['login'],
+                user_data=user_session_data,
+                access_token=access_token,
+                request_headers=dict(self.headers),
+                ip_address=client_ip
+            )
+            
+            if not success or not session_token:
+                print("DEBUG: Failed to create session")
+                self.send_response(302)
+                self.send_header('Location', '/login?error=session_failed')
+                self.end_headers()
+                return
+            
+            print(f"DEBUG: Created session for user: {user_data['login']}")
             
             # Redirect to home page with auth success
-            redirect_url = f'/?auth_success={urllib.parse.quote(session_data)}'
+            redirect_url = f'/?auth_success=true'
             
             print(f"DEBUG: Redirecting to: {redirect_url}")
             
             self.send_response(302)
             self.send_header('Location', redirect_url)
             
-            # Set cookie with proper flags for production
+            # Set secure session cookie
             host = self.headers.get('Host', '')
             is_production = 'localhost' not in host
             
+            # Set session token cookie
             if is_production:
-                cookie_value = f'github_user={session_data}; Path=/; Max-Age=86400; SameSite=Lax; Secure'
+                session_cookie = f'session_token={session_token}; Path=/; Max-Age=2592000; SameSite=Lax; Secure; HttpOnly'
             else:
-                cookie_value = f'github_user={session_data}; Path=/; Max-Age=86400; SameSite=Lax'
+                session_cookie = f'session_token={session_token}; Path=/; Max-Age=2592000; SameSite=Lax; HttpOnly'
             
-            print(f"DEBUG: Setting cookie: {cookie_value}")
-            self.send_header('Set-Cookie', cookie_value)
+            # Set user ID cookie for session validation
+            if is_production:
+                user_id_cookie = f'user_id={user_data["id"]}; Path=/; Max-Age=2592000; SameSite=Lax; Secure'
+            else:
+                user_id_cookie = f'user_id={user_data["id"]}; Path=/; Max-Age=2592000; SameSite=Lax'
+            
+            print(f"DEBUG: Setting session cookie for {user_data['login']}")
+            self.send_header('Set-Cookie', session_cookie)
+            self.send_header('Set-Cookie', user_id_cookie)
             
             self.end_headers()
             
@@ -517,19 +554,52 @@ class handler(BaseHTTPRequestHandler):
             send_stream_event({"error": str(e)})
 
     def get_user_from_cookie(self):
+        """Get user data from session cookie"""
         cookie_header = self.headers.get('Cookie', '')
         
-        if 'github_user=' in cookie_header:
-            for cookie in cookie_header.split(';'):
-                if cookie.strip().startswith('github_user='):
-                    try:
-                        cookie_value = cookie.split('=')[1].strip()
-                        user_data = json.loads(base64.b64decode(cookie_value).decode())
-                        return user_data
-                    except Exception as e:
-                        return None
+        session_token = None
+        user_id = None
         
-        return None
+        # Parse cookies to get session_token and user_id
+        for cookie in cookie_header.split(';'):
+            cookie = cookie.strip()
+            if cookie.startswith('session_token='):
+                session_token = cookie.split('=', 1)[1].strip()
+            elif cookie.startswith('user_id='):
+                user_id = cookie.split('=', 1)[1].strip()
+        
+        if not session_token or not user_id:
+            # Fall back to old cookie system for backward compatibility
+            if 'github_user=' in cookie_header:
+                for cookie in cookie_header.split(';'):
+                    if cookie.strip().startswith('github_user='):
+                        try:
+                            cookie_value = cookie.split('=')[1].strip()
+                            user_data = json.loads(base64.b64decode(cookie_value).decode())
+                            print("⚠️ Using legacy cookie authentication - consider upgrading")
+                            return user_data
+                        except Exception as e:
+                            return None
+            return None
+        
+        # Validate session using session manager
+        try:
+            from .session_manager import get_user_session_by_user_id
+            
+            session_data = get_user_session_by_user_id(user_id, session_token)
+            
+            if session_data:
+                # Return the user data with access_token for API calls
+                user_data = session_data['user_data'].copy()
+                user_data['access_token'] = session_data['access_token']
+                return user_data
+            else:
+                print(f"❌ Invalid session for user {user_id}")
+                return None
+                
+        except Exception as e:
+            print(f"❌ Error validating session: {e}")
+            return None
 
     def send_json_response(self, data, status_code=200):
         self.send_response(status_code)
@@ -913,6 +983,105 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
         
         else:
             self.send_json_response({'error': 'Method not allowed'}, 405)
+    
+    def handle_sessions(self):
+        """Handle session management requests"""
+        user_data = self.get_user_from_cookie()  # user_data is guaranteed to be valid here
+        
+        if self.command == 'GET':
+            # Get all user sessions
+            from .session_manager import get_all_user_sessions
+            try:
+                user_id = str(user_data.get('github_id', ''))
+                sessions = get_all_user_sessions(user_id)
+                
+                self.send_json_response({'sessions': sessions})
+            except Exception as e:
+                print(f"❌ Error retrieving sessions: {str(e)}")
+                self.send_json_response({'error': f'Failed to retrieve sessions: {str(e)}'}, 500)
+        
+        elif self.command == 'DELETE':
+            # Revoke all sessions except current one
+            from .session_manager import revoke_all_user_sessions, hash_session_token
+            try:
+                user_id = str(user_data.get('github_id', ''))
+                
+                # Get current session token to exclude it
+                cookie_header = self.headers.get('Cookie', '')
+                current_session_token = None
+                
+                for cookie in cookie_header.split(';'):
+                    cookie = cookie.strip()
+                    if cookie.startswith('session_token='):
+                        current_session_token = cookie.split('=', 1)[1].strip()
+                        break
+                
+                current_session_hash = hash_session_token(current_session_token) if current_session_token else None
+                
+                success = revoke_all_user_sessions(user_id, except_session=current_session_hash)
+                
+                if success:
+                    self.send_json_response({'message': 'All other sessions revoked successfully'})
+                else:
+                    self.send_json_response({'error': 'Failed to revoke sessions'}, 400)
+                    
+            except Exception as e:
+                print(f"❌ Error revoking sessions: {str(e)}")
+                self.send_json_response({'error': f'Failed to revoke sessions: {str(e)}'}, 500)
+        
+        else:
+            self.send_json_response({'error': 'Method not allowed'}, 405)
+    
+    def handle_session_action(self, action):
+        """Handle individual session actions"""
+        user_data = self.get_user_from_cookie()  # user_data is guaranteed to be valid here
+        
+        if action == 'revoke' and self.command == 'POST':
+            # Revoke a specific session
+            from .session_manager import revoke_session
+            try:
+                # Get request body
+                content_length = int(self.headers.get('Content-Length', 0))
+                if content_length > 0:
+                    post_data = self.rfile.read(content_length)
+                    data = json.loads(post_data.decode('utf-8'))
+                    session_id = data.get('session_id', '')
+                else:
+                    self.send_json_response({'error': 'Missing session_id'}, 400)
+                    return
+                
+                user_id = str(user_data.get('github_id', ''))
+                
+                success = revoke_session(user_id, session_id)
+                
+                if success:
+                    self.send_json_response({'message': 'Session revoked successfully'})
+                else:
+                    self.send_json_response({'error': 'Failed to revoke session'}, 400)
+                    
+            except Exception as e:
+                print(f"❌ Error revoking session: {str(e)}")
+                self.send_json_response({'error': f'Failed to revoke session: {str(e)}'}, 500)
+        
+        elif action == 'cleanup' and self.command == 'POST':
+            # Cleanup expired sessions
+            from .session_manager import cleanup_expired_sessions
+            try:
+                user_id = str(user_data.get('github_id', ''))
+                
+                success = cleanup_expired_sessions(user_id)
+                
+                if success:
+                    self.send_json_response({'message': 'Expired sessions cleaned up'})
+                else:
+                    self.send_json_response({'error': 'Failed to cleanup sessions'}, 400)
+                    
+            except Exception as e:
+                print(f"❌ Error cleaning up sessions: {str(e)}")
+                self.send_json_response({'error': f'Failed to cleanup sessions: {str(e)}'}, 500)
+        
+        else:
+            self.send_json_response({'error': 'Invalid action or method'}, 405)
 
     def handle_contact(self):
         """Handle contact form submissions"""
