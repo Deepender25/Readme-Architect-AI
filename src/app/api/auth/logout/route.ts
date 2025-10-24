@@ -17,27 +17,9 @@ export async function POST(request: NextRequest) {
     const sessionToken = request.cookies.get('session_token')?.value;
     const userId = request.cookies.get('user_id')?.value;
     
-    // If we have session info, revoke the session on the backend
-    if (sessionToken && userId) {
-      try {
-        const revokeResponse = await fetch(`${baseUrl}/api/sessions/revoke`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Cookie': `session_token=${sessionToken}; user_id=${userId}`
-          },
-          body: JSON.stringify({ session_id: sessionToken })
-        });
-        
-        if (revokeResponse.ok) {
-          console.log('Session revoked on backend');
-        } else {
-          console.warn('Failed to revoke session on backend');
-        }
-      } catch (error) {
-        console.warn('Error revoking session:', error);
-      }
-    }
+    // Note: Session revocation is handled by clearing cookies
+    // The backend session will expire naturally or be cleaned up
+    console.log('Logout: Clearing session cookies for user:', userId);
     
     // Create response with cleared cookies
     const response = NextResponse.json({ success: true, message: 'Logged out successfully' });
