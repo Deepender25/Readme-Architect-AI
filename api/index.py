@@ -703,7 +703,15 @@ class handler(BaseHTTPRequestHandler):
 
     def analyze_codebase(self, repo_path: str):
         try:
-            print("Starting deep code analysis...")
+            print("🔍 Starting enhanced deep code analysis...")
+            
+            # Import the enhanced analyzer
+            from .deep_analyzer import enhance_analysis_context
+            
+            # Get enhanced analysis
+            enhanced_context = enhance_analysis_context(repo_path)
+            
+            # Create traditional file structure for compatibility
             context = {"file_structure": "", "dependencies": "No dependency file found.", "python_code_summary": {}}
             ignore_list = ['.git', '__pycache__', 'node_modules', '.venv', 'venv', 'target', 'dist', 'build']
             file_structure_list = []
@@ -743,9 +751,14 @@ class handler(BaseHTTPRequestHandler):
                         except Exception: pass
             
             context["file_structure"] = "\n".join(file_structure_list)
-            print("Deep code analysis finished.")
+            
+            # Add enhanced analysis to context
+            context["enhanced_analysis"] = enhanced_context
+            
+            print("✅ Enhanced deep code analysis completed")
             return context, None
         except Exception as e:
+            print(f"❌ Analysis error: {str(e)}")
             return None, str(e)
 
     def generate_readme_with_gemini(self, analysis_context: dict, project_name: str = None, include_demo: bool = False, num_screenshots: int = 0, num_videos: int = 0):
