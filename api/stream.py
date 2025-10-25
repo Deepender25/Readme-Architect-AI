@@ -324,130 +324,16 @@ class handler(BaseHTTPRequestHandler):
         print(f"🤖 Starting README generation for: {project_name or 'Unnamed Project'}")
         
         try:
-            # Prepare Python code summary
-            python_summary_str = ""
-            for filename, summary in analysis_context.get('python_code_summary', {}).items():
-                python_summary_str += f"\nFile: `{filename}`:\n"
-                if summary['classes']: 
-                    python_summary_str += "  - Classes: " + ", ".join(summary['classes']) + "\n"
-                if summary['functions']: 
-                    python_summary_str += "  - Functions: " + ", ".join(summary['functions']) + "\n"
-
-            # Enhanced demo section from main.py - only if demo is enabled AND has content
-            demo_section = ""
-            if include_demo and (num_screenshots > 0 or num_videos > 0):
-                demo_section += "\n\n## 📸 Demo & Screenshots\n\n"
-                
-                if num_screenshots > 0:
-                    demo_section += "## 🖼️ Screenshots\n\n"
-                    for i in range(1, num_screenshots + 1):
-                        demo_section += f'  <img src="https://placehold.co/800x450/2d2d4d/ffffff?text=App+Screenshot+{i}" alt="App Screenshot {i}" width="100%">\n'
-                        demo_section += f'  <em><p align="center">Caption for screenshot {i}.</p></em>\n'
-                    demo_section += "\n"
-                
-                if num_videos > 0:
-                    demo_section += "## 🎬 Video Demos\n\n"
-                    for i in range(1, num_videos + 1):
-                        demo_section += f'  <a href="https://example.com/your-video-link-{i}" target="_blank">\n'
-                        demo_section += f'    <img src="https://placehold.co/800x450/2d2d4d/c5a8ff?text=Watch+Video+Demo+{i}" alt="Video Demo {i}" width="100%">\n'
-                        demo_section += f'  </a>\n'
-                        demo_section += f'  <em><p align="center">Caption for video demo {i}.</p></em>\n'
-                    demo_section += "\n"
-
-            # Set title instruction based on provided project name
-            title_instruction = ""
-            if project_name and project_name.strip():
-                title_instruction = f"""Use the exact project title "{project_name}". Center it and add a compelling tagline.
-                `<h1 align="center"> {project_name} </h1>`
-                `<p align="center"> [CREATE A COMPELLING TAGLINE HERE] </p>`"""
-            else:
-                title_instruction = """Create a compelling, professional title based on the analysis. Center it and add a concise tagline.
-                `<h1 align="center"> [PROJECT TITLE] </h1>`
-                `<p align="center"> [TAGLINE] </p>`"""
-
-            # Enhanced prompt from main.py with superior structure
-            prompt = f"""
-**Your Role:** You are a Principal Solutions Architect and a world-class technical copywriter. You are tasked with writing a stunning, comprehensive, and professional README.md file for a new open-source project. Your work must be impeccable.
-
-**Source Analysis Provided:**
-1.  **Project File Structure:**
-    ```
-    {analysis_context['file_structure']}
-    ```
-2.  **Dependencies:**
-    ```
-    {analysis_context['dependencies']}
-    ```
-3.  **Python Code Semantic Summary:**
-    ```
-    {python_summary_str if python_summary_str else "No Python files were analyzed."}
-    ```
-
-**Core Mandate:**
-Based *only* on the analysis above, generate a complete README.md. You MUST make intelligent, bold inferences about the project's purpose, architecture, and features. The tone must be professional, engaging, and polished. Use rich Markdown formatting, including emojis, tables, and blockquotes, to create a visually appealing document.
-
-**Strict README.md Structure (Follow this format precisely):**
-
-1.  **Project Title:** {title_instruction}
-
-2.  **Badges:** Create a centered paragraph of **static placeholder badges**. These badges must look professional and use generic, positive text (e.g., "Build: Passing"). This prevents "repo not found" errors on first generation. CRUCIALLY, you MUST add an HTML comment `<!-- ... -->` right after the badges, instructing the user to replace them with their own live badges.
-    Example format to follow exactly:
-    <p align="center">
-      <img alt="Build" src="https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge">
-      <img alt="Issues" src="https://img.shields.io/badge/Issues-0%20Open-blue?style=for-the-badge">
-      <img alt="Contributions" src="https://img.shields.io/badge/Contributions-Welcome-orange?style=for-the-badge">
-      <img alt="License" src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge">
-    </p>
-    <!-- 
-      **Note:** These are static placeholder badges. Replace them with your project's actual badges.
-      You can generate your own at https://shields.io
-    -->
-
-3.  **Table of Contents:** Create a clickable table of contents with these sections:
-    - [Overview](#-overview)
-    - [Key Features](#-key-features)
-    - [Tech Stack & Architecture](#️-tech-stack--architecture)
-    {f"- [Demo & Screenshots](#-demo--screenshots)" if include_demo and (num_screenshots > 0 or num_videos > 0) else ""}
-    - [Getting Started](#-getting-started)
-    - [Usage](#-usage)
-    - [Contributing](#-contributing)
-    - [License](#-license)
-
-4.  **⭐ Overview:**
-    -   **Hook:** Start with a compelling, single-sentence summary of the project.
-    -   **The Problem:** In a blockquote, describe the problem this project solves.
-    -   **The Solution:** Describe how your project provides an elegant solution to that problem.
-    -   **Inferred Architecture:** Based on the file structure and dependencies, describe the high-level architecture (e.g., "This project is a FastAPI-based web service...").
-
-5.  **✨ Key Features:**
-    -   A detailed, bulleted list. For each feature, provide a brief but impactful explanation.
-    -   Infer at least 4-5 key features from the code and file structure.
-    -   Example: `- **Automated Analysis:** Leverages AST to perform deep static analysis of Python code.`
-
-6.  **🛠️ Tech Stack & Architecture:**
-    -   Create a Markdown table listing the primary technologies, languages, and major libraries.
-    -   Include columns for "Technology", "Purpose", and "Why it was Chosen".
-    -   Example Row: `| FastAPI | API Framework | For its high performance, async support, and automatic docs generation. |`
-
-{demo_section}
-
-7.  **🚀 Getting Started:**
-    -   **Prerequisites:** A bulleted list of software the user needs (e.g., Python 3.9+, Node.js v18+).
-    -   **Installation:** A numbered, step-by-step guide with explicit, copy-pastable commands in code blocks for different package managers if inferable (e.g., `pip install -r requirements.txt`).
-
-8.  **🔧 Usage:**
-    -   Provide clear instructions on how to run the application (e.g., `uvicorn main:app --reload`).
-    -   If it's an API, provide a `curl` example. If it's a CLI, provide a command-line example.
-
-9.  **🤝 Contributing:**
-    -   A welcoming section encouraging contributions.
-    -   Briefly outline the fork -> branch -> pull request workflow.
-
-10. **📝 License:**
-    -   State the license (e.g., "Distributed under the MIT License. See `LICENSE` for more information.").
-
-**Final Instruction:** The output MUST be ONLY the raw Markdown content. Do not add any commentary, greetings, or explanations before or after the Markdown. Adhere strictly to the requested format and quality bar.
-"""
+            # Import and use the unified prompt system
+            from .ai_prompts import get_readme_generation_prompt
+            
+            prompt = get_readme_generation_prompt(
+                analysis_context=analysis_context,
+                project_name=project_name,
+                include_demo=include_demo,
+                num_screenshots=num_screenshots,
+                num_videos=num_videos
+            )
             
             try:
                 # Use gemini-flash-latest for best performance and reliability
