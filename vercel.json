@@ -30,6 +30,15 @@
       }
     },
     {
+      "src": "/api/python/diagnostic",
+      "dest": "/api/diagnostic.py",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+      }
+    },
+    {
       "src": "/api/python/contact",
       "dest": "/api/index.py",
       "headers": {
