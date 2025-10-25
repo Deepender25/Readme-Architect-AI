@@ -48,6 +48,15 @@ def get_readme_generation_prompt(analysis_context: dict, project_name: str = Non
 - Primary Languages: {', '.join(project_overview.get('primary_languages', []))}
 - Architecture Patterns: {', '.join(project_overview.get('architecture_patterns', []))}
 
+🎯 **PROJECT PURPOSE DETECTION:**
+Based on file names and structure, this appears to be a README generation tool that:
+- Analyzes GitHub repositories (evident from repository-related files)
+- Generates documentation using AI (evident from AI/generation related files)
+- Provides user authentication and history (evident from auth and history files)
+- Offers a web interface for users (evident from React/Next.js structure)
+
+**FOCUS YOUR README ON THIS CORE PURPOSE**: This is a tool that helps users automatically generate professional README files for their GitHub repositories.
+
 🛠️ **Technical Stack (VERIFIED):**
 - Frontend: {', '.join(technical_stack.get('frontend', [])) or 'None detected'}
 - Backend: {', '.join(technical_stack.get('backend', [])) or 'None detected'}
@@ -142,7 +151,13 @@ You have been provided with ENHANCED ANALYSIS that contains 100% accurate, verif
 {enhanced_summary}
 
 **Core Mandate:**
-Based *exclusively* on the VERIFIED ANALYSIS above, generate a complete, professional README.md. You MUST use ONLY the factual information provided in the enhanced analysis. DO NOT invent features, technologies, or capabilities that are not explicitly mentioned. Every technical detail, feature, and capability mentioned in the README must be 100% accurate and verifiable from the analysis.
+Based *exclusively* on the VERIFIED ANALYSIS above, generate a complete, professional README.md that focuses on USER VALUE and REAL-WORLD BENEFITS. You MUST use ONLY the factual information provided in the enhanced analysis. DO NOT invent features, technologies, or capabilities that are not explicitly mentioned.
+
+**CRITICAL FOCUS REQUIREMENTS:**
+- **USER-CENTRIC APPROACH**: Focus on what users can accomplish, not how it's built
+- **REAL-WORLD PROBLEMS**: Describe actual user pain points, not technical challenges
+- **BUSINESS VALUE**: Emphasize outcomes and benefits, not implementation details
+- **USER EXPERIENCE**: Highlight what makes this tool useful and valuable
 
 **ACCURACY REQUIREMENTS:**
 - Use ONLY technologies listed in the verified technical stack
@@ -151,6 +166,12 @@ Based *exclusively* on the VERIFIED ANALYSIS above, generate a complete, profess
 - Reference ONLY the actual environment variables found
 - Describe ONLY the verified external integrations
 - Use ONLY the real project structure and entry points
+
+**TONE & APPROACH:**
+- Write from the USER'S PERSPECTIVE, not the developer's
+- Focus on BENEFITS and OUTCOMES, not features and technologies
+- Describe WHAT the project does, not HOW it does it
+- Emphasize VALUE PROPOSITION and USER EXPERIENCE
 
 The tone must be professional, engaging, and polished. Use rich Markdown formatting, including emojis, tables, and blockquotes, to create a visually stunning and informative document that is significantly detailed (aim for 1500+ words minimum) while maintaining 100% factual accuracy.
 
@@ -185,22 +206,42 @@ The tone must be professional, engaging, and polished. Use rich Markdown formatt
     - [License](#-license)
 
 4.  **⭐ Overview:**
-    -   **Hook:** Start with a compelling, single-sentence summary based on the VERIFIED project type and actual functionality.
-    -   **The Problem:** In a blockquote, describe the problem this project solves based on the ACTUAL FUNCTIONALITY extracted from code.
-    -   **The Solution:** Describe how your project provides a solution using ONLY the verified technologies and features from the enhanced analysis.
-    -   **Verified Architecture:** Use the EXACT architecture patterns detected: {', '.join(project_overview.get('architecture_patterns', []))}. Describe the architecture using ONLY the verified technical stack components.
+    -   **Hook:** Start with a compelling, single-sentence summary that describes what the project DOES FOR USERS, not how it's built.
+        **EXAMPLE**: "AutoDoc AI is an intelligent documentation generator that transforms any GitHub repository into a professional, comprehensive README.md file in seconds."
+        **NOT**: "AutoDoc AI is a React-based web application with Python backend services."
+    
+    -   **The Problem:** In a blockquote, describe the REAL-WORLD USER PROBLEM this project solves:
+        **EXAMPLE**: 
+        > Creating comprehensive, professional documentation for software projects is time-consuming and often inconsistent. Developers spend hours writing README files, frequently leaving out important details or struggling to present their work professionally. Many projects suffer from poor documentation, making them less accessible to contributors and users.
+        
+        **NOT**: "The challenge of integrating diverse server-side utilities into a cohesive client-side interface..."
+    
+    -   **The Solution:** Describe the VALUE this project provides to users:
+        **EXAMPLE**: "AutoDoc AI eliminates the documentation burden by automatically analyzing your codebase and generating professional README files. Simply provide a GitHub repository URL, and get a complete, well-structured README with installation instructions, usage examples, and feature descriptions."
+        
+        **NOT**: "This system provides a highly polished interface built on Component-based Architecture..."
+    
+    -   **Architecture Overview:** Briefly mention the high-level approach using verified technologies: {', '.join(project_overview.get('architecture_patterns', []))} with {', '.join(project_overview.get('main_frameworks', []))}.
 
 5.  **✨ Key Features:**
-    -   Use ONLY the ACTUAL FUNCTIONALITY from the enhanced analysis.
-    -   Base features on the verified technical stack and real integrations.
-    -   For each feature, provide explanation using ONLY verified technologies.
+    -   **FOCUS ON USER BENEFITS**: Describe what users can DO with each feature, not the technical implementation.
+    -   **USER VALUE FIRST**: Each feature should answer "What does this do for the user?"
     -   Use emojis to make each feature visually distinct.
-    -   **MANDATORY:** Use these VERIFIED features as your foundation:
-        {chr(10).join(f"        - {feature}" for feature in functionality.get('actual_features', [])) or '        - No specific features detected - use general capabilities based on verified tech stack'}
-    -   **VERIFIED INTEGRATIONS to mention:**
+    -   **Transform technical capabilities into user benefits:**
+        
+        **VERIFIED FUNCTIONALITY to translate into user benefits:**
+        {chr(10).join(f"        - {feature}" for feature in functionality.get('actual_features', [])) or '        - No specific features detected - infer user benefits from verified tech stack'}
+        
+        **VERIFIED INTEGRATIONS to describe as user capabilities:**
         {chr(10).join(f"        - {service.title()} integration" for service in functionality.get('external_integrations', [])) or '        - No external integrations detected'}
-    -   **REAL API CAPABILITIES:**
+        
+        **REAL API CAPABILITIES to present as user actions:**
         {chr(10).join(f"        - {endpoint.get('methods', ['GET'])[0]} {endpoint.get('path', '')} endpoint" for endpoint in functionality.get('api_endpoints', [])) or '        - No API endpoints detected'}
+    
+    -   **EXAMPLE FORMAT (focus on user value):**
+        - 🚀 **Fast Processing:** Get results in seconds, not hours
+        - 🔒 **Secure Access:** Your data stays private and protected
+        - 📱 **Easy to Use:** Simple interface that anyone can master
 
 6.  **🛠️ Tech Stack & Architecture:**
     -   **CRITICAL:** Use ONLY the verified technologies from the enhanced analysis.
