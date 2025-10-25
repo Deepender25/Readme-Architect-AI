@@ -48,21 +48,23 @@ class DeepProjectAnalyzer:
         """Perform comprehensive project analysis"""
         print("🔍 Starting deep project analysis...")
         
-        # Core analysis steps
-        self._analyze_file_structure()
-        self._analyze_dependencies()
-        self._analyze_code_files()
-        self._analyze_configuration()
-        self._analyze_documentation()
-        self._detect_project_type()
-        self._analyze_architecture_patterns()
-        self._extract_actual_functionality()
-        self._analyze_data_models()
-        self._analyze_api_endpoints()
-        self._analyze_ui_components()
-        self._calculate_metrics()
+        try:
+            # Core analysis steps with error handling
+            self._analyze_file_structure()
+            self._analyze_dependencies()
+            self._analyze_code_files()
+            self._analyze_configuration()
+            self._analyze_documentation()
+            self._detect_project_type()
+            self._analyze_architecture_patterns()
+            self._extract_actual_functionality()
+            self._calculate_metrics()
+            
+            print("✅ Deep analysis completed")
+        except Exception as e:
+            print(f"⚠️ Error during analysis: {e}")
+            # Continue with partial analysis
         
-        print("✅ Deep analysis completed")
         return self.analysis
     
     def _analyze_file_structure(self):
@@ -213,8 +215,21 @@ class DeepProjectAnalyzer:
     def _analyze_requirements_txt(self, file_path: str):
         """Analyze Python requirements.txt"""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
+            # Try different encodings to handle various file formats
+            encodings = ['utf-8', 'latin-1', 'cp1252', 'iso-8859-1']
+            lines = []
+            
+            for encoding in encodings:
+                try:
+                    with open(file_path, 'r', encoding=encoding) as f:
+                        lines = f.readlines()
+                    break
+                except UnicodeDecodeError:
+                    continue
+            
+            if not lines:
+                print(f"⚠️ Could not decode {file_path} with any encoding")
+                return
             
             self.analysis['package_managers'].append('pip')
             
@@ -354,8 +369,21 @@ class DeepProjectAnalyzer:
     def _analyze_python_file(self, file_path: str):
         """Deep analysis of Python files"""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                content = f.read()
+            # Try different encodings to handle various file formats
+            encodings = ['utf-8', 'latin-1', 'cp1252', 'iso-8859-1']
+            content = ""
+            
+            for encoding in encodings:
+                try:
+                    with open(file_path, 'r', encoding=encoding) as f:
+                        content = f.read()
+                    break
+                except UnicodeDecodeError:
+                    continue
+            
+            if not content:
+                print(f"⚠️ Could not decode {file_path} with any encoding")
+                return
             
             # Parse AST for detailed analysis
             try:
@@ -436,8 +464,21 @@ class DeepProjectAnalyzer:
     def _analyze_javascript_file(self, file_path: str):
         """Analyze JavaScript files"""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                content = f.read()
+            # Try different encodings to handle various file formats
+            encodings = ['utf-8', 'latin-1', 'cp1252', 'iso-8859-1']
+            content = ""
+            
+            for encoding in encodings:
+                try:
+                    with open(file_path, 'r', encoding=encoding) as f:
+                        content = f.read()
+                    break
+                except UnicodeDecodeError:
+                    continue
+            
+            if not content:
+                print(f"⚠️ Could not decode {file_path} with any encoding")
+                return
             
             # Detect frameworks and patterns
             if 'import React' in content or 'from \'react\'' in content:
@@ -467,8 +508,21 @@ class DeepProjectAnalyzer:
     def _analyze_react_file(self, file_path: str):
         """Analyze React component files"""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                content = f.read()
+            # Try different encodings to handle various file formats
+            encodings = ['utf-8', 'latin-1', 'cp1252', 'iso-8859-1']
+            content = ""
+            
+            for encoding in encodings:
+                try:
+                    with open(file_path, 'r', encoding=encoding) as f:
+                        content = f.read()
+                    break
+                except UnicodeDecodeError:
+                    continue
+            
+            if not content:
+                print(f"⚠️ Could not decode {file_path} with any encoding")
+                return
             
             if 'react' not in self.analysis['frameworks']:
                 self.analysis['frameworks'].append('react')
@@ -562,8 +616,21 @@ class DeepProjectAnalyzer:
     def _extract_env_variables(self, file_path: str):
         """Extract environment variables from .env files"""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
+            # Try different encodings to handle various file formats
+            encodings = ['utf-8', 'latin-1', 'cp1252', 'iso-8859-1']
+            lines = []
+            
+            for encoding in encodings:
+                try:
+                    with open(file_path, 'r', encoding=encoding) as f:
+                        lines = f.readlines()
+                    break
+                except UnicodeDecodeError:
+                    continue
+            
+            if not lines:
+                print(f"⚠️ Could not decode {file_path} with any encoding")
+                return
             
             for line in lines:
                 line = line.strip()
@@ -769,46 +836,88 @@ def enhance_analysis_context(repo_path: str) -> Dict[str, Any]:
     """
     Enhanced analysis function that provides comprehensive project understanding
     """
-    analyzer = DeepProjectAnalyzer(repo_path)
-    deep_analysis = analyzer.analyze_project()
-    
-    # Create enhanced context for AI
-    enhanced_context = {
-        'project_overview': {
-            'type': deep_analysis['project_type'],
-            'complexity': deep_analysis['code_metrics'].get('complexity_score', 'Unknown'),
-            'primary_languages': deep_analysis['main_technologies'],
-            'main_frameworks': deep_analysis['frameworks'][:3],  # Top 3
-            'architecture_patterns': deep_analysis['architecture_patterns']
-        },
-        'technical_stack': {
-            'frontend': [fw for fw in deep_analysis['frameworks'] if fw in ['react', 'vue', 'angular', 'svelte']],
-            'backend': [fw for fw in deep_analysis['frameworks'] if fw in ['django', 'flask', 'fastapi', 'express', 'nest']],
-            'databases': deep_analysis['databases'],
-            'deployment': deep_analysis['deployment_targets'],
-            'testing': deep_analysis['testing_frameworks'],
-            'build_tools': deep_analysis['build_tools']
-        },
-        'functionality': {
-            'actual_features': deep_analysis['actual_functionality'],
-            'api_endpoints': deep_analysis['api_endpoints'][:5],  # First 5
-            'data_models': [model['name'] for model in deep_analysis['data_models'][:5]],
-            'ui_components': [comp['name'] for comp in deep_analysis['ui_components'][:5]],
-            'external_integrations': deep_analysis['external_services']
-        },
-        'project_structure': {
-            'entry_points': deep_analysis['entry_points'],
-            'config_files': deep_analysis['config_files'],
-            'documentation': deep_analysis['documentation_files'],
-            'scripts': deep_analysis['scripts'][:5]  # First 5
-        },
-        'environment': {
-            'required_variables': deep_analysis['environment_variables'][:10],  # First 10
-            'package_managers': deep_analysis['package_managers'],
-            'dependencies_summary': deep_analysis['dependency_analysis']
-        },
-        'metrics': deep_analysis['code_metrics'],
-        'raw_analysis': deep_analysis  # Full analysis for reference
-    }
-    
-    return enhanced_context
+    try:
+        analyzer = DeepProjectAnalyzer(repo_path)
+        deep_analysis = analyzer.analyze_project()
+        
+        # Create enhanced context for AI
+        enhanced_context = {
+            'project_overview': {
+                'type': deep_analysis.get('project_type', 'Unknown'),
+                'complexity': deep_analysis.get('code_metrics', {}).get('complexity_score', 'Unknown'),
+                'primary_languages': deep_analysis.get('main_technologies', []),
+                'main_frameworks': deep_analysis.get('frameworks', [])[:3],  # Top 3
+                'architecture_patterns': deep_analysis.get('architecture_patterns', [])
+            },
+            'technical_stack': {
+                'frontend': [fw for fw in deep_analysis.get('frameworks', []) if fw in ['react', 'vue', 'angular', 'svelte']],
+                'backend': [fw for fw in deep_analysis.get('frameworks', []) if fw in ['django', 'flask', 'fastapi', 'express', 'nest']],
+                'databases': deep_analysis.get('databases', []),
+                'deployment': deep_analysis.get('deployment_targets', []),
+                'testing': deep_analysis.get('testing_frameworks', []),
+                'build_tools': deep_analysis.get('build_tools', [])
+            },
+            'functionality': {
+                'actual_features': deep_analysis.get('actual_functionality', []),
+                'api_endpoints': deep_analysis.get('api_endpoints', [])[:5],  # First 5
+                'data_models': [model.get('name', '') for model in deep_analysis.get('data_models', [])[:5]],
+                'ui_components': [comp.get('name', '') for comp in deep_analysis.get('ui_components', [])[:5]],
+                'external_integrations': deep_analysis.get('external_services', [])
+            },
+            'project_structure': {
+                'entry_points': deep_analysis.get('entry_points', []),
+                'config_files': deep_analysis.get('config_files', []),
+                'documentation': deep_analysis.get('documentation_files', []),
+                'scripts': deep_analysis.get('scripts', [])[:5]  # First 5
+            },
+            'environment': {
+                'required_variables': deep_analysis.get('environment_variables', [])[:10],  # First 10
+                'package_managers': deep_analysis.get('package_managers', []),
+                'dependencies_summary': deep_analysis.get('dependency_analysis', {})
+            },
+            'metrics': deep_analysis.get('code_metrics', {}),
+            'raw_analysis': deep_analysis  # Full analysis for reference
+        }
+        
+        return enhanced_context
+        
+    except Exception as e:
+        print(f"⚠️ Enhanced analysis failed: {e}")
+        # Return minimal context to prevent complete failure
+        return {
+            'project_overview': {
+                'type': 'Unknown',
+                'complexity': 'Unknown',
+                'primary_languages': [],
+                'main_frameworks': [],
+                'architecture_patterns': []
+            },
+            'technical_stack': {
+                'frontend': [],
+                'backend': [],
+                'databases': [],
+                'deployment': [],
+                'testing': [],
+                'build_tools': []
+            },
+            'functionality': {
+                'actual_features': [],
+                'api_endpoints': [],
+                'data_models': [],
+                'ui_components': [],
+                'external_integrations': []
+            },
+            'project_structure': {
+                'entry_points': [],
+                'config_files': [],
+                'documentation': [],
+                'scripts': []
+            },
+            'environment': {
+                'required_variables': [],
+                'package_managers': [],
+                'dependencies_summary': {}
+            },
+            'metrics': {},
+            'raw_analysis': {}
+        }

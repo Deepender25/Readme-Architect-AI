@@ -5,20 +5,20 @@ Contains the master prompt template used across all generation endpoints
 
 def get_readme_generation_prompt(analysis_context: dict, project_name: str = None, include_demo: bool = False, num_screenshots: int = 0, num_videos: int = 0) -> str:
     """
-    Generate the comprehensive AI prompt for README generation
+    Generate the comprehensive AI prompt for README generation with enhanced analysis
     
     Args:
-        analysis_context: Dictionary containing file structure, dependencies, and code analysis
+        analysis_context: Dictionary containing file structure, dependencies, and enhanced code analysis
         project_name: Optional project name to use in the README
         include_demo: Whether to include demo section
         num_screenshots: Number of screenshot placeholders to include
         num_videos: Number of video demo placeholders to include
     
     Returns:
-        Complete prompt string for AI generation
+        Complete prompt string for AI generation with 100% accurate project insights
     """
     
-    # Prepare Python code summary
+    # Prepare Python code summary (legacy compatibility)
     python_summary_str = ""
     for filename, summary in analysis_context.get('python_code_summary', {}).items():
         python_summary_str += f"\nFile: `{filename}`:\n"
@@ -26,6 +26,65 @@ def get_readme_generation_prompt(analysis_context: dict, project_name: str = Non
             python_summary_str += "  - Classes: " + ", ".join(summary['classes']) + "\n"
         if summary['functions']: 
             python_summary_str += "  - Functions: " + ", ".join(summary['functions']) + "\n"
+    
+    # Extract enhanced analysis if available
+    enhanced_analysis = analysis_context.get('enhanced_analysis', {})
+    
+    # Prepare enhanced analysis sections
+    project_overview = enhanced_analysis.get('project_overview', {})
+    technical_stack = enhanced_analysis.get('technical_stack', {})
+    functionality = enhanced_analysis.get('functionality', {})
+    project_structure = enhanced_analysis.get('project_structure', {})
+    environment = enhanced_analysis.get('environment', {})
+    metrics = enhanced_analysis.get('metrics', {})
+    
+    # Create detailed analysis summary for AI
+    enhanced_summary = f"""
+**ENHANCED PROJECT ANALYSIS (100% ACCURATE):**
+
+🎯 **Project Type & Complexity:**
+- Type: {project_overview.get('type', 'Unknown')}
+- Complexity: {project_overview.get('complexity', 'Unknown')}
+- Primary Languages: {', '.join(project_overview.get('primary_languages', []))}
+- Architecture Patterns: {', '.join(project_overview.get('architecture_patterns', []))}
+
+🛠️ **Technical Stack (VERIFIED):**
+- Frontend: {', '.join(technical_stack.get('frontend', [])) or 'None detected'}
+- Backend: {', '.join(technical_stack.get('backend', [])) or 'None detected'}
+- Databases: {', '.join(technical_stack.get('databases', [])) or 'None detected'}
+- Testing: {', '.join(technical_stack.get('testing', [])) or 'None detected'}
+- Build Tools: {', '.join(technical_stack.get('build_tools', [])) or 'None detected'}
+- Deployment: {', '.join(technical_stack.get('deployment', [])) or 'None detected'}
+
+⚡ **ACTUAL FUNCTIONALITY (EXTRACTED FROM CODE):**
+{chr(10).join(f"- {feature}" for feature in functionality.get('actual_features', [])) or '- No specific functionality detected'}
+
+🔌 **API ENDPOINTS (REAL):**
+{chr(10).join(f"- {endpoint.get('methods', ['GET'])[0]} {endpoint.get('path', '')} ({endpoint.get('framework', 'unknown')})" for endpoint in functionality.get('api_endpoints', [])) or '- No API endpoints detected'}
+
+📊 **DATA MODELS (ACTUAL):**
+{chr(10).join(f"- {model}" for model in functionality.get('data_models', [])) or '- No data models detected'}
+
+🎨 **UI COMPONENTS (REAL):**
+{chr(10).join(f"- {comp}" for comp in functionality.get('ui_components', [])) or '- No UI components detected'}
+
+🌐 **EXTERNAL INTEGRATIONS (VERIFIED):**
+{chr(10).join(f"- {service.title()}" for service in functionality.get('external_integrations', [])) or '- No external integrations detected'}
+
+🔧 **PROJECT STRUCTURE (VERIFIED):**
+- Entry Points: {', '.join(project_structure.get('entry_points', [])) or 'None detected'}
+- Config Files: {', '.join(project_structure.get('config_files', [])) or 'None detected'}
+- Available Scripts: {', '.join(project_structure.get('scripts', [])) or 'None detected'}
+
+🌍 **ENVIRONMENT & SETUP (REAL REQUIREMENTS):**
+- Package Managers: {', '.join(environment.get('package_managers', [])) or 'None detected'}
+- Required Environment Variables: {', '.join(environment.get('required_variables', [])) or 'None detected'}
+
+📈 **CODE METRICS:**
+- Total Files: {metrics.get('total_files', 0)}
+- Total Lines: {metrics.get('total_lines', 0)}
+- Languages: {', '.join(metrics.get('languages', [])) or 'Unknown'}
+"""
 
     # Enhanced demo section - only if demo is enabled AND has content
     demo_section = ""
@@ -59,9 +118,12 @@ def get_readme_generation_prompt(analysis_context: dict, project_name: str = Non
         `<h1 align="center"> [PROJECT TITLE] </h1>`
         `<p align="center"> [TAGLINE] </p>`"""
 
-    # Master prompt template from generate.py
+    # Master prompt template with enhanced analysis
     prompt = f"""
 **Your Role:** You are a Principal Solutions Architect and a world-class technical copywriter with expertise in creating stunning, comprehensive, and professional README.md files for open-source projects. Your documentation must be impeccable, visually appealing, and thoroughly detailed.
+
+**CRITICAL INSTRUCTION: USE ONLY VERIFIED INFORMATION**
+You have been provided with ENHANCED ANALYSIS that contains 100% accurate, verified information extracted directly from the codebase. DO NOT make assumptions or add features that are not explicitly mentioned in the analysis. Every single detail in your README must be factually correct based on the provided analysis.
 
 **Source Analysis Provided:**
 1.  **Project File Structure:**
@@ -77,8 +139,20 @@ def get_readme_generation_prompt(analysis_context: dict, project_name: str = Non
     {python_summary_str if python_summary_str else "No Python files were analyzed."}
     ```
 
+{enhanced_summary}
+
 **Core Mandate:**
-Based *only* on the analysis above, generate a complete, professional README.md. You MUST make intelligent, bold inferences about the project's purpose, architecture, and features. The tone must be professional, engaging, and polished. Use rich Markdown formatting, including emojis, tables, and blockquotes, to create a visually stunning and informative document that is significantly detailed (aim for 1500+ words minimum).
+Based *exclusively* on the VERIFIED ANALYSIS above, generate a complete, professional README.md. You MUST use ONLY the factual information provided in the enhanced analysis. DO NOT invent features, technologies, or capabilities that are not explicitly mentioned. Every technical detail, feature, and capability mentioned in the README must be 100% accurate and verifiable from the analysis.
+
+**ACCURACY REQUIREMENTS:**
+- Use ONLY technologies listed in the verified technical stack
+- Mention ONLY the actual functionality extracted from code
+- Include ONLY the real API endpoints that were detected
+- Reference ONLY the actual environment variables found
+- Describe ONLY the verified external integrations
+- Use ONLY the real project structure and entry points
+
+The tone must be professional, engaging, and polished. Use rich Markdown formatting, including emojis, tables, and blockquotes, to create a visually stunning and informative document that is significantly detailed (aim for 1500+ words minimum) while maintaining 100% factual accuracy.
 
 **Strict README.md Structure (Follow this format precisely):**
 
@@ -111,31 +185,33 @@ Based *only* on the analysis above, generate a complete, professional README.md.
     - [License](#-license)
 
 4.  **⭐ Overview:**
-    -   **Hook:** Start with a compelling, single-sentence summary of the project that captures attention.
-    -   **The Problem:** In a blockquote, describe the problem this project solves in 2-3 detailed sentences.
-    -   **The Solution:** Describe in detail (4-5 sentences minimum) how your project provides an elegant solution to that problem.
-    -   **Inferred Architecture:** Based on the file structure and dependencies, describe the high-level architecture in detail (e.g., "This project is a FastAPI-based microservice architecture with..."). Include information about patterns, design principles, and key architectural decisions.
+    -   **Hook:** Start with a compelling, single-sentence summary based on the VERIFIED project type and actual functionality.
+    -   **The Problem:** In a blockquote, describe the problem this project solves based on the ACTUAL FUNCTIONALITY extracted from code.
+    -   **The Solution:** Describe how your project provides a solution using ONLY the verified technologies and features from the enhanced analysis.
+    -   **Verified Architecture:** Use the EXACT architecture patterns detected: {', '.join(project_overview.get('architecture_patterns', []))}. Describe the architecture using ONLY the verified technical stack components.
 
 5.  **✨ Key Features:**
-    -   A detailed, bulleted list with at least 6-8 key features.
-    -   For each feature, provide a brief but impactful explanation (1-2 sentences per feature).
+    -   Use ONLY the ACTUAL FUNCTIONALITY from the enhanced analysis.
+    -   Base features on the verified technical stack and real integrations.
+    -   For each feature, provide explanation using ONLY verified technologies.
     -   Use emojis to make each feature visually distinct.
-    -   Infer features from the code structure, dependencies, and file organization.
-    -   Example format:
-        - 🚀 **High Performance:** Built with FastAPI for lightning-fast async request handling and automatic API documentation.
-        - 🔒 **Secure Authentication:** Implements OAuth 2.0 with JWT tokens for robust security.
+    -   **MANDATORY:** Use these VERIFIED features as your foundation:
+        {chr(10).join(f"        - {feature}" for feature in functionality.get('actual_features', [])) or '        - No specific features detected - use general capabilities based on verified tech stack'}
+    -   **VERIFIED INTEGRATIONS to mention:**
+        {chr(10).join(f"        - {service.title()} integration" for service in functionality.get('external_integrations', [])) or '        - No external integrations detected'}
+    -   **REAL API CAPABILITIES:**
+        {chr(10).join(f"        - {endpoint.get('methods', ['GET'])[0]} {endpoint.get('path', '')} endpoint" for endpoint in functionality.get('api_endpoints', [])) or '        - No API endpoints detected'}
 
 6.  **🛠️ Tech Stack & Architecture:**
-    -   Create a comprehensive Markdown table listing all primary technologies, languages, and major libraries.
+    -   **CRITICAL:** Use ONLY the verified technologies from the enhanced analysis.
+    -   **VERIFIED FRONTEND:** {', '.join(technical_stack.get('frontend', [])) or 'None detected'}
+    -   **VERIFIED BACKEND:** {', '.join(technical_stack.get('backend', [])) or 'None detected'}
+    -   **VERIFIED DATABASES:** {', '.join(technical_stack.get('databases', [])) or 'None detected'}
+    -   **VERIFIED BUILD TOOLS:** {', '.join(technical_stack.get('build_tools', [])) or 'None detected'}
+    -   **VERIFIED DEPLOYMENT:** {', '.join(technical_stack.get('deployment', [])) or 'None detected'}
+    -   Create a table using ONLY these verified technologies.
     -   Include columns for "Technology", "Purpose", and "Why it was Chosen".
-    -   Be thorough - include at least 5-7 entries.
-    -   Example format:
-    
-    | Technology | Purpose | Why it was Chosen |
-    |-----------|---------|-------------------|
-    | FastAPI | API Framework | High performance, async support, automatic OpenAPI docs generation |
-    | PostgreSQL | Database | Robust ACID compliance, excellent for relational data |
-    | Redis | Caching | In-memory data store for high-speed caching and session management |
+    -   DO NOT add technologies not listed in the verified analysis above.
 
 7.  **📁 Project Structure:**
     -   **MANDATORY:** Create a comprehensive, well-formatted directory tree showing the project's file structure.
@@ -172,137 +248,57 @@ Based *only* on the analysis above, generate a complete, professional README.md.
     -   Ensure ALL folders use 📁 and ALL files use 📄.
 
 8.  **🔐 Environment Variables:**
-    -   **Include this section if:** The project has .env files, config files, or requires environment configuration.
-    -   Create a professional table with ALL environment variables the project needs.
-    -   **Table format (MANDATORY):**
-    
-    | Variable Name | Description | Required | Default Value | Example |
-    |--------------|-------------|----------|---------------|----------|
-    | `DATABASE_URL` | PostgreSQL connection string | Yes | None | `postgresql://user:pass@localhost:5432/dbname` |
-    | `PORT` | Server port number | No | `8000` | `8000` |
-    | `DEBUG` | Enable debug mode | No | `false` | `true` |
-    | `SECRET_KEY` | JWT signing secret | Yes | None | `your-secret-key-here` |
-    
-    -   Add a note after the table: "Create a `.env` file in the root directory and add these variables with your values."
+    -   **ONLY include if environment variables were detected:** {len(environment.get('required_variables', [])) > 0}
+    -   **VERIFIED ENVIRONMENT VARIABLES FOUND:**
+        {chr(10).join(f"        - {var}" for var in environment.get('required_variables', [])) or '        - No environment variables detected'}
+    -   **VERIFIED EXTERNAL SERVICES requiring API keys:**
+        {chr(10).join(f"        - {service.title()}" for service in functionality.get('external_integrations', [])) or '        - No external services detected'}
+    -   Create a table using ONLY the verified environment variables above.
+    -   DO NOT add environment variables that were not detected in the analysis.
+    -   If no environment variables were detected, skip this section entirely.
 
 9.  **🔑 API Keys Setup:**
-    -   **Include this section ONLY if:** The project requires API keys from external services (OpenAI, Google Cloud, AWS, Stripe, etc.).
-    -   **If applicable, provide:**
-        1. A table listing all required API keys:
-        
-        | Service | API Key Variable | Purpose | Free Tier Available |
-        |---------|-----------------|---------|--------------------|
-        | OpenAI | `OPENAI_API_KEY` | AI text generation | Yes (trial) |
-        | Google Cloud | `GOOGLE_API_KEY` | Cloud services | Yes |
-        | Stripe | `STRIPE_SECRET_KEY` | Payment processing | Yes (test mode) |
-        
-        2. **Detailed step-by-step instructions for EACH service:**
-        
-        ### OpenAI API Key
-        1. Visit [OpenAI Platform](https://platform.openai.com/)
-        2. Sign up or log in to your account
-        3. Navigate to **API Keys** section in your dashboard
-        4. Click **Create new secret key**
-        5. Copy the key and add it to your `.env` file as `OPENAI_API_KEY=your-key-here`
-        6. ⚠️ **Important:** Keep this key secure and never commit it to version control
-        
-        ### Google Cloud API Key
-        1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-        2. Create a new project or select an existing one
-        3. Navigate to **APIs & Services** > **Credentials**
-        4. Click **Create Credentials** > **API Key**
-        5. Copy the key and add it to your `.env` file as `GOOGLE_API_KEY=your-key-here`
-        6. Enable required APIs (e.g., Gemini AI API) in the API Library
-        
-        -   Add a professional warning box:
-        > **⚠️ Security Warning**
-        > Never share your API keys publicly or commit them to version control. Add `.env` to your `.gitignore` file. Rotate keys immediately if exposed.
+    -   **ONLY include if external services were detected:** {len(functionality.get('external_integrations', [])) > 0}
+    -   **VERIFIED EXTERNAL SERVICES requiring API keys:**
+        {chr(10).join(f"        - {service.title()}" for service in functionality.get('external_integrations', [])) or '        - No external services detected requiring API keys'}
+    -   **If external services were detected, provide setup instructions for ONLY these verified services:**
+        - Create detailed setup instructions for each verified service above
+        - DO NOT include services that were not detected in the analysis
+        - Use the actual service names from the verified list
+    -   **If no external services were detected, skip this section entirely.**
 
 {demo_section}
 
 10. **🚀 Getting Started:**
-    -   **Prerequisites:** A detailed bulleted list of ALL software/tools the user needs with specific versions.
-        Example:
-        - 🐍 Python 3.9 or higher
-        - 📦 Node.js v18+ and npm v9+
-        - 🐘 PostgreSQL 14+
-        - 🔧 Git for version control
+    -   **Prerequisites based on VERIFIED technologies:**
+        - Use ONLY the verified primary languages: {', '.join(project_overview.get('primary_languages', []))}
+        - Use ONLY the verified package managers: {', '.join(environment.get('package_managers', []))}
+        - Use ONLY the verified databases if any: {', '.join(technical_stack.get('databases', []))}
     
-    -   **Installation:** A comprehensive, numbered, step-by-step guide:
+    -   **Installation using VERIFIED package managers and scripts:**
+        - **VERIFIED ENTRY POINTS:** {', '.join(project_structure.get('entry_points', [])) or 'None detected'}
+        - **VERIFIED SCRIPTS:** {', '.join(project_structure.get('scripts', [])) or 'None detected'}
+        - **VERIFIED CONFIG FILES:** {', '.join(project_structure.get('config_files', [])) or 'None detected'}
         
-        ### Installation Steps
-        
-        1. **Clone the repository**
-           ```bash
-           git clone https://github.com/username/project-name.git
-           cd project-name
-           ```
-        
-        2. **Create a virtual environment** (for Python projects)
-           ```bash
-           python -m venv venv
-           source venv/bin/activate  # On Windows: venv\\Scripts\\activate
-           ```
-        
-        3. **Install dependencies**
-           ```bash
-           pip install -r requirements.txt
-           # OR for Node.js projects:
-           npm install
-           # OR:
-           yarn install
-           ```
-        
-        4. **Set up environment variables**
-           ```bash
-           cp .env.example .env
-           # Edit .env with your actual values
-           ```
-        
-        5. **Initialize the database** (if applicable)
-           ```bash
-           python manage.py migrate
-           # OR:
-           npm run db:migrate
-           ```
-        
-        6. **Run the application**
-           ```bash
-           python main.py
-           # OR:
-           npm run dev
-           ```
+        Create installation steps using ONLY:
+        - The verified package managers above
+        - The verified scripts above  
+        - The verified config files above
+        - DO NOT include steps for technologies not in the verified analysis
 
 11. **🔧 Usage:**
-    -   Provide comprehensive, detailed instructions on how to use the application.
-    -   Include multiple examples for different use cases.
-    -   **For APIs:** Provide at least 3 `curl` examples with different endpoints.
-    -   **For CLIs:** Provide at least 3 command-line examples with explanations.
-    -   **For web apps:** Provide step-by-step usage instructions with URLs.
-    -   Example format:
+    -   **VERIFIED PROJECT TYPE:** {project_overview.get('type', 'Unknown')}
+    -   **REAL API ENDPOINTS (if any):**
+        {chr(10).join(f"        - {endpoint.get('methods', ['GET'])[0]} {endpoint.get('path', '')} ({endpoint.get('framework', 'unknown')})" for endpoint in functionality.get('api_endpoints', [])) or '        - No API endpoints detected'}
+    -   **VERIFIED ENTRY POINTS:** {', '.join(project_structure.get('entry_points', [])) or 'None detected'}
+    -   **VERIFIED SCRIPTS:** {', '.join(project_structure.get('scripts', [])) or 'None detected'}
     
-    ### Running the Development Server
-    ```bash
-    python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
-    ```
-    
-    ### API Examples
-    
-    **Create a new resource:**
-    ```bash
-    curl -X POST http://localhost:8000/api/resource \\
-      -H "Content-Type: application/json" \\
-      -d '{{"name": "example", "value": 123}}'
-    ```
-    
-    **Get all resources:**
-    ```bash
-    curl http://localhost:8000/api/resources
-    ```
-    
-    **Access the interactive API documentation:**
-    - Swagger UI: http://localhost:8000/docs
-    - ReDoc: http://localhost:8000/redoc
+    Provide usage instructions based on:
+    - The verified project type above
+    - The real API endpoints above (if any)
+    - The verified entry points above
+    - The verified scripts above
+    - DO NOT create fake endpoints or usage examples not supported by the analysis
 
 12. **🤝 Contributing:**
     -   Create a welcoming, detailed contributing section that encourages participation.
@@ -383,32 +379,6 @@ Based *only* on the analysis above, generate a complete, professional README.md.
     - ✅ **Private use:** You can use this project privately
     - ⚠️ **Liability:** The software is provided "as is", without warranty
     - ⚠️ **Trademark:** This license does not grant trademark rights
-    
-    ### Copyright Notice
-    
-    Copyright (c) [YEAR] [COPYRIGHT HOLDER]
-    
-    ```
-    MIT License
-    
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-    
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-    
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-    ```
     
     ---
     
