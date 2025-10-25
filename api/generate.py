@@ -266,6 +266,7 @@ class handler(BaseHTTPRequestHandler):
             with open(zip_path, 'wb') as f:
                 f.write(response.content)
             
+            total_size = len(response.content)
             print(f"📦 Downloaded {total_size} bytes, extracting...")
             
             extract_dir = os.path.join(temp_dir, "extracted")
