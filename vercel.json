@@ -38,6 +38,7 @@
         "Access-Control-Allow-Headers": "Content-Type, Authorization"
       }
     },
+
     {
       "src": "/api/python/contact",
       "dest": "/api/index.py",

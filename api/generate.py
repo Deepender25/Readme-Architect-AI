@@ -190,40 +190,8 @@ class handler(BaseHTTPRequestHandler):
         except Exception as e:
             print(f"❌ Error: {str(e)}")
             
-            # Send error notification for general API errors
-            try:
-                from .error_notifier import notify_api_error
-                
-                # Get user info if available
-                user_info = None
-                try:
-                    cookie_header = self.headers.get('Cookie', '')
-                    if 'github_user=' in cookie_header:
-                        for cookie in cookie_header.split(';'):
-                            if cookie.strip().startswith('github_user='):
-                                import base64
-                                import json
-                                cookie_value = cookie.split('=')[1].strip()
-                                user_data = json.loads(base64.b64decode(cookie_value).decode())
-                                user_info = {
-                                    'username': user_data.get('username', 'Unknown'),
-                                    'github_id': user_data.get('github_id', 'Unknown')
-                                }
-                                break
-                except Exception:
-                    user_info = {'type': 'Anonymous user'}
-                
-                notify_api_error(
-                    endpoint='/api/generate.py',
-                    error_message=str(e),
-                    request_data={
-                        'repo_url': repo_url,
-                        'project_name': project_name
-                    },
-                    user_info=user_info
-                )
-            except Exception as notify_error:
-                print(f"⚠️ Failed to send API error notification: {notify_error}")
+            # Simplified error handling for Vercel
+            print(f"⚠️ API Error: {str(e)}")
             
             self.send_json_response({"error": str(e)}, 500)
         
@@ -268,14 +236,7 @@ class handler(BaseHTTPRequestHandler):
             else:
                 return None, "Invalid GitHub URL"
             
-            # Check available disk space before proceeding
-            try:
-                statvfs = os.statvfs('/tmp')
-                free_space = statvfs.f_frsize * statvfs.f_bavail
-                if free_space < 50 * 1024 * 1024:  # Less than 50MB available
-                    return None, "Insufficient disk space available for repository processing"
-            except:
-                pass  # Skip check if statvfs not available
+            # Skip disk space check on Vercel as statvfs may not be available
             
             # Prepare headers with authentication if token is provided
             headers = {}
@@ -297,56 +258,20 @@ class handler(BaseHTTPRequestHandler):
             elif response.status_code != 200:
                 return None, f"Failed to download repository: {response.status_code}"
             
-            # Check content length to avoid downloading huge repositories
-            content_length = response.headers.get('content-length')
-            if content_length and int(content_length) > 100 * 1024 * 1024:  # 100MB limit
-                return None, "Repository is too large to process (>100MB)"
-            
+            # Simplified download for Vercel environment
             temp_dir = tempfile.mkdtemp(prefix='readme_gen_')
             zip_path = os.path.join(temp_dir, "repo.zip")
             
-            # Download with size limit
-            total_size = 0
-            max_size = 100 * 1024 * 1024  # 100MB limit
-            
+            # Simple download without streaming (works better on Vercel)
             with open(zip_path, 'wb') as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    if chunk:
-                        total_size += len(chunk)
-                        if total_size > max_size:
-                            raise Exception("Repository is too large to process")
-                        f.write(chunk)
+                f.write(response.content)
             
             print(f"📦 Downloaded {total_size} bytes, extracting...")
             
             extract_dir = os.path.join(temp_dir, "extracted")
             with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                # Get list of files and check total size
-                file_list = zip_ref.filelist
-                total_uncompressed = sum(f.file_size for f in file_list)
-                
-                if total_uncompressed > 200 * 1024 * 1024:  # 200MB uncompressed limit
-                    return None, "Repository is too large when extracted (>200MB)"
-                
-                # Extract with selective filtering to save space
-                extracted_count = 0
-                max_files = 500  # Limit number of files to extract
-                
-                for member in file_list:
-                    if extracted_count >= max_files:
-                        break
-                    
-                    # Skip large binary files and unnecessary directories
-                    if (member.filename.endswith(('.exe', '.dll', '.so', '.dylib', '.bin', '.jar')) or
-                        any(skip in member.filename for skip in ['.git/', 'node_modules/', '__pycache__/', '.venv/', 'target/', 'dist/', 'build/']) or
-                        member.file_size > 10 * 1024 * 1024):  # Skip files larger than 10MB
-                        continue
-                    
-                    try:
-                        zip_ref.extract(member, extract_dir)
-                        extracted_count += 1
-                    except:
-                        continue  # Skip problematic files
+                # Simple extraction for Vercel environment
+                zip_ref.extractall(extract_dir)
             
             # Delete zip file immediately to save space
             try:
@@ -473,9 +398,9 @@ class handler(BaseHTTPRequestHandler):
                 `<h1 align="center"> [PROJECT TITLE] </h1>`
                 `<p align="center"> [TAGLINE] </p>`"""
 
-            # Restored original working prompt with better aesthetics
+            # Enhanced prompt with improved sections for better README generation
             prompt = f"""
-**Your Role:** You are a Principal Solutions Architect and a world-class technical copywriter. You are tasked with writing a stunning, comprehensive, and professional README.md file for a new open-source project. Your work must be impeccable.
+**Your Role:** You are a Principal Solutions Architect and a world-class technical copywriter with expertise in creating stunning, comprehensive, and professional README.md files for open-source projects. Your documentation must be impeccable, visually appealing, and thoroughly detailed.
 
 **Source Analysis Provided:**
 1.  **Project File Structure:**
@@ -492,7 +417,7 @@ class handler(BaseHTTPRequestHandler):
     ```
 
 **Core Mandate:**
-Based *only* on the analysis above, generate a complete README.md. You MUST make intelligent, bold inferences about the project's purpose, architecture, and features. The tone must be professional, engaging, and polished. Use rich Markdown formatting, including emojis, tables, and blockquotes, to create a visually appealing document.
+Based *only* on the analysis above, generate a complete, professional README.md. You MUST make intelligent, bold inferences about the project's purpose, architecture, and features. The tone must be professional, engaging, and polished. Use rich Markdown formatting, including emojis, tables, and blockquotes, to create a visually stunning and informative document that is significantly detailed (aim for 1500+ words minimum).
 
 **Strict README.md Structure (Follow this format precisely):**
 
@@ -514,71 +439,330 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
 3.  **Table of Contents:** Create a clickable table of contents with these sections:
     - [Overview](#-overview)
     - [Key Features](#-key-features)
-    - [Tech Stack & Architecture](#️-tech-stack--architecture)
+    - [Tech Stack & Architecture](#-tech-stack--architecture)
     - [Project Structure](#-project-structure)
     {f"- [Demo & Screenshots](#-demo--screenshots)" if include_demo and (num_screenshots > 0 or num_videos > 0) else ""}
-    - [API Keys Setup](#-api-keys-setup) *(Include only if project requires API keys)*
+    - [Environment Variables](#-environment-variables) *(Include if project uses .env files or requires configuration)*
+    - [API Keys Setup](#-api-keys-setup) *(Include only if project requires API keys from external services)*
     - [Getting Started](#-getting-started)
     - [Usage](#-usage)
     - [Contributing](#-contributing)
     - [License](#-license)
 
 4.  **⭐ Overview:**
-    -   **Hook:** Start with a compelling, single-sentence summary of the project.
-    -   **The Problem:** In a blockquote, describe the problem this project solves.
-    -   **The Solution:** Describe how your project provides an elegant solution to that problem.
-    -   **Inferred Architecture:** Based on the file structure and dependencies, describe the high-level architecture (e.g., "This project is a FastAPI-based web service...").
+    -   **Hook:** Start with a compelling, single-sentence summary of the project that captures attention.
+    -   **The Problem:** In a blockquote, describe the problem this project solves in 2-3 detailed sentences.
+    -   **The Solution:** Describe in detail (4-5 sentences minimum) how your project provides an elegant solution to that problem.
+    -   **Inferred Architecture:** Based on the file structure and dependencies, describe the high-level architecture in detail (e.g., "This project is a FastAPI-based microservice architecture with..."). Include information about patterns, design principles, and key architectural decisions.
 
 5.  **✨ Key Features:**
-    -   A detailed, bulleted list. For each feature, provide a brief but impactful explanation.
-    -   Infer at least 4-5 key features from the code and file structure.
-    -   Example: `- **Automated Analysis:** Leverages AST to perform deep static analysis of Python code.`
+    -   A detailed, bulleted list with at least 6-8 key features.
+    -   For each feature, provide a brief but impactful explanation (1-2 sentences per feature).
+    -   Use emojis to make each feature visually distinct.
+    -   Infer features from the code structure, dependencies, and file organization.
+    -   Example format:
+        - 🚀 **High Performance:** Built with FastAPI for lightning-fast async request handling and automatic API documentation.
+        - 🔒 **Secure Authentication:** Implements OAuth 2.0 with JWT tokens for robust security.
 
 6.  **🛠️ Tech Stack & Architecture:**
-    -   Create a Markdown table listing the primary technologies, languages, and major libraries.
+    -   Create a comprehensive Markdown table listing all primary technologies, languages, and major libraries.
     -   Include columns for "Technology", "Purpose", and "Why it was Chosen".
-    -   Example Row: `| FastAPI | API Framework | For its high performance, async support, and automatic docs generation. |`
+    -   Be thorough - include at least 5-7 entries.
+    -   Example format:
+    
+    | Technology | Purpose | Why it was Chosen |
+    |-----------|---------|-------------------|
+    | FastAPI | API Framework | High performance, async support, automatic OpenAPI docs generation |
+    | PostgreSQL | Database | Robust ACID compliance, excellent for relational data |
+    | Redis | Caching | In-memory data store for high-speed caching and session management |
 
 7.  **📁 Project Structure:**
     -   **MANDATORY:** Create a comprehensive, well-formatted directory tree showing the project's file structure.
+    -   **CRITICAL:** Use 📁 emoji for folders/directories and 📄 emoji for files.
     -   Use the file structure data provided in the analysis to create an accurate representation.
     -   Format it as a code block with appropriate tree symbols (├──, └──, │).
-    -   Add brief descriptions for key directories and important files.
-    -   Example format:
+    -   Add brief, inline comments for key directories and important files.
+    -   **Example format (FOLLOW THIS EXACTLY):**
     ```
     project-name/
-    ├── src/                    # Source code directory
-    │   ├── components/         # React components
-    │   ├── pages/             # Application pages
-    │   └── utils/             # Utility functions
-    ├── api/                   # Backend API files
-    ├── public/                # Static assets
-    ├── tests/                 # Test files
-    ├── package.json           # Dependencies and scripts
-    ├── README.md             # Project documentation
-    └── .gitignore            # Git ignore rules
+    ├── 📁 src/                    # Source code directory
+    │   ├── 📁 components/         # React components
+    │   │   ├── 📄 Header.tsx      # Application header component
+    │   │   └── 📄 Footer.tsx      # Application footer component
+    │   ├── 📁 pages/             # Application pages
+    │   │   ├── 📄 Home.tsx        # Home page
+    │   │   └── 📄 About.tsx       # About page
+    │   └── 📁 utils/             # Utility functions
+    │       └── 📄 helpers.ts      # Helper functions
+    ├── 📁 api/                   # Backend API files
+    │   ├── 📄 index.py           # Main API entry point
+    │   └── 📄 routes.py          # API route definitions
+    ├── 📁 public/                # Static assets
+    │   └── 📄 favicon.ico        # Application icon
+    ├── 📁 tests/                 # Test files
+    │   └── 📄 test_api.py        # API unit tests
+    ├── 📄 package.json           # Node.js dependencies and scripts
+    ├── 📄 requirements.txt       # Python dependencies
+    ├── 📄 README.md             # Project documentation
+    ├── 📄 .env.example          # Environment variables template
+    └── 📄 .gitignore            # Git ignore rules
     ```
-    -   **Important:** Base this EXACTLY on the provided file structure data, don't make up directories that don't exist.
-    -   Group similar files and highlight the most important ones with inline comments.
+    -   **Important:** Base this EXACTLY on the provided file structure data. Don't make up directories that don't exist.
+    -   Ensure ALL folders use 📁 and ALL files use 📄.
+
+8.  **🔐 Environment Variables:**
+    -   **Include this section if:** The project has .env files, config files, or requires environment configuration.
+    -   Create a professional table with ALL environment variables the project needs.
+    -   **Table format (MANDATORY):**
+    
+    | Variable Name | Description | Required | Default Value | Example |
+    |--------------|-------------|----------|---------------|----------|
+    | `DATABASE_URL` | PostgreSQL connection string | Yes | None | `postgresql://user:pass@localhost:5432/dbname` |
+    | `PORT` | Server port number | No | `8000` | `8000` |
+    | `DEBUG` | Enable debug mode | No | `false` | `true` |
+    | `SECRET_KEY` | JWT signing secret | Yes | None | `your-secret-key-here` |
+    
+    -   Add a note after the table: "Create a `.env` file in the root directory and add these variables with your values."
+
+9.  **🔑 API Keys Setup:**
+    -   **Include this section ONLY if:** The project requires API keys from external services (OpenAI, Google Cloud, AWS, Stripe, etc.).
+    -   **If applicable, provide:**
+        1. A table listing all required API keys:
+        
+        | Service | API Key Variable | Purpose | Free Tier Available |
+        |---------|-----------------|---------|--------------------|
+        | OpenAI | `OPENAI_API_KEY` | AI text generation | Yes (trial) |
+        | Google Cloud | `GOOGLE_API_KEY` | Cloud services | Yes |
+        | Stripe | `STRIPE_SECRET_KEY` | Payment processing | Yes (test mode) |
+        
+        2. **Detailed step-by-step instructions for EACH service:**
+        
+        ### OpenAI API Key
+        1. Visit [OpenAI Platform](https://platform.openai.com/)
+        2. Sign up or log in to your account
+        3. Navigate to **API Keys** section in your dashboard
+        4. Click **Create new secret key**
+        5. Copy the key and add it to your `.env` file as `OPENAI_API_KEY=your-key-here`
+        6. ⚠️ **Important:** Keep this key secure and never commit it to version control
+        
+        ### Google Cloud API Key
+        1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+        2. Create a new project or select an existing one
+        3. Navigate to **APIs & Services** > **Credentials**
+        4. Click **Create Credentials** > **API Key**
+        5. Copy the key and add it to your `.env` file as `GOOGLE_API_KEY=your-key-here`
+        6. Enable required APIs (e.g., Gemini AI API) in the API Library
+        
+        -   Add a professional warning box:
+        > **⚠️ Security Warning**
+        > Never share your API keys publicly or commit them to version control. Add `.env` to your `.gitignore` file. Rotate keys immediately if exposed.
 
 {demo_section}
 
-9.  **🚀 Getting Started:**
-    -   **Prerequisites:** A bulleted list of software the user needs (e.g., Python 3.9+, Node.js v18+).
-    -   **Installation:** A numbered, step-by-step guide with explicit, copy-pastable commands in code blocks for different package managers if inferable (e.g., `pip install -r requirements.txt`).
+10. **🚀 Getting Started:**
+    -   **Prerequisites:** A detailed bulleted list of ALL software/tools the user needs with specific versions.
+        Example:
+        - 🐍 Python 3.9 or higher
+        - 📦 Node.js v18+ and npm v9+
+        - 🐘 PostgreSQL 14+
+        - 🔧 Git for version control
+    
+    -   **Installation:** A comprehensive, numbered, step-by-step guide:
+        
+        ### Installation Steps
+        
+        1. **Clone the repository**
+           ```bash
+           git clone https://github.com/username/project-name.git
+           cd project-name
+           ```
+        
+        2. **Create a virtual environment** (for Python projects)
+           ```bash
+           python -m venv venv
+           source venv/bin/activate  # On Windows: venv\\Scripts\\activate
+           ```
+        
+        3. **Install dependencies**
+           ```bash
+           pip install -r requirements.txt
+           # OR for Node.js projects:
+           npm install
+           # OR:
+           yarn install
+           ```
+        
+        4. **Set up environment variables**
+           ```bash
+           cp .env.example .env
+           # Edit .env with your actual values
+           ```
+        
+        5. **Initialize the database** (if applicable)
+           ```bash
+           python manage.py migrate
+           # OR:
+           npm run db:migrate
+           ```
+        
+        6. **Run the application**
+           ```bash
+           python main.py
+           # OR:
+           npm run dev
+           ```
 
-10. **🔧 Usage:**
-    -   Provide clear instructions on how to run the application (e.g., `uvicorn main:app --reload`).
-    -   If it's an API, provide a `curl` example. If it's a CLI, provide a command-line example.
+11. **🔧 Usage:**
+    -   Provide comprehensive, detailed instructions on how to use the application.
+    -   Include multiple examples for different use cases.
+    -   **For APIs:** Provide at least 3 `curl` examples with different endpoints.
+    -   **For CLIs:** Provide at least 3 command-line examples with explanations.
+    -   **For web apps:** Provide step-by-step usage instructions with URLs.
+    -   Example format:
+    
+    ### Running the Development Server
+    ```bash
+    python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
+    ```
+    
+    ### API Examples
+    
+    **Create a new resource:**
+    ```bash
+    curl -X POST http://localhost:8000/api/resource \
+      -H "Content-Type: application/json" \
+      -d '{"name": "example", "value": 123}'
+    ```
+    
+    **Get all resources:**
+    ```bash
+    curl http://localhost:8000/api/resources
+    ```
+    
+    **Access the interactive API documentation:**
+    - Swagger UI: http://localhost:8000/docs
+    - ReDoc: http://localhost:8000/redoc
 
-11. **🤝 Contributing:**
-    -   A welcoming section encouraging contributions.
-    -   Briefly outline the fork -> branch -> pull request workflow.
+12. **🤝 Contributing:**
+    -   Create a welcoming, detailed contributing section that encourages participation.
+    -   **Use this enhanced format:**
+    
+    We welcome contributions to improve [Project Name]! Your input helps make this project better for everyone.
+    
+    ### How to Contribute
+    
+    1. **Fork the repository** - Click the 'Fork' button at the top right of this page
+    2. **Create a feature branch** 
+       ```bash
+       git checkout -b feature/amazing-feature
+       ```
+    3. **Make your changes** - Improve code, documentation, or features
+    4. **Test thoroughly** - Ensure all functionality works as expected
+       ```bash
+       pytest tests/
+       # OR
+       npm test
+       ```
+    5. **Commit your changes** - Write clear, descriptive commit messages
+       ```bash
+       git commit -m 'Add: Amazing new feature that does X'
+       ```
+    6. **Push to your branch**
+       ```bash
+       git push origin feature/amazing-feature
+       ```
+    7. **Open a Pull Request** - Submit your changes for review
+    
+    ### Development Guidelines
+    
+    - ✅ Follow the existing code style and conventions
+    - 📝 Add comments for complex logic and algorithms
+    - 🧪 Write tests for new features and bug fixes
+    - 📚 Update documentation for any changed functionality
+    - 🔄 Ensure backward compatibility when possible
+    - 🎯 Keep commits focused and atomic
+    
+    ### Ideas for Contributions
+    
+    We're looking for help with:
+    
+    - 🐛 **Bug Fixes:** Report and fix bugs
+    - ✨ **New Features:** Implement requested features from issues
+    - 📖 **Documentation:** Improve README, add tutorials, create examples
+    - 🎨 **UI/UX:** Enhance user interface and experience
+    - ⚡ **Performance:** Optimize code and improve efficiency
+    - 🌐 **Internationalization:** Add multi-language support
+    - 🧪 **Testing:** Increase test coverage
+    - ♿ **Accessibility:** Make the project more accessible
+    
+    ### Code Review Process
+    
+    - All submissions require review before merging
+    - Maintainers will provide constructive feedback
+    - Changes may be requested before approval
+    - Once approved, your PR will be merged and you'll be credited
+    
+    ### Questions?
+    
+    Feel free to open an issue for any questions or concerns. We're here to help!
 
-12. **📝 License:**
-    -   State the license (e.g., "Distributed under the MIT License. See `LICENSE` for more information.").
+13. **📝 License:**
+    -   Create a professional, detailed license section.
+    -   **Enhanced format:**
+    
+    ## 📝 License
+    
+    This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for complete details.
+    
+    ### What this means:
+    
+    - ✅ **Commercial use:** You can use this project commercially
+    - ✅ **Modification:** You can modify the code
+    - ✅ **Distribution:** You can distribute this software
+    - ✅ **Private use:** You can use this project privately
+    - ⚠️ **Liability:** The software is provided "as is", without warranty
+    - ⚠️ **Trademark:** This license does not grant trademark rights
+    
+    ### Copyright Notice
+    
+    Copyright (c) [YEAR] [COPYRIGHT HOLDER]
+    
+    ```
+    MIT License
+    
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+    
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+    
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+    ```
+    
+    ---
+    
+    <p align="center">Made with ❤️ by the [Project Name] Team</p>
+    <p align="center">
+      <a href="#">⬆️ Back to Top</a>
+    </p>
 
-**Final Instruction:** The output MUST be ONLY the raw Markdown content. Do not add any commentary, greetings, or explanations before or after the Markdown. Adhere strictly to the requested format and quality bar.
+**Critical Final Instructions:** 
+- The output MUST be ONLY the raw Markdown content - no commentary, greetings, or explanations.
+- The README must be substantially detailed with at least 1500 words.
+- All sections must be comprehensive and thoroughly explained.
+- Use proper emojis, tables, code blocks, and formatting throughout.
+- Ensure 📁 for ALL folders and 📄 for ALL files in the project structure.
+- Adhere strictly to the requested format and quality bar.
 """
 
             # No fallback README - return proper errors instead
@@ -603,38 +787,8 @@ Based *only* on the analysis above, generate a complete README.md. You MUST make
             except Exception as e:
                 print(f"❌ Gemini AI error: {str(e)}")
                 
-                # Import error notifier and send notification
-                try:
-                    from .error_notifier import notify_ai_failure
-                    
-                    # Get user info if available from cookie
-                    user_info = None
-                    try:
-                        cookie_header = self.headers.get('Cookie', '')
-                        if 'github_user=' in cookie_header:
-                            for cookie in cookie_header.split(';'):
-                                if cookie.strip().startswith('github_user='):
-                                    import base64
-                                    import json
-                                    cookie_value = cookie.split('=')[1].strip()
-                                    user_data = json.loads(base64.b64decode(cookie_value).decode())
-                                    user_info = {
-                                        'username': user_data.get('username', 'Unknown'),
-                                        'github_id': user_data.get('github_id', 'Unknown')
-                                    }
-                                    break
-                    except Exception:
-                        user_info = {'type': 'Anonymous user'}
-                    
-                    # Send error notification
-                    notify_ai_failure(
-                        repo_url=repo_url,
-                        project_name=project_name,
-                        error_message=str(e),
-                        user_info=user_info
-                    )
-                except Exception as notify_error:
-                    print(f"⚠️ Failed to send error notification: {notify_error}")
+                # Simplified error logging for Vercel
+                print(f"⚠️ AI Generation Error: {str(e)}")
                 
                 # Return user-friendly error message instead of fallback template
                 return None, "AI generation service is currently unavailable. Our team has been notified and is working to resolve this issue. Please try again in a few minutes."
