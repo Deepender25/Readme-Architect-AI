@@ -139,7 +139,7 @@ function FeaturesContent() {
     <LayoutWrapper>
       <PageHeader
         title="Everything You Need"
-        description="ReadmeForge combines cutting-edge artificial intelligence with developer-friendly tools to create professional documentation in under 30 seconds. Trusted by developers worldwide."
+        description="ReadmeArchitect combines cutting-edge artificial intelligence with developer-friendly tools to create professional documentation in under 30 seconds. Trusted by developers worldwide."
         badge="Powerful Features"
         icon={Sparkles}
       />
@@ -212,7 +212,7 @@ function FeaturesContent() {
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-white mb-4">And Much More</h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Discover all the powerful features that make ReadmeForge the ultimate documentation tool.
+            Discover all the powerful features that make ReadmeArchitect the ultimate documentation tool.
           </p>
         </div>
         
@@ -240,7 +240,7 @@ function FeaturesContent() {
             Ready to Get Started?
           </h2>
           <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-            Join thousands of developers who have transformed their documentation workflow with ReadmeForge.
+            Join thousands of developers who have transformed their documentation workflow with ReadmeArchitect.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

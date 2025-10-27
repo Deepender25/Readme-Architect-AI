@@ -9,7 +9,7 @@ export default function TutorialsPage() {
     {
       icon: GitBranch,
       title: "Connect Your Repository",
-      description: "Start by connecting your GitHub repository to ReadmeForge. Simply paste your repository URL or select from your connected repositories.",
+      description: "Start by connecting your GitHub repository to ReadmeArchitect. Simply paste your repository URL or select from your connected repositories.",
       details: [
         "Copy your GitHub repository URL",
         "Paste it into the repository input field",
@@ -100,7 +100,7 @@ export default function TutorialsPage() {
             <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/30">
               <BookOpen className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-white mb-4">How to Use ReadmeForge</h1>
+            <h1 className="text-4xl font-bold text-white mb-4">How to Use ReadmeArchitect</h1>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
               Learn how to create professional README files for your repositories in just a few minutes using our AI-powered generator.
             </p>
@@ -123,7 +123,7 @@ export default function TutorialsPage() {
                   <PlayCircle className="w-12 h-12 text-green-400" />
                 </div>
                 <p className="text-gray-300 mb-4">
-                  Watch our quick 2-minute tutorial to get started with ReadmeForge
+                  Watch our quick 2-minute tutorial to get started with ReadmeArchitect
                 </p>
                 <p className="text-sm text-green-400">
                   📹 Video tutorial coming soon! For now, follow the step-by-step guide below.
@@ -194,7 +194,7 @@ export default function TutorialsPage() {
           >
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-white mb-4">Pro Tips</h2>
-              <p className="text-gray-400">Get the best results from ReadmeForge with these expert tips</p>
+              <p className="text-gray-400">Get the best results from ReadmeArchitect with these expert tips</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -229,14 +229,14 @@ export default function TutorialsPage() {
           >
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-white mb-4">Frequently Asked Questions</h2>
-              <p className="text-gray-400">Common questions about using ReadmeForge</p>
+              <p className="text-gray-400">Common questions about using ReadmeArchitect</p>
             </div>
 
             <div className="space-y-6">
               {[
                 {
-                  q: "What types of projects work best with ReadmeForge?",
-                  a: "ReadmeForge works with all types of software projects - web applications, mobile apps, APIs, libraries, and more. It's particularly effective with projects that have clear folder structures and dependency files."
+                  q: "What types of projects work best with ReadmeArchitect?",
+                  a: "ReadmeArchitect works with all types of software projects - web applications, mobile apps, APIs, libraries, and more. It's particularly effective with projects that have clear folder structures and dependency files."
                 },
                 {
                   q: "How accurate is the generated README content?",

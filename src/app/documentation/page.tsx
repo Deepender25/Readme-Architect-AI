@@ -52,7 +52,7 @@ function DocumentationContent() {
     {
       icon: Code,
       title: "API Reference",
-      description: "Integrate AutoDoc AI into your workflow",
+      description: "Integrate ReadmeArchitect into your workflow",
       color: "from-green-400 to-green-600",
       items: [
         "REST API endpoints",
@@ -77,8 +77,8 @@ function DocumentationContent() {
 
   const faqs = [
     {
-      question: "How does AutoDoc AI analyze my repository?",
-      answer: "AutoDoc AI uses advanced algorithms to scan your repository structure, analyze code files, read package.json/requirements.txt, and understand your project's architecture to generate comprehensive documentation."
+      question: "How does ReadmeArchitect analyze my repository?",
+      answer: "ReadmeArchitect uses advanced algorithms to scan your repository structure, analyze code files, read package.json/requirements.txt, and understand your project's architecture to generate comprehensive documentation."
     },
     {
       question: "What programming languages are supported?",
@@ -97,8 +97,8 @@ function DocumentationContent() {
       answer: "Our AI achieves 95%+ accuracy by analyzing multiple aspects of your project. While the generated content is highly accurate, we recommend reviewing and customizing it to match your specific needs."
     },
     {
-      question: "Can I use AutoDoc AI for private repositories?",
-      answer: "Yes, with proper GitHub authentication, AutoDoc AI can access and generate documentation for your private repositories while maintaining complete security and privacy."
+      question: "Can I use ReadmeArchitect for private repositories?",
+      answer: "Yes, with proper GitHub authentication, ReadmeArchitect can access and generate documentation for your private repositories while maintaining complete security and privacy."
     }
   ]
 
@@ -161,7 +161,7 @@ function DocumentationContent() {
             </h1>
 
             <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              Everything you need to know about AutoDoc AI. From quick start guides to advanced configuration,
+              Everything you need to know about ReadmeArchitect. From quick start guides to advanced configuration,
               we've got you covered with comprehensive documentation.
             </p>
           </motion.div>
@@ -177,7 +177,7 @@ function DocumentationContent() {
               Quick Start Guide
             </h2>
             <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
-              Get up and running with AutoDoc AI in just 4 simple steps
+              Get up and running with ReadmeArchitect in just 4 simple steps
             </p>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -221,7 +221,7 @@ function DocumentationContent() {
               Documentation Sections
             </h2>
             <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
-              Explore detailed guides for every aspect of AutoDoc AI
+              Explore detailed guides for every aspect of ReadmeArchitect
             </p>
 
             <div className="grid md:grid-cols-2 gap-8">
@@ -284,7 +284,7 @@ function DocumentationContent() {
               Frequently Asked Questions
             </h2>
             <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
-              Find answers to common questions about AutoDoc AI
+              Find answers to common questions about ReadmeArchitect
             </p>
 
             <div className="max-w-4xl mx-auto space-y-6">
@@ -325,7 +325,7 @@ function DocumentationContent() {
                   Ready to Get Started?
                 </h2>
                 <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-                  Join thousands of developers who have streamlined their documentation process with AutoDoc AI
+              Join thousands of developers who have streamlined their documentation process with ReadmeArchitect
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">

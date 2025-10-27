@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Terms of Service - ReadmeForge Usage Terms | ReadmeForge',
-  description: 'Terms and conditions for using ReadmeForge README generator. Service agreement, usage rights, and legal information for our AI-powered documentation tool.',
+  title: 'Terms of Service - ReadmeArchitect Usage Terms | ReadmeArchitect',
+  description: 'Terms and conditions for using ReadmeArchitect README generator. Service agreement, usage rights, and legal information for our AI-powered documentation tool.',
   keywords: [
     'terms of service',
     'usage terms',
@@ -10,29 +10,29 @@ export const metadata: Metadata = {
     'legal terms',
     'terms and conditions',
     'user agreement',
-    'ReadmeForge terms',
+    'ReadmeArchitect terms',
     'README generator terms',
     'service terms',
     'usage agreement'
   ].join(', '),
-  authors: [{ name: 'ReadmeForge Team' }],
-  creator: 'ReadmeForge',
-  publisher: 'ReadmeForge',
+  authors: [{ name: 'ReadmeArchitect Team' }],
+  creator: 'ReadmeArchitect',
+  publisher: 'ReadmeArchitect',
   robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
   alternates: {
-    canonical: 'https://readmeforge.vercel.app/terms'
+    canonical: 'https://readmearchitect.vercel.app/terms'
   },
   openGraph: {
-    title: 'Terms of Service - ReadmeForge Usage Terms',
-    description: 'Terms and conditions for using ReadmeForge README generator. Service agreement, usage rights, and legal information.',
-    url: 'https://readmeforge.vercel.app/terms',
-    siteName: 'ReadmeForge',
+    title: 'Terms of Service - ReadmeArchitect Usage Terms',
+    description: 'Terms and conditions for using ReadmeArchitect README generator. Service agreement, usage rights, and legal information.',
+    url: 'https://readmearchitect.vercel.app/terms',
+    siteName: 'ReadmeArchitect',
     images: [
       {
-        url: 'https://readmeforge.vercel.app/og-image.png',
+        url: 'https://readmearchitect.vercel.app/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'ReadmeForge Terms of Service'
+        alt: 'ReadmeArchitect Terms of Service'
       }
     ],
     locale: 'en_US',
@@ -40,10 +40,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Terms of Service - ReadmeForge Usage Terms',
-    description: 'Terms and conditions for using ReadmeForge README generator.',
-    images: ['https://readmeforge.vercel.app/og-image.png'],
-    creator: '@readmeforge'
+    title: 'Terms of Service - ReadmeArchitect Usage Terms',
+    description: 'Terms and conditions for using ReadmeArchitect README generator.',
+    images: ['https://readmearchitect.vercel.app/og-image.png'],
+    creator: '@readmearchitect'
   },
   category: 'Technology'
 }

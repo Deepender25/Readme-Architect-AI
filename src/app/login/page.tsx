@@ -150,7 +150,7 @@ function LoginPageContent() {
                     filter: 'drop-shadow(0 0 10px rgba(0, 255, 136, 0.3))'
                   }}
                 >
-                  AutoDoc AI
+                  ReadmeArchitect
                 </h1>
                 
                 <motion.div

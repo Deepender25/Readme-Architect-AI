@@ -88,7 +88,7 @@ export default function ContactPage() {
             </div>
             <h1 className="text-4xl font-bold text-white mb-4">Get in Touch</h1>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Have questions, feedback, or ideas? I'd love to hear from you! AutoDoc AI is built by the community, for the community.
+              Have questions, feedback, or ideas? I'd love to hear from you! ReadmeArchitect is built by the community, for the community.
             </p>
           </motion.div>
 
@@ -174,7 +174,7 @@ export default function ContactPage() {
                       required
                       disabled={isSubmitting}
                       className="w-full px-4 py-3 bg-black/40 border border-green-400/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-400 focus:bg-black/60 transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed"
-                      placeholder="Tell me about your experience with AutoDoc AI, share your ideas, or ask any questions..."
+                      placeholder="Tell me about your experience with ReadmeArchitect, share your ideas, or ask any questions..."
                     ></textarea>
                   </div>
 
@@ -329,7 +329,7 @@ export default function ContactPage() {
                 <div className="space-y-4 text-gray-300">
                   <div>
                     <h4 className="text-white font-medium mb-1">Open Source</h4>
-                    <p className="text-sm">AutoDoc AI is completely open source and available on GitHub.</p>
+                    <p className="text-sm">ReadmeArchitect is completely open source and available on GitHub.</p>
                   </div>
                   <div>
                     <h4 className="text-white font-medium mb-1">Community Driven</h4>
@@ -360,7 +360,7 @@ export default function ContactPage() {
               {[
                 {
                   title: "How to Use",
-                  description: "Step-by-step guide to using AutoDoc AI",
+                  description: "Step-by-step guide to using ReadmeArchitect",
                   link: "/tutorials",
                   icon: "📖"
                 },

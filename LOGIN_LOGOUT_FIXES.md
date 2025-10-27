@@ -75,7 +75,7 @@ Created `scripts/test_auth_flow.py` to test the authentication flow and identify
 1. **Environment Variables**: Ensure all required environment variables are properly set in production:
    - `GITHUB_CLIENT_ID`
    - `GITHUB_CLIENT_SECRET`
-   - `GITHUB_REDIRECT_URI=https://autodocai.vercel.app/api/auth/callback`
+   - `GITHUB_REDIRECT_URI=https://readmearchitect.vercel.app/api/auth/callback`
 
 2. **GitHub OAuth App Configuration**: Update the GitHub OAuth app to use the correct callback URL: `https://autodocai.vercel.app/api/auth/callback`
 

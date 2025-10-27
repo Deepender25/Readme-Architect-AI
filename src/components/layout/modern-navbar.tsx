@@ -105,7 +105,7 @@ export default function ModernNavbar() {
               >
                 <Image
                   src="/Logo.png"
-                  alt="ReadmeForge Logo"
+                  alt="ReadmeArchitect Logo"
                   width={48}
                   height={48}
                   className="object-contain"
@@ -123,7 +123,7 @@ export default function ModernNavbar() {
               
               <div className="flex flex-col min-w-0">
                 <span className="font-bold text-xl tracking-tight text-white whitespace-nowrap">
-                  ReadmeForge
+                  ReadmeArchitect
                 </span>
                 <span className="text-xs text-green-400/80 font-medium -mt-0.5 whitespace-nowrap">
                   README Generator

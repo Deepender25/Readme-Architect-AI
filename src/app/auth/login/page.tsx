@@ -150,7 +150,7 @@ export default function LoginPage() {
                   }}
                 >
                   Welcome to
-                  <span className="block text-green-400">AutoDoc AI</span>
+                  <span className="block text-green-400">ReadmeArchitect</span>
                 </h1>
                 
                 <p className="text-xl text-gray-300 leading-relaxed mb-8">

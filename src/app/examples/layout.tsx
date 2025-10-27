@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'README Examples - Professional Documentation Templates & Samples | AutoDoc AI',
+  title: 'README Examples - Professional Documentation Templates & Samples | ReadmeArchitect',
   description: 'Browse real examples of AI-generated READMEs. See professional documentation templates for JavaScript, Python, React, Node.js, and more. Get inspiration for your GitHub repositories with our sample READMEs.',
   keywords: [
     'README examples',
@@ -17,24 +17,24 @@ export const metadata: Metadata = {
     'repository README examples',
     'markdown documentation examples'
   ].join(', '),
-  authors: [{ name: 'AutoDoc AI Team' }],
-  creator: 'AutoDoc AI',
-  publisher: 'AutoDoc AI',
+  authors: [{ name: 'ReadmeArchitect Team' }],
+  creator: 'ReadmeArchitect',
+  publisher: 'ReadmeArchitect',
   robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
   alternates: {
-    canonical: 'https://autodocai.vercel.app/examples'
+    canonical: 'https://readmearchitect.vercel.app/examples'
   },
   openGraph: {
     title: 'README Examples - Professional Documentation Templates & Samples',
     description: 'Browse real examples of AI-generated READMEs. See professional documentation templates for JavaScript, Python, React, Node.js, and more.',
-    url: 'https://autodocai.vercel.app/examples',
-    siteName: 'AutoDoc AI',
+    url: 'https://readmearchitect.vercel.app/examples',
+    siteName: 'ReadmeArchitect',
     images: [
       {
-        url: 'https://autodocai.vercel.app/og-image.png',
+        url: 'https://readmearchitect.vercel.app/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'AutoDoc AI README Examples'
+        alt: 'ReadmeArchitect README Examples'
       }
     ],
     locale: 'en_US',
@@ -44,8 +44,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'README Examples - Professional Documentation Templates',
     description: 'Browse real examples of AI-generated READMEs. See professional documentation templates for different programming languages.',
-    images: ['https://autodocai.vercel.app/og-image.png'],
-    creator: '@autodocai'
+    images: ['https://readmearchitect.vercel.app/og-image.png'],
+    creator: '@readmearchitect'
   },
   category: 'Technology'
 }
@@ -65,25 +65,25 @@ export default function ExamplesLayout({
             '@context': 'https://schema.org',
             '@type': 'Article',
             headline: 'Professional README Examples & Templates',
-            description: 'Explore real-world examples of AI-generated READMEs. See how AutoDoc AI creates professional documentation for different types of projects and programming languages.',
-            url: 'https://autodocai.vercel.app/examples',
+            description: 'Explore real-world examples of AI-generated READMEs. See how ReadmeArchitect creates professional documentation for different types of projects and programming languages.',
+            url: 'https://readmearchitect.vercel.app/examples',
             datePublished: '2024-01-01',
             dateModified: new Date().toISOString(),
             author: {
               '@type': 'Organization',
-              name: 'AutoDoc AI Team'
+              name: 'ReadmeArchitect Team'
             },
             publisher: {
               '@type': 'Organization',
-              name: 'AutoDoc AI',
+              name: 'ReadmeArchitect',
               logo: {
                 '@type': 'ImageObject',
-                url: 'https://autodocai.vercel.app/logo.png'
+                url: 'https://readmearchitect.vercel.app/logo.png'
               }
             },
             mainEntityOfPage: {
               '@type': 'WebPage',
-              '@id': 'https://autodocai.vercel.app/examples'
+              '@id': 'https://readmearchitect.vercel.app/examples'
             }
           }),
         }}

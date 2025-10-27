@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'ReadmeForge - AI-Powered README Generator',
+  title: 'ReadmeArchitect - AI-Powered README Generator',
   description: 'Generate professional README files for your GitHub repositories using AI. Create beautiful documentation in seconds.',
   keywords: ['README', 'generator', 'AI', 'GitHub', 'documentation', 'markdown'],
-  authors: [{ name: 'ReadmeForge' }],
-  creator: 'ReadmeForge',
-  publisher: 'ReadmeForge',
+  authors: [{ name: 'ReadmeArchitect' }],
+  creator: 'ReadmeArchitect',
+  publisher: 'ReadmeArchitect',
   formatDetection: {
     email: false,
     address: false,
@@ -21,16 +21,16 @@ export const metadata: Metadata = {
   },
   manifest: '/site.webmanifest',
   openGraph: {
-    title: 'ReadmeForge - AI-Powered README Generator',
+    title: 'ReadmeArchitect - AI-Powered README Generator',
     description: 'Generate professional README files for your GitHub repositories using AI',
-    url: 'https://readmeforge.vercel.app',
-    siteName: 'ReadmeForge',
+    url: 'https://readmearchitect.vercel.app',
+    siteName: 'ReadmeArchitect',
     images: [
       {
         url: '/favicon.ico',
         width: 32,
         height: 32,
-        alt: 'AutoDoc AI Logo',
+        alt: 'ReadmeArchitect Logo',
       },
     ],
     locale: 'en_US',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary',
-    title: 'AutoDoc AI - AI-Powered README Generator',
+    title: 'ReadmeArchitect - AI-Powered README Generator',
     description: 'Generate professional README files for your GitHub repositories using AI',
     images: ['/favicon.ico'],
   },

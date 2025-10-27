@@ -220,7 +220,7 @@ export function CenteredWithLogo() {
           className="flex flex-col sm:flex-row justify-between items-center gap-4"
         >
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-gray-400 text-sm">
-            <span>© 2024 ReadmeForge. Built with</span>
+            <span>© 2024 ReadmeArchitect. Built with</span>
             <Heart className="w-4 h-4 text-red-400 fill-current animate-pulse" />
             <span>for developers.</span>
           </div>
@@ -261,7 +261,7 @@ const Logo = () => {
         {/* Logo Text */}
         <div className="flex flex-col">
           <span className="text-2xl font-bold text-white font-mono group-hover:text-green-100 transition-colors duration-200">
-            ReadmeForge
+            ReadmeArchitect
           </span>
           <span className="text-xs text-green-400 font-medium tracking-wider">
             README GENERATOR

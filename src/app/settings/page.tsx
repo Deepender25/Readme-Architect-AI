@@ -97,7 +97,7 @@ function SettingsContent() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `readmeforge-data-${user?.username}-${new Date().toISOString().split('T')[0]}.json`;
+        a.download = `readmearchitect-data-${user?.username}-${new Date().toISOString().split('T')[0]}.json`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -199,7 +199,7 @@ function SettingsContent() {
     <LayoutWrapper maxWidth="4xl">
       <PageHeader
         title="Settings"
-        description="Customize your ReadmeForge experience"
+        description="Customize your ReadmeArchitect experience"
         badge="Your Account"
         icon={SettingsIcon}
       />

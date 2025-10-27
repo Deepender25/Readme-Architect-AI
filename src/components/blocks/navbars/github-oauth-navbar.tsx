@@ -101,7 +101,7 @@ export default function GitHubOAuthNavbar() {
             >
               <Image
                 src="/Logo.png"
-                alt="ReadmeForge Logo"
+                alt="ReadmeArchitect Logo"
                 width={40}
                 height={40}
                 className="object-contain"
@@ -119,7 +119,7 @@ export default function GitHubOAuthNavbar() {
 
             <span className={`font-bold text-2xl tracking-tight transition-all duration-300 ${pathname === '/' ? 'text-green-300' : 'text-green-400'
               }`}>
-              ReadmeForge
+              ReadmeArchitect
             </span>
 
             {/* Home page active indicator */}

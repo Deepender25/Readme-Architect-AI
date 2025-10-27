@@ -13,7 +13,7 @@ class ErrorNotifier:
         self.email_user = os.getenv('EMAIL_USER')
         self.email_pass = os.getenv('EMAIL_PASS')
         self.notification_email = os.getenv('ERROR_NOTIFICATION_EMAIL', self.email_user)
-        self.app_name = "ReadmeForge README Generator"
+        self.app_name = "ReadmeArchitect README Generator"
         
     def is_configured(self):
         """Check if email configuration is available"""

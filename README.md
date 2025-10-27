@@ -1,4 +1,4 @@
-# ReadmeForge
+# ReadmeArchitect
 
 A modern Next.js application for generating professional README files using AI, featuring a beautiful UI with powerful README generation capabilities.
 

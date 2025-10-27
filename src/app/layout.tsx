@@ -22,11 +22,11 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* Primary Meta Tags */}
-        <title>AutoDoc AI - Free AI README Generator | Create Professional GitHub Documentation in 30 Seconds</title>
-        <meta name="title" content="AutoDoc AI - Free AI README Generator | Create Professional GitHub Documentation in 30 Seconds" />
+        <title>ReadmeArchitect - Free AI README Generator | Create Professional GitHub Documentation in 30 Seconds</title>
+        <meta name="title" content="ReadmeArchitect - Free AI README Generator | Create Professional GitHub Documentation in 30 Seconds" />
         <meta name="description" content="Generate stunning GitHub READMEs instantly with AI. Trusted by 10,000+ developers worldwide. Free README generator with 99% accuracy. Transform your repositories with professional documentation in under 30 seconds." />
         <meta name="keywords" content="README generator, AI README generator, free README generator, GitHub README generator, automatic README creator, GitHub documentation, AI documentation generator, README maker, repository documentation, GitHub tools" />
-        <meta name="author" content="AutoDoc AI Team" />
+        <meta name="author" content="ReadmeArchitect Team" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="language" content="English" />
         <meta name="revisit-after" content="7 days" />
@@ -34,33 +34,33 @@ export default function RootLayout({
         <meta name="rating" content="general" />
         
         {/* Canonical URL */}
-        <link rel="canonical" href="https://autodocai.vercel.app" />
+        <link rel="canonical" href="https://readmearchitect.vercel.app" />
         
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://autodocai.vercel.app" />
-        <meta property="og:title" content="AutoDoc AI - Free AI README Generator | Create Professional GitHub Documentation" />
+        <meta property="og:url" content="https://readmearchitect.vercel.app" />
+        <meta property="og:title" content="ReadmeArchitect - Free AI README Generator | Create Professional GitHub Documentation" />
         <meta property="og:description" content="Generate stunning GitHub READMEs instantly with AI. Trusted by 10,000+ developers worldwide. Free README generator with 99% accuracy." />
-        <meta property="og:image" content="https://autodocai.vercel.app/og-image.png" />
+        <meta property="og:image" content="https://readmearchitect.vercel.app/og-image.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content="AutoDoc AI - AI-Powered README Generator" />
-        <meta property="og:site_name" content="AutoDoc AI" />
+        <meta property="og:image:alt" content="ReadmeArchitect - AI-Powered README Generator" />
+        <meta property="og:site_name" content="ReadmeArchitect" />
         <meta property="og:locale" content="en_US" />
         
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://autodocai.vercel.app" />
-        <meta property="twitter:title" content="AutoDoc AI - Free AI README Generator" />
+        <meta property="twitter:url" content="https://readmearchitect.vercel.app" />
+        <meta property="twitter:title" content="ReadmeArchitect - Free AI README Generator" />
         <meta property="twitter:description" content="Generate stunning GitHub READMEs instantly with AI. Trusted by 10,000+ developers worldwide." />
-        <meta property="twitter:image" content="https://autodocai.vercel.app/og-image.png" />
-        <meta property="twitter:image:alt" content="AutoDoc AI - AI-Powered README Generator" />
-        <meta property="twitter:creator" content="@autodocai" />
-        <meta property="twitter:site" content="@autodocai" />
+        <meta property="twitter:image" content="https://readmearchitect.vercel.app/og-image.png" />
+        <meta property="twitter:image:alt" content="ReadmeArchitect - AI-Powered README Generator" />
+        <meta property="twitter:creator" content="@readmearchitect" />
+        <meta property="twitter:site" content="@readmearchitect" />
         
         {/* Additional Meta Tags */}
-        <meta name="application-name" content="AutoDoc AI" />
-        <meta name="apple-mobile-web-app-title" content="AutoDoc AI" />
+        <meta name="application-name" content="ReadmeArchitect" />
+        <meta name="apple-mobile-web-app-title" content="ReadmeArchitect" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="mobile-web-app-capable" content="yes" />
