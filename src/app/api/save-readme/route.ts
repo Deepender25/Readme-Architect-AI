@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserFromCookie } from '@/lib/auth';
 
 // Force dynamic rendering for this route
 export const runtime = 'nodejs';
@@ -77,7 +76,7 @@ export async function POST(request: NextRequest) {
     // Create or update README.md
     const updateData = {
       message: 'Update README.md via ReadmeArchitect',
-      content: btoa(unescape(encodeURIComponent(readmeContent))), // Base64 encode with proper UTF-8 handling
+      content: btoa(readmeContent), // Base64 encode
       ...(currentFileSha && { sha: currentFileSha }) // Include SHA if updating existing file
     };
 
