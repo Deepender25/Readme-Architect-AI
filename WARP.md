@@ -4,7 +4,7 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 
 ## Project Overview
 
-**AutoDoc AI** is a modern full-stack application that automatically generates professional README files from GitHub repositories using AI analysis. It combines a Next.js frontend with Python serverless functions for a hybrid architecture.
+**ReadmeForge** is a modern full-stack application that automatically generates professional README files from GitHub repositories using AI analysis. It combines a Next.js frontend with Python serverless functions for a hybrid architecture.
 
 ### Core Architecture
 

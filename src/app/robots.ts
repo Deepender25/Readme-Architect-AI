@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = 'https://autodocai.vercel.app'
+  const baseUrl = 'https://readmeforge.vercel.app'
   
   return {
     rules: [

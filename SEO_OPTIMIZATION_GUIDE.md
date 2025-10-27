@@ -1,8 +1,8 @@
-# AutoDoc AI - Complete SEO Optimization Guide
+# ReadmeForge - Complete SEO Optimization Guide
 
 ## 🎯 SEO Implementation Summary
 
-This guide covers the comprehensive SEO optimization implemented for AutoDoc AI to achieve high Google rankings and maximum visibility.
+This guide covers the comprehensive SEO optimization implemented for ReadmeForge to achieve high Google rankings and maximum visibility.
 
 ## ✅ Implemented SEO Features
 
@@ -65,15 +65,15 @@ This guide covers the comprehensive SEO optimization implemented for AutoDoc AI 
 5. **"README maker for developers"** - Monthly searches: 390
 
 ### Branded Keywords
-1. **"AutoDoc AI"** - Building brand recognition
-2. **"AutoDoc AI README generator"** - Brand + service
-3. **"AutoDoc AI documentation"** - Brand + category
+1. **"ReadmeForge"** - Building brand recognition
+2. **"ReadmeForge README generator"** - Brand + service
+3. **"ReadmeForge documentation"** - Brand + category
 
 ## 📊 Google Search Console Setup
 
 ### 1. **Property Setup**
 ```
-Primary Property: https://autodocai.vercel.app
+Primary Property: https://readmeforge.vercel.app
 Property Type: URL prefix
 Verification Method: HTML meta tag (already implemented)
 ```
@@ -81,7 +81,7 @@ Verification Method: HTML meta tag (already implemented)
 ### 2. **Sitemap Submission**
 ```
 Submit these sitemaps:
-- https://autodocai.vercel.app/sitemap.xml
+- https://readmeforge.vercel.app/sitemap.xml
 - Monitor indexing status weekly
 - Check for crawl errors and fix immediately
 ```
@@ -193,7 +193,7 @@ Submit these sitemaps:
 - **Keyword Rankings** - Top 50 for target keywords
 - **Organic Traffic** - 500+ monthly organic visitors
 - **Rich Snippets** - FAQ and HowTo snippets appearing
-- **Brand Searches** - "AutoDoc AI" searches increasing
+- **Brand Searches** - "ReadmeForge" searches increasing
 
 ### Month 4-6
 - **Competitive Rankings** - Top 20 for main keywords
@@ -269,4 +269,4 @@ Submit these sitemaps:
 - **Voice Search Optimization** - Natural language content
 - **AI Search Optimization** - Prepare for AI-powered search engines
 
-This comprehensive SEO strategy positions AutoDoc AI for maximum visibility and organic growth in the competitive developer tools market.
+This comprehensive SEO strategy positions ReadmeForge for maximum visibility and organic growth in the competitive developer tools market.

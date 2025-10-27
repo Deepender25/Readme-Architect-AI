@@ -50,7 +50,7 @@ export default function Home() {
                 <div className="cube-global"></div>
               </div>
               <div className="mt-6 text-center">
-                <p className="text-green-400 text-lg font-medium">Loading AutoDoc AI...</p>
+                <p className="text-green-400 text-lg font-medium">Loading ReadmeForge...</p>
               </div>
             </div>
           </div>

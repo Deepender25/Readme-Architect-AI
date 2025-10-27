@@ -1,4 +1,4 @@
-# AutoDoc AI - SEO Launch Checklist
+# ReadmeForge - SEO Launch Checklist
 
 ## 🚀 Pre-Launch SEO Checklist
 
@@ -21,11 +21,11 @@
 
 # Steps:
 1. Go to https://search.google.com/search-console
-2. Add property: https://autodocai.vercel.app
+2. Add property: https://readmeforge.vercel.app
 3. Choose "HTML tag" verification method
 4. Copy verification code and replace "your-google-verification-code"
 5. Deploy and verify
-6. Submit sitemap: https://autodocai.vercel.app/sitemap.xml
+6. Submit sitemap: https://readmeforge.vercel.app/sitemap.xml
 ```
 
 #### 2. **Bing Webmaster Tools Setup**
@@ -35,7 +35,7 @@
 
 # Steps:
 1. Go to https://www.bing.com/webmasters
-2. Add site: https://autodocai.vercel.app
+2. Add site: https://readmeforge.vercel.app
 3. Choose "Meta tag" verification
 4. Copy verification code and replace "your-bing-verification-code"
 5. Deploy and verify
@@ -100,9 +100,9 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 
 #### 5. **Social Media Accounts**
 Create and optimize these accounts:
-- **Twitter**: @autodocai
-- **LinkedIn**: AutoDoc AI Company Page
-- **GitHub**: github.com/autodocai
+- **Twitter**: @readmeforge
+- **LinkedIn**: ReadmeForge Company Page
+- **GitHub**: github.com/readmeforge
 - **Product Hunt**: Prepare for launch
 
 ### 📊 Content Optimization
@@ -300,7 +300,7 @@ Add these internal links throughout the site:
 #### 90 Days
 - **Organic Traffic**: 1,500+ monthly visitors
 - **Keyword Rankings**: Top 20 for main keywords
-- **Brand Searches**: 100+ monthly "AutoDoc AI" searches
+- **Brand Searches**: 100+ monthly "ReadmeForge" searches
 - **Featured Snippets**: 2+ featured snippet captures
 
 ### 🎯 Ongoing SEO Maintenance
@@ -327,7 +327,7 @@ Add these internal links throughout the site:
 
 ## 🎉 Ready for Launch!
 
-Your AutoDoc AI web app is now fully optimized for SEO success. The comprehensive implementation includes:
+Your ReadmeForge web app is now fully optimized for SEO success. The comprehensive implementation includes:
 
 ✅ **Technical SEO Foundation** - Complete
 ✅ **Structured Data** - Rich snippets ready
@@ -343,4 +343,4 @@ Your AutoDoc AI web app is now fully optimized for SEO success. The comprehensiv
 4. Begin content marketing and link building
 5. Monitor and optimize based on performance data
 
-With this SEO foundation, AutoDoc AI is positioned to rank highly for competitive keywords and attract thousands of organic visitors within 6 months.
+With this SEO foundation, ReadmeForge is positioned to rank highly for competitive keywords and attract thousands of organic visitors within 6 months.

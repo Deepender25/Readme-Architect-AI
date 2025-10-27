@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'AutoDoc AI - AI-Powered README Generator',
+  title: 'ReadmeForge - AI-Powered README Generator',
   description: 'Generate professional README files for your GitHub repositories using AI. Create beautiful documentation in seconds.',
   keywords: ['README', 'generator', 'AI', 'GitHub', 'documentation', 'markdown'],
-  authors: [{ name: 'AutoDoc AI' }],
-  creator: 'AutoDoc AI',
-  publisher: 'AutoDoc AI',
+  authors: [{ name: 'ReadmeForge' }],
+  creator: 'ReadmeForge',
+  publisher: 'ReadmeForge',
   formatDetection: {
     email: false,
     address: false,
@@ -21,10 +21,10 @@ export const metadata: Metadata = {
   },
   manifest: '/site.webmanifest',
   openGraph: {
-    title: 'AutoDoc AI - AI-Powered README Generator',
+    title: 'ReadmeForge - AI-Powered README Generator',
     description: 'Generate professional README files for your GitHub repositories using AI',
-    url: 'https://autodocai.vercel.app',
-    siteName: 'AutoDoc AI',
+    url: 'https://readmeforge.vercel.app',
+    siteName: 'ReadmeForge',
     images: [
       {
         url: '/favicon.ico',

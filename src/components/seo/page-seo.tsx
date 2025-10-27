@@ -15,7 +15,7 @@ interface PageSEOProps {
   breadcrumbs?: Array<{name: string, url: string}>
 }
 
-const baseUrl = 'https://autodocai.vercel.app'
+const baseUrl = 'https://readmeforge.vercel.app'
 
 export default function PageSEO({
   title,
@@ -32,7 +32,7 @@ export default function PageSEO({
   const fullCanonical = canonical ? `${baseUrl}${canonical}` : `${baseUrl}${pathname}`
   const fullOgImage = ogImage || `${baseUrl}/og-image.png`
   
-  const fullTitle = title ? `${title} | AutoDoc AI` : 'AutoDoc AI - Free AI README Generator'
+  const fullTitle = title ? `${title} | ReadmeForge` : 'ReadmeForge - Free AI README Generator'
   const fullDescription = description || 'Generate stunning GitHub READMEs instantly with AI. Trusted by 10,000+ developers worldwide.'
 
   // Generate breadcrumb structured data
@@ -68,7 +68,7 @@ export default function PageSEO({
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content={fullTitle} />
-      <meta property="og:site_name" content="AutoDoc AI" />
+      <meta property="og:site_name" content="ReadmeForge" />
       <meta property="og:locale" content="en_US" />
       
       {/* Twitter */}
@@ -78,8 +78,8 @@ export default function PageSEO({
       <meta property="twitter:description" content={fullDescription} />
       <meta property="twitter:image" content={fullOgImage} />
       <meta property="twitter:image:alt" content={fullTitle} />
-      <meta property="twitter:creator" content="@autodocai" />
-      <meta property="twitter:site" content="@autodocai" />
+      <meta property="twitter:creator" content="@readmeforge" />
+      <meta property="twitter:site" content="@readmeforge" />
       
       {/* Structured Data */}
       {breadcrumbSchema && (

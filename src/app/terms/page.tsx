@@ -21,7 +21,7 @@ export default function TermsOfServicePage() {
             </div>
             <h1 className="text-4xl font-bold text-white mb-4">Terms of Service</h1>
             <p className="text-gray-400 text-lg">
-              Please read these terms carefully before using AutoDoc AI.
+              Please read these terms carefully before using ReadmeForge.
             </p>
             <p className="text-sm text-green-400 mt-2">
               Last updated: {new Date().toLocaleDateString()}
@@ -43,7 +43,7 @@ export default function TermsOfServicePage() {
               </div>
               <div className="space-y-4 text-gray-300">
                 <p>
-                  By accessing and using AutoDoc AI ("the Service"), you accept and agree to be bound by the terms and provisions of this agreement. If you do not agree to abide by the above, please do not use this service.
+                  By accessing and using ReadmeForge ("the Service"), you accept and agree to be bound by the terms and provisions of this agreement. If you do not agree to abide by the above, please do not use this service.
                 </p>
                 <p>
                   These terms apply to all visitors, users, and others who access or use the service.
@@ -64,7 +64,7 @@ export default function TermsOfServicePage() {
               </div>
               <div className="space-y-4 text-gray-300">
                 <p>
-                  AutoDoc AI is an AI-powered README generator that helps developers create professional documentation for their repositories. Our service includes:
+                  ReadmeForge is an AI-powered README generator that helps developers create professional documentation for their repositories. Our service includes:
                 </p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
                   <li>Automated README generation based on repository analysis</li>
@@ -121,7 +121,7 @@ export default function TermsOfServicePage() {
                 <div>
                   <h3 className="text-lg font-semibold text-white mb-2">Our Service</h3>
                   <p>
-                    AutoDoc AI, including its AI models, interface, and underlying technology, is proprietary to us and protected by intellectual property laws.
+                    ReadmeForge, including its AI models, interface, and underlying technology, is proprietary to us and protected by intellectual property laws.
                   </p>
                 </div>
               </div>

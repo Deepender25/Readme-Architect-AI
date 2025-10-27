@@ -43,7 +43,7 @@ export default function PrivacyPolicyPage() {
               </div>
               <div className="space-y-4 text-gray-300">
                 <p>
-                  AutoDoc AI is designed with privacy in mind. When you use our README generator, we may collect:
+                  ReadmeForge is designed with privacy in mind. When you use our README generator, we may collect:
                 </p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
                   <li>Repository information you choose to analyze (URLs, code structure)</li>
@@ -115,7 +115,7 @@ export default function PrivacyPolicyPage() {
               </div>
               <div className="space-y-4 text-gray-300">
                 <p>
-                  AutoDoc AI uses third-party services to provide our features:
+                  ReadmeForge uses third-party services to provide our features:
                 </p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
                   <li><strong>Google Gemini AI:</strong> For README generation and content analysis</li>

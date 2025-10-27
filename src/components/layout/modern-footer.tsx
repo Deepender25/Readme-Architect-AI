@@ -53,7 +53,7 @@ export default function ModernFooter() {
                     <FileText className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-2xl text-white">AutoDoc AI</h3>
+                    <h3 className="font-bold text-2xl text-white">ReadmeForge</h3>
                     <p className="text-green-400 font-medium">README Generator</p>
                   </div>
                 </div>
@@ -188,7 +188,7 @@ export default function ModernFooter() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
             {/* Copyright */}
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 text-gray-300 text-sm sm:text-base">
-              <span className="font-medium">© {currentYear} AutoDoc AI.</span>
+              <span className="font-medium">© {currentYear} ReadmeForge.</span>
               <div className="flex items-center gap-2">
                 <span>Made with</span>
                 <motion.div
