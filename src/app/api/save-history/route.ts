@@ -111,6 +111,35 @@ async function saveToGitHubDatabase(data: any): Promise<boolean> {
       console.log('📝 Creating new history file (parse error)');
     }
 
+    // Fix any existing entries that might have incorrect timestamps
+    // This is a one-time migration to fix historical data
+    let hasFixedEntries = false;
+    existingData = existingData.map((entry: any) => {
+      if (entry.created_at) {
+        const entryDate = new Date(entry.created_at);
+        const now = new Date();
+        
+        // Check if the entry time seems incorrect (e.g., created in the future or with wrong time)
+        // If the entry was created "today" but the time seems off, we might need to adjust
+        if (entryDate.toDateString() === now.toDateString()) {
+          // If it's today but the time is in the future, it might be incorrect
+          if (entryDate.getTime() > now.getTime()) {
+            console.log(`🔧 Fixing future timestamp for entry ${entry.id}: ${entry.created_at}`);
+            // Set to current time but keep the same date
+            const fixedDate = new Date();
+            entry.created_at = fixedDate.toISOString();
+            entry.updated_at = fixedDate.toISOString();
+            hasFixedEntries = true;
+          }
+        }
+      }
+      return entry;
+    });
+
+    if (hasFixedEntries) {
+      console.log('🔧 Fixed timestamps in existing entries');
+    }
+
     // Check for duplicates based on repository_url and readme_content
     // Also check for recent duplicates (within last 5 minutes) to prevent rapid saves
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
@@ -140,7 +169,10 @@ async function saveToGitHubDatabase(data: any): Promise<boolean> {
       return true; // Return success to avoid errors, but don't save duplicate
     }
 
-    // Create new history entry
+    // Create new history entry with current timestamp
+    const now = new Date();
+    console.log('🕐 Current time for history entry:', now.toISOString(), 'Local:', now.toString());
+    
     const newEntry = {
       id: `${data.user_id}_${Date.now()}`,
       user_id: data.user_id,
@@ -150,8 +182,8 @@ async function saveToGitHubDatabase(data: any): Promise<boolean> {
       project_name: data.project_name,
       readme_content: data.readme_content,
       generation_params: data.generation_params,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      created_at: now.toISOString(),
+      updated_at: now.toISOString()
     };
 
     // Add to beginning of array (most recent first)
