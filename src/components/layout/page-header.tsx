@@ -42,12 +42,15 @@ export default function PageHeader({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
-          className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6"
+          className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-normal mb-6"
           style={{
             background: 'linear-gradient(135deg, #ffffff 0%, #00ff88 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
+            backgroundClip: 'text',
+            lineHeight: '1.5',
+            paddingBottom: '0.5rem',
+            marginBottom: '2rem'
           }}
         >
           {title}

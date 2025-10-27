@@ -680,6 +680,16 @@ body {
     line-height: 1.5 !important;
   }
 
+  /* Fix for large text titles to prevent clipping */
+  .text-4xl, .text-5xl, .text-6xl, .text-7xl, .text-8xl {
+    line-height: 1.4 !important;
+  }
+
+  /* Ensure tracking-tight doesn't cause clipping */
+  .tracking-tight {
+    letter-spacing: -0.025em !important;
+  }
+
   code {
     font-family: var(--font-mono);
     font-size: 0.875rem;

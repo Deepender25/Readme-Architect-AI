@@ -259,7 +259,7 @@ export default function SimpleCentered() {
                   
                   <ScrollAnimatedDiv delay={0.05} duration={0.3} yOffset={20}>
                     <motion.h1
-                      className="text-5xl font-bold tracking-tight text-white sm:text-7xl lg:text-8xl mb-6 relative z-10"
+                      className="text-5xl font-bold tracking-normal leading-relaxed text-white sm:text-7xl lg:text-8xl mb-6 relative z-10"
                       style={{ 
                         textShadow: '0 0 30px rgba(0, 255, 136, 0.3), 0 0 60px rgba(0, 255, 136, 0.2)',
                         background: 'linear-gradient(135deg, #ffffff 0%, #00ff88 100%)',

@@ -117,7 +117,7 @@ export default function GitHubOAuthNavbar() {
               />
             </motion.div>
 
-            <span className={`font-bold text-2xl tracking-tight transition-all duration-300 ${pathname === '/' ? 'text-green-300' : 'text-green-400'
+            <span className={`font-bold text-2xl tracking-normal leading-normal transition-all duration-300 ${pathname === '/' ? 'text-green-300' : 'text-green-400'
               }`}>
               ReadmeArchitect
             </span>

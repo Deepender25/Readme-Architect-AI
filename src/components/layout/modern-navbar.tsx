@@ -122,7 +122,7 @@ export default function ModernNavbar() {
               </motion.div>
               
               <div className="flex flex-col min-w-0">
-                <span className="font-bold text-xl tracking-tight text-white whitespace-nowrap">
+                <span className="font-bold text-xl tracking-normal leading-normal text-white whitespace-nowrap">
                   ReadmeArchitect
                 </span>
                 <span className="text-xs text-green-400/80 font-medium -mt-0.5 whitespace-nowrap">

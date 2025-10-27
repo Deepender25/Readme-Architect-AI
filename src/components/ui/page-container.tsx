@@ -52,7 +52,7 @@ export default function PageContainer({
               {title && (
                 <ScrollAnimatedDiv delay={0.05} duration={0.4} yOffset={30}>
                   <motion.h1
-                    className="text-4xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl mb-6"
+                    className="text-4xl font-bold tracking-normal leading-relaxed text-white sm:text-6xl lg:text-7xl mb-6"
                     style={{ 
                       textShadow: '0 0 30px rgba(0, 255, 136, 0.3), 0 0 60px rgba(0, 255, 136, 0.2)',
                       background: 'linear-gradient(135deg, #ffffff 0%, #00ff88 100%)',
