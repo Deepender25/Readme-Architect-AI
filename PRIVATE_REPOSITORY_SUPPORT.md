@@ -161,11 +161,11 @@ Ensure these are properly configured:
 ```bash
 GITHUB_CLIENT_ID=your_github_client_id
 GITHUB_CLIENT_SECRET=your_github_client_secret
-GITHUB_REDIRECT_URI=https://your-domain.com/api/auth/callback
+GITHUB_REDIRECT_URI=https://readmearchitect.vercel.app/api/auth/callback
 ```
 
 ### GitHub OAuth App Configuration
-1. **Authorization callback URL**: `https://your-domain.com/api/auth/callback`
+1. **Authorization callback URL**: `https://readmearchitect.vercel.app/api/auth/callback`
 2. **Application permissions**: Repository access (read)
 3. **Scope**: `repo` (already configured)
 

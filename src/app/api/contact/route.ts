@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>New Contact Form Submission - AutoDoc AI</title>
+          <title>New Contact Form Submission - ReadmeArchitect</title>
           <style>
             body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; margin: 0; padding: 0; }
             .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
         <body>
           <div class="container">
             <div class="header">
-              <h1>🚀 AutoDoc AI - New Contact Form Submission</h1>
+              <h1>🚀 ReadmeArchitect - New Contact Form Submission</h1>
               <p>Someone reached out through your website!</p>
             </div>
             
@@ -114,8 +114,8 @@ export async function POST(request: NextRequest) {
             </div>
 
             <div class="footer">
-              <p>This email was sent automatically from your AutoDoc AI contact form.</p>
-              <p>🌟 AutoDoc AI - Making documentation beautiful, one README at a time!</p>
+              <p>This email was sent automatically from your ReadmeArchitect contact form.</p>
+              <p>🌟 ReadmeArchitect - Making documentation beautiful, one README at a time!</p>
             </div>
           </div>
         </body>
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
     `;
 
     const textContent = `
-New Contact Form Submission - AutoDoc AI
+New Contact Form Submission - ReadmeArchitect
 
 Received: ${new Date().toLocaleString()}
 
@@ -135,16 +135,16 @@ Message:
 ${message}
 
 ---
-This email was sent from your AutoDoc AI contact form.
+This email was sent from your ReadmeArchitect contact form.
 Reply directly to respond to ${name}.
     `;
 
     // Email options
     const mailOptions = {
-      from: `"AutoDoc AI Contact Form" <${process.env.EMAIL_USER}>`,
+      from: `"ReadmeArchitect Contact Form" <${process.env.EMAIL_USER}>`,
       to: process.env.EMAIL_USER, // Send to yourself
       replyTo: email, // Set reply-to as the user's email
-      subject: `🚀 AutoDoc AI Contact: ${subject} - from ${name}`,
+      subject: `🚀 ReadmeArchitect Contact: ${subject} - from ${name}`,
       text: textContent,
       html: htmlContent,
     };
@@ -200,7 +200,7 @@ Reply directly to respond to ${name}.
       <html>
         <head>
           <meta charset="utf-8">
-          <title>Thank You - AutoDoc AI</title>
+          <title>Thank You - ReadmeArchitect</title>
           <style>
             body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; }
             .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
@@ -217,13 +217,13 @@ Reply directly to respond to ${name}.
             <p>Thank you for reaching out! I've received your message about "<strong>${subject}</strong>" and I'll get back to you within 24-48 hours.</p>
             <p>In the meantime, feel free to:</p>
             <ul>
-              <li>🚀 Try out AutoDoc AI: <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://your-domain.com'}/generate">Generate a README</a></li>
-              <li>📖 Check out our tutorials: <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://your-domain.com'}/tutorials">Learn how to use AutoDoc AI</a></li>
+              <li>🚀 Try out ReadmeArchitect: <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://readmearchitect.vercel.app'}/generate">Generate a README</a></li>
+              <li>📖 Check out our tutorials: <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://readmearchitect.vercel.app'}/tutorials">Learn how to use ReadmeArchitect</a></li>
               <li>⭐ Star us on GitHub: <a href="https://github.com/Deepender25/Readme-Architect-AI">GitHub Repository</a></li>
             </ul>
-            <p>Best regards,<br>Deepender Yadav<br>Creator of AutoDoc AI</p>
+            <p>Best regards,<br>Deepender Yadav<br>Creator of ReadmeArchitect</p>
             <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #666; font-size: 12px;">
-              <p>AutoDoc AI - Making documentation beautiful! 🎨</p>
+              <p>ReadmeArchitect - Making documentation beautiful! 🎨</p>
             </div>
           </div>
         </body>
@@ -231,9 +231,9 @@ Reply directly to respond to ${name}.
     `;
 
     const confirmationOptions = {
-      from: `"Deepender from AutoDoc AI" <${process.env.EMAIL_USER}>`,
+      from: `"Deepender from ReadmeArchitect" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: `Thank you for contacting AutoDoc AI! 🚀`,
+      subject: `Thank you for contacting ReadmeArchitect! 🚀`,
       html: confirmationHtml,
     };
 

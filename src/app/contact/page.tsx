@@ -366,7 +366,7 @@ export default function ContactPage() {
                 },
                 {
                   title: "Examples",
-                  description: "See AutoDoc AI in action with real examples",
+                  description: "See ReadmeArchitect in action with real examples",
                   link: "/examples",
                   icon: "🎯"
                 },
@@ -409,7 +409,7 @@ export default function ContactPage() {
                 <h2 className="text-2xl font-bold text-white">Built with Community in Mind</h2>
               </div>
               <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-                AutoDoc AI is more than just a tool – it's a community project. Every message, 
+                ReadmeArchitect is more than just a tool – it's a community project. Every message, 
                 suggestion, and piece of feedback helps make it better for everyone. 
                 Don't hesitate to reach out, no matter how small your question might seem!
               </p>

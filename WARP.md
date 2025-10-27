@@ -109,7 +109,7 @@ GOOGLE_API_KEY=your_google_gemini_api_key
 # GitHub OAuth (for repository access)
 GITHUB_CLIENT_ID=your_github_oauth_app_id
 GITHUB_CLIENT_SECRET=your_github_oauth_secret
-GITHUB_REDIRECT_URI=https://your-domain.com/api/auth/callback
+GITHUB_REDIRECT_URI=https://readmearchitect.vercel.app/api/auth/callback
 
 # History Database (GitHub-based storage)
 GITHUB_DATA_REPO_OWNER=your_username
@@ -119,7 +119,7 @@ GITHUB_DATA_TOKEN=your_personal_access_token
 # Email Services (contact form + error notifications)
 EMAIL_USER=your_gmail@gmail.com
 EMAIL_PASS=your_gmail_app_password
-ERROR_NOTIFICATION_EMAIL=errors@your-domain.com
+ERROR_NOTIFICATION_EMAIL=errors@readmearchitect.vercel.app
 ```
 
 ### Development Setup Process

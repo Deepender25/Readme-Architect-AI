@@ -1,6 +1,6 @@
 {
-  "name": "AutoDoc AI - README Generator",
-  "short_name": "AutoDoc AI",
+  "name": "ReadmeArchitect - README Generator",
+  "short_name": "ReadmeArchitect",
   "description": "AI-powered README generator for GitHub repositories. Create professional documentation in seconds.",
   "start_url": "/",
   "display": "standalone",
@@ -16,14 +16,14 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "AutoDoc AI README Generator Interface"
+      "label": "ReadmeArchitect README Generator Interface"
     },
     {
       "src": "/screenshot-narrow.png",
       "sizes": "750x1334",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "AutoDoc AI Mobile Interface"
+      "label": "ReadmeArchitect Mobile Interface"
     }
   ],
   "icons": [

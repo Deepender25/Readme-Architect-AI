@@ -163,7 +163,7 @@ Once OAuth is configured, users will have access to:
 # Required for OAuth
 GITHUB_CLIENT_ID=your_github_oauth_client_id
 GITHUB_CLIENT_SECRET=your_github_oauth_client_secret
-GITHUB_REDIRECT_URI=https://your-domain.vercel.app/auth/callback
+GITHUB_REDIRECT_URI=https://readmearchitect.vercel.app/auth/callback
 
 # Optional for history storage
 GITHUB_DATA_REPO_OWNER=your_github_username

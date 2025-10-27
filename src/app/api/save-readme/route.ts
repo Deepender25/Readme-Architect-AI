@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
           headers: {
             'Authorization': `token ${user.access_token}`,
             'Accept': 'application/vnd.github.v3+json',
-            'User-Agent': 'AutoDoc-AI'
+            'User-Agent': 'ReadmeArchitect'
           }
         }
       );
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
 
     // Create or update README.md
     const updateData = {
-      message: 'Update README.md via AutoDoc AI',
+      message: 'Update README.md via ReadmeArchitect',
       content: btoa(unescape(encodeURIComponent(readmeContent))), // Base64 encode with proper UTF-8 handling
       ...(currentFileSha && { sha: currentFileSha }) // Include SHA if updating existing file
     };
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
           'Authorization': `token ${user.access_token}`,
           'Accept': 'application/vnd.github.v3+json',
           'Content-Type': 'application/json',
-          'User-Agent': 'AutoDoc-AI'
+          'User-Agent': 'ReadmeArchitect'
         },
         body: JSON.stringify(updateData)
       }

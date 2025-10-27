@@ -106,7 +106,7 @@ GOOGLE_API_KEY=your_google_gemini_api_key
 # GitHub OAuth
 GITHUB_CLIENT_ID=your_github_oauth_app_id
 GITHUB_CLIENT_SECRET=your_github_oauth_secret
-GITHUB_REDIRECT_URI=https://your-domain.com/api/auth/callback
+GITHUB_REDIRECT_URI=https://readmearchitect.vercel.app/api/auth/callback
 
 # Database (GitHub-based)
 GITHUB_DATA_REPO_OWNER=username

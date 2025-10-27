@@ -24,7 +24,7 @@ GOOGLE_API_KEY=your_google_gemini_api_key_here
 ```bash
 GITHUB_CLIENT_ID=your_github_oauth_client_id
 GITHUB_CLIENT_SECRET=your_github_oauth_client_secret
-GITHUB_REDIRECT_URI=https://your-domain.vercel.app/auth/callback
+GITHUB_REDIRECT_URI=https://readmearchitect.vercel.app/auth/callback
 GITHUB_DATA_REPO_OWNER=your_github_username
 GITHUB_DATA_REPO_NAME=autodoc-ai-data
 GITHUB_DATA_TOKEN=your_personal_access_token

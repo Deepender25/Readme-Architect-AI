@@ -45,13 +45,13 @@ EMAIL_USER=your-gmail@gmail.com
 EMAIL_PASS=abcd efgh ijkl mnop
 
 # Optional: Your website URL for confirmation emails
-NEXT_PUBLIC_BASE_URL=https://your-domain.com
+NEXT_PUBLIC_BASE_URL=https://readmearchitect.vercel.app
 ```
 
 **Replace:**
 - `your-gmail@gmail.com` with your actual Gmail address
 - `abcd efgh ijkl mnop` with the 16-character app password you generated
-- `https://your-domain.com` with your actual website URL
+- `https://readmearchitect.vercel.app` with your actual website URL
 
 ### 2.3 Important Notes
 - Use the **16-character app password**, not your regular Gmail password

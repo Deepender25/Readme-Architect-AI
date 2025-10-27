@@ -19,7 +19,7 @@ export default function AboutPage() {
             <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/30">
               <Heart className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-white mb-4">About AutoDoc AI</h1>
+            <h1 className="text-4xl font-bold text-white mb-4">About ReadmeArchitect</h1>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
               A passion project born from the simple idea that great documentation shouldn't be hard to create.
             </p>
@@ -37,7 +37,7 @@ export default function AboutPage() {
                 <h2 className="text-3xl font-bold text-white mb-6">Our Mission</h2>
                 <div className="space-y-4 text-gray-300 leading-relaxed">
                   <p>
-                    AutoDoc AI was created with a simple mission: to democratize great documentation. 
+                    ReadmeArchitect was created with a simple mission: to democratize great documentation. 
                     We believe every project deserves professional, comprehensive documentation, 
                     regardless of the developer's writing skills or available time.
                   </p>
@@ -99,7 +99,7 @@ export default function AboutPage() {
                   <strong className="text-white">This page is currently being crafted with love! ✨</strong>
                 </p>
                 <p>
-                  AutoDoc AI started as a weekend project that quickly grew into something much bigger. 
+                  ReadmeArchitect started as a weekend project that quickly grew into something much bigger. 
                   As a developer who's spent countless hours writing and rewriting README files, 
                   I knew there had to be a better way.
                 </p>
@@ -107,13 +107,13 @@ export default function AboutPage() {
                   The idea was simple: what if we could use AI to understand a project's structure, 
                   purpose, and features, then generate professional documentation automatically? 
                   After months of experimentation with different AI models and approaches, 
-                  AutoDoc AI was born.
+                  ReadmeArchitect was born.
                 </p>
                 <div className="bg-green-400/10 border border-green-400/20 rounded-lg p-6 my-6">
                   <h3 className="text-lg font-semibold text-green-400 mb-3">🚧 Content Coming Soon</h3>
                   <p className="text-gray-300">
                     We're working on expanding this section with more details about our journey, 
-                    the technology behind AutoDoc AI, and our vision for the future of developer documentation.
+                    the technology behind ReadmeArchitect, and our vision for the future of developer documentation.
                   </p>
                 </div>
                 <p>
@@ -209,7 +209,7 @@ export default function AboutPage() {
                 <h2 className="text-2xl font-bold text-white">Let's Connect</h2>
               </div>
               <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-                AutoDoc AI is built by developers, for developers. Whether you have feedback, 
+                ReadmeArchitect is built by developers, for developers. Whether you have feedback, 
                 want to contribute, or just want to say hi, I'd love to hear from you!
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">

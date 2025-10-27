@@ -6,7 +6,7 @@ import LayoutWrapper from '@/components/layout-wrapper'
 
 export default function BlogPage() {
   const featuredPost = {
-    title: "Introducing AutoDoc AI: Revolutionizing README Creation with Artificial Intelligence",
+    title: "Introducing ReadmeArchitect: Revolutionizing README Creation with Artificial Intelligence",
     excerpt: "Learn how we built an AI-powered README generator that transforms the way developers document their projects, making professional documentation accessible to everyone.",
     author: "Deepender Yadav",
     date: "December 19, 2024",
@@ -32,7 +32,7 @@ export default function BlogPage() {
     },
     {
       title: "Open Source Success: Building in Public",
-      excerpt: "Lessons learned from building and sharing AutoDoc AI as an open-source project.",
+      excerpt: "Lessons learned from building and sharing ReadmeArchitect as an open-source project.",
       date: "Coming Soon",
       readTime: "7 min read",
       category: "Open Source"
@@ -53,7 +53,7 @@ export default function BlogPage() {
             <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/30">
               <PenTool className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-white mb-4">AutoDoc AI Blog</h1>
+            <h1 className="text-4xl font-bold text-white mb-4">ReadmeArchitect Blog</h1>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
               Insights, tutorials, and stories about AI-powered development tools and the future of documentation.
             </p>
@@ -149,12 +149,12 @@ export default function BlogPage() {
           >
             <div className="bg-black/40 border border-green-400/20 rounded-xl p-8">
               <div className="max-w-4xl mx-auto prose prose-invert prose-green">
-                <h3 className="text-2xl font-bold text-white mb-6">The Story Behind AutoDoc AI</h3>
+                <h3 className="text-2xl font-bold text-white mb-6">The Story Behind ReadmeArchitect</h3>
                 
                 <div className="space-y-6 text-gray-300 leading-relaxed">
                   <p>
                     As developers, we've all been there – staring at a blank README file, wondering how to best describe our project. 
-                    What started as a simple frustration became the inspiration for AutoDoc AI, an intelligent README generator 
+                    What started as a simple frustration became the inspiration for ReadmeArchitect, an intelligent README generator 
                     that understands your code and creates professional documentation in seconds.
                   </p>
 
@@ -172,7 +172,7 @@ export default function BlogPage() {
 
                   <h4 className="text-xl font-semibold text-white mt-8 mb-4">The AI Solution</h4>
                   <p>
-                    AutoDoc AI leverages the power of Google's Gemini AI to analyze your repository structure, 
+                    ReadmeArchitect leverages the power of Google's Gemini AI to analyze your repository structure, 
                     understand your codebase, and generate comprehensive README files tailored to your project. 
                     Here's how we made it happen:
                   </p>
@@ -201,7 +201,7 @@ export default function BlogPage() {
 
                   <h4 className="text-xl font-semibold text-white mt-8 mb-4">Building in Public</h4>
                   <p>
-                    AutoDoc AI is more than just a tool – it's a learning experience built in public. 
+                    ReadmeArchitect is more than just a tool – it's a learning experience built in public. 
                     As a passionate developer, I wanted to create something that solves a real problem 
                     while exploring the latest in AI and web technologies.
                   </p>
@@ -224,7 +224,7 @@ export default function BlogPage() {
                   </ul>
 
                   <div className="bg-black/60 border border-green-400/30 rounded-lg p-6 my-8 text-center">
-                    <h5 className="text-lg font-semibold text-white mb-3">Ready to Try AutoDoc AI?</h5>
+                    <h5 className="text-lg font-semibold text-white mb-3">Ready to Try ReadmeArchitect?</h5>
                     <p className="text-gray-300 mb-4">
                       Experience the future of documentation creation. Generate your first AI-powered README in under 5 minutes.
                     </p>
@@ -297,7 +297,7 @@ export default function BlogPage() {
               <h2 className="text-2xl font-bold text-white mb-4">Stay Updated</h2>
               <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
                 Get notified when we publish new articles about AI development tools, documentation best practices, 
-                and AutoDoc AI updates.
+                and ReadmeArchitect updates.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
                 <input
