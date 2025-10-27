@@ -24,7 +24,7 @@ except:
 # GitHub OAuth Configuration
 GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID")
 GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
-GITHUB_REDIRECT_URI = os.getenv("GITHUB_REDIRECT_URI", "https://autodocai.vercel.app/api/auth/callback")
+GITHUB_REDIRECT_URI = os.getenv("GITHUB_REDIRECT_URI", "https://readmearchitect.vercel.app/api/auth/callback")
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -103,7 +103,7 @@ class handler(BaseHTTPRequestHandler):
         print(f"DEBUG: Return to: {return_to}")
         
         # Use the exact redirect URI from environment
-        redirect_uri = "https://autodocai.vercel.app/api/auth/callback"
+        redirect_uri = GITHUB_REDIRECT_URI
         print(f"DEBUG: Using redirect_uri: {redirect_uri}")
         
         # Build state parameter with return URL
