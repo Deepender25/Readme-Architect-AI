@@ -12,6 +12,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     {
+      url: `${baseUrl}/generate`,
+      lastModified: currentDate,
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/features`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
@@ -30,6 +36,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      url: `${baseUrl}/tutorials`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    },
+    {
       url: `${baseUrl}/contact`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
@@ -42,16 +60,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     },
     {
-      url: `${baseUrl}/blog`,
+      url: `${baseUrl}/privacy`,
       lastModified: currentDate,
-      changeFrequency: 'weekly',
-      priority: 0.6,
+      changeFrequency: 'monthly',
+      priority: 0.4,
     },
     {
-      url: `${baseUrl}/tutorials`,
+      url: `${baseUrl}/terms`,
       lastModified: currentDate,
-      changeFrequency: 'weekly',
-      priority: 0.6,
+      changeFrequency: 'monthly',
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/login`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.3,
     },
   ]
 }

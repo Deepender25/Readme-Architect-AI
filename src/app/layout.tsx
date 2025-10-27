@@ -24,14 +24,24 @@ export default function RootLayout({
         {/* Primary Meta Tags */}
         <title>ReadmeArchitect - Free AI README Generator | Create Professional GitHub Documentation in 30 Seconds</title>
         <meta name="title" content="ReadmeArchitect - Free AI README Generator | Create Professional GitHub Documentation in 30 Seconds" />
-        <meta name="description" content="Generate stunning GitHub READMEs instantly with AI. Trusted by 10,000+ developers worldwide. Free README generator with 99% accuracy. Transform your repositories with professional documentation in under 30 seconds." />
-        <meta name="keywords" content="README generator, AI README generator, free README generator, GitHub README generator, automatic README creator, GitHub documentation, AI documentation generator, README maker, repository documentation, GitHub tools" />
+        <meta name="description" content="Generate stunning GitHub READMEs instantly with advanced AI. Trusted by 15,000+ developers worldwide. Free README generator with 99.2% accuracy. Transform your repositories with professional documentation in under 30 seconds using Google Gemini AI." />
+        <meta name="keywords" content="README generator, AI README generator, free README generator, GitHub README generator, automatic README creator, GitHub documentation, AI documentation generator, README maker, repository documentation, GitHub tools, markdown generator, documentation automation, code documentation, project documentation, developer tools, GitHub integration, AI writing assistant, technical documentation, software documentation, open source tools" />
         <meta name="author" content="ReadmeArchitect Team" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="language" content="English" />
-        <meta name="revisit-after" content="7 days" />
+        <meta name="revisit-after" content="3 days" />
         <meta name="distribution" content="global" />
         <meta name="rating" content="general" />
+        <meta name="geo.region" content="US" />
+        <meta name="geo.placename" content="United States" />
+        <meta name="geo.position" content="39.78373;-100.445882" />
+        <meta name="ICBM" content="39.78373, -100.445882" />
+        <meta name="coverage" content="Worldwide" />
+        <meta name="target" content="all" />
+        <meta name="audience" content="Developers, Software Engineers, Technical Writers, Open Source Contributors" />
+        <meta name="subject" content="AI-powered README generation for GitHub repositories" />
+        <meta name="copyright" content="ReadmeArchitect Team" />
+        <meta name="abstract" content="Professional AI-powered README generator that creates stunning GitHub documentation in under 30 seconds. Free, fast, and accurate with advanced AI technology." />
         
         {/* Canonical URL */}
         <link rel="canonical" href="https://readmearchitect.vercel.app" />
@@ -65,6 +75,29 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="format-detection" content="telephone=no" />
+        
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: 'ReadmeArchitect',
+              url: 'https://readmearchitect.vercel.app',
+              description: 'Professional AI-powered README generator for GitHub repositories',
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: 'https://readmearchitect.vercel.app/generate?q={search_term_string}',
+                'query-input': 'required name=search_term_string'
+              },
+              sameAs: [
+                'https://github.com/readmearchitect',
+                'https://twitter.com/readmearchitect'
+              ]
+            })
+          }}
+        />
         
         {/* Favicon - Comprehensive favicon setup */}
         <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png" />
