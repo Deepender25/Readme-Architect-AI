@@ -42,10 +42,10 @@ export default function RootLayout({
         <meta name="subject" content="AI-powered README generation for GitHub repositories" />
         <meta name="copyright" content="ReadmeArchitect Team" />
         <meta name="abstract" content="Professional AI-powered README generator that creates stunning GitHub documentation in under 30 seconds. Free, fast, and accurate with advanced AI technology." />
-        
+
         {/* Canonical URL */}
         <link rel="canonical" href="https://readmearchitect.vercel.app" />
-        
+
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://readmearchitect.vercel.app" />
@@ -57,7 +57,7 @@ export default function RootLayout({
         <meta property="og:image:alt" content="ReadmeArchitect - AI-Powered README Generator" />
         <meta property="og:site_name" content="ReadmeArchitect" />
         <meta property="og:locale" content="en_US" />
-        
+
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://readmearchitect.vercel.app" />
@@ -67,7 +67,7 @@ export default function RootLayout({
         <meta property="twitter:image:alt" content="ReadmeArchitect - AI-Powered README Generator" />
         <meta property="twitter:creator" content="@readmearchitect" />
         <meta property="twitter:site" content="@readmearchitect" />
-        
+
         {/* Additional Meta Tags */}
         <meta name="application-name" content="ReadmeArchitect" />
         <meta name="apple-mobile-web-app-title" content="ReadmeArchitect" />
@@ -75,7 +75,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="format-detection" content="telephone=no" />
-        
+
         {/* Structured Data */}
         <script
           type="application/ld+json"
@@ -98,7 +98,7 @@ export default function RootLayout({
             })
           }}
         />
-        
+
         {/* Favicon - Comprehensive favicon setup */}
         <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png" />
         <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
@@ -115,33 +115,33 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png" />
         <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png" />
         <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png" />
-        
+
         {/* Web App Manifest */}
         <link rel="manifest" href="/site.webmanifest" />
-        
+
         {/* Microsoft Tiles */}
         <meta name="msapplication-TileColor" content="#00ff88" />
         <meta name="msapplication-TileImage" content="/mstile-144x144.png" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
         <meta name="theme-color" content="#00ff88" />
-        
+
         {/* Preconnect to external domains for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://api.github.com" />
         <link rel="dns-prefetch" href="https://github.com" />
-        
+
         {/* Fonts with optimized loading */}
-        <link 
-          rel="stylesheet" 
+        <link
+          rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
           media="print"
-          onLoad="this.media='all'"
+          onLoad={(e) => { (e.target as HTMLLinkElement).media = 'all' }}
         />
         <noscript>
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" />
         </noscript>
-        
+
         {/* Structured Data - Organization */}
         <script
           type="application/ld+json"
@@ -149,7 +149,7 @@ export default function RootLayout({
             __html: JSON.stringify(organizationSchema),
           }}
         />
-        
+
         {/* Structured Data - Web Application */}
         <script
           type="application/ld+json"
@@ -157,13 +157,13 @@ export default function RootLayout({
             __html: JSON.stringify(webApplicationSchema),
           }}
         />
-        
+
         {/* Google Search Console Verification */}
         <meta name="google-site-verification" content="your-google-verification-code" />
-        
+
         {/* Bing Webmaster Tools Verification */}
         <meta name="msvalidate.01" content="your-bing-verification-code" />
-        
+
         {/* Yandex Verification */}
         <meta name="yandex-verification" content="your-yandex-verification-code" />
         <style>{`
@@ -212,24 +212,24 @@ export default function RootLayout({
       <body className="antialiased bg-transparent">
         {/* Enhanced Grid Background - Professional animated grid across all pages */}
         <EnhancedGridBackground />
-        
+
         <AuthProvider>
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={pathname}
-              initial={{ 
+              initial={{
                 opacity: 0,
                 y: 8
               }}
-              animate={{ 
+              animate={{
                 opacity: 1,
                 y: 0
               }}
-              exit={{ 
+              exit={{
                 opacity: 0,
                 y: -5
               }}
-              transition={{ 
+              transition={{
                 duration: 0.25,
                 ease: [0.25, 0.46, 0.45, 0.94]
               }}
@@ -254,14 +254,14 @@ export default function RootLayout({
               </div>
             </motion.div>
           </AnimatePresence>
-          
+
           {/* Enhanced page transition overlay */}
           <motion.div
             key={`overlay-${pathname}`}
             initial={{ opacity: 0.8, backdropFilter: 'blur(0px)' }}
             animate={{ opacity: 0, backdropFilter: 'blur(0px)' }}
             exit={{ opacity: 0.6, backdropFilter: 'blur(2px)' }}
-            transition={{ 
+            transition={{
               duration: 0.15,
               ease: "easeOut"
             }}
@@ -272,7 +272,7 @@ export default function RootLayout({
             }}
           />
         </AuthProvider>
-        
+
         {/* Vercel Analytics & Speed Insights */}
         <Analytics />
         <SpeedInsights />
