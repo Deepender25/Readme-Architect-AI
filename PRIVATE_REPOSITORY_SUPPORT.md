@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the implementation of private repository support for authenticated users in the AutoDoc AI README generator.
+This document describes the implementation of private repository support for authenticated users in the ReadmeArchitect README generator.
 
 ## Features Implemented
 
