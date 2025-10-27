@@ -141,7 +141,7 @@ function LoginPageContent() {
               className="space-y-6"
             >
               <div className="space-y-4">
-                <h1 className="text-5xl font-bold text-white leading-tight"
+                <h1 className="text-5xl font-bold text-white leading-normal"
                   style={{
                     background: 'linear-gradient(135deg, #ffffff 0%, #00ff88 100%)',
                     WebkitBackgroundClip: 'text',

@@ -140,7 +140,7 @@ export default function LoginPage() {
                   AI-Powered Documentation
                 </motion.div>
                 
-                <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight"
+                <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-normal"
                   style={{
                     background: 'linear-gradient(135deg, #ffffff 0%, #00ff88 100%)',
                     WebkitBackgroundClip: 'text',

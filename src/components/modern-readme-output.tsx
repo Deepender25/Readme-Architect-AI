@@ -291,7 +291,7 @@ export default function ModernReadmeOutput({
                     <FileText className="w-6 h-6 text-green-400" />
                   </div>
                   <div className="text-center">
-                    <h1 className="text-xl font-bold text-white leading-tight">
+                    <h1 className="text-xl font-bold text-white leading-relaxed">
                       {projectName || 'Generated README'}
                     </h1>
                     <div className="flex items-center justify-center gap-2 mt-1">
@@ -456,7 +456,7 @@ export default function ModernReadmeOutput({
                   <div className="p-2 bg-gradient-to-br from-green-400/20 to-green-500/10 rounded-lg border border-green-400/20 shadow-lg">
                     <FileText className="w-5 h-5 text-green-400" />
                   </div>
-                  <h1 className="text-lg font-bold text-white leading-tight">
+                  <h1 className="text-lg font-bold text-white leading-relaxed">
                     {projectName || 'Generated README'}
                   </h1>
                 </div>

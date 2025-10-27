@@ -217,10 +217,10 @@ export default function ModernNavbar() {
                       </div>
                       
                       <div className="hidden lg:flex flex-col items-start min-w-0">
-                        <span className="text-white font-medium text-xs leading-tight whitespace-nowrap">
+                        <span className="text-white font-medium text-xs leading-normal whitespace-nowrap">
                           {user?.name}
                         </span>
-                        <span className="text-green-400/80 text-xs leading-tight whitespace-nowrap">
+                        <span className="text-green-400/80 text-xs leading-normal whitespace-nowrap">
                           @{user?.username}
                         </span>
                       </div>
@@ -253,10 +253,10 @@ export default function ModernNavbar() {
                               </div>
                             </div>
                             <div className="flex-1">
-                              <div className="font-semibold text-white text-base leading-tight">
+                              <div className="font-semibold text-white text-base leading-normal">
                                 {user?.name}
                               </div>
-                              <div className="text-green-400 text-sm leading-tight">
+                              <div className="text-green-400 text-sm leading-normal">
                                 @{user?.username}
                               </div>
                               <div className="text-gray-400 text-xs mt-0.5">
@@ -469,10 +469,10 @@ export default function ModernNavbar() {
                           </div>
                         </div>
                         <div className="flex-1">
-                          <div className="font-semibold text-white text-base leading-tight">
+                          <div className="font-semibold text-white text-base leading-normal">
                             {user?.name}
                           </div>
-                          <div className="text-green-400 text-sm leading-tight">
+                          <div className="text-green-400 text-sm leading-normal">
                             @{user?.username}
                           </div>
                           <div className="text-gray-400 text-xs mt-0.5">

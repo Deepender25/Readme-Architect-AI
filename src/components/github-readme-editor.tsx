@@ -372,7 +372,7 @@ export default function GitHubReadmeEditor({
         <div className="flex flex-col gap-4 px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <h1 className="text-xl font-bold font-sans leading-none">GitHub README Editor</h1>
+              <h1 className="text-xl font-bold font-sans leading-normal">GitHub README Editor</h1>
               <div className="relative">
                 <select 
                   value={selectedTemplate.id}
@@ -380,7 +380,7 @@ export default function GitHubReadmeEditor({
                     const template = templates.find(t => t.id === e.target.value);
                     if (template) handleTemplateChange(template);
                   }}
-                  className="appearance-none bg-surface border border-border rounded-md px-3 py-1.5 text-sm font-sans cursor-pointer hover:bg-primary/10 transition-colors leading-none"
+                  className="appearance-none bg-surface border border-border rounded-md px-3 py-1.5 text-sm font-sans cursor-pointer hover:bg-primary/10 transition-colors leading-normal"
                 >
                   {templates.map(template => (
                     <option key={template.id} value={template.id}>{template.name}</option>
