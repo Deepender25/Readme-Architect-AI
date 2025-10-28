@@ -2654,4 +2654,48 @@ select option:checked {
   .repositories-stats-card .label {
     font-size: 0.6875rem;
   }
+}/* Custom 
+scrollbar styles */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(34, 197, 94, 0.3) rgba(0, 0, 0, 0.1);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(34, 197, 94, 0.3);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(34, 197, 94, 0.5);
+}
+
+/* Markdown prose styles for better readability */
+.prose-green {
+  --tw-prose-body: rgb(209 213 219);
+  --tw-prose-headings: rgb(255 255 255);
+  --tw-prose-lead: rgb(156 163 175);
+  --tw-prose-links: rgb(34 197 94);
+  --tw-prose-bold: rgb(255 255 255);
+  --tw-prose-counters: rgb(156 163 175);
+  --tw-prose-bullets: rgb(34 197 94);
+  --tw-prose-hr: rgb(75 85 99);
+  --tw-prose-quotes: rgb(255 255 255);
+  --tw-prose-quote-borders: rgb(34 197 94);
+  --tw-prose-captions: rgb(156 163 175);
+  --tw-prose-code: rgb(34 197 94);
+  --tw-prose-pre-code: rgb(209 213 219);
+  --tw-prose-pre-bg: rgb(17 24 39);
+  --tw-prose-th-borders: rgb(75 85 99);
+  --tw-prose-td-borders: rgb(55 65 81);
 }

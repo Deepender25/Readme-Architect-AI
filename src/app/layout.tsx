@@ -10,6 +10,7 @@ import Head from 'next/head';
 import { organizationSchema, webApplicationSchema } from '@/lib/structured-data';
 import "./globals.css";
 import "@/styles/newloader.css";
+import 'highlight.js/styles/github-dark.css';
 
 export default function RootLayout({
   children,

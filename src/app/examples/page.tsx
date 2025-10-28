@@ -16,6 +16,7 @@ import {
   Heart
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { ReadmePreview } from '@/components/ui/readme-preview'
 import LayoutWrapper from '@/components/layout-wrapper'
 import PageHeader from '@/components/layout/page-header'
 import ContentSection from '@/components/layout/content-section'
@@ -34,36 +35,7 @@ function ExamplesContent() {
       company: "Open Source",
       generatedIn: "32s",
       githubUrl: "https://github.com/Deepender25/CursorViaCam",
-      features: ["Advanced Real-Time Smoothing", "Target-Aware Button Sticking", "Adaptive Speed Control", "Profile Management", "Visual Cursor Feedback"],
-      preview: `<h1 align="center"> Cursor Via Cam </h1>
-<p align="center"> Control Your Digital World Hands-Free with Vision-Based Cursor Tracking. </p>
-
-<p align="center">
-  <img alt="Build" src="https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge">
-  <img alt="Python" src="https://img.shields.io/badge/Python-3.x+-blue?style=for-the-badge&logo=python">
-  <img alt="License" src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge">
-</p>
-
-## ⭐ Overview
-
-**Cursor Via Cam** is a powerful, vision-based application designed to revolutionize how users interact with their computers, providing precise and ergonomic hands-free cursor control through camera tracking technology.
-
-### The Problem
-Traditional computer interaction often requires constant use of a mouse, leading to physical strain, repetitive stress injuries (RSI), and significant limitations for users with mobility challenges.
-
-### The Solution
-Cursor Via Cam addresses these challenges head-on by leveraging cutting-edge computer vision (OpenCV and MediaPipe) and advanced smoothing algorithms.
-
-## ✨ Key Features
-
-#### ✨ **Advanced Real-Time Cursor Smoothing**
-The core engine employs proprietary smoothing techniques to eliminate the jitter and noise inherent in webcam feeds.
-
-#### 🎯 **Target-Aware "Button Sticking" (Windows Only)**
-When the cursor approaches a known clickable UI element, the system intelligently applies a temporary "sticking" force.
-
-#### 🚀 **Adaptive Speed and Acceleration**
-The system intelligently analyzes the user's current movement velocity to dynamically adjust cursor acceleration.`
+      features: ["Advanced Real-Time Smoothing", "Target-Aware Button Sticking", "Adaptive Speed Control", "Profile Management", "Visual Cursor Feedback"]
     }
   ];
 
@@ -143,42 +115,16 @@ The system intelligently analyzes the user's current movement velocity to dynami
                         <Eye className="w-4 h-4 mr-2" />
                         View on GitHub
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="glass-button border-none text-blue-400 hover:bg-blue-400/20"
-                        onClick={() => {
-                          navigator.clipboard.writeText(example.preview);
-                        }}
-                      >
-                        <Copy className="w-4 h-4 mr-2" />
-                        Copy README
-                      </Button>
                     </div>
                   </div>
                 </div>
                 
                 <div className="lg:w-2/3">
-                  <div className="glass-card bg-gray-900/50 p-6 rounded-xl border border-green-400/20">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-green-400" />
-                        <span className="text-sm font-medium text-green-400">README.md</span>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="ghost" className="h-6 px-2 text-xs">
-                          <Download className="w-3 h-3 mr-1" />
-                          Download
-                        </Button>
-                      </div>
-                    </div>
-                    
-                    <div className="bg-black/50 rounded-lg p-4 font-mono text-sm overflow-x-auto">
-                      <pre className="text-gray-300 whitespace-pre-wrap">
-                        {example.preview}
-                      </pre>
-                    </div>
-                  </div>
+                  <ReadmePreview 
+                    githubUrl={example.githubUrl}
+                    title={example.title}
+                    className="h-full"
+                  />
                 </div>
               </div>
             </motion.div>
