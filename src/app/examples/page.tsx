@@ -2,17 +2,14 @@
 
 import { Suspense } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  Code, 
-  FileText, 
-  Star, 
-  GitBranch, 
-  Eye, 
-  Download,
+import {
+  Code,
+  Star,
+  GitBranch,
+  Eye,
   Zap,
   Sparkles,
   ArrowRight,
-  Copy,
   Heart
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -63,69 +60,64 @@ function ExamplesContent() {
                   ✨ This is a real project! CursorViaCam's README was generated using ReadmeArchitect and is actively used in production.
                 </p>
               </div>
-              
-              <div className="flex flex-col lg:flex-row gap-8">
-                <div className="lg:w-1/3">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className={`w-12 h-12 bg-gradient-to-r ${example.color} rounded-xl flex items-center justify-center`}>
-                      <Code className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-white">{example.title}</h3>
-                      <p className="text-sm text-gray-400">{example.language}</p>
-                    </div>
+
+              {/* Centered Project Information */}
+              <div className="text-center max-w-4xl mx-auto mb-8">
+                <div className="flex items-center justify-center gap-4 mb-6">
+                  <div className={`w-16 h-16 bg-gradient-to-r ${example.color} rounded-xl flex items-center justify-center`}>
+                    <Code className="w-8 h-8 text-white" />
                   </div>
-                  
-                  <p className="text-gray-300 mb-6 leading-relaxed">
-                    {example.description}
-                  </p>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-4 text-sm">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-400" />
-                        <span className="text-white font-semibold">{example.stars}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <GitBranch className="w-4 h-4 text-blue-400" />
-                        <span className="text-white font-semibold">{example.forks}</span>
-                      </div>
-                      <div className="text-green-400 font-semibold">
-                        Generated in {example.generatedIn}
-                      </div>
-                    </div>
-                    
-                    <div className="flex flex-wrap gap-2">
-                      {example.features.map((feature) => (
-                        <span
-                          key={feature}
-                          className="px-3 py-1 bg-green-400/10 text-green-400 rounded-full text-xs font-medium border border-green-400/20"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                    </div>
-                    
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        className="glass-button border-none text-green-400 hover:bg-green-400/20"
-                        onClick={() => window.open(example.githubUrl, '_blank')}
-                      >
-                        <Eye className="w-4 h-4 mr-2" />
-                        View on GitHub
-                      </Button>
-                    </div>
+                  <div className="text-left">
+                    <h3 className="text-2xl font-bold text-white">{example.title}</h3>
+                    <p className="text-gray-400">{example.language}</p>
                   </div>
                 </div>
-                
-                <div className="lg:w-2/3">
-                  <ReadmePreview 
-                    githubUrl={example.githubUrl}
-                    title={example.title}
-                    className="h-full"
-                  />
+
+                <p className="text-gray-300 mb-6 leading-relaxed text-lg max-w-3xl mx-auto">
+                  {example.description}
+                </p>
+
+                <div className="flex items-center justify-center gap-6 mb-6 text-sm">
+                  <div className="flex items-center gap-2">
+                    <Star className="w-4 h-4 text-yellow-400" />
+                    <span className="text-white font-semibold">{example.stars} stars</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <GitBranch className="w-4 h-4 text-blue-400" />
+                    <span className="text-white font-semibold">{example.forks} forks</span>
+                  </div>
+                  <div className="text-green-400 font-semibold">
+                    Generated in {example.generatedIn}
+                  </div>
                 </div>
+
+                <div className="flex flex-wrap justify-center gap-2 mb-6">
+                  {example.features.map((feature) => (
+                    <span
+                      key={feature}
+                      className="px-3 py-1 bg-green-400/10 text-green-400 rounded-full text-xs font-medium border border-green-400/20"
+                    >
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+
+                <Button
+                  className="glass-button border-none text-green-400 hover:bg-green-400/20"
+                  onClick={() => window.open(example.githubUrl, '_blank')}
+                >
+                  <Eye className="w-4 h-4 mr-2" />
+                  View on GitHub
+                </Button>
+              </div>
+
+              {/* Full-width README Preview */}
+              <div className="w-full">
+                <ReadmePreview
+                  githubUrl={example.githubUrl}
+                  title={example.title}
+                  className="w-full"
+                />
               </div>
             </motion.div>
           ))}
@@ -141,7 +133,7 @@ function ExamplesContent() {
           <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
             The CursorViaCam README above was generated in just 32 seconds. Transform your project documentation with the same AI-powered quality and professionalism.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               onClick={() => window.location.href = '/'}
@@ -151,7 +143,7 @@ function ExamplesContent() {
               Start Creating
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            
+
             <Button
               onClick={() => window.location.href = '/features'}
               variant="outline"

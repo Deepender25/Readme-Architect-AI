@@ -142,7 +142,7 @@ export function ReadmePreview({ githubUrl, title, className }: ReadmePreviewProp
       </div>
 
       {/* Content */}
-      <div className="p-6 max-h-[600px] overflow-y-auto custom-scrollbar">
+      <div className="p-6 max-h-[500px] overflow-y-auto custom-scrollbar">
         <MarkdownRenderer content={readmeContent} />
       </div>
     </div>
