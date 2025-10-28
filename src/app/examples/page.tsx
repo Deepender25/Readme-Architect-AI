@@ -45,16 +45,17 @@ function ExamplesContent() {
         icon={Sparkles}
       />
 
-      <ContentSection background="none" padding="none">
-        <div className="grid gap-8">
-          {examples.map((example, index) => (
-            <motion.div
-              key={example.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
-              className="glass-card p-8 group"
-            >
+      <ContentSection background="none" padding="none" maxWidth="full">
+        <div className="flex justify-center">
+          <div className="w-full max-w-6xl">
+            {examples.map((example, index) => (
+              <motion.div
+                key={example.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                className="glass-card p-8 group mx-auto"
+              >
               <div className="mb-4 p-3 bg-green-400/10 border border-green-400/20 rounded-lg">
                 <p className="text-sm text-green-400 font-medium">
                   ✨ This is a real project! CursorViaCam's README was generated using ReadmeArchitect and is actively used in production.
@@ -111,16 +112,17 @@ function ExamplesContent() {
                 </Button>
               </div>
 
-              {/* Full-width README Preview */}
-              <div className="w-full">
+              {/* Centered README Preview */}
+              <div className="w-full max-w-5xl mx-auto">
                 <ReadmePreview
                   githubUrl={example.githubUrl}
                   title={example.title}
                   className="w-full"
                 />
               </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
+          </div>
         </div>
       </ContentSection>
 
