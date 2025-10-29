@@ -168,9 +168,10 @@ function RepositoriesContent() {
       // Small delay to show the loading state
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Navigate to main page with repository pre-filled
+      // Navigate to generator page with repository pre-filled
       if (typeof window !== 'undefined') {
         const url = new URL(window.location.origin);
+        url.pathname = '/generator';
         url.searchParams.set('repo', repoUrl);
         url.searchParams.set('name', repoName);
         
