@@ -60,8 +60,8 @@ function GeneratorContent() {
       console.error('❌ Error auto-saving to history:', error);
     }
     
-    // Redirect to the README output page
-    router.push('/output');
+    // Replace current history entry so browser back goes to home page
+    router.replace('/output');
   };
 
   if (!isClient) {
