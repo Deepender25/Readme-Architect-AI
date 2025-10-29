@@ -1,10 +1,8 @@
 "use client";
 
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Github, GitBranch, BrainCircuit, Bot, Wand2, Code, Sparkles, Zap, FileText, Star, ArrowRight, Play } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import ReadmeGeneratorFlow from '@/components/readme-generator-flow';
 import { ScrollAnimatedDiv } from '@/components/ui/scroll-animated-div';
 
 const FeatureCard = ({ icon: Icon, title, description, delay }: { 
@@ -71,64 +69,10 @@ const StatCard = ({ number, label, delay }: { number: string, label: string, del
 
 export default function SimpleCentered() {
   const router = useRouter();
-  const [showGenerator, setShowGenerator] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const repoParam = urlParams.get('repo');
-      if (repoParam) {
-        setShowGenerator(true);
-      }
-    }
-  }, []);
 
   const handleStartGeneration = () => {
-    setShowGenerator(true);
-    
-    // Only scroll on desktop devices (screen width >= 1024px)
-    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
-      // Wait for the generator to render and DOM to update
-      setTimeout(() => {
-        // Ensure there's enough content to scroll by temporarily adding height if needed
-        const originalBodyHeight = document.body.style.minHeight;
-        document.body.style.minHeight = '200vh'; // Ensure scrollable content
-        
-        // Calculate scroll position to hide the header perfectly
-        const navbarHeight = 80; // Just enough to hide the navbar
-        const scrollPosition = navbarHeight;
-        
-        console.log('🚀 Desktop scroll initiated');
-        console.log('Target scroll position:', scrollPosition);
-        console.log('Current scroll:', window.scrollY);
-        console.log('Document height:', document.documentElement.scrollHeight);
-        console.log('Window height:', window.innerHeight);
-        
-        // Force scroll using multiple methods
-        const performScroll = () => {
-          // Method 1: Direct scrollTo
-          window.scrollTo({
-            top: scrollPosition,
-            left: 0,
-            behavior: 'smooth'
-          });
-          
-          // Method 2: Alternative scroll for better compatibility
-          document.documentElement.scrollTop = scrollPosition;
-          document.body.scrollTop = scrollPosition; // For Safari
-        };
-        
-        performScroll();
-        
-        // Verify scroll worked and restore original height after scroll
-        setTimeout(() => {
-          console.log('Final scroll position:', window.scrollY);
-          // Restore original body height after scroll animation
-          document.body.style.minHeight = originalBodyHeight;
-        }, 1000);
-        
-      }, 200); // Increased delay to ensure DOM updates
-    }
+    // Navigate to the generator page
+    router.push('/generator');
   };
 
   const handleViewExamples = () => {
@@ -136,99 +80,8 @@ export default function SimpleCentered() {
   };
 
   const handleGetStartedNow = () => {
-    // First show the generator
-    setShowGenerator(true);
-    
-    // Then scroll to it after a short delay to allow the component to render
-    setTimeout(() => {
-      const generatorElement = document.getElementById('readme-generator');
-      if (generatorElement) {
-        // Only apply header-hiding scroll on desktop devices
-        if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
-          // Ensure scrollable content
-          const originalBodyHeight = document.body.style.minHeight;
-          document.body.style.minHeight = '200vh';
-          
-          // Calculate position to hide header perfectly while showing the generator
-          const navbarHeight = 80; // Just enough to hide the navbar
-          const elementTop = generatorElement.offsetTop;
-          const scrollPosition = Math.max(elementTop - 20, navbarHeight);
-          
-          console.log('🎯 Get Started Now scroll initiated');
-          console.log('Target scroll position:', scrollPosition);
-          
-          // Force scroll
-          window.scrollTo({
-            top: scrollPosition,
-            left: 0,
-            behavior: 'smooth'
-          });
-          
-          // Alternative methods for better compatibility
-          document.documentElement.scrollTop = scrollPosition;
-          document.body.scrollTop = scrollPosition;
-          
-          // Restore height after scroll
-          setTimeout(() => {
-            document.body.style.minHeight = originalBodyHeight;
-          }, 1000);
-        } else {
-          // On mobile, just scroll to the element normally
-          generatorElement.scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      }
-    }, 200);
-  };
-
-  const handleGenerationComplete = async (readme: string, repoUrl: string, projName: string, genParams: any) => {
-    // Store the README data in sessionStorage for the new page
-    const readmeData = {
-      content: readme,
-      repositoryUrl: repoUrl,
-      projectName: projName,
-      generationParams: genParams,
-      createdAt: new Date().toISOString()
-    };
-    
-    sessionStorage.setItem('readme-output-data', JSON.stringify(readmeData));
-    
-    // Auto-save to history for authenticated users
-    try {
-      console.log('💾 Auto-saving README to history...');
-      
-      // Generate a unique session ID for this generation
-      const sessionId = `gen_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
-      const response = await fetch('/api/save-history', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          repository_url: repoUrl,
-          repository_name: projName || repoUrl.split('/').pop() || 'Unknown',
-          project_name: projName,
-          readme_content: readme,
-          generation_params: genParams,
-          session_id: sessionId,
-        }),
-      });
-
-      if (response.ok) {
-        console.log('✅ README auto-saved to history successfully');
-      } else {
-        const errorData = await response.json();
-        console.warn('⚠️ Failed to auto-save README to history:', errorData.error);
-      }
-    } catch (error) {
-      console.error('❌ Error auto-saving to history:', error);
-    }
-    
-    // Redirect to the new README output page
-    router.push('/readme/output');
+    // Navigate to the generator page
+    router.push('/generator');
   };
 
 
@@ -284,38 +137,32 @@ export default function SimpleCentered() {
                   </ScrollAnimatedDiv>
                   
                   <ScrollAnimatedDiv delay={0.15} duration={0.4} yOffset={20} className="mt-12">
-                    {!showGenerator ? (
-                      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-lg mx-auto">
-                        <div className="relative group w-full sm:w-auto">
-                          <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity" />
-                          <motion.button
-                            whileHover={{ y: -2 }}
-                            whileTap={{ y: 0 }}
-                            onClick={handleStartGeneration}
-                            className="relative w-full sm:w-auto px-8 py-4 bg-green-500 text-black font-bold rounded-xl transition-all duration-300 hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-black text-lg flex items-center justify-center gap-3"
-                            style={{ boxShadow: '0 0 30px rgba(0, 255, 136, 0.4)' }}
-                          >
-                            <Play className="w-5 h-5" />
-                            Start Generation
-                            <ArrowRight className="w-5 h-5" />
-                          </motion.button>
-                        </div>
-                        
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-lg mx-auto">
+                      <div className="relative group w-full sm:w-auto">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity" />
                         <motion.button
-                          whileHover={{ y: -1 }}
+                          whileHover={{ y: -2 }}
                           whileTap={{ y: 0 }}
-                          onClick={handleViewExamples}
-                          className="px-6 py-4 bg-transparent border border-green-400/30 text-green-400 font-semibold rounded-xl hover:bg-green-400/10 hover:border-green-400/50 transition-all duration-300 flex items-center gap-2"
+                          onClick={handleStartGeneration}
+                          className="relative w-full sm:w-auto px-8 py-4 bg-green-500 text-black font-bold rounded-xl transition-all duration-300 hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-black text-lg flex items-center justify-center gap-3"
+                          style={{ boxShadow: '0 0 30px rgba(0, 255, 136, 0.4)' }}
                         >
-                          <Github className="w-5 h-5" />
-                          View Examples
+                          <Play className="w-5 h-5" />
+                          Start Generation
+                          <ArrowRight className="w-5 h-5" />
                         </motion.button>
                       </div>
-                    ) : (
-                      <div id="readme-generator">
-                        <ReadmeGeneratorFlow onComplete={handleGenerationComplete} />
-                      </div>
-                    )}
+                      
+                      <motion.button
+                        whileHover={{ y: -1 }}
+                        whileTap={{ y: 0 }}
+                        onClick={handleViewExamples}
+                        className="px-6 py-4 bg-transparent border border-green-400/30 text-green-400 font-semibold rounded-xl hover:bg-green-400/10 hover:border-green-400/50 transition-all duration-300 flex items-center gap-2"
+                      >
+                        <Github className="w-5 h-5" />
+                        View Examples
+                      </motion.button>
+                    </div>
                   </ScrollAnimatedDiv>
                 </div>
 
@@ -395,17 +242,15 @@ export default function SimpleCentered() {
                     <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
                       Join thousands of developers who have already improved their project documentation with our AI-powered generator.
                     </p>
-                    {!showGenerator && (
-                      <motion.button
-                        whileHover={{ y: -2 }}
-                        whileTap={{ y: 0 }}
-                        onClick={handleGetStartedNow}
-                        className="px-8 py-4 bg-green-500 text-black font-bold rounded-xl hover:bg-green-400 transition-all duration-300 flex items-center gap-3 mx-auto"
-                      >
-                        <Wand2 className="w-5 h-5" />
-                        Get Started Now
-                      </motion.button>
-                    )}
+                    <motion.button
+                      whileHover={{ y: -2 }}
+                      whileTap={{ y: 0 }}
+                      onClick={handleGetStartedNow}
+                      className="px-8 py-4 bg-green-500 text-black font-bold rounded-xl hover:bg-green-400 transition-all duration-300 flex items-center gap-3 mx-auto"
+                    >
+                      <Wand2 className="w-5 h-5" />
+                      Get Started Now
+                    </motion.button>
                   </div>
                 </ScrollAnimatedDiv>
               </div>
