@@ -25,16 +25,21 @@ function LoginPageContent() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Only check once - don't run this effect repeatedly
+    let redirected = false;
+
     // If user is already authenticated, redirect to intended page or home
-    if (isAuthenticated && user) {
+    if (isAuthenticated && user && !redirected) {
+      redirected = true;
       const returnTo = searchParams.get('returnTo') || '/';
+      console.log('✅ User already authenticated, redirecting to:', returnTo);
       router.replace(returnTo);
       return;
     }
 
-    // Check for error parameters
+    // Check for error parameters only once
     const errorParam = searchParams.get('error');
-    if (errorParam) {
+    if (errorParam && !error) {
       switch (errorParam) {
         case 'token_failed':
           setError('Failed to obtain access token. Please try again.');
@@ -50,9 +55,11 @@ function LoginPageContent() {
       }
     }
 
-    // Load previous account info
-    loadPreviousAccount();
-  }, [isAuthenticated, user, router, searchParams]);
+    // Load previous account info only once
+    if (!previousAccount) {
+      loadPreviousAccount();
+    }
+  }, [isAuthenticated, user]);
 
   const loadPreviousAccount = () => {
     try {
