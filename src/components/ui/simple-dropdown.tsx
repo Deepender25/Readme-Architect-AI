@@ -52,10 +52,10 @@ export default function SimpleDropdown({
 
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('touchstart', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside as any);
       return () => {
         document.removeEventListener('mousedown', handleClickOutside);
-        document.removeEventListener('touchstart', handleClickOutside);
+        document.removeEventListener('touchstart', handleClickOutside as any);
       };
     }
   }, [isOpen, closeDropdown]);

@@ -72,7 +72,7 @@ export const createGridLoader = (
       message={message}
       showMessage={config.showMessage && !!message}
       speed={config.speed}
-      intensity={adjustedIntensity}
+      intensity={Math.min(5, Math.max(1, adjustedIntensity)) as 1 | 2 | 3 | 4 | 5}
       className={className}
     />
   );

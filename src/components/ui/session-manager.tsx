@@ -10,8 +10,8 @@ import {
   Clock,
   MapPin,
   Chrome,
-  Firefox,
-  Safari,
+  Globe,
+  Monitor,
   Globe,
   AlertTriangle,
   RefreshCw

@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { cn } from '@/lib/utils';
+import { cn as clsxCn } from '@/lib/utils';
 
 interface EnhancedDotBackgroundProps {
   children?: React.ReactNode;
@@ -48,7 +48,7 @@ export default function EnhancedDotBackground({
   }, []);
 
   return (
-    <div className={cn("relative min-h-screen w-full bg-black", className)}>
+    <div className={clsxCn("relative min-h-screen w-full bg-black", className)}>
       {/* Primary Dot Pattern Background */}
       <motion.div
         className="absolute inset-0"

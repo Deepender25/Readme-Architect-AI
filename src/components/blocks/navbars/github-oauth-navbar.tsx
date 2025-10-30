@@ -108,7 +108,7 @@ export default function GitHubOAuthNavbar() {
                 priority
                 quality={100}
                 style={{
-                  imageRendering: 'smooth',
+                  imageRendering: 'smooth' as any,
                   WebkitImageRendering: '-webkit-optimize-contrast',
                   filter: 'none',
                   maxWidth: '100%',

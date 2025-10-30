@@ -16,6 +16,8 @@ import ModernReadmeEditor from '@/components/modern-readme-editor';
 interface GitHubReadmeEditorProps {
   initialContent?: string;
   onClose?: () => void;
+  autoSaveToHistory?: boolean;
+  onGenerationComplete?: (readme: string) => void;
 }
 
 interface Template {
@@ -114,7 +116,9 @@ npm run build
 
 export default function GitHubReadmeEditor({ 
   initialContent = templates[0].content, 
-  onClose 
+  onClose,
+  autoSaveToHistory = true,
+  onGenerationComplete
 }: GitHubReadmeEditorProps) {
   const { user, isAuthenticated } = useAuth();
   const [content, setContent] = useState(initialContent);
