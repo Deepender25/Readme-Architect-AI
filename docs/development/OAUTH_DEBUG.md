@@ -6,13 +6,13 @@
 ```
 GITHUB_CLIENT_ID="Ov23liJqlWzXgWeeX0NZ"
 GITHUB_CLIENT_SECRET="dca6b0a466c00ed51a4dcea8071db35d7825576e"
-GITHUB_REDIRECT_URI="https://autodocai.vercel.app/api/auth/callback"
+GITHUB_REDIRECT_URI="https://readmearchitect.vercel.app/api/auth/callback"
 ```
 
 ### GitHub OAuth App Settings Required
 **CRITICAL**: Your GitHub OAuth app must have this exact callback URL:
 ```
-https://autodocai.vercel.app/api/auth/callback
+https://readmearchitect.vercel.app/api/auth/callback
 ```
 
 ## Steps to Fix GitHub OAuth App
@@ -22,9 +22,9 @@ https://autodocai.vercel.app/api/auth/callback
    - Click on your OAuth app with Client ID: `Ov23liJqlWzXgWeeX0NZ`
 
 2. **Check/Update These Settings**:
-   - **Application name**: AutoDoc AI (or whatever you prefer)
-   - **Homepage URL**: `https://autodocai.vercel.app`
-   - **Authorization callback URL**: `https://autodocai.vercel.app/api/auth/callback`
+   - **Application name**: ReadmeArchitect (or whatever you prefer)
+   - **Homepage URL**: `https://readmearchitect.vercel.app`
+   - **Authorization callback URL**: `https://readmearchitect.vercel.app/api/auth/callback`
 
 3. **Save Changes**
 
@@ -32,11 +32,11 @@ https://autodocai.vercel.app/api/auth/callback
 
 ### Direct GitHub OAuth URL (for testing)
 ```
-https://github.com/login/oauth/authorize?client_id=Ov23liJqlWzXgWeeX0NZ&redirect_uri=https%3A//autodocai.vercel.app/api/auth/callback&scope=repo&state=oauth_login
+https://github.com/login/oauth/authorize?client_id=Ov23liJqlWzXgWeeX0NZ&redirect_uri=https%3A//readmearchitect.vercel.app/api/auth/callback&scope=repo&state=oauth_login
 ```
 
 ### Your App Login Flow
-1. Visit: `https://autodocai.vercel.app/login`
+1. Visit: `https://readmearchitect.vercel.app/login`
 2. Click "Continue with GitHub"
 3. Should redirect to GitHub OAuth
 4. After authorization, should redirect back to your app
@@ -45,7 +45,7 @@ https://github.com/login/oauth/authorize?client_id=Ov23liJqlWzXgWeeX0NZ&redirect
 
 1. **"The redirect_uri is not associated with this application"**
    - Your GitHub OAuth app callback URL doesn't match
-   - Update it to: `https://autodocai.vercel.app/api/auth/callback`
+   - Update it to: `https://readmearchitect.vercel.app/api/auth/callback`
 
 2. **"Application is misconfigured"**
    - Client ID or Client Secret is wrong

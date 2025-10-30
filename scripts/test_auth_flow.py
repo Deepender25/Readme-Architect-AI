@@ -9,7 +9,7 @@ import json
 import sys
 from urllib.parse import urlparse, parse_qs
 
-def test_auth_flow(base_url="https://autodocai.vercel.app"):
+def test_auth_flow(base_url="https://readmearchitect.vercel.app"):
     """Test the complete authentication flow"""
     
     print(f"🧪 Testing authentication flow for: {base_url}")
@@ -137,9 +137,9 @@ def test_cookie_handling():
     print("4. Test logout clears all cookies")
 
 if __name__ == "__main__":
-    base_url = sys.argv[1] if len(sys.argv) > 1 else "https://autodocai.vercel.app"
+    base_url = sys.argv[1] if len(sys.argv) > 1 else "https://readmearchitect.vercel.app"
     
-    print("🚀 AutoDoc AI Authentication Test Suite")
+    print("🚀 ReadmeArchitect Authentication Test Suite")
     print(f"Testing: {base_url}")
     
     success = test_auth_flow(base_url)

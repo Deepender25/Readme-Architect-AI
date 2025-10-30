@@ -151,7 +151,7 @@ The disoriented layout from your screenshot is completely fixed. You now have:
 4. **Clean, organized layout** ✅
 5. **Modern interactive design** ✅
 
-Your AutoDoc AI footer now matches the quality and professionalism of your application!
+Your ReadmeArchitect footer now matches the quality and professionalism of your application!
 
 ---
 

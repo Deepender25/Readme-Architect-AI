@@ -45,7 +45,7 @@ I've completely redesigned both login pages to match your exact requirements:
 ```
 ┌─────────────────────────────┐
 │     [GitHub Icon - Green]   │
-│       AutoDoc AI            │
+│       ReadmeArchitect            │
 │     Sign in to continue     │
 │                             │
 │  ┌─────────────────────────┐ │

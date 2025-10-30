@@ -14,7 +14,7 @@ def test_logout_api():
     # Test POST request to logout endpoint
     print("1️⃣ Testing POST /api/auth/logout...")
     try:
-        response = requests.post('https://autodocai.vercel.app/api/auth/logout', 
+        response = requests.post('https://readmearchitect.vercel.app/api/auth/logout', 
                                headers={'Content-Type': 'application/json'},
                                timeout=10)
         
@@ -45,7 +45,7 @@ def test_logout_redirect():
     
     # Test GET request (should also work)
     try:
-        response = requests.get('https://autodocai.vercel.app/api/auth/logout', 
+        response = requests.get('https://readmearchitect.vercel.app/api/auth/logout', 
                               allow_redirects=False,
                               timeout=10)
         
@@ -77,7 +77,7 @@ def check_for_routing_issues():
     
     for url in test_urls:
         try:
-            full_url = f'https://autodocai.vercel.app{url}'
+            full_url = f'https://readmearchitect.vercel.app{url}'
             response = requests.get(full_url, allow_redirects=False, timeout=5)
             
             if response.status_code == 404:

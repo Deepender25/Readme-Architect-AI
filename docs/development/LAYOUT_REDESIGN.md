@@ -1,8 +1,8 @@
-# AutoDoc AI - Layout Redesign Documentation
+# ReadmeArchitect - Layout Redesign Documentation
 
 ## Overview
 
-I've completely redesigned the AutoDoc AI application layout to provide a cleaner, more consistent, and user-friendly experience across all pages. The new design system focuses on modularity, consistency, and professional aesthetics.
+I've completely redesigned the ReadmeArchitect application layout to provide a cleaner, more consistent, and user-friendly experience across all pages. The new design system focuses on modularity, consistency, and professional aesthetics.
 
 ## 🎨 New Design System
 

@@ -22,7 +22,7 @@ def update_env_file():
     
     correct_values = {
         'GITHUB_CLIENT_ID': 'Ov23liq3yu6Ir7scqDXo',
-        'GITHUB_REDIRECT_URI': 'https://autodocai.vercel.app/api/auth/callback'
+        'GITHUB_REDIRECT_URI': 'https://readmearchitect.vercel.app/api/auth/callback'
     }
     
     for line in env_lines:

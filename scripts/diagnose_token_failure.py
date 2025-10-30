@@ -139,7 +139,7 @@ def provide_specific_fixes(creds_valid, app_exists, callback_works):
         print("   3. Check GitHub OAuth app settings:")
         print("      - Go to: https://github.com/settings/developers")
         print(f"      - Find app with Client ID: {os.getenv('GITHUB_CLIENT_ID')}")
-        print("      - Verify callback URL is exactly: https://autodocai.vercel.app/api/auth/callback")
+        print("      - Verify callback URL is exactly: https://readmearchitect.vercel.app/api/auth/callback")
         
     else:
         print("❌ Issues found that need to be fixed:")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Local Development Server for AutoDoc AI
+Local Development Server for ReadmeArchitect
 This server handles Python API routes locally while proxying other requests to Next.js
 """
 
@@ -210,7 +210,7 @@ def check_nextjs_server():
 def main():
     PORT = 8080
     
-    print("🚀 Starting AutoDoc AI Local Development Server")
+    print("🚀 Starting ReadmeArchitect Local Development Server")
     print(f"📡 Server will run on http://localhost:{PORT}")
     print()
     

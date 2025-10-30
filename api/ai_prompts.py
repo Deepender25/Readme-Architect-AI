@@ -207,8 +207,8 @@ The tone must be professional, engaging, and polished. Use rich Markdown formatt
 
 4.  **⭐ Overview:**
     -   **Hook:** Start with a compelling, single-sentence summary that describes what the project DOES FOR USERS, not how it's built.
-        **EXAMPLE**: "AutoDoc AI is an intelligent documentation generator that transforms any GitHub repository into a professional, comprehensive README.md file in seconds."
-        **NOT**: "AutoDoc AI is a React-based web application with Python backend services."
+        **EXAMPLE**: "ReadmeArchitect is an intelligent documentation generator that transforms any GitHub repository into a professional, comprehensive README.md file in seconds."
+        **NOT**: "ReadmeArchitect is a React-based web application with Python backend services."
     
     -   **The Problem:** In a blockquote, describe the REAL-WORLD USER PROBLEM this project solves:
         **EXAMPLE**: 
@@ -217,7 +217,7 @@ The tone must be professional, engaging, and polished. Use rich Markdown formatt
         **NOT**: "The challenge of integrating diverse server-side utilities into a cohesive client-side interface..."
     
     -   **The Solution:** Describe the VALUE this project provides to users:
-        **EXAMPLE**: "AutoDoc AI eliminates the documentation burden by automatically analyzing your codebase and generating professional README files. Simply provide a GitHub repository URL, and get a complete, well-structured README with installation instructions, usage examples, and feature descriptions."
+        **EXAMPLE**: "ReadmeArchitect eliminates the documentation burden by automatically analyzing your codebase and generating professional README files. Simply provide a GitHub repository URL, and get a complete, well-structured README with installation instructions, usage examples, and feature descriptions."
         
         **NOT**: "This system provides a highly polished interface built on Component-based Architecture..."
     

@@ -1,6 +1,6 @@
 # 🔐 GitHub OAuth Setup Guide
 
-This guide will help you set up GitHub OAuth authentication for your AutoDoc AI application.
+This guide will help you set up GitHub OAuth authentication for your ReadmeArchitect application.
 
 ## 📋 Prerequisites
 
@@ -17,7 +17,7 @@ This guide will help you set up GitHub OAuth authentication for your AutoDoc AI 
 
 2. **Fill in Application Details**:
    ```
-   Application name: AutoDoc AI
+   Application name: ReadmeArchitect
    Homepage URL: https://autodocai-qaahjx5um-deepender25s-projects.vercel.app
    Application description: AI-powered README generator
    Authorization callback URL: https://autodocai-qaahjx5um-deepender25s-projects.vercel.app/auth/callback
@@ -35,7 +35,7 @@ Add these environment variables in your Vercel dashboard:
 
 1. **Go to Vercel Dashboard**:
    - Visit https://vercel.com/dashboard
-   - Select your AutoDoc AI project
+   - Select your ReadmeArchitect project
    - Go to Settings → Environment Variables
 
 2. **Add Required Variables**:
@@ -176,7 +176,7 @@ GOOGLE_API_KEY=your_google_gemini_api_key
 
 ## 🎉 Success!
 
-Once configured, your AutoDoc AI application will have full GitHub OAuth integration, providing users with a seamless and secure experience for README generation!
+Once configured, your ReadmeArchitect application will have full GitHub OAuth integration, providing users with a seamless and secure experience for README generation!
 
 ---
 

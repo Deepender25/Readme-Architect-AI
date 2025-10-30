@@ -1,6 +1,6 @@
 # Email Setup Guide for Contact Form
 
-This guide will help you set up the email functionality for your AutoDoc AI contact form.
+This guide will help you set up the email functionality for your ReadmeArchitect contact form.
 
 ## Prerequisites
 
@@ -22,7 +22,7 @@ Since Gmail uses 2-factor authentication, you'll need to create an app-specific 
 2. Under "Signing in to Google", click on **2-Step Verification**
 3. Scroll down and click on **App passwords**
 4. Select **Mail** for the app and **Other (custom name)** for device
-5. Enter "AutoDoc AI Contact Form" as the custom name
+5. Enter "ReadmeArchitect Contact Form" as the custom name
 6. Click **Generate**
 7. **Copy the 16-character password** (it will look like: `abcd efgh ijkl mnop`)
 
@@ -99,12 +99,12 @@ Add the same environment variables to your hosting platform's environment config
 The contact form sends two emails:
 
 ### 1. Notification Email (to you)
-- **Subject**: 🚀 AutoDoc AI Contact: [Subject] - from [Name]
+- **Subject**: 🚀 ReadmeArchitect Contact: [Subject] - from [Name]
 - **Content**: Professional HTML email with user details
 - **Reply-To**: Set to sender's email for easy replies
 
 ### 2. Confirmation Email (to sender)
-- **Subject**: Thank you for contacting AutoDoc AI! 🚀
+- **Subject**: Thank you for contacting ReadmeArchitect! 🚀
 - **Content**: Thank you message with helpful links
 
 ## Troubleshooting

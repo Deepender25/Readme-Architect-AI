@@ -1,6 +1,6 @@
 # Development Documentation
 
-This directory contains development notes, implementation summaries, and debugging logs for the AutoDoc AI project.
+This directory contains development notes, implementation summaries, and debugging logs for the ReadmeArchitect project.
 
 ## Structure
 - Implementation summaries and fixes

@@ -71,7 +71,7 @@ def check_github_oauth_app():
     
     try:
         # Test /auth/github
-        response = requests.get('https://autodocai.vercel.app/auth/github', allow_redirects=False, timeout=10)
+        response = requests.get('https://readmearchitect.vercel.app/auth/github', allow_redirects=False, timeout=10)
         if response.status_code in [301, 302]:
             location = response.headers.get('Location', '')
             if 'github.com/login/oauth/authorize' in location and client_id in location:
@@ -85,7 +85,7 @@ def check_github_oauth_app():
     
     try:
         # Test callback with dummy data
-        callback_url = 'https://autodocai.vercel.app/api/auth/callback?code=dummy&state=test'
+        callback_url = 'https://readmearchitect.vercel.app/api/auth/callback?code=dummy&state=test'
         response = requests.get(callback_url, allow_redirects=False, timeout=10)
         if response.status_code in [301, 302, 307]:
             location = response.headers.get('Location', '')
@@ -110,11 +110,11 @@ def provide_fix_instructions():
     print(f"   • Go to: https://github.com/settings/developers")
     print(f"   • Find your OAuth app with Client ID: Ov23liJqlWzXgWeeX0NZ")
     print(f"   • Verify these settings:")
-    print(f"     - Homepage URL: https://autodocai.vercel.app")
-    print(f"     - Authorization callback URL: https://autodocai.vercel.app/api/auth/callback")
+    print(f"     - Homepage URL: https://readmearchitect.vercel.app")
+    print(f"     - Authorization callback URL: https://readmearchitect.vercel.app/api/auth/callback")
     
     print(f"\n2️⃣ Test the OAuth Flow Manually:")
-    print(f"   • Visit: https://autodocai.vercel.app/login")
+    print(f"   • Visit: https://readmearchitect.vercel.app/login")
     print(f"   • Click 'Sign in with GitHub'")
     print(f"   • Check browser console for errors")
     print(f"   • Check Network tab for failed requests")
@@ -138,7 +138,7 @@ def test_live_login():
     print("=" * 30)
     
     print(f"\n📋 Manual Test Steps:")
-    print(f"1. Open: https://autodocai.vercel.app/login")
+    print(f"1. Open: https://readmearchitect.vercel.app/login")
     print(f"2. Open browser developer tools (F12)")
     print(f"3. Go to Console tab")
     print(f"4. Click 'Sign in with GitHub'")
@@ -158,7 +158,7 @@ def test_live_login():
     print(f"• Check if the error happens on first click or after GitHub redirect")
 
 if __name__ == "__main__":
-    print("🚀 AutoDoc AI - GitHub OAuth Fixer")
+    print("🚀 ReadmeArchitect - GitHub OAuth Fixer")
     print("This tool will help diagnose and fix login issues.\n")
     
     success = check_github_oauth_app()

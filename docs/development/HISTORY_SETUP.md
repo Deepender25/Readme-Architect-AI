@@ -163,4 +163,4 @@ If you encounter issues with the history feature:
 4. Check the browser console for errors
 5. Review server logs for database issues
 
-The history feature enhances the AutoDoc AI experience by providing users with a complete record of their documentation generation activities.
+The history feature enhances the ReadmeArchitect experience by providing users with a complete record of their documentation generation activities.

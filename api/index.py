@@ -1035,10 +1035,10 @@ class handler(BaseHTTPRequestHandler):
             
             # Create message
             msg = MIMEMultipart('alternative')
-            msg['From'] = f'"AutoDoc AI Contact Form" <{email_user}>'
+            msg['From'] = f'"ReadmeArchitect Contact Form" <{email_user}>'
             msg['To'] = email_user
             msg['Reply-To'] = email
-            msg['Subject'] = f'🚀 AutoDoc AI Contact: {subject} - from {name}'
+            msg['Subject'] = f'🚀 ReadmeArchitect Contact: {subject} - from {name}'
             
             # Create HTML content
             html_content = f"""
@@ -1046,7 +1046,7 @@ class handler(BaseHTTPRequestHandler):
             <html>
             <head>
                 <meta charset="utf-8">
-                <title>New Contact Form Submission - AutoDoc AI</title>
+                <title>New Contact Form Submission - ReadmeArchitect</title>
                 <style>
                     body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; }}
                     .container {{ max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }}
@@ -1061,7 +1061,7 @@ class handler(BaseHTTPRequestHandler):
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1>🚀 AutoDoc AI - New Contact Form Submission</h1>
+                        <h1>🚀 ReadmeArchitect - New Contact Form Submission</h1>
                         <p>Someone reached out through your website!</p>
                     </div>
                     
@@ -1089,8 +1089,8 @@ class handler(BaseHTTPRequestHandler):
                     </div>
                     
                     <div style="text-align: center; color: #666; font-size: 12px; border-top: 1px solid #eee; padding-top: 20px;">
-                        <p>This email was sent from your AutoDoc AI contact form.</p>
-                        <p>🌟 AutoDoc AI - Making documentation beautiful!</p>
+                        <p>This email was sent from your ReadmeArchitect contact form.</p>
+                        <p>🌟 ReadmeArchitect - Making documentation beautiful!</p>
                     </div>
                 </div>
             </body>
@@ -1099,7 +1099,7 @@ class handler(BaseHTTPRequestHandler):
             
             # Create text content
             text_content = f"""
-New Contact Form Submission - AutoDoc AI
+New Contact Form Submission - ReadmeArchitect
 
 Received: {datetime.now().strftime('%A, %B %d, %Y at %I:%M %p')}
 
@@ -1111,7 +1111,7 @@ Message:
 {message}
 
 ---
-This email was sent from your AutoDoc AI contact form.
+This email was sent from your ReadmeArchitect contact form.
 Reply directly to respond to {name}.
             """
             
@@ -1130,16 +1130,16 @@ Reply directly to respond to {name}.
             
             # Send confirmation email to user
             confirm_msg = MIMEMultipart('alternative')
-            confirm_msg['From'] = f'"Deepender from AutoDoc AI" <{email_user}>'
+            confirm_msg['From'] = f'"Deepender from ReadmeArchitect" <{email_user}>'
             confirm_msg['To'] = email
-            confirm_msg['Subject'] = 'Thank you for contacting AutoDoc AI! 🚀'
+            confirm_msg['Subject'] = 'Thank you for contacting ReadmeArchitect! 🚀'
             
             confirm_html = f"""
             <!DOCTYPE html>
             <html>
             <head>
                 <meta charset="utf-8">
-                <title>Thank You - AutoDoc AI</title>
+                <title>Thank You - ReadmeArchitect</title>
                 <style>
                     body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; }}
                     .container {{ max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }}
@@ -1156,12 +1156,12 @@ Reply directly to respond to {name}.
                     <p>Thank you for reaching out! I've received your message about "<strong>{subject}</strong>" and I'll get back to you within 24-48 hours.</p>
                     <p>In the meantime, feel free to:</p>
                     <ul>
-                        <li>🚀 Try out AutoDoc AI: <a href="https://autodocai.vercel.app/generate">Generate a README</a></li>
+                        <li>🚀 Try out ReadmeArchitect: <a href="https://readmearchitect.vercel.app/generate">Generate a README</a></li>
                         <li>⭐ Star us on GitHub: <a href="https://github.com/Deepender25/Readme-Architect-AI">GitHub Repository</a></li>
                     </ul>
-                    <p>Best regards,<br>Deepender Yadav<br>Creator of AutoDoc AI</p>
+                    <p>Best regards,<br>Deepender Yadav<br>Creator of ReadmeArchitect</p>
                     <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #666; font-size: 12px;">
-                        <p>AutoDoc AI - Making documentation beautiful! 🎨</p>
+                        <p>ReadmeArchitect - Making documentation beautiful! 🎨</p>
                     </div>
                 </div>
             </body>

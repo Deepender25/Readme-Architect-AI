@@ -1,6 +1,6 @@
-# 🚀 Deployment Guide for AutoDoc AI
+# 🚀 Deployment Guide for ReadmeArchitect
 
-This guide will help you deploy your Next.js AutoDoc AI application to Vercel.
+This guide will help you deploy your Next.js ReadmeArchitect application to Vercel.
 
 ## 📋 Prerequisites
 
@@ -218,4 +218,4 @@ If you encounter issues:
 
 ---
 
-Your AutoDoc AI application should now be live on Vercel! 🎉
+Your ReadmeArchitect application should now be live on Vercel! 🎉

@@ -8,7 +8,7 @@ Comprehensive SEO optimization completed for ReadmeArchitect project. All pages 
 ## 🎯 Changes Summary
 
 ### 1. **Core SEO Library Updated** (`src/lib/seo.ts`)
-- ✅ Fixed branding: Changed from "AutoDoc AI" to "ReadmeArchitect"
+- ✅ Fixed branding: Changed from "ReadmeArchitect" to "ReadmeArchitect"
 - ✅ Updated base URL to `readmearchitect.vercel.app`
 - ✅ Enhanced default SEO with Google Gemini AI mentions
 - ✅ Improved developer count: 15,000+ developers
@@ -130,7 +130,7 @@ Comprehensive keyword targeting across pages:
 - **Long-tail**: "free AI README generator", "GitHub documentation tool", "automatic README creator"
 - **Technical**: Google Gemini AI, repository documentation, markdown generator
 - **Industry**: Developer tools, documentation automation, code documentation
-- **Brand**: ReadmeArchitect, AutoDoc AI (legacy)
+- **Brand**: ReadmeArchitect, ReadmeArchitect (legacy)
 
 ### **Structured Data**
 Rich snippets enabled for:

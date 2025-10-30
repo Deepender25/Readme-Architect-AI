@@ -1,6 +1,6 @@
 # 🚀 GitHub Integration Deployment Guide
 
-This guide explains how to deploy your AutoDoc AI application using GitHub integration instead of the Vercel CLI.
+This guide explains how to deploy your ReadmeArchitect application using GitHub integration instead of the Vercel CLI.
 
 ## 🔄 Recent Changes
 
@@ -88,7 +88,7 @@ npm run deploy
    - Click "New OAuth App"
    - Fill in details:
      ```
-     Application name: AutoDoc AI
+     Application name: ReadmeArchitect
      Homepage URL: https://your-app.vercel.app
      Authorization callback URL: https://your-app.vercel.app/auth/callback
      ```
@@ -173,7 +173,7 @@ GITHUB_DATA_TOKEN=your_personal_access_token
 
 ## 🎉 Success!
 
-Once deployed via GitHub integration, your AutoDoc AI application will:
+Once deployed via GitHub integration, your ReadmeArchitect application will:
 - ✅ Work correctly with GitHub OAuth (no Vercel login required)
 - ✅ Auto-deploy on every push to main branch
 - ✅ Handle multiple domains automatically

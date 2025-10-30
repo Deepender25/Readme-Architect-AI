@@ -1,6 +1,6 @@
-# 🚀 Local Development Setup for AutoDoc AI
+# 🚀 Local Development Setup for ReadmeArchitect
 
-This guide will help you set up and run the AutoDoc AI application locally with working GitHub OAuth authentication.
+This guide will help you set up and run the ReadmeArchitect application locally with working GitHub OAuth authentication.
 
 ## 📋 Prerequisites
 
@@ -39,7 +39,7 @@ GITHUB_REDIRECT_URI="http://localhost:8080/auth/callback"
 
 1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
 2. Click on "OAuth Apps"
-3. Select your AutoDoc AI application
+3. Select your ReadmeArchitect application
 4. Update the **Authorization callback URL** to: `http://localhost:8080/auth/callback`
 
 **Important:** You may need to create a separate OAuth app for local development, or add multiple callback URLs if supported.

@@ -1,7 +1,7 @@
 # Professional Login System Implementation
 
 ## Overview
-This document outlines the implementation of a professional login system for AutoDoc AI that addresses the user's requirements for a proper login flow with account selection capabilities.
+This document outlines the implementation of a professional login system for ReadmeArchitect that addresses the user's requirements for a proper login flow with account selection capabilities.
 
 ## Key Improvements Made
 

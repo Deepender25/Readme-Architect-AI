@@ -1,7 +1,7 @@
 # Private Repository Support - Implementation Summary
 
 ## 🎯 Objective Completed
-Enhanced the AutoDoc AI README generator to support **private GitHub repositories** for authenticated users while maintaining full backward compatibility with existing public repository functionality.
+Enhanced the ReadmeArchitect README generator to support **private GitHub repositories** for authenticated users while maintaining full backward compatibility with existing public repository functionality.
 
 ## ✅ Key Features Implemented
 

@@ -18,7 +18,7 @@ def test_production_oauth():
     # Test 1: Check production Client ID
     print("1️⃣ Testing production Client ID...")
     try:
-        response = requests.get('https://autodocai.vercel.app/auth/github', allow_redirects=False, timeout=10)
+        response = requests.get('https://readmearchitect.vercel.app/auth/github', allow_redirects=False, timeout=10)
         
         if response.status_code in [301, 302]:
             location = response.headers.get('Location', '')
@@ -65,7 +65,7 @@ def test_production_oauth():
     
     # Test 3: Test callback URL
     print(f"\n3️⃣ Testing callback URL...")
-    callback_url = "https://autodocai.vercel.app/api/auth/callback?code=test&state=test"
+    callback_url = "https://readmearchitect.vercel.app/api/auth/callback?code=test&state=test"
     
     try:
         response = requests.get(callback_url, allow_redirects=False, timeout=10)
@@ -96,7 +96,7 @@ def provide_final_instructions(client_id_ok, app_accessible, callback_ok):
         print("🎉 All OAuth components are working!")
         
         print(f"\n✅ Ready to test login:")
-        print("   1. Visit: https://autodocai.vercel.app/login")
+        print("   1. Visit: https://readmearchitect.vercel.app/login")
         print("   2. Click 'Sign in with GitHub'")
         print("   3. Authorize the app on GitHub")
         print("   4. You should be logged in successfully")
@@ -129,7 +129,7 @@ def show_manual_test_url():
     print(f"\n🧪 Manual Test URL")
     print("=" * 20)
     
-    test_url = "https://github.com/login/oauth/authorize?client_id=Ov23liq3yu6Ir7scqDXo&redirect_uri=https://autodocai.vercel.app/api/auth/callback&scope=repo&state=manual_test"
+    test_url = "https://github.com/login/oauth/authorize?client_id=Ov23liq3yu6Ir7scqDXo&redirect_uri=https://readmearchitect.vercel.app/api/auth/callback&scope=repo&state=manual_test"
     
     print("🔗 Test this URL directly in your browser:")
     print(f"   {test_url}")

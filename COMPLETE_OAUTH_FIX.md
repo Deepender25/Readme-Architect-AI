@@ -40,26 +40,26 @@ Your **Client ID** and **Client Secret** are from **different GitHub OAuth apps*
 
 3. **Verify Callback URL**:
    ```
-   GITHUB_REDIRECT_URI=https://autodocai.vercel.app/api/auth/callback
+   GITHUB_REDIRECT_URI=https://readmearchitect.vercel.app/api/auth/callback
    ```
 
 ### Step 3: Update GitHub OAuth App Settings
 
 1. **In your GitHub OAuth app** (Client ID: `Ov23liq3yu6Ir7scqDXo`):
-   - **Homepage URL**: `https://autodocai.vercel.app`
-   - **Authorization callback URL**: `https://autodocai.vercel.app/api/auth/callback`
+   - **Homepage URL**: `https://readmearchitect.vercel.app`
+   - **Authorization callback URL**: `https://readmearchitect.vercel.app/api/auth/callback`
 
 ### Step 4: Redeploy and Test
 
 1. **Redeploy your Vercel app** (trigger new deployment)
 2. **Wait 2-3 minutes** for deployment to complete
-3. **Test login**: https://autodocai.vercel.app/login
+3. **Test login**: https://readmearchitect.vercel.app/login
 
 ## 🧪 Quick Test
 
 After making the changes, test with this URL:
 ```
-https://github.com/login/oauth/authorize?client_id=Ov23liq3yu6Ir7scqDXo&redirect_uri=https://autodocai.vercel.app/api/auth/callback&scope=repo&state=test
+https://github.com/login/oauth/authorize?client_id=Ov23liq3yu6Ir7scqDXo&redirect_uri=https://readmearchitect.vercel.app/api/auth/callback&scope=repo&state=test
 ```
 
 **Expected**: GitHub authorization page appears  
@@ -71,9 +71,9 @@ If you can't find the OAuth app with Client ID `Ov23liq3yu6Ir7scqDXo`, create a 
 
 1. **Go to**: https://github.com/settings/applications/new
 2. **Fill in**:
-   - **Application name**: AutoDoc AI
-   - **Homepage URL**: `https://autodocai.vercel.app`
-   - **Authorization callback URL**: `https://autodocai.vercel.app/api/auth/callback`
+   - **Application name**: ReadmeArchitect
+   - **Homepage URL**: `https://readmearchitect.vercel.app`
+   - **Authorization callback URL**: `https://readmearchitect.vercel.app/api/auth/callback`
 3. **Click "Register application"**
 4. **Copy the new Client ID and generate Client Secret**
 5. **Update Vercel environment variables** with the new credentials

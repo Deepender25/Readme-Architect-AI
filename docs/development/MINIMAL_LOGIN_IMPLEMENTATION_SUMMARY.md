@@ -9,7 +9,7 @@ I've successfully transformed both login pages to match your requirements for mi
 #### **Before vs After**
 - **Background**: Generic gradient → Your site's `ProfessionalBackground` component
 - **Logo**: Small 16x16 icon → Large 20x20 emerald gradient icon with glow
-- **Title**: "Welcome to AutoDoc AI" → "AutoDoc AI" (gradient text)
+- **Title**: "Welcome to ReadmeArchitect" → "ReadmeArchitect" (gradient text)
 - **Subtitle**: Long text → Simple "Choose your GitHub account"
 - **Layout**: Text-heavy → Visual-first with minimal text
 
@@ -21,8 +21,8 @@ NEW: Professional animated grid background (matches main site)
 OLD: Small GitHub icon (16x16)
 NEW: Large emerald gradient icon (20x20) with pulsing glow animation
 
-OLD: "Welcome to AutoDoc AI" + long subtitle
-NEW: "AutoDoc AI" (gradient text) + "Choose your GitHub account"
+OLD: "Welcome to ReadmeArchitect" + long subtitle
+NEW: "ReadmeArchitect" (gradient text) + "Choose your GitHub account"
 
 OLD: Text-heavy cards with explanations
 NEW: Visual cards with icons and minimal text

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Setup script for AutoDoc AI database
+Setup script for ReadmeArchitect database
 This script helps set up the Supabase database for the history feature.
 """
 
@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from api.database import validate_github_config, create_history_repository
 
 def main():
-    print("🚀 AutoDoc AI GitHub Database Setup")
+    print("🚀 ReadmeArchitect GitHub Database Setup")
     print("=" * 40)
     
     # Load environment variables

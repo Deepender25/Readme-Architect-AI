@@ -59,7 +59,7 @@ Step 2: Login
 │    🟢 GitHub Authentication         │
 │                                     │
 │        Welcome to                   │
-│       AutoDoc AI                    │ ← Gradient text with glow
+│       ReadmeArchitect                    │ ← Gradient text with glow
 │   Connect your GitHub account...    │
 │                                     │
 │  ┌─────────────────────────────────┐ │

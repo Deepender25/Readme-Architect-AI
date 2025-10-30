@@ -138,7 +138,7 @@ if __name__ == "__main__":
         print("🎉 Callback fix should work correctly!")
         print("\n✅ Next steps:")
         print("   1. The backend fix has been applied")
-        print("   2. Try logging in again: https://autodocai.vercel.app/login")
+        print("   2. Try logging in again: https://readmearchitect.vercel.app/login")
         print("   3. You should now be successfully authenticated")
     else:
         print("❌ There might be issues with the callback fix")

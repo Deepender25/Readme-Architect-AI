@@ -1,7 +1,7 @@
 # Project Cleanup Summary
 
 ## Overview
-Cleaned up and restructured the **AutoDoc AI** project (README Generator) to follow proper Next.js + Python hybrid application structure.
+Cleaned up and restructured the **ReadmeArchitect** project (README Generator) to follow proper Next.js + Python hybrid application structure.
 
 ## Files Removed
 - **40+ development markdown files** (moved to `docs/development/`)

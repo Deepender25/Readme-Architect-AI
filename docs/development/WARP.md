@@ -4,7 +4,7 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 
 ## Project Overview
 
-**AutoDoc AI** is a modern full-stack README generator that combines Next.js frontend with Python serverless functions to automatically create professional README files from GitHub repositories using AI analysis.
+**ReadmeArchitect** is a modern full-stack README generator that combines Next.js frontend with Python serverless functions to automatically create professional README files from GitHub repositories using AI analysis.
 
 ### Architecture
 - **Frontend**: Next.js 15 with TypeScript, Tailwind CSS, and Framer Motion

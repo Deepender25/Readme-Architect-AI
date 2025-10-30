@@ -28,7 +28,7 @@ Your GitHub login is failing because **Vercel is using the wrong GitHub Client I
 
 4. **Verify Other Variables** (should already be correct):
    - `GITHUB_CLIENT_SECRET`: Should match your GitHub OAuth app
-   - `GITHUB_REDIRECT_URI`: Should be `https://autodocai.vercel.app/api/auth/callback`
+   - `GITHUB_REDIRECT_URI`: Should be `https://readmearchitect.vercel.app/api/auth/callback`
 
 ### Step 2: Redeploy Your Application
 
@@ -43,7 +43,7 @@ After updating the environment variables:
 
 ### Step 3: Test the Login
 
-1. **Visit your app**: https://autodocai.vercel.app/login
+1. **Visit your app**: https://readmearchitect.vercel.app/login
 2. **Click "Sign in with GitHub"**
 3. **You should now be redirected to GitHub successfully**
 4. **After authorizing, you should be logged in**
@@ -57,7 +57,7 @@ After the fix, you can verify it's working:
 python -c "
 import requests
 import re
-response = requests.get('https://autodocai.vercel.app/auth/github', allow_redirects=False)
+response = requests.get('https://readmearchitect.vercel.app/auth/github', allow_redirects=False)
 location = response.headers.get('Location', '')
 match = re.search(r'client_id=([^&]+)', location)
 if match:
@@ -76,9 +76,9 @@ Make sure your GitHub OAuth app (with Client ID `Ov23liq3yu6Ir7scqDXo`) has thes
 1. **Go to GitHub**: https://github.com/settings/developers
 2. **Find your OAuth app** with Client ID `Ov23liq3yu6Ir7scqDXo`
 3. **Verify these settings**:
-   - **Application name**: AutoDoc AI (or your preferred name)
-   - **Homepage URL**: `https://autodocai.vercel.app`
-   - **Authorization callback URL**: `https://autodocai.vercel.app/api/auth/callback`
+   - **Application name**: ReadmeArchitect (or your preferred name)
+   - **Homepage URL**: `https://readmearchitect.vercel.app`
+   - **Authorization callback URL**: `https://readmearchitect.vercel.app/api/auth/callback`
 
 ## Common Issues After Fix
 

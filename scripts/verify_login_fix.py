@@ -21,7 +21,7 @@ def verify_github_login_fix():
     
     try:
         # Test the production OAuth redirect
-        response = requests.get('https://autodocai.vercel.app/auth/github', allow_redirects=False, timeout=10)
+        response = requests.get('https://readmearchitect.vercel.app/auth/github', allow_redirects=False, timeout=10)
         
         if response.status_code in [301, 302]:
             location = response.headers.get('Location', '')
@@ -42,7 +42,7 @@ def verify_github_login_fix():
                     if 'github.com/login/oauth/authorize' in location:
                         print("✅ Redirects to GitHub OAuth correctly")
                     
-                    if 'autodocai.vercel.app/api/auth/callback' in location:
+                    if 'readmearchitect.vercel.app/api/auth/callback' in location:
                         print("✅ Callback URL is correct")
                     
                     return True
@@ -74,9 +74,9 @@ def test_login_flow():
     print("=" * 35)
     
     steps = [
-        ("Login page", "https://autodocai.vercel.app/login"),
-        ("OAuth redirect", "https://autodocai.vercel.app/auth/github"),
-        ("API callback", "https://autodocai.vercel.app/api/auth/callback?code=test&state=test")
+        ("Login page", "https://readmearchitect.vercel.app/login"),
+        ("OAuth redirect", "https://readmearchitect.vercel.app/auth/github"),
+        ("API callback", "https://readmearchitect.vercel.app/api/auth/callback?code=test&state=test")
     ]
     
     for step_name, url in steps:
@@ -103,7 +103,7 @@ def provide_next_steps(success):
     if success:
         print("🎉 Your GitHub login should now be working!")
         print("\n✅ To test manually:")
-        print("   1. Visit: https://autodocai.vercel.app/login")
+        print("   1. Visit: https://readmearchitect.vercel.app/login")
         print("   2. Click 'Sign in with GitHub'")
         print("   3. You should be redirected to GitHub")
         print("   4. After authorizing, you should be logged in")

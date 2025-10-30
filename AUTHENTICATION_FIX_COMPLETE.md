@@ -56,14 +56,14 @@ All tests passing:
 ### Your GitHub login should now work! 
 
 **Test Steps:**
-1. Visit: https://autodocai.vercel.app/login
+1. Visit: https://readmearchitect.vercel.app/login
 2. Click "Sign in with GitHub"
 3. Authorize the app on GitHub
 4. You should be redirected back and logged in successfully
 
 ### Expected Flow:
 1. **Login page** → Click "Sign in with GitHub"
-2. **GitHub OAuth** → Authorize AutoDoc AI
+2. **GitHub OAuth** → Authorize ReadmeArchitect
 3. **Callback** → Backend processes authentication
 4. **Redirect** → Back to your app with encoded user data
 5. **Frontend** → Decodes data and creates session
@@ -109,4 +109,4 @@ All components are now properly aligned and working together. You should be able
 - `.env` - Updated Client ID
 - Created diagnostic and test scripts
 
-**Next step:** Test your login at https://autodocai.vercel.app/login
+**Next step:** Test your login at https://readmearchitect.vercel.app/login

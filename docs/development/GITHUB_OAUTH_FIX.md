@@ -8,12 +8,12 @@ The GitHub OAuth app callback URL needs to be updated to match the new authentic
 ### 1. Update GitHub OAuth App Settings
 Go to your GitHub OAuth app settings and update the **Authorization callback URL** from:
 ```
-https://autodocai.vercel.app/auth/callback
+https://readmearchitect.vercel.app/auth/callback
 ```
 
 To:
 ```
-https://autodocai.vercel.app/api/auth/callback
+https://readmearchitect.vercel.app/api/auth/callback
 ```
 
 ### 2. Steps to Update:
@@ -25,7 +25,7 @@ https://autodocai.vercel.app/api/auth/callback
 ### 3. Environment Variable Updated
 ✅ Already updated in `.env`:
 ```
-GITHUB_REDIRECT_URI="https://autodocai.vercel.app/api/auth/callback"
+GITHUB_REDIRECT_URI="https://readmearchitect.vercel.app/api/auth/callback"
 ```
 
 ### 4. Code Improvements Made
