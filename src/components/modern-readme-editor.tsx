@@ -24,7 +24,6 @@ import GitHubOAuthNavbar from '@/components/blocks/navbars/github-oauth-navbar';
 import MinimalGridBackground from '@/components/minimal-geometric-background';
 
 interface ModernReadmeEditorProps {
-  content?: string;
   initialContent?: string;
   onClose?: () => void;
   onEdit?: () => void;
@@ -32,7 +31,6 @@ interface ModernReadmeEditorProps {
 }
 
 export default function ModernReadmeEditor({ 
-  content,
   initialContent,
   onClose,
   onEdit,
