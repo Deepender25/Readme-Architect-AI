@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Star, GitBranch, Clock, ExternalLink, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { authenticatedFetch } from '@/lib/auth';
+import { useAuthRetry } from '@/lib/auth-retry-handler';
 
 interface Repository {
   name: string;
@@ -25,24 +26,35 @@ export default function RepositoriesList({ onSelectRepository }: RepositoriesLis
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { retryWithAuth } = useAuthRetry();
 
   useEffect(() => {
     fetchRepositories();
   }, []);
 
-  const fetchRepositories = async () => {
+  const fetchRepositories = async (forceReauth = false) => {
     try {
       setIsLoading(true);
       setError(null);
       
-      const response = await authenticatedFetch('/api/repositories');
+      await retryWithAuth(async () => {
+        const response = await authenticatedFetch('/api/repositories');
+        
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            throw new Error('Authentication required');
+          }
+          throw new Error('Failed to fetch repositories');
+        }
+        
+        const data = await response.json();
+        setRepositories(data.repositories || []);
+      }, { 
+        maxRetries: 2, 
+        retryDelay: 1000,
+        forceReauth 
+      });
       
-      if (!response.ok) {
-        throw new Error('Failed to fetch repositories');
-      }
-      
-      const data = await response.json();
-      setRepositories(data.repositories || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load repositories');
     } finally {
@@ -99,9 +111,17 @@ export default function RepositoriesList({ onSelectRepository }: RepositoriesLis
     return (
       <div className="text-center py-12">
         <div className="text-red-400 mb-4">{error}</div>
-        <Button onClick={fetchRepositories} variant="outline" className="border-green-500/50 text-green-400">
-          Try Again
-        </Button>
+        <div className="flex flex-col gap-2 items-center">
+          <Button onClick={() => fetchRepositories(false)} variant="outline" className="border-green-500/50 text-green-400">
+            Try Again
+          </Button>
+          <Button onClick={() => fetchRepositories(true)} variant="outline" className="border-blue-500/50 text-blue-400">
+            Re-authenticate & Try Again
+          </Button>
+        </div>
+        <p className="text-xs text-gray-500 mt-3">
+          If you're logged in on multiple devices, try re-authenticating.
+        </p>
       </div>
     );
   }

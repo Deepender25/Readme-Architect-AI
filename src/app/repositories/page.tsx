@@ -26,6 +26,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
+import { useAuthRetry } from '@/lib/auth-retry-handler'
 
 import withAuth from '@/components/withAuth'
 import LayoutWrapper from '@/components/layout-wrapper'
@@ -49,6 +50,7 @@ interface Repository {
 
 function RepositoriesContent() {
   const { user, isAuthenticated } = useAuth();
+  const { retryWithAuth } = useAuthRetry();
   const router = useRouter();
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const [filteredRepos, setFilteredRepos] = useState<Repository[]>([]);
@@ -79,7 +81,7 @@ function RepositoriesContent() {
     filterAndSortRepositories();
   }, [repositories, searchTerm, sortBy, sortOrder, filterLanguage, filterVisibility]);
 
-  const fetchRepositories = async (refresh = false) => {
+  const fetchRepositories = async (refresh = false, forceReauth = false) => {
     try {
       if (refresh) {
         setIsRefreshing(true);
@@ -89,23 +91,45 @@ function RepositoriesContent() {
       }
       setError(null);
       
-      const response = await fetch('/api/repositories');
+      // Use retry mechanism with authentication handling
+      await retryWithAuth(async () => {
+        const response = await fetch('/api/repositories', {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            throw new Error('Authentication required');
+          }
+          throw new Error('Failed to fetch repositories');
+        }
+        
+        const data = await response.json();
+        const repos = data.repositories || [];
+        setRepositories(repos);
+        
+        if (refresh) {
+          showToast(`Refreshed ${repos.length} repositories successfully!`, 'success');
+        }
+      }, { 
+        maxRetries: 2, 
+        retryDelay: 1000,
+        forceReauth 
+      });
       
-      if (!response.ok) {
-        throw new Error('Failed to fetch repositories');
-      }
-      
-      const data = await response.json();
-      const repos = data.repositories || [];
-      setRepositories(repos);
-      
-      if (refresh) {
-        showToast(`Refreshed ${repos.length} repositories successfully!`, 'success');
-      }
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to load repositories';
       setError(errorMsg);
-      showToast(errorMsg, 'error');
+      
+      // Show different messages based on error type
+      if (errorMsg.includes('Authentication') || errorMsg.includes('login')) {
+        showToast('Authentication issue detected. Please try again or log in.', 'error');
+      } else {
+        showToast(errorMsg, 'error');
+      }
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
@@ -488,13 +512,25 @@ function RepositoriesContent() {
             <div className="text-center py-12">
               <AlertCircle className="w-12 h-12 mx-auto mb-4 text-red-400" />
               <div className="text-red-400 mb-4">{error}</div>
-              <Button 
-                onClick={() => fetchRepositories()} 
-                variant="outline" 
-                className="glass-button border-none text-green-400"
-              >
-                Try Again
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                <Button 
+                  onClick={() => fetchRepositories(false, false)} 
+                  variant="outline" 
+                  className="glass-button border-none text-green-400"
+                >
+                  Try Again
+                </Button>
+                <Button 
+                  onClick={() => fetchRepositories(false, true)} 
+                  variant="outline" 
+                  className="glass-button border-none text-blue-400"
+                >
+                  Re-authenticate & Try Again
+                </Button>
+              </div>
+              <p className="text-xs text-gray-500 mt-3 max-w-md mx-auto">
+                If you're logged in on multiple devices, try "Re-authenticate & Try Again" to sync your session.
+              </p>
             </div>
           ) : filteredRepos.length === 0 ? (
             <div className="text-center py-12 text-gray-400">

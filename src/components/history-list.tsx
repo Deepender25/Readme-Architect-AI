@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, Github, Trash2, Eye, Download, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { authenticatedFetch } from '@/lib/auth';
+import { useAuthRetry } from '@/lib/auth-retry-handler';
 
 interface HistoryItem {
   id: string;
@@ -29,24 +30,35 @@ export default function HistoryList({ onSelectHistory }: HistoryListProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const { retryWithAuth } = useAuthRetry();
 
   useEffect(() => {
     fetchHistory();
   }, []);
 
-  const fetchHistory = async () => {
+  const fetchHistory = async (forceReauth = false) => {
     try {
       setIsLoading(true);
       setError(null);
       
-      const response = await authenticatedFetch('/api/history');
+      await retryWithAuth(async () => {
+        const response = await authenticatedFetch('/api/history');
+        
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            throw new Error('Authentication required');
+          }
+          throw new Error('Failed to fetch history');
+        }
+        
+        const data = await response.json();
+        setHistory(data.history || []);
+      }, { 
+        maxRetries: 2, 
+        retryDelay: 1000,
+        forceReauth 
+      });
       
-      if (!response.ok) {
-        throw new Error('Failed to fetch history');
-      }
-      
-      const data = await response.json();
-      setHistory(data.history || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load history');
     } finally {
@@ -120,9 +132,17 @@ export default function HistoryList({ onSelectHistory }: HistoryListProps) {
     return (
       <div className="text-center py-12">
         <div className="text-red-400 mb-4">{error}</div>
-        <Button onClick={fetchHistory} variant="outline" className="border-green-500/50 text-green-400">
-          Try Again
-        </Button>
+        <div className="flex flex-col gap-2 items-center">
+          <Button onClick={() => fetchHistory(false)} variant="outline" className="border-green-500/50 text-green-400">
+            Try Again
+          </Button>
+          <Button onClick={() => fetchHistory(true)} variant="outline" className="border-blue-500/50 text-blue-400">
+            Re-authenticate & Try Again
+          </Button>
+        </div>
+        <p className="text-xs text-gray-500 mt-3">
+          If you're logged in on multiple devices, try re-authenticating.
+        </p>
       </div>
     );
   }
