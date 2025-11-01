@@ -2699,3 +2699,26 @@ scrollbar styles */
   --tw-prose-th-borders: rgb(75 85 99);
   --tw-prose-td-borders: rgb(55 65 81);
 }
+
+/* Rainbow Animation for GitHub Button */
+@keyframes rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-rainbow {
+  animation: rainbow 3s ease-in-out infinite;
+  background-size: 200% 200%;
+}
+
+.animate-rainbow:before {
+  animation: rainbow 3s ease-in-out infinite;
+  background-size: 200% 200%;
+}
