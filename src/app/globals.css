@@ -2715,10 +2715,15 @@ scrollbar styles */
 
 .animate-rainbow {
   animation: rainbow 3s ease-in-out infinite;
-  background-size: 200% 200%;
+  background-size: 400% 400%;
 }
 
-.animate-rainbow:before {
+.rainbow-border-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.rainbow-border-button .animate-rainbow {
   animation: rainbow 3s ease-in-out infinite;
-  background-size: 200% 200%;
+  background-size: 400% 400%;
 }
