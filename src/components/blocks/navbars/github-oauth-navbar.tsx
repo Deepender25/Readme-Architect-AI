@@ -198,10 +198,7 @@ export default function GitHubOAuthNavbar() {
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
                     onClick={() => setDropdownOpen(!dropdownOpen)}
-                    className="relative flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-500 border border-green-500/50 rounded-lg overflow-hidden group hover:border-green-500/80 transition-all duration-200"
-                    style={{
-                      boxShadow: dropdownOpen ? '0 0 12px rgba(0, 255, 136, 0.3)' : 'none'
-                    }}
+                    className="relative flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-500 border border-green-500/50 rounded-lg overflow-hidden group hover:border-green-500/80 transition-all duration-200 disabled:opacity-50"
                   >
                     <img
                       src={user?.avatar_url}
