@@ -198,7 +198,7 @@ export default function GitHubOAuthNavbar() {
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
                     onClick={() => setDropdownOpen(!dropdownOpen)}
-                    className="flex items-center gap-4 px-6 py-1 text-sm font-medium text-foreground/80 hover:text-green-400 transition-all duration-200 border border-transparent hover:border-green-500/30 rounded-lg relative min-w-[200px]"
+                    className="relative flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-500 border border-green-500/50 rounded-lg overflow-hidden group hover:border-green-500/80 transition-all duration-200"
                     style={{
                       boxShadow: dropdownOpen ? '0 0 12px rgba(0, 255, 136, 0.3)' : 'none'
                     }}
@@ -214,6 +214,9 @@ export default function GitHubOAuthNavbar() {
                       className={`w-4 h-4 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''
                         }`}
                     />
+                    
+                    {/* Subtle glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-green-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </motion.button>
 
                   <DropdownPortal isOpen={dropdownOpen} triggerRef={dropdownTriggerRef}>

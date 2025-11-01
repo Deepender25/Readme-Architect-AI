@@ -205,7 +205,7 @@ export default function ModernNavbar() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setDropdownOpen(!dropdownOpen)}
-                      className="flex items-center gap-4 px-6 py-1 text-sm font-medium glass-button rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-green-400/20 group min-w-[200px]"
+                      className="relative flex items-center gap-2 px-6 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 whitespace-nowrap"
                     >
                       <div className="relative shrink-0">
                         <img
@@ -230,6 +230,8 @@ export default function ModernNavbar() {
                           dropdownOpen ? 'rotate-180' : ''
                         }`}
                       />
+                      
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-400/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </motion.button>
                     
                     <DropdownPortal isOpen={dropdownOpen} triggerRef={dropdownTriggerRef}>
