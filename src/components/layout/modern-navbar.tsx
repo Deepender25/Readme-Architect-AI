@@ -205,7 +205,7 @@ export default function ModernNavbar() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setDropdownOpen(!dropdownOpen)}
-                      className="flex items-center gap-3 px-4 py-1.5 text-sm font-medium glass-button rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-green-400/20 group"
+                      className="flex items-center gap-4 px-6 py-1 text-sm font-medium glass-button rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-green-400/20 group min-w-[200px]"
                     >
                       <div className="relative shrink-0">
                         <img
