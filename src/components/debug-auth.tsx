@@ -26,7 +26,7 @@ export default function DebugAuth() {
       <div className="mt-2 space-y-1">
         <div className="space-x-2">
           <button 
-            onClick={login}
+            onClick={() => login()}
             className="bg-green-600 px-2 py-1 rounded text-xs"
           >
             Auth Login

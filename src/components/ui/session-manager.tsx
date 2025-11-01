@@ -10,8 +10,6 @@ import {
   Clock,
   MapPin,
   Chrome,
-  Firefox,
-  Safari,
   Globe,
   AlertTriangle,
   RefreshCw
@@ -108,9 +106,9 @@ export default function SessionManager({ isOpen, onClose, userName }: SessionMan
       case 'chrome':
         return <Chrome className="w-4 h-4" />;
       case 'firefox':
-        return <Firefox className="w-4 h-4" />;
+        return <Globe className="w-4 h-4" />;
       case 'safari':
-        return <Safari className="w-4 h-4" />;
+        return <Globe className="w-4 h-4" />;
       default:
         return <Globe className="w-4 h-4" />;
     }

@@ -61,7 +61,7 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
             </li>
           ),
           // Custom code styles
-          code: ({ inline, children }) => (
+          code: ({ children, ...props }) => (
             inline ? (
               <code className="bg-gray-800 text-green-400 px-2 py-1 rounded text-sm font-mono">
                 {children}

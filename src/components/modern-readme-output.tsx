@@ -28,6 +28,8 @@ import DOMPurify from 'isomorphic-dompurify';
 import { useAuth, authenticatedFetch } from '@/lib/auth';
 
 interface ModernReadmeOutputProps {
+  createdAt?: string;
+  updatedAt?: string;
   content: string;
   repositoryUrl?: string;
   projectName?: string;

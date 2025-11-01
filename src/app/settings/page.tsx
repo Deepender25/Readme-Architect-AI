@@ -196,7 +196,7 @@ function SettingsContent() {
   }
 
   return (
-    <LayoutWrapper maxWidth="4xl">
+    <LayoutWrapper maxWidth="2xl">
       <PageHeader
         title="Settings"
         description="Customize your ReadmeArchitect experience"

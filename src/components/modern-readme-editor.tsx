@@ -24,15 +24,17 @@ import GitHubOAuthNavbar from '@/components/blocks/navbars/github-oauth-navbar';
 import MinimalGridBackground from '@/components/minimal-geometric-background';
 
 interface ModernReadmeEditorProps {
-  content: string;
+  initialContent?: string;
   onClose?: () => void;
   onEdit?: () => void;
+  onSave?: (content: string) => void;
 }
 
 export default function ModernReadmeEditor({ 
-  content: initialContent,
+  initialContent,
   onClose,
-  onEdit 
+  onEdit,
+  onSave 
 }: ModernReadmeEditorProps) {
   const [content, setContent] = useState(initialContent);
   const [viewMode, setViewMode] = useState<'preview' | 'split' | 'raw'>('preview');
