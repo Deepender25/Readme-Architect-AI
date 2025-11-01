@@ -5,13 +5,13 @@ import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Settings, FileText, LogOut, ChevronDown, FolderGit2, History } from 'lucide-react';
 import Image from 'next/image';
-import { useAuth } from '@/lib/auth';
+import { useJWTAuth } from '@/lib/jwt-auth-client';
 import DropdownPortal from '@/components/ui/dropdown-portal';
 
 
 
 export default function GitHubOAuthNavbar() {
-  const { user, isAuthenticated, isLoading, login, logout } = useAuth();
+  const { user, isAuthenticated, isLoading, login, logout } = useJWTAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);

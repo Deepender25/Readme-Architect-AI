@@ -2,13 +2,13 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/auth';
+import { useJWTAuth } from '@/lib/jwt-auth-client';
 
 const withAuth = <P extends object>(
   WrappedComponent: React.ComponentType<P>
 ): React.FC<P> => {
   const WithAuthComponent: React.FC<P> = (props) => {
-    const { isAuthenticated, isLoading } = useAuth();
+    const { isAuthenticated, isLoading } = useJWTAuth();
     const router = useRouter();
 
     useEffect(() => {

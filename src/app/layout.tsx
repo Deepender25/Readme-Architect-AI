@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
-import { AuthProvider } from '@/lib/auth';
+import { JWTAuthProvider } from '@/lib/jwt-auth-client';
 import EnhancedGridBackground from '@/components/enhanced-grid-background';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
@@ -214,7 +214,7 @@ export default function RootLayout({
         {/* Enhanced Grid Background - Professional animated grid across all pages */}
         <EnhancedGridBackground />
 
-        <AuthProvider>
+        <JWTAuthProvider>
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={pathname}
@@ -272,7 +272,7 @@ export default function RootLayout({
               pointerEvents: 'none'
             }}
           />
-        </AuthProvider>
+        </JWTAuthProvider>
 
         {/* Vercel Analytics & Speed Insights */}
         <Analytics />

@@ -20,14 +20,14 @@ import {
   Clock
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useAuth } from '@/lib/auth'
+import { useJWTAuth } from '@/lib/jwt-auth-client'
 import LayoutWrapper from '@/components/layout-wrapper'
 import PageHeader from '@/components/layout/page-header'
 import ContentSection from '@/components/layout/content-section'
 import withAuth from '@/components/withAuth'
 
 function SettingsContent() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useJWTAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   const [stats, setStats] = useState({ historyCount: 0, reposCount: 0, lastActivity: null });
