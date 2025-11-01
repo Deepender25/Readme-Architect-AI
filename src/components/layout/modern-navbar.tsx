@@ -179,29 +179,18 @@ export default function ModernNavbar() {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => login()}
                     disabled={isLoading}
-                    className="relative flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-black/80 backdrop-blur-sm rounded-lg overflow-hidden group transition-all duration-300 disabled:opacity-50 whitespace-nowrap rainbow-border-button"
+                    className="relative flex items-center gap-2 px-6 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50 whitespace-nowrap"
                   >
                     <Github className="w-4 h-4" />
                     <span className="relative z-10">
                       {isLoading ? 'Loading...' : 'Connect with Github'}
                     </span>
                     
-                    {/* Animated rainbow border */}
-                    <div className="absolute inset-0 rounded-lg p-[2px] animate-rainbow bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 via-indigo-500 to-purple-500 bg-[length:400%_400%]">
-                      <div className="w-full h-full bg-black/90 backdrop-blur-sm rounded-[6px]"></div>
-                    </div>
-                    
-                    {/* Content overlay */}
-                    <div className="absolute inset-[2px] bg-black/90 backdrop-blur-sm rounded-[6px] flex items-center justify-center gap-2">
-                      <Github className="w-4 h-4 text-white" />
-                      <span className="text-white text-sm font-medium">
-                        {isLoading ? 'Loading...' : 'Connect with Github'}
-                      </span>
-                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-400/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </motion.button>
                 ) : (
                   <motion.div
@@ -461,25 +450,10 @@ export default function ModernNavbar() {
                       transition={{ delay: 0.15 }}
                       onClick={() => login()}
                       disabled={isLoading}
-                      className="relative flex items-center gap-2 w-full px-4 py-3 text-sm font-medium text-white bg-black/80 backdrop-blur-sm rounded-lg overflow-hidden group transition-all duration-300 disabled:opacity-50 rainbow-border-button"
+                      className="flex items-center gap-2 w-full px-4 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-lg hover:bg-green-400/10 transition-colors disabled:opacity-50"
                     >
                       <Github className="w-4 h-4" />
-                      <span className="relative z-10">
-                        {isLoading ? 'Loading...' : 'Connect with Github'}
-                      </span>
-                      
-                      {/* Animated rainbow border */}
-                      <div className="absolute inset-0 rounded-lg p-[2px] animate-rainbow bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 via-indigo-500 to-purple-500 bg-[length:400%_400%]">
-                        <div className="w-full h-full bg-black/90 backdrop-blur-sm rounded-[6px]"></div>
-                      </div>
-                      
-                      {/* Content overlay */}
-                      <div className="absolute inset-[2px] bg-black/90 backdrop-blur-sm rounded-[6px] flex items-center justify-center gap-2">
-                        <Github className="w-4 h-4 text-white" />
-                        <span className="text-white text-sm font-medium">
-                          {isLoading ? 'Loading...' : 'Connect with Github'}
-                        </span>
-                      </div>
+                      {isLoading ? 'Loading...' : 'Connect with Github'}
                     </motion.button>
                   ) : (
                     <div className="space-y-1">
