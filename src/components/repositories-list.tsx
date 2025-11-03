@@ -31,28 +31,22 @@ export default function RepositoriesList({ onSelectRepository }: RepositoriesLis
     fetchRepositories();
   }, []);
 
-  const fetchRepositories = async (forceReauth = false) => {
+  const fetchRepositories = async () => {
     try {
       setIsLoading(true);
       setError(null);
       
-      await retryWithAuth(async () => {
-        const response = await authenticatedFetch('/api/repositories');
-        
-        if (!response.ok) {
-          if (response.status === 401 || response.status === 403) {
-            throw new Error('Authentication required');
-          }
-          throw new Error('Failed to fetch repositories');
+      const response = await authenticatedFetch('/api/repositories');
+      
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          throw new Error('Authentication required');
         }
-        
-        const data = await response.json();
-        setRepositories(data.repositories || []);
-      }, { 
-        maxRetries: 2, 
-        retryDelay: 1000,
-        forceReauth 
-      });
+        throw new Error('Failed to fetch repositories');
+      }
+      
+      const data = await response.json();
+      setRepositories(data.repositories || []);
       
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load repositories');
@@ -110,17 +104,11 @@ export default function RepositoriesList({ onSelectRepository }: RepositoriesLis
     return (
       <div className="text-center py-12">
         <div className="text-red-400 mb-4">{error}</div>
-        <div className="flex flex-col gap-2 items-center">
-          <Button onClick={() => fetchRepositories(false)} variant="outline" className="border-green-500/50 text-green-400">
+        <div className="flex justify-center">
+          <Button onClick={() => fetchRepositories()} variant="outline" className="border-green-500/50 text-green-400">
             Try Again
           </Button>
-          <Button onClick={() => fetchRepositories(true)} variant="outline" className="border-blue-500/50 text-blue-400">
-            Re-authenticate & Try Again
-          </Button>
         </div>
-        <p className="text-xs text-gray-500 mt-3">
-          If you're logged in on multiple devices, try re-authenticating.
-        </p>
       </div>
     );
   }
