@@ -68,7 +68,7 @@ function ReadmeViewContent() {
       }
       
       const data = await response.json()
-      setHistoryItem(data.item)
+      setHistoryItem(data.history_item)
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to load README'
       setError(errorMsg)
