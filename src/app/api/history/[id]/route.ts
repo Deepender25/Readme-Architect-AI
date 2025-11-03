@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import SimpleAuth from '@/lib/auth';
 
 // Force dynamic rendering for this route
 export const runtime = 'nodejs';
@@ -12,31 +13,20 @@ export async function GET(
     const decodedId = decodeURIComponent(params.id);
     console.log('📖 Individual history item fetch request received for ID:', params.id, 'Decoded:', decodedId);
     
-    // Get user authentication from cookies
-    const cookieHeader = request.headers.get('Cookie') || '';
-    
-    let userData = null;
-    if (cookieHeader.includes('github_user=')) {
-      try {
-        const cookieValue = cookieHeader.split('github_user=')[1].split(';')[0];
-        userData = JSON.parse(Buffer.from(cookieValue, 'base64').toString());
-        console.log('👤 User authenticated:', userData?.username, 'User ID:', userData?.github_id);
-      } catch (e) {
-        console.error('❌ Failed to parse user cookie:', e);
-        return NextResponse.json({ error: 'Invalid authentication' }, { status: 401 });
-      }
-    }
-
-    if (!userData) {
+    // Check authentication using our new auth system
+    const user = await SimpleAuth.getCurrentUser(request);
+    if (!user) {
       console.log('❌ No user authentication found');
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
+    console.log('👤 User authenticated:', user.username, 'User ID:', user.github_id);
+
     // Fetch specific history item from GitHub database
-    const historyItem = await fetchHistoryItemFromGitHubDatabase(userData.github_id, decodedId);
+    const historyItem = await fetchHistoryItemFromGitHubDatabase(user.github_id, decodedId);
     
     if (!historyItem) {
-      console.log('❌ History item not found for ID:', decodedId, 'User ID:', userData.github_id);
+      console.log('❌ History item not found for ID:', decodedId, 'User ID:', user.github_id);
       return NextResponse.json({ error: 'History item not found' }, { status: 404 });
     }
 
@@ -60,28 +50,17 @@ export async function DELETE(
     const decodedId = decodeURIComponent(params.id);
     console.log('🗑️ Individual history item delete request received for ID:', params.id, 'Decoded:', decodedId);
     
-    // Get user authentication from cookies
-    const cookieHeader = request.headers.get('Cookie') || '';
-    
-    let userData = null;
-    if (cookieHeader.includes('github_user=')) {
-      try {
-        const cookieValue = cookieHeader.split('github_user=')[1].split(';')[0];
-        userData = JSON.parse(Buffer.from(cookieValue, 'base64').toString());
-        console.log('👤 User authenticated:', userData?.username);
-      } catch (e) {
-        console.error('❌ Failed to parse user cookie:', e);
-        return NextResponse.json({ error: 'Invalid authentication' }, { status: 401 });
-      }
-    }
-
-    if (!userData) {
+    // Check authentication using our new auth system
+    const user = await SimpleAuth.getCurrentUser(request);
+    if (!user) {
       console.log('❌ No user authentication found');
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
+    console.log('👤 User authenticated:', user.username);
+
     // Delete specific history item from GitHub database
-    const success = await deleteHistoryItemFromGitHubDatabase(userData.github_id, decodedId);
+    const success = await deleteHistoryItemFromGitHubDatabase(user.github_id, decodedId);
     
     if (success) {
       console.log('✅ History item deleted successfully');

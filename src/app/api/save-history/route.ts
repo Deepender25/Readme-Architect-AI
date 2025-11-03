@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import SimpleAuth from '@/lib/auth';
 
 // Force dynamic rendering for this route
 export const runtime = 'nodejs';
@@ -8,35 +9,23 @@ export async function POST(request: NextRequest) {
   try {
     console.log('📝 Save history request received');
     
-    // Get the request body
-    const body = await request.json();
-    console.log('📋 Request body:', JSON.stringify(body, null, 2));
-    
-    // Get user authentication from cookies
-    const cookieHeader = request.headers.get('Cookie') || '';
-    console.log('🍪 Cookie header:', cookieHeader);
-    
-    let userData = null;
-    if (cookieHeader.includes('github_user=')) {
-      try {
-        const cookieValue = cookieHeader.split('github_user=')[1].split(';')[0];
-        userData = JSON.parse(Buffer.from(cookieValue, 'base64').toString());
-        console.log('👤 User data extracted:', userData?.username);
-      } catch (e) {
-        console.error('❌ Failed to parse user cookie:', e);
-        return NextResponse.json({ error: 'Invalid authentication' }, { status: 401 });
-      }
-    }
-
-    if (!userData) {
+    // Check authentication using our new auth system
+    const user = await SimpleAuth.getCurrentUser(request);
+    if (!user) {
       console.log('❌ No user authentication found');
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
+    console.log('👤 User authenticated:', user.username);
+    
+    // Get the request body
+    const body = await request.json();
+    console.log('📋 Request body:', JSON.stringify(body, null, 2));
+
     // Prepare data for GitHub database
     const historyData = {
-      user_id: String(userData.github_id || ''),
-      username: userData.username || '',
+      user_id: user.github_id,
+      username: user.username,
       repository_url: body.repository_url || '',
       repository_name: body.repository_name || '',
       project_name: body.project_name || null,

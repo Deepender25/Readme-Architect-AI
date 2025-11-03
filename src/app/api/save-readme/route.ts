@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import SimpleAuth from '@/lib/auth';
 
 // Force dynamic rendering for this route
 export const runtime = 'nodejs';
@@ -6,28 +7,16 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
-    // Get user from cookie
-    const cookieHeader = request.headers.get('cookie');
-    if (!cookieHeader) {
+    // Check authentication using our new auth system
+    const user = await SimpleAuth.getCurrentUser(request);
+    if (!user) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
-    // Parse user from cookie
-    let user;
-    try {
-      const cookies = cookieHeader.split(';');
-      const githubUserCookie = cookies.find(cookie => 
-        cookie.trim().startsWith('github_user=')
-      );
-      
-      if (!githubUserCookie) {
-        return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
-      }
-      
-      const cookieValue = githubUserCookie.split('=')[1];
-      user = JSON.parse(atob(cookieValue));
-    } catch (error) {
-      return NextResponse.json({ error: 'Invalid authentication' }, { status: 401 });
+    // Get GitHub access token
+    const accessToken = await SimpleAuth.getGitHubAccessToken(request);
+    if (!accessToken) {
+      return NextResponse.json({ error: 'GitHub access token not found' }, { status: 401 });
     }
 
     const { repositoryUrl, readmeContent } = await request.json();
@@ -57,7 +46,7 @@ export async function POST(request: NextRequest) {
         `https://api.github.com/repos/${owner}/${repoName}/contents/README.md`,
         {
           headers: {
-            'Authorization': `token ${user.access_token}`,
+            'Authorization': `token ${accessToken}`,
             'Accept': 'application/vnd.github.v3+json',
             'User-Agent': 'ReadmeArchitect'
           }
@@ -85,7 +74,7 @@ export async function POST(request: NextRequest) {
       {
         method: 'PUT',
         headers: {
-          'Authorization': `token ${user.access_token}`,
+          'Authorization': `token ${accessToken}`,
           'Accept': 'application/vnd.github.v3+json',
           'Content-Type': 'application/json',
           'User-Agent': 'ReadmeArchitect'
