@@ -57,36 +57,8 @@
         "Access-Control-Allow-Headers": "Content-Type, Authorization, Cookie"
       }
     },
-    {
-      "src": "/auth/(.*)",
-      "dest": "/api/index.py",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization, Cookie",
-        "Access-Control-Allow-Credentials": "true"
-      }
-    },
-    {
-      "src": "/api/repositories",
-      "dest": "/api/index.py",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization, Cookie",
-        "Access-Control-Allow-Credentials": "true"
-      }
-    },
-    {
-      "src": "/api/history(.*)",
-      "dest": "/api/index.py",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization, Cookie",
-        "Access-Control-Allow-Credentials": "true"
-      }
-    },
+
+
     {
       "src": "/(.*)",
       "dest": "/$1"
