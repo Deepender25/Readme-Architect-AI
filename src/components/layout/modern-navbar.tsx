@@ -8,7 +8,7 @@ import {
   FolderGit2, History, Home, Sparkles, BookOpen, Code2, Zap
 } from 'lucide-react';
 import Image from 'next/image';
-import { useAuth } from '@/lib/auth';
+import { useAuth } from '@/lib/auth-client';
 import DropdownPortal from '@/components/ui/dropdown-portal';
 
 export default function ModernNavbar() {

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { marked } from 'marked';
 import DOMPurify from 'isomorphic-dompurify';
-import { useAuth } from '@/lib/auth';
+import { useAuth } from '@/lib/auth-client';
 import RepositoriesList from '@/components/repositories-list';
 import HistoryList from '@/components/history-list';
 import ModernReadmeOutput from '@/components/modern-readme-output';

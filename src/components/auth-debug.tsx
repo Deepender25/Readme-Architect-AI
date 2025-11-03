@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@/lib/auth';
+import { useAuth } from '@/lib/auth-client';
 import { useEffect, useState } from 'react';
 
 export default function AuthDebug() {

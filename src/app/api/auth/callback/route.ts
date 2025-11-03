@@ -1,82 +1,111 @@
 import { NextRequest, NextResponse } from 'next/server';
+import SimpleAuth from '@/lib/auth';
 
-// Force dynamic rendering for this route
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
+  // Get the base URL for absolute redirects (outside try block for scope)
+  const host = request.headers.get('host');
+  const protocol = host?.includes('localhost') ? 'http' : 'https';
+  let baseUrl = `${protocol}://${host}`;
   
-  console.log('Next.js callback called with params:', searchParams.toString());
-  
+  // Fallback to environment variable if host is not available
+  if (!host) {
+    baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://readmearchitect.vercel.app';
+  }
+
   try {
-    // Get the current host from the request
-    const host = request.headers.get('host');
-    const protocol = host?.includes('localhost') ? 'http' : 'https';
-    const baseUrl = `${protocol}://${host}`;
+    const { searchParams } = new URL(request.url);
+    const code = searchParams.get('code');
+    const state = searchParams.get('state'); // This is our returnTo path
+    const error = searchParams.get('error');
     
-    const pythonCallbackUrl = `${baseUrl}/auth/callback?${searchParams.toString()}`;
-    console.log('Calling Python callback:', pythonCallbackUrl);
+    console.log('OAuth callback received:', { code: !!code, state, error, host, baseUrl });
     
-    const response = await fetch(pythonCallbackUrl, {
-      method: 'GET',
-      redirect: 'manual', // Don't follow redirects automatically
-    });
-
-    console.log('Python response status:', response.status);
-
-    // If it's a redirect response, follow it
-    if (response.status >= 300 && response.status < 400) {
-      const location = response.headers.get('Location');
-      console.log('Python redirect location:', location);
-      
-      if (location) {
-        // Extract cookies from the Python response
-        const setCookieHeader = response.headers.get('Set-Cookie');
-        
-        // Handle both absolute and relative URLs
-        let redirectUrl: URL;
-        try {
-          if (location.startsWith('http://') || location.startsWith('https://')) {
-            // Absolute URL
-            redirectUrl = new URL(location);
-          } else {
-            // Relative URL - construct with current host
-            redirectUrl = new URL(location, baseUrl);
-          }
-          
-          console.log('Final redirect URL:', redirectUrl.toString());
-        } catch (error) {
-          console.error('Error parsing redirect URL:', location, error);
-          // Fallback to home page
-          redirectUrl = new URL('/', baseUrl);
-        }
-        
-        const redirectResponse = NextResponse.redirect(redirectUrl);
-        
-        // Forward the cookie from Python backend
-        if (setCookieHeader) {
-          console.log('Setting cookie:', setCookieHeader);
-          redirectResponse.headers.set('Set-Cookie', setCookieHeader);
-        }
-        
-        return redirectResponse;
-      }
+    if (error) {
+      console.error('OAuth error:', error);
+      return NextResponse.redirect(`${baseUrl}/login?error=oauth_denied`);
     }
-
-    // If not a redirect, return the response as-is
-    const responseText = await response.text();
-    console.log('Python response body:', responseText);
     
-    return new Response(responseText, {
-      status: response.status,
-      headers: response.headers,
+    if (!code) {
+      console.error('No authorization code received');
+      return NextResponse.redirect(`${baseUrl}/login?error=no_code`);
+    }
+    
+    // Exchange code for access token
+    const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        client_id: process.env.GITHUB_CLIENT_ID,
+        client_secret: process.env.GITHUB_CLIENT_SECRET,
+        code,
+      }),
     });
+    
+    const tokenData = await tokenResponse.json();
+    
+    if (!tokenData.access_token) {
+      console.error('Failed to get access token:', tokenData);
+      return NextResponse.redirect(`${baseUrl}/login?error=token_failed`);
+    }
+    
+    // Get user info from GitHub
+    const userResponse = await fetch('https://api.github.com/user', {
+      headers: {
+        'Authorization': `Bearer ${tokenData.access_token}`,
+        'Accept': 'application/vnd.github.v3+json',
+      },
+    });
+    
+    if (!userResponse.ok) {
+      console.error('Failed to get user info');
+      return NextResponse.redirect(`${baseUrl}/login?error=user_info_failed`);
+    }
+    
+    const githubUser = await userResponse.json();
+    
+    // Create our user object
+    const user = {
+      id: githubUser.id.toString(),
+      github_id: githubUser.id.toString(),
+      username: githubUser.login,
+      name: githubUser.name || githubUser.login,
+      avatar_url: githubUser.avatar_url,
+      html_url: githubUser.html_url,
+      email: githubUser.email,
+    };
+    
+    console.log('User authenticated:', user.username);
+    
+    // Create JWT token
+    const token = await SimpleAuth.createToken(user, tokenData.access_token);
+    
+    // Create response with absolute redirect URL
+    let redirectPath = state && state !== '/' ? state : '/';
+    
+    // Ensure the redirect path starts with /
+    if (!redirectPath.startsWith('/')) {
+      redirectPath = '/';
+    }
+    
+    const redirectUrl = `${baseUrl}${redirectPath}`;
+    console.log('Creating redirect to:', redirectUrl);
+    
+    const response = NextResponse.redirect(redirectUrl);
+    
+    // Set auth cookie
+    response.headers.set('Set-Cookie', SimpleAuth.setAuthCookie(token));
+    
+    console.log('Authentication successful, redirecting to:', redirectUrl);
+    
+    return response;
   } catch (error) {
-    console.error('GitHub callback error:', error);
-    const host = request.headers.get('host');
-    const protocol = host?.includes('localhost') ? 'http' : 'https';
-    const baseUrl = `${protocol}://${host}`;
+    console.error('OAuth callback error:', error);
     return NextResponse.redirect(`${baseUrl}/login?error=callback_failed`);
   }
 }

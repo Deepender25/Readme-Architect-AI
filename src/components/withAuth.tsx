@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/auth';
+import { useAuth } from '@/lib/auth-client';
 
 const withAuth = <P extends object>(
   WrappedComponent: React.ComponentType<P>

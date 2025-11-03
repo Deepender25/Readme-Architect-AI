@@ -40,43 +40,11 @@ class handler(BaseHTTPRequestHandler):
         parsed_url = urllib.parse.urlparse(self.path)
         query_params = urllib.parse.parse_qs(parsed_url.query)
 
-        protected_paths = [
-            '/api/repositories',
-            '/api/history',
-            '/api/history/', # for individual history items
-            '/api/sessions' # for session management
-        ]
-
-        # Centralized authentication check (exclude /api/generate and /api/stream)
-        if any(parsed_url.path.startswith(p) for p in protected_paths):
-            user_data = self.get_user_from_cookie()
-            if not user_data:
-                self.send_json_response({'error': 'Authentication required.'}, 401)
-                return
-            if 'access_token' not in user_data:
-                self.send_json_response({'error': 'Invalid authentication.'}, 401)
-                return
-
-        if parsed_url.path == '/auth/github':
-            self.handle_github_auth()
-        elif parsed_url.path == '/auth/callback':
-            self.handle_github_callback(query_params)
-        elif parsed_url.path == '/api/repositories':
-            self.handle_repositories()
-        elif parsed_url.path == '/api/generate':
+        # Only handle generate, stream, and contact endpoints
+        if parsed_url.path == '/api/generate':
             self.handle_generate(query_params)
         elif parsed_url.path == '/api/stream':
             self.handle_stream(query_params)
-        elif parsed_url.path == '/api/history':
-            self.handle_history()
-        elif parsed_url.path.startswith('/api/history/'):
-            history_id = parsed_url.path.split('/')[-1]
-            self.handle_history_item(history_id)
-        elif parsed_url.path == '/api/sessions':
-            self.handle_sessions()
-        elif parsed_url.path.startswith('/api/sessions/'):
-            session_action = parsed_url.path.split('/')[-1]
-            self.handle_session_action(session_action)
         elif parsed_url.path == '/api/python/contact':
             self.handle_contact()
         else:

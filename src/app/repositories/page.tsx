@@ -24,9 +24,8 @@ import {
   FolderGit2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useAuth } from '@/lib/auth'
+import { useAuth } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
-import { useAuthRetry } from '@/lib/auth-retry-handler'
 
 import withAuth from '@/components/withAuth'
 import LayoutWrapper from '@/components/layout-wrapper'
@@ -50,7 +49,7 @@ interface Repository {
 
 function RepositoriesContent() {
   const { user, isAuthenticated } = useAuth();
-  const { retryWithAuth } = useAuthRetry();
+
   const router = useRouter();
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const [filteredRepos, setFilteredRepos] = useState<Repository[]>([]);

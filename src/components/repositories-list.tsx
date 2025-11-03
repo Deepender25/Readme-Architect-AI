@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Star, GitBranch, Clock, ExternalLink, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { authenticatedFetch } from '@/lib/auth';
-import { useAuthRetry } from '@/lib/auth-retry-handler';
+import { authenticatedFetch } from '@/lib/auth-client';
 
 interface Repository {
   name: string;
@@ -26,7 +25,7 @@ export default function RepositoriesList({ onSelectRepository }: RepositoriesLis
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { retryWithAuth } = useAuthRetry();
+
 
   useEffect(() => {
     fetchRepositories();

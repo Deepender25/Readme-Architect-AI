@@ -1,36 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Force dynamic rendering for this route
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
+  // Get the base URL for absolute redirects (outside try block for scope)
+  const host = request.headers.get('host');
+  const protocol = host?.includes('localhost') ? 'http' : 'https';
+  let baseUrl = `${protocol}://${host}`;
+  
+  // Fallback to environment variable if host is not available
+  if (!host) {
+    baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://readmearchitect.vercel.app';
+  }
+
   try {
-    // Get the current host from the request
-    const host = request.headers.get('host');
-    const protocol = host?.includes('localhost') ? 'http' : 'https';
-    const baseUrl = `${protocol}://${host}`;
-    
-    // Forward all query parameters to the Python handler
     const { searchParams } = new URL(request.url);
-    const queryString = searchParams.toString();
+    const returnTo = searchParams.get('returnTo') || '/';
     
-    console.log('Next.js GitHub auth route called');
-    console.log('Original URL:', request.url);
-    console.log('Search params:', searchParams.toString());
-    console.log('returnTo param:', searchParams.get('returnTo'));
-    console.log('returnTo type:', typeof searchParams.get('returnTo'));
+    // GitHub OAuth configuration
+    const clientId = process.env.GITHUB_CLIENT_ID;
+    const redirectUri = process.env.GITHUB_REDIRECT_URI;
     
-    const pythonAuthUrl = `${baseUrl}/auth/github${queryString ? `?${queryString}` : ''}`;
-    console.log('Redirecting to Python:', pythonAuthUrl);
+    if (!clientId || !redirectUri) {
+      console.error('GitHub OAuth not configured');
+      return NextResponse.redirect(`${baseUrl}/login?error=oauth_not_configured`);
+    }
     
-    // Redirect to Python OAuth handler
-    return NextResponse.redirect(pythonAuthUrl);
+    // Build GitHub OAuth URL
+    const githubAuthUrl = new URL('https://github.com/login/oauth/authorize');
+    githubAuthUrl.searchParams.set('client_id', clientId);
+    githubAuthUrl.searchParams.set('redirect_uri', redirectUri);
+    githubAuthUrl.searchParams.set('scope', 'user:email,repo');
+    githubAuthUrl.searchParams.set('state', returnTo);
+    
+    console.log('Redirecting to GitHub OAuth:', githubAuthUrl.toString());
+    
+    return NextResponse.redirect(githubAuthUrl.toString());
   } catch (error) {
     console.error('GitHub auth error:', error);
-    const host = request.headers.get('host');
-    const protocol = host?.includes('localhost') ? 'http' : 'https';
-    const baseUrl = `${protocol}://${host}`;
     return NextResponse.redirect(`${baseUrl}/login?error=auth_failed`);
   }
 }

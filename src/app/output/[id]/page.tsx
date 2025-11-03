@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Home, AlertCircle, Loader2, Download, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ModernReadmeOutput from '@/components/modern-readme-output';
-import { authenticatedFetch, useAuth } from '@/lib/auth';
+import { authenticatedFetch, useAuth } from '@/lib/auth-client';
 import LayoutWrapper from '@/components/layout-wrapper';
 
 interface HistoryItem {

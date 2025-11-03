@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/lib/auth';
+import { useAuth } from '@/lib/auth-client';
 
 export default function DebugSession() {
   const { user, isAuthenticated, isLoading, previousAccount } = useAuth();

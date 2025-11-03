@@ -20,7 +20,7 @@ import {
   Clock
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useAuth } from '@/lib/auth'
+import { useAuth } from '@/lib/auth-client'
 import LayoutWrapper from '@/components/layout-wrapper'
 import PageHeader from '@/components/layout/page-header'
 import ContentSection from '@/components/layout/content-section'

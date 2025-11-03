@@ -17,7 +17,7 @@ import {
 import { marked } from 'marked'
 import DOMPurify from 'isomorphic-dompurify'
 import { Button } from '@/components/ui/button'
-import { useAuth } from '@/lib/auth'
+import { useAuth } from '@/lib/auth-client'
 
 import withAuth from '@/components/withAuth'
 import ModernNavbar from '@/components/layout/modern-navbar'

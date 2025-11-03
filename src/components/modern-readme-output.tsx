@@ -25,7 +25,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { marked } from 'marked';
 import DOMPurify from 'isomorphic-dompurify';
-import { useAuth, authenticatedFetch } from '@/lib/auth';
+import { useAuth, authenticatedFetch } from '@/lib/auth-client';
 
 interface ModernReadmeOutputProps {
   content: string;

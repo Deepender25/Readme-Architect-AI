@@ -7,7 +7,7 @@ import { ArrowLeft, Share2, Edit, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import ModernReadmeOutput from '@/components/modern-readme-output'
 import LayoutWrapper from '@/components/layout-wrapper'
-import { useAuth, authenticatedFetch } from '@/lib/auth'
+import { useAuth, authenticatedFetch } from '@/lib/auth-client'
 
 interface ReadmeData {
   id: string

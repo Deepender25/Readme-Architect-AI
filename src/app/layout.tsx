@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
-import { AuthProvider } from '@/lib/auth';
+import { AuthProvider } from '@/lib/auth-client';
 import EnhancedGridBackground from '@/components/enhanced-grid-background';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';

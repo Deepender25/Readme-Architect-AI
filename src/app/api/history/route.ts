@@ -1,41 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
+import SimpleAuth from '@/lib/auth';
 
-// Force dynamic rendering for this route
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
-    console.log('📚 History fetch request received');
+    console.log('History fetch request received');
     
-    // Get user authentication from cookies
-    const cookieHeader = request.headers.get('Cookie') || '';
-    
-    let userData = null;
-    if (cookieHeader.includes('github_user=')) {
-      try {
-        const cookieValue = cookieHeader.split('github_user=')[1].split(';')[0];
-        userData = JSON.parse(Buffer.from(cookieValue, 'base64').toString());
-        console.log('👤 User authenticated:', userData?.username);
-      } catch (e) {
-        console.error('❌ Failed to parse user cookie:', e);
-        return NextResponse.json({ error: 'Invalid authentication' }, { status: 401 });
-      }
-    }
-
-    if (!userData) {
-      console.log('❌ No user authentication found');
+    // Check authentication
+    const user = await SimpleAuth.getCurrentUser(request);
+    if (!user) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
+    console.log('User authenticated:', user.username);
+
     // Fetch history from GitHub database
-    const history = await fetchFromGitHubDatabase(userData.github_id);
+    const history = await fetchFromGitHubDatabase(user.github_id);
     
-    console.log(`📊 Retrieved ${history.length} history items`);
+    console.log(`Retrieved ${history.length} history items`);
     return NextResponse.json({ history });
 
   } catch (error) {
-    console.error('❌ History fetch error:', error);
+    console.error('History fetch error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to fetch history' },
       { status: 500 }
@@ -45,41 +33,29 @@ export async function GET(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    console.log('🗑️ History delete request received');
+    console.log('History delete request received');
     
-    // Get user authentication from cookies
-    const cookieHeader = request.headers.get('Cookie') || '';
-    
-    let userData = null;
-    if (cookieHeader.includes('github_user=')) {
-      try {
-        const cookieValue = cookieHeader.split('github_user=')[1].split(';')[0];
-        userData = JSON.parse(Buffer.from(cookieValue, 'base64').toString());
-        console.log('👤 User authenticated:', userData?.username);
-      } catch (e) {
-        console.error('❌ Failed to parse user cookie:', e);
-        return NextResponse.json({ error: 'Invalid authentication' }, { status: 401 });
-      }
-    }
-
-    if (!userData) {
-      console.log('❌ No user authentication found');
+    // Check authentication
+    const user = await SimpleAuth.getCurrentUser(request);
+    if (!user) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
+    console.log('User authenticated:', user.username);
+
     // Clear history in GitHub database
-    const success = await clearGitHubDatabase(userData.github_id);
+    const success = await clearGitHubDatabase(user.github_id);
     
     if (success) {
-      console.log('✅ History cleared successfully');
+      console.log('History cleared successfully');
       return NextResponse.json({ message: 'History cleared successfully' });
     } else {
-      console.log('❌ Failed to clear history');
+      console.log('Failed to clear history');
       return NextResponse.json({ error: 'Failed to clear history' }, { status: 500 });
     }
 
   } catch (error) {
-    console.error('❌ History deletion error:', error);
+    console.error('History deletion error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to delete history' },
       { status: 500 }

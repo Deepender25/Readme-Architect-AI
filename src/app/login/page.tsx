@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Github, ArrowRight, RefreshCw, Sparkles, Bot, BrainCircuit } from 'lucide-react';
-import { useAuth } from '@/lib/auth';
+import { useAuth } from '@/lib/auth-client';
 import LoadingPage from '@/components/ui/loading-page';
 import EnhancedGridBackground from '@/components/enhanced-grid-background';
 

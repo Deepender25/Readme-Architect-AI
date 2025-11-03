@@ -25,8 +25,7 @@ import {
   ArrowLeft
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useAuth } from '@/lib/auth'
-import { useAuthRetry } from '@/lib/auth-retry-handler'
+import { useAuth } from '@/lib/auth-client'
 
 import withAuth from '@/components/withAuth'
 import LayoutWrapper from '@/components/layout-wrapper'
@@ -50,7 +49,7 @@ interface HistoryItem {
 function HistoryContent() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
-  const { retryWithAuth } = useAuthRetry();
+
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [filteredHistory, setFilteredHistory] = useState<HistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
