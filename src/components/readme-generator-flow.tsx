@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ArrowLeft, Github, Settings, Image, Video, FileText } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Github, Settings, Image, Video, FileText, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { LoadingAnimation } from '@/components/ui/loading-animation';
 import { ToggleSwitch } from '@/components/ui/toggle-switch';
 import { NumberInput } from '@/components/ui/number-input';
 import { createStreamingGenerator } from '@/lib/readme-generator';
 import { ScrollAnimatedDiv } from '@/components/ui/scroll-animated-div';
+import AuthStatus from '@/components/auth-status';
 
 interface ReadmeGeneratorFlowProps {
   onComplete: (readme: string, repositoryUrl: string, projectName: string, generationParams: any) => void;
@@ -215,15 +216,36 @@ export default function ReadmeGeneratorFlow({ onComplete }: ReadmeGeneratorFlowP
                   onKeyPress={(e) => e.key === 'Enter' && handleUrlSubmit()}
                 />
                 
+                {/* Auth Status */}
+                <AuthStatus className="justify-center" />
+                
                 {error && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg"
+                    className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg"
                   >
-                    <p className="text-red-400 text-sm font-medium mb-1">{error}</p>
+                    <p className="text-red-400 text-sm font-medium mb-2">{error}</p>
                     {errorDetails && (
-                      <p className="text-red-300 text-xs">{errorDetails}</p>
+                      <p className="text-red-300 text-xs mb-3">{errorDetails}</p>
+                    )}
+                    
+                    {/* Show login suggestion for private repo errors */}
+                    {(error.includes('private repository') || error.includes('not found')) && (
+                      <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                        <p className="text-blue-400 text-xs mb-2">
+                          💡 If this is a private repository you own:
+                        </p>
+                        <Button
+                          onClick={() => window.location.href = '/api/auth/github?returnTo=' + encodeURIComponent(window.location.pathname)}
+                          variant="outline"
+                          size="sm"
+                          className="border-blue-400/30 hover:border-blue-400/50 text-blue-400 hover:text-blue-300"
+                        >
+                          <LogIn className="w-4 h-4 mr-2" />
+                          Sign in with GitHub
+                        </Button>
+                      </div>
                     )}
                   </motion.div>
                 )}

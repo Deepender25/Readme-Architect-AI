@@ -94,14 +94,14 @@ class handler(BaseHTTPRequestHandler):
         access_token = None
         try:
             cookie_header = self.headers.get('Cookie', '')
-            if 'github_user=' in cookie_header:
+            if 'auth_token=' in cookie_header:
                 for cookie in cookie_header.split(';'):
-                    if cookie.strip().startswith('github_user='):
-                        import base64
-                        import json
-                        cookie_value = cookie.split('=')[1].strip()
-                        user_data = json.loads(base64.b64decode(cookie_value).decode())
-                        access_token = user_data.get('access_token')
+                    if cookie.strip().startswith('auth_token='):
+                        # Extract JWT token and decode it to get GitHub access token
+                        jwt_token = cookie.split('=')[1].strip()
+                        user_data, access_token = self.decode_jwt_auth(jwt_token)
+                        if user_data:
+                            print(f"🔐 Authenticated user: {user_data.get('username', 'unknown')}")
                         break
         except Exception as e:
             print(f"⚠️ Could not extract user authentication: {e}")
@@ -109,7 +109,7 @@ class handler(BaseHTTPRequestHandler):
         repo_path = None
         try:
             # Download repository
-            repo_path, error = self.download_repo(repo_url, access_token)
+            repo_path, error = self.download_repo(repo_url, access_token, user_data)
             if error:
                 self.send_json_response({"error": error}, 400)
                 return
@@ -132,21 +132,7 @@ class handler(BaseHTTPRequestHandler):
             
             # Save to history if user is authenticated
             try:
-                # Check for user authentication via cookie
-                cookie_header = self.headers.get('Cookie', '')
-                user_data = None
-                
-                if 'github_user=' in cookie_header:
-                    for cookie in cookie_header.split(';'):
-                        if cookie.strip().startswith('github_user='):
-                            try:
-                                import base64
-                                import json
-                                cookie_value = cookie.split('=')[1].strip()
-                                user_data = json.loads(base64.b64decode(cookie_value).decode())
-                                break
-                            except Exception:
-                                pass
+                # Use the user_data we already extracted from JWT
                 
                 if user_data and readme_content:
                     from .database import save_readme_history
@@ -215,6 +201,91 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps(data).encode())
 
+    def decode_jwt_auth(self, jwt_token: str):
+        """Decode JWT token to extract user data and GitHub access token"""
+        try:
+            import jwt
+            import os
+            
+            # Use the same secret as the auth system
+            jwt_secret = os.environ.get('JWT_SECRET', 'your-super-secret-jwt-key-change-in-production')
+            
+            # Decode the JWT token
+            payload = jwt.decode(jwt_token, jwt_secret, algorithms=['HS256'])
+            
+            user_data = {
+                'id': payload.get('sub'),
+                'github_id': payload.get('github_id'),
+                'username': payload.get('username'),
+                'name': payload.get('name'),
+                'email': payload.get('email'),
+                'avatar_url': payload.get('avatar_url'),
+                'html_url': payload.get('html_url')
+            }
+            
+            access_token = payload.get('github_access_token')
+            
+            return user_data, access_token
+            
+        except Exception as e:
+            print(f"⚠️ JWT decode error: {e}")
+            return None, None
+
+    def check_repository_access(self, repo_url: str, access_token: str, user_data: dict):
+        """Check if user has access to the repository"""
+        try:
+            # Extract owner and repo name from URL
+            normalized_url = self.normalize_github_url(repo_url)
+            if "github.com" not in normalized_url:
+                return False, "Invalid GitHub URL"
+            
+            # Parse owner/repo from URL
+            parts = normalized_url.replace("https://github.com/", "").split("/")
+            if len(parts) < 2:
+                return False, "Invalid repository URL format"
+            
+            owner = parts[0]
+            repo = parts[1]
+            
+            # Check repository info using GitHub API
+            api_url = f"https://api.github.com/repos/{owner}/{repo}"
+            headers = {'Authorization': f'token {access_token}'}
+            
+            response = requests.get(api_url, headers=headers, timeout=10)
+            
+            if response.status_code == 200:
+                repo_data = response.json()
+                
+                # If repository is public, allow access
+                if not repo_data.get('private', False):
+                    return True, None
+                
+                # If repository is private, check ownership/access
+                if repo_data.get('private', False):
+                    # Check if user is the owner
+                    repo_owner = repo_data.get('owner', {}).get('login', '')
+                    user_login = user_data.get('username', '')
+                    
+                    if repo_owner.lower() == user_login.lower():
+                        return True, None
+                    
+                    # Check if user has access (collaborator, organization member, etc.)
+                    # The fact that we got a 200 response with private=true means user has access
+                    return True, None
+                
+                return True, None
+                
+            elif response.status_code == 404:
+                return False, "Repository not found or you don't have access to this private repository"
+            elif response.status_code == 401:
+                return False, "Authentication failed. Please log in again to access private repositories"
+            else:
+                return False, f"Failed to verify repository access: {response.status_code}"
+                
+        except Exception as e:
+            print(f"⚠️ Repository access check error: {e}")
+            return False, "Failed to verify repository access"
+
     def normalize_github_url(self, repo_url: str) -> str:
         """Normalize GitHub URL by removing .git suffix and trailing slashes"""
         normalized_url = repo_url.strip()
@@ -224,7 +295,7 @@ class handler(BaseHTTPRequestHandler):
             normalized_url = normalized_url[:-4]
         return normalized_url
 
-    def download_repo(self, repo_url: str, access_token: str = None):
+    def download_repo(self, repo_url: str, access_token: str = None, user_data: dict = None):
         temp_dir = None
         try:
             # First normalize the URL
@@ -236,7 +307,11 @@ class handler(BaseHTTPRequestHandler):
             else:
                 return None, "Invalid GitHub URL"
             
-            # Skip disk space check on Vercel as statvfs may not be available
+            # Check repository access if user is authenticated
+            if access_token and user_data:
+                has_access, access_error = self.check_repository_access(repo_url, access_token, user_data)
+                if not has_access:
+                    return None, access_error
             
             # Prepare headers with authentication if token is provided
             headers = {}
@@ -252,9 +327,11 @@ class handler(BaseHTTPRequestHandler):
                 if access_token:
                     return None, "Repository not found or you don't have access to this private repository"
                 else:
-                    return None, "Repository not found. If this is a private repository, please make sure you're logged in"
+                    return None, "Repository not found. If this is a private repository, please log in and try again"
             elif response.status_code == 401:
                 return None, "Authentication failed. Please log in again to access private repositories"
+            elif response.status_code == 403:
+                return None, "This is a private repository and you don't have access to it"
             elif response.status_code != 200:
                 return None, f"Failed to download repository: {response.status_code}"
             
