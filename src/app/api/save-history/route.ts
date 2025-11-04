@@ -129,24 +129,21 @@ async function saveToGitHubDatabase(data: any): Promise<boolean> {
       console.log('🔧 Fixed timestamps in existing entries');
     }
 
-    // Check for duplicates based on repository_url and readme_content
-    // Also check for recent duplicates (within last 5 minutes) to prevent rapid saves
-    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+    // Check for true duplicates - only prevent saving if it's the exact same content generated very recently
+    // This allows users to generate multiple READMEs for the same repo with different settings
+    const thirtySecondsAgo = new Date(Date.now() - 30 * 1000).toISOString();
     
     const isDuplicate = existingData.some((entry: any) => {
       const isSameRepo = entry.repository_url === data.repository_url && entry.user_id === data.user_id;
       const isSameContent = entry.readme_content === data.readme_content;
-      const isRecent = entry.created_at > fiveMinutesAgo;
+      const isVeryRecent = entry.created_at > thirtySecondsAgo;
       
-      // Exact duplicate (same repo + same content)
-      if (isSameRepo && isSameContent) {
-        console.log('🔄 Exact duplicate detected (same repo + same content)');
-        return true;
-      }
-      
-      // Recent duplicate (same repo within 5 minutes)
-      if (isSameRepo && isRecent) {
-        console.log('🔄 Recent duplicate detected (same repo within 5 minutes)');
+      // Only prevent duplicates if it's the exact same content generated within 30 seconds
+      // This prevents accidental double-clicks but allows legitimate regeneration
+      if (isSameRepo && isSameContent && isVeryRecent) {
+        console.log('🔄 Exact duplicate detected within 30 seconds (same repo + same content + very recent)');
+        console.log('🔄 Previous entry created at:', entry.created_at);
+        console.log('🔄 Current time:', new Date().toISOString());
         return true;
       }
       
@@ -157,6 +154,8 @@ async function saveToGitHubDatabase(data: any): Promise<boolean> {
       console.log('🔄 Duplicate entry detected, skipping save');
       return true; // Return success to avoid errors, but don't save duplicate
     }
+
+    console.log('✅ No duplicates found, proceeding with save');
 
     // Create new history entry with current timestamp
     const now = new Date();
@@ -174,6 +173,14 @@ async function saveToGitHubDatabase(data: any): Promise<boolean> {
       created_at: now.toISOString(),
       updated_at: now.toISOString()
     };
+
+    console.log('📝 Creating new history entry:', {
+      id: newEntry.id,
+      repository_name: newEntry.repository_name,
+      project_name: newEntry.project_name,
+      created_at: newEntry.created_at,
+      content_length: newEntry.readme_content.length
+    });
 
     // Add to beginning of array (most recent first)
     existingData.unshift(newEntry);
