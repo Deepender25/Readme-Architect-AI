@@ -48,12 +48,23 @@ def get_file_from_github(file_path: str) -> Optional[Dict]:
         if response.status_code == 200:
             file_data = response.json()
             content = base64.b64decode(file_data['content']).decode('utf-8')
-            parsed_content = json.loads(content)
-            print(f"✅ Successfully retrieved file with {len(parsed_content)} items")
-            return {
-                'content': parsed_content,
-                'sha': file_data['sha']
-            }
+            
+            # Handle empty or corrupted content
+            if not content or content.strip() == '':
+                print("📝 Empty history file found, creating empty history")
+                return {'content': [], 'sha': None}
+            
+            try:
+                parsed_content = json.loads(content)
+                print(f"✅ Successfully retrieved file with {len(parsed_content)} items")
+                return {
+                    'content': parsed_content,
+                    'sha': file_data['sha']
+                }
+            except json.JSONDecodeError as parse_error:
+                print(f"❌ JSON parse error, content: {content[:100]}...")
+                print(f"📝 Corrupted history file, creating empty history")
+                return {'content': [], 'sha': None}
         elif response.status_code == 404:
             # File doesn't exist yet - create empty history
             print("📝 File doesn't exist yet, creating empty history")

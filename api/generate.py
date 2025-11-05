@@ -146,46 +146,8 @@ class handler(BaseHTTPRequestHandler):
             
             print(f"✅ README generated successfully ({len(readme_content)} chars)")
             
-            # Save to history if user is authenticated
-            try:
-                # Use the user_data we already extracted from JWT
-                
-                if user_data and readme_content:
-                    from .database import save_readme_history
-                    try:
-                        # Extract repository name from normalized URL
-                        normalized_url = self.normalize_github_url(repo_url)
-                        repo_name = normalized_url.split('/')[-2:] if '/' in normalized_url else [normalized_url]
-                        repo_name = '/'.join(repo_name)
-                        
-                        print(f"💾 Saving history for user: {user_data.get('username', 'unknown')}")
-                        
-                        success = save_readme_history(
-                            user_id=str(user_data.get('github_id', '')),
-                            username=user_data.get('username', ''),
-                            repository_url=repo_url,
-                            repository_name=repo_name,
-                            readme_content=readme_content,
-                            project_name=project_name if project_name else None,
-                            generation_params={
-                                'include_demo': include_demo,
-                                'num_screenshots': num_screenshots,
-                                'num_videos': num_videos
-                            }
-                        )
-                        
-                        if success:
-                            print("✅ History saved successfully in generate.py")
-                        else:
-                            print("❌ History save failed in generate.py")
-                            
-                    except Exception as e:
-                        print(f"⚠️ Failed to save history in generate.py: {e}")
-                else:
-                    print("⚠️ No user authentication or content - history not saved in generate.py")
-                        
-            except Exception as e:
-                print(f"⚠️ Error checking user authentication in generate.py: {e}")
+            # History is automatically saved by the frontend after generation
+            print("📝 History will be saved by frontend after generation completes")
             
             self.send_json_response({"readme": readme_content})
             

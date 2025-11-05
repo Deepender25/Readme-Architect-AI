@@ -99,12 +99,7 @@ export default function ModernReadmeOutput({
     const autoSaveToDatabase = async () => {
       if (disableAutoSave || !isAuthenticated || !user || !repositoryUrl || autoSaved) return;
       
-      // Check if this is a fresh generation from /readme/output page
-      // If so, skip auto-save as it's already saved by the generation process
-      if (typeof window !== 'undefined' && window.location.pathname === '/readme/output') {
-        console.log('Skipping auto-save for fresh generation (already saved by generation process)');
-        return;
-      }
+      // Auto-save is now handled by frontend since backend saving is disabled
 
       try {
         const repositoryName = repositoryUrl.split('/').pop()?.replace('.git', '') || 'Unknown';

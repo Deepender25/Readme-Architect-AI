@@ -159,45 +159,8 @@ class handler(BaseHTTPRequestHandler):
                 self.send_error_event(error)
                 return
             
-            # Step 5: Save to history and send success
-            try:
-                # Use the user_data we already extracted from JWT
-                
-                if user_data and readme_content:
-                    from .database import save_readme_history
-                    try:
-                        # Extract repository name from URL
-                        repo_name = repo_url.split('/')[-2:] if '/' in repo_url else [repo_url]
-                        repo_name = '/'.join(repo_name).replace('.git', '')
-                        
-                        print(f"💾 Saving history for user: {user_data.get('username', 'unknown')}")
-                        
-                        success = save_readme_history(
-                            user_id=str(user_data.get('github_id', '')),
-                            username=user_data.get('username', ''),
-                            repository_url=repo_url,
-                            repository_name=repo_name,
-                            readme_content=readme_content,
-                            project_name=project_name if project_name else None,
-                            generation_params={
-                                'include_demo': include_demo,
-                                'num_screenshots': num_screenshots,
-                                'num_videos': num_videos
-                            }
-                        )
-                        
-                        if success:
-                            print("✅ History saved successfully in stream.py")
-                        else:
-                            print("❌ History save failed in stream.py")
-                            
-                    except Exception as e:
-                        print(f"⚠️ Failed to save history in stream.py: {e}")
-                else:
-                    print("⚠️ No user authentication or content - history not saved in stream.py")
-                        
-            except Exception as e:
-                print(f"⚠️ Error checking user authentication in stream.py: {e}")
+            # Step 5: Send success (history will be saved by frontend)
+            print("📝 History will be saved by frontend after generation completes")
             
             self.send_success_event(readme_content)
             
