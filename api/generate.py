@@ -44,9 +44,15 @@ class handler(BaseHTTPRequestHandler):
     
     def do_OPTIONS(self):
         self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
+        # Get origin from request headers for CORS with credentials
+        origin = self.headers.get('Origin', '*')
+        if origin != '*':
+            self.send_header('Access-Control-Allow-Origin', origin)
+            self.send_header('Access-Control-Allow-Credentials', 'true')
+        else:
+            self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cookie')
         self.end_headers()
 
     def handle_generate(self):
@@ -94,17 +100,27 @@ class handler(BaseHTTPRequestHandler):
         access_token = None
         try:
             cookie_header = self.headers.get('Cookie', '')
+            print(f"🍪 Cookie header received: {cookie_header[:100] if cookie_header else 'None'}...")
+            
             if 'auth_token=' in cookie_header:
                 for cookie in cookie_header.split(';'):
                     if cookie.strip().startswith('auth_token='):
                         # Extract JWT token and decode it to get GitHub access token
                         jwt_token = cookie.split('=')[1].strip()
+                        print(f"🔑 JWT token extracted: {jwt_token[:50]}...")
                         user_data, access_token = self.decode_jwt_auth(jwt_token)
                         if user_data:
                             print(f"🔐 Authenticated user: {user_data.get('username', 'unknown')}")
+                            print(f"🔑 Access token available: {'Yes' if access_token else 'No'}")
+                        else:
+                            print(f"❌ JWT decoding failed")
                         break
+            else:
+                print(f"❌ No auth_token found in cookies")
         except Exception as e:
             print(f"⚠️ Could not extract user authentication: {e}")
+            import traceback
+            traceback.print_exc()
         
         repo_path = None
         try:
@@ -195,9 +211,15 @@ class handler(BaseHTTPRequestHandler):
     def send_json_response(self, data, status_code=200):
         self.send_response(status_code)
         self.send_header('Content-type', 'application/json')
-        self.send_header('Access-Control-Allow-Origin', '*')
+        # Get origin from request headers for CORS with credentials
+        origin = self.headers.get('Origin', '*')
+        if origin != '*':
+            self.send_header('Access-Control-Allow-Origin', origin)
+            self.send_header('Access-Control-Allow-Credentials', 'true')
+        else:
+            self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cookie')
         self.end_headers()
         self.wfile.write(json.dumps(data).encode())
 
