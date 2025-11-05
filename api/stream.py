@@ -45,9 +45,15 @@ class handler(BaseHTTPRequestHandler):
     
     def do_OPTIONS(self):
         self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
+        # Get origin from request headers for CORS with credentials
+        origin = self.headers.get('Origin', '*')
+        if origin != '*':
+            self.send_header('Access-Control-Allow-Origin', origin)
+            self.send_header('Access-Control-Allow-Credentials', 'true')
+        else:
+            self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cookie')
         self.end_headers()
 
     def handle_stream(self):
@@ -83,9 +89,15 @@ class handler(BaseHTTPRequestHandler):
         self.send_header('Content-Type', 'text/event-stream')
         self.send_header('Cache-Control', 'no-cache')
         self.send_header('Connection', 'keep-alive')
-        self.send_header('Access-Control-Allow-Origin', '*')
+        # Get origin from request headers for CORS with credentials
+        origin = self.headers.get('Origin', '*')
+        if origin != '*':
+            self.send_header('Access-Control-Allow-Origin', origin)
+            self.send_header('Access-Control-Allow-Credentials', 'true')
+        else:
+            self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cookie')
         self.end_headers()
         
         # Get user authentication for private repository access
@@ -93,17 +105,27 @@ class handler(BaseHTTPRequestHandler):
         access_token = None
         try:
             cookie_header = self.headers.get('Cookie', '')
-            if 'github_user=' in cookie_header:
+            print(f"🍪 Cookie header received: {cookie_header[:100] if cookie_header else 'None'}...")
+            
+            if 'auth_token=' in cookie_header:
                 for cookie in cookie_header.split(';'):
-                    if cookie.strip().startswith('github_user='):
-                        import base64
-                        import json
-                        cookie_value = cookie.split('=')[1].strip()
-                        user_data = json.loads(base64.b64decode(cookie_value).decode())
-                        access_token = user_data.get('access_token')
+                    if cookie.strip().startswith('auth_token='):
+                        # Extract JWT token and decode it to get GitHub access token
+                        jwt_token = cookie.split('=')[1].strip()
+                        print(f"🔑 JWT token extracted: {jwt_token[:50]}...")
+                        user_data, access_token = self.decode_jwt_auth(jwt_token)
+                        if user_data:
+                            print(f"🔐 Authenticated user: {user_data.get('username', 'unknown')}")
+                            print(f"🔑 Access token available: {'Yes' if access_token else 'No'}")
+                        else:
+                            print(f"❌ JWT decoding failed")
                         break
+            else:
+                print(f"❌ No auth_token found in cookies")
         except Exception as e:
             print(f"⚠️ Could not extract user authentication: {e}")
+            import traceback
+            traceback.print_exc()
         
         repo_path = None
         try:
@@ -139,21 +161,7 @@ class handler(BaseHTTPRequestHandler):
             
             # Step 5: Save to history and send success
             try:
-                # Check for user authentication via cookie
-                cookie_header = self.headers.get('Cookie', '')
-                user_data = None
-                
-                if 'github_user=' in cookie_header:
-                    for cookie in cookie_header.split(';'):
-                        if cookie.strip().startswith('github_user='):
-                            try:
-                                import base64
-                                import json
-                                cookie_value = cookie.split('=')[1].strip()
-                                user_data = json.loads(base64.b64decode(cookie_value).decode())
-                                break
-                            except Exception:
-                                pass
+                # Use the user_data we already extracted from JWT
                 
                 if user_data and readme_content:
                     from .database import save_readme_history
@@ -221,6 +229,36 @@ class handler(BaseHTTPRequestHandler):
         data = json.dumps({"error": error_message})
         self.wfile.write(f"data: {data}\n\n".encode())
         self.wfile.flush()
+
+    def decode_jwt_auth(self, jwt_token: str):
+        """Decode JWT token to extract user data and GitHub access token"""
+        try:
+            import jwt
+            import os
+            
+            # Use the same secret as the auth system
+            jwt_secret = os.environ.get('JWT_SECRET', 'your-super-secret-jwt-key-change-in-production')
+            
+            # Decode the JWT token
+            payload = jwt.decode(jwt_token, jwt_secret, algorithms=['HS256'])
+            
+            user_data = {
+                'id': payload.get('sub'),
+                'github_id': payload.get('github_id'),
+                'username': payload.get('username'),
+                'name': payload.get('name'),
+                'email': payload.get('email'),
+                'avatar_url': payload.get('avatar_url'),
+                'html_url': payload.get('html_url')
+            }
+            
+            access_token = payload.get('github_access_token')
+            
+            return user_data, access_token
+            
+        except Exception as e:
+            print(f"⚠️ JWT decode error: {e}")
+            return None, None
 
     def download_repo(self, repo_url: str, access_token: str = None):
         try:
