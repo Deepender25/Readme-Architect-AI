@@ -86,20 +86,30 @@ async function saveToGitHubDatabase(data: any): Promise<boolean> {
 
       if (getResponse.ok) {
         const fileData = await getResponse.json();
+        sha = fileData.sha; // Always get the SHA first
         const content = Buffer.from(fileData.content, 'base64').toString();
-        existingData = JSON.parse(content);
-        sha = fileData.sha;
-        console.log(`📊 Found existing history with ${existingData.length} items`);
+        
+        try {
+          existingData = JSON.parse(content);
+          console.log(`📊 Found existing history with ${existingData.length} items`);
+        } catch (parseError) {
+          console.log('📝 Corrupted history file, will recreate with existing SHA');
+          existingData = [];
+          // Keep the SHA to update the existing file instead of creating new one
+        }
       } else if (getResponse.status === 404) {
         console.log('📝 Creating new history file');
+        existingData = [];
+        sha = null;
       } else {
         console.error('❌ Failed to get existing file:', getResponse.status);
         return false;
       }
     } catch (e) {
-      console.log('📝 Creating new history file (parse error)');
+      console.log('📝 Error fetching history file:', e);
+      // If we can't fetch, assume new file creation
       existingData = [];
-      sha = null; // Reset SHA when creating new file due to parse error
+      sha = null;
     }
 
     // Fix any existing entries that might have incorrect timestamps

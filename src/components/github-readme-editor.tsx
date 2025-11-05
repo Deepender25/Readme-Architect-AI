@@ -190,10 +190,7 @@ export default function GitHubReadmeEditor({
             setGenerationStatus('README generated successfully!');
             setTimeout(() => setGenerationStatus(''), 3000);
             
-            // Auto-save to history if enabled and user is authenticated
-            if (autoSaveToHistory && isAuthenticated && repositoryUrl) {
-              saveToHistory(event.readme);
-            }
+            // History will be auto-saved by the output component to prevent duplicate saves
             
             // Call completion callback
             if (onGenerationComplete) {
@@ -222,40 +219,7 @@ export default function GitHubReadmeEditor({
     }
   };
 
-  const saveToHistory = async (readmeContent: string) => {
-    try {
-      console.log('💾 Attempting to save to history...');
-      
-      const response = await fetch('/api/save-history', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          repository_url: repositoryUrl,
-          repository_name: projectName || repositoryUrl.split('/').pop() || 'Unknown',
-          project_name: projectName,
-          readme_content: readmeContent,
-          generation_params: {
-            include_demo: includeDemo,
-            num_screenshots: numScreenshots,
-            num_videos: numVideos,
-          },
-        }),
-      });
 
-      if (response.ok) {
-        console.log('✅ README saved to history successfully');
-        setGenerationStatus('README saved to history!');
-        setTimeout(() => setGenerationStatus(''), 2000);
-      } else {
-        const errorData = await response.json();
-        console.warn('⚠️ Failed to save README to history:', errorData.error);
-      }
-    } catch (error) {
-      console.error('❌ Error saving to history:', error);
-    }
-  };
 
   const handleSelectRepository = (repoUrl: string, repoName: string) => {
     setRepositoryUrl(repoUrl);
