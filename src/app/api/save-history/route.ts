@@ -98,6 +98,8 @@ async function saveToGitHubDatabase(data: any): Promise<boolean> {
       }
     } catch (e) {
       console.log('📝 Creating new history file (parse error)');
+      existingData = [];
+      sha = null; // Reset SHA when creating new file due to parse error
     }
 
     // Fix any existing entries that might have incorrect timestamps

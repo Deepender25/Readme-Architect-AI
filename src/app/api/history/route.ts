@@ -89,9 +89,22 @@ async function fetchFromGitHubDatabase(userId: string): Promise<any[]> {
     if (response.ok) {
       const fileData = await response.json();
       const content = Buffer.from(fileData.content, 'base64').toString();
-      const history = JSON.parse(content);
-      console.log(`✅ Retrieved ${history.length} history items from GitHub`);
-      return history;
+      
+      // Handle empty or corrupted content
+      if (!content || content.trim() === '') {
+        console.log('📝 Empty history file found, returning empty array');
+        return [];
+      }
+      
+      try {
+        const history = JSON.parse(content);
+        console.log(`✅ Retrieved ${history.length} history items from GitHub`);
+        return history;
+      } catch (parseError) {
+        console.error('❌ JSON parse error, content:', content.substring(0, 100));
+        console.log('📝 Corrupted history file, returning empty array');
+        return [];
+      }
     } else if (response.status === 404) {
       console.log('📝 No history file found, returning empty array');
       return [];
