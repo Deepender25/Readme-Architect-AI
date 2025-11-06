@@ -242,7 +242,7 @@ export default function ModernNavbar() {
                         transition={{ type: "spring", stiffness: 350, damping: 22 }}
                         className="glass-modal rounded-2xl shadow-2xl shadow-green-400/20 py-3 border border-green-400/20 mt-2 w-full"
                       >
-                        <div className="px-4 py-3 border-b border-green-400/10">
+                        <div className="px-3 py-3 border-b border-green-400/10">
                           <div className="flex items-center gap-2">
                             <div className="relative">
                               <img
@@ -274,7 +274,7 @@ export default function ModernNavbar() {
                               setDropdownOpen(false);
                               router.push('/repositories');
                             }}
-                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
+                            className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
                           >
                             <div className="w-6 h-6 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
                               <FolderGit2 className="w-3.5 h-3.5 text-green-400" />
@@ -290,7 +290,7 @@ export default function ModernNavbar() {
                               setDropdownOpen(false);
                               router.push('/history');
                             }}
-                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
+                            className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
                           >
                             <div className="w-6 h-6 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
                               <History className="w-3.5 h-3.5 text-green-400" />
@@ -306,7 +306,7 @@ export default function ModernNavbar() {
                               setDropdownOpen(false);
                               router.push('/settings');
                             }}
-                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
+                            className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
                           >
                             <div className="w-6 h-6 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
                               <Settings className="w-3.5 h-3.5 text-green-400" />
@@ -321,7 +321,7 @@ export default function ModernNavbar() {
                         <div className="border-t border-green-400/10 pt-2">
                           <button 
                             onClick={() => logout()}
-                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-400/80 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 group"
+                            className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-400/80 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 group"
                           >
                             <div className="w-6 h-6 rounded-lg bg-red-400/10 flex items-center justify-center group-hover:bg-red-400/20 transition-colors">
                               <LogOut className="w-3.5 h-3.5 text-red-400" />

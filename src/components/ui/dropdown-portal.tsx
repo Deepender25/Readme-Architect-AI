@@ -11,7 +11,7 @@ interface DropdownPortalProps {
 
 export default function DropdownPortal({ children, isOpen, triggerRef }: DropdownPortalProps) {
   const [mounted, setMounted] = useState(false)
-  const [position, setPosition] = useState({ top: 0, left: 0, maxHeight: 'none', isAbove: false })
+  const [position, setPosition] = useState({ top: 0, left: 0, width: '220px', maxHeight: 'none', isAbove: false })
 
   useEffect(() => {
     setMounted(true)
@@ -21,7 +21,7 @@ export default function DropdownPortal({ children, isOpen, triggerRef }: Dropdow
     if (isOpen && triggerRef.current) {
       const updatePosition = () => {
         const rect = triggerRef.current!.getBoundingClientRect()
-        const dropdownWidth = 220 // Reduced width for better fit
+        const dropdownWidth = rect.width + 20 // Profile button width + 20px (10px each side)
         const dropdownHeight = 380 // Estimated height for our dropdown content
         const viewportWidth = window.innerWidth
         const viewportHeight = window.innerHeight
@@ -69,7 +69,7 @@ export default function DropdownPortal({ children, isOpen, triggerRef }: Dropdow
           }
         }
         
-        setPosition({ top, left, maxHeight, isAbove })
+        setPosition({ top, left, width: `${dropdownWidth}px`, maxHeight, isAbove })
       }
       
       updatePosition()
@@ -94,7 +94,7 @@ export default function DropdownPortal({ children, isOpen, triggerRef }: Dropdow
       style={{
         top: position.top,
         left: position.left,
-        width: '220px',
+        width: position.width,
         maxHeight: position.maxHeight,
         overflowY: position.maxHeight !== 'none' ? 'auto' : 'visible',
         overflowX: 'visible',
