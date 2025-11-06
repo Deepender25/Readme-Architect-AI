@@ -240,28 +240,28 @@ export default function ModernNavbar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -8, scale: 0.95 }}
                         transition={{ type: "spring", stiffness: 350, damping: 22 }}
-                        className="glass-modal rounded-2xl shadow-2xl shadow-green-400/20 py-3 min-w-64 border border-green-400/20 mt-2"
+                        className="glass-modal rounded-2xl shadow-2xl shadow-green-400/20 py-3 border border-green-400/20 mt-2 w-full"
                       >
-                        <div className="px-5 py-4 border-b border-green-400/10">
-                          <div className="flex items-center gap-3">
+                        <div className="px-4 py-3 border-b border-green-400/10">
+                          <div className="flex items-center gap-2">
                             <div className="relative">
                               <img
                                 src={user?.avatar_url}
                                 alt={user?.name}
-                                className="w-12 h-12 rounded-full border-2 border-green-400/40"
+                                className="w-10 h-10 rounded-full border-2 border-green-400/40"
                               />
-                              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-black flex items-center justify-center">
-                                <div className="w-2 h-2 bg-white rounded-full"></div>
+                              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border border-black flex items-center justify-center">
+                                <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
                               </div>
                             </div>
-                            <div className="flex-1">
-                              <div className="font-semibold text-white text-base leading-normal">
+                            <div className="flex-1 min-w-0">
+                              <div className="font-semibold text-white text-sm leading-tight truncate">
                                 {user?.name}
                               </div>
-                              <div className="text-green-400 text-sm leading-normal">
+                              <div className="text-green-400 text-xs leading-tight truncate">
                                 @{user?.username}
                               </div>
-                              <div className="text-gray-400 text-xs mt-0.5">
+                              <div className="text-gray-400 text-xs">
                                 GitHub Developer
                               </div>
                             </div>
@@ -274,14 +274,14 @@ export default function ModernNavbar() {
                               setDropdownOpen(false);
                               router.push('/repositories');
                             }}
-                            className="w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
+                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
                           >
-                            <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
-                              <FolderGit2 className="w-4 h-4 text-green-400" />
+                            <div className="w-6 h-6 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
+                              <FolderGit2 className="w-3.5 h-3.5 text-green-400" />
                             </div>
-                            <div className="flex-1 text-left">
-                              <div className="font-medium">My Repositories</div>
-                              <div className="text-xs text-gray-500">Manage your projects</div>
+                            <div className="flex-1 text-left min-w-0">
+                              <div className="font-medium text-sm truncate">My Repositories</div>
+                              <div className="text-xs text-gray-500 truncate">Manage your projects</div>
                             </div>
                           </button>
                           
@@ -290,14 +290,14 @@ export default function ModernNavbar() {
                               setDropdownOpen(false);
                               router.push('/history');
                             }}
-                            className="w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
+                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
                           >
-                            <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
-                              <History className="w-4 h-4 text-green-400" />
+                            <div className="w-6 h-6 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
+                              <History className="w-3.5 h-3.5 text-green-400" />
                             </div>
-                            <div className="flex-1 text-left">
-                              <div className="font-medium">Generation History</div>
-                              <div className="text-xs text-gray-500">View past READMEs</div>
+                            <div className="flex-1 text-left min-w-0">
+                              <div className="font-medium text-sm truncate">Generation History</div>
+                              <div className="text-xs text-gray-500 truncate">View past READMEs</div>
                             </div>
                           </button>
                           
@@ -306,14 +306,14 @@ export default function ModernNavbar() {
                               setDropdownOpen(false);
                               router.push('/settings');
                             }}
-                            className="w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
+                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
                           >
-                            <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
-                              <Settings className="w-4 h-4 text-green-400" />
+                            <div className="w-6 h-6 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
+                              <Settings className="w-3.5 h-3.5 text-green-400" />
                             </div>
-                            <div className="flex-1 text-left">
-                              <div className="font-medium">Account Settings</div>
-                              <div className="text-xs text-gray-500">Preferences & privacy</div>
+                            <div className="flex-1 text-left min-w-0">
+                              <div className="font-medium text-sm truncate">Account Settings</div>
+                              <div className="text-xs text-gray-500 truncate">Preferences & privacy</div>
                             </div>
                           </button>
                         </div>
@@ -321,14 +321,14 @@ export default function ModernNavbar() {
                         <div className="border-t border-green-400/10 pt-2">
                           <button 
                             onClick={() => logout()}
-                            className="w-full flex items-center gap-3 px-5 py-3 text-sm text-red-400/80 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 group"
+                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-400/80 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 group"
                           >
-                            <div className="w-8 h-8 rounded-lg bg-red-400/10 flex items-center justify-center group-hover:bg-red-400/20 transition-colors">
-                              <LogOut className="w-4 h-4 text-red-400" />
+                            <div className="w-6 h-6 rounded-lg bg-red-400/10 flex items-center justify-center group-hover:bg-red-400/20 transition-colors">
+                              <LogOut className="w-3.5 h-3.5 text-red-400" />
                             </div>
-                            <div className="flex-1 text-left">
-                              <div className="font-medium">Sign Out</div>
-                              <div className="text-xs text-red-400/60">End your session</div>
+                            <div className="flex-1 text-left min-w-0">
+                              <div className="font-medium text-sm truncate">Sign Out</div>
+                              <div className="text-xs text-red-400/60 truncate">End your session</div>
                             </div>
                           </button>
                         </div>

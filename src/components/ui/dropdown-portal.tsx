@@ -21,7 +21,7 @@ export default function DropdownPortal({ children, isOpen, triggerRef }: Dropdow
     if (isOpen && triggerRef.current) {
       const updatePosition = () => {
         const rect = triggerRef.current!.getBoundingClientRect()
-        const dropdownWidth = 256 // min-w-64 = 256px
+        const dropdownWidth = 220 // Reduced width for better fit
         const dropdownHeight = 380 // Estimated height for our dropdown content
         const viewportWidth = window.innerWidth
         const viewportHeight = window.innerHeight
@@ -89,11 +89,12 @@ export default function DropdownPortal({ children, isOpen, triggerRef }: Dropdow
 
   return createPortal(
     <div
-      className="fixed z-[999999] min-w-64"
+      className="fixed z-[999999]"
       data-dropdown-portal="true"
       style={{
         top: position.top,
         left: position.left,
+        width: '220px',
         maxHeight: position.maxHeight,
         overflowY: position.maxHeight !== 'none' ? 'auto' : 'visible',
         overflowX: 'visible',
