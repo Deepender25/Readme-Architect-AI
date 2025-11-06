@@ -217,26 +217,16 @@ export default function ModernNavbar() {
                         height: 'auto'
                       }}
                     >
-                      <div className="relative shrink-0">
-                        <img
-                          src={user?.avatar_url}
-                          alt={user?.name}
-                          className="w-4 h-4 rounded-full border-2 border-green-400/30 group-hover:border-green-400/60 transition-all duration-300"
-                        />
-                        <div className="absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 bg-green-400 rounded-full border border-black animate-pulse"></div>
-                      </div>
-                      
-                      <div className="flex flex-col items-start min-w-0">
-                        <span className="text-white font-medium text-xs leading-normal whitespace-nowrap">
-                          {user?.name}
-                        </span>
-                        <span className="text-green-400/80 text-xs leading-normal whitespace-nowrap">
-                          @{user?.username}
-                        </span>
-                      </div>
-                      
+                      <img
+                        src={user?.avatar_url}
+                        alt={user?.name}
+                        className="w-4 h-4 rounded-full"
+                      />
+                      <span className="relative z-10">
+                        {user?.name}
+                      </span>
                       <ChevronDown
-                        className={`w-3.5 h-3.5 text-green-400/60 group-hover:text-green-400 transition-all duration-300 ${
+                        className={`w-4 h-4 transition-transform duration-300 ${
                           dropdownOpen ? 'rotate-180' : ''
                         }`}
                       />
