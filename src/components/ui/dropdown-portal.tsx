@@ -27,10 +27,13 @@ export default function DropdownPortal({ children, isOpen, triggerRef }: Dropdow
         const viewportHeight = window.innerHeight
         const padding = 16 // Safe padding from viewport edges
         
-        // Calculate horizontal position
-        let left = rect.right - dropdownWidth - 50 // Add extra 50px margin from right edge
+        // Calculate horizontal position - center the dropdown relative to the trigger
+        const triggerCenter = rect.left + (rect.width / 2)
+        let left = triggerCenter - (dropdownWidth / 2)
+        
+        // Ensure dropdown doesn't go off screen
         if (left < padding) {
-          left = rect.left
+          left = padding
         }
         if (left + dropdownWidth > viewportWidth - padding) {
           left = viewportWidth - dropdownWidth - padding
