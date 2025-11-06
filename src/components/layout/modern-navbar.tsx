@@ -210,7 +210,7 @@ export default function ModernNavbar() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setDropdownOpen(!dropdownOpen)}
-                      className="relative flex items-center gap-2 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50 whitespace-nowrap"
+                      className="relative flex items-center justify-center gap-2 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50 whitespace-nowrap"
                       style={{
                         padding: '12px 24px',
                         minHeight: 'auto',
@@ -220,13 +220,13 @@ export default function ModernNavbar() {
                       <img
                         src={user?.avatar_url}
                         alt={user?.name}
-                        className="w-4 h-4 rounded-full"
+                        className="w-4 h-4 rounded-full flex-shrink-0"
                       />
-                      <span className="relative z-10">
+                      <span className="relative z-10 flex-shrink-0">
                         {user?.name}
                       </span>
                       <ChevronDown
-                        className={`w-4 h-4 transition-transform duration-300 ${
+                        className={`w-4 h-4 flex-shrink-0 transition-transform duration-300 ${
                           dropdownOpen ? 'rotate-180' : ''
                         }`}
                       />
@@ -240,7 +240,7 @@ export default function ModernNavbar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -8, scale: 0.95 }}
                         transition={{ type: "spring", stiffness: 350, damping: 22 }}
-                        className="glass-modal rounded-2xl shadow-2xl shadow-green-400/20 py-3 min-w-64 border border-green-400/20"
+                        className="glass-modal rounded-2xl shadow-2xl shadow-green-400/20 py-3 min-w-64 border border-green-400/20 mt-2"
                       >
                         <div className="px-5 py-4 border-b border-green-400/10">
                           <div className="flex items-center gap-3">
