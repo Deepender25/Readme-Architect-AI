@@ -222,7 +222,7 @@ export default function ModernNavbar() {
                           alt={user?.name}
                           className="w-6 h-6 rounded-full"
                         />
-                        <div className="absolute inset-0 rounded-full ring-2 ring-green-400/60 ring-offset-2 ring-offset-transparent"></div>
+                        <div className="absolute inset-0 rounded-full ring-1 ring-green-400/50 ring-offset-1 ring-offset-transparent"></div>
                       </div>
                       <span className="relative z-10 flex-shrink-0">
                         {user?.name}
