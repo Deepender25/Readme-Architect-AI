@@ -28,10 +28,10 @@ const EnhancedGridBackground = memo(function EnhancedGridBackground() {
         if (!canvas) return;
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 0.5;
+        this.size = Math.random() * 3 + 1; // Increased size: 1 to 4
         this.speedX = (Math.random() - 0.5) * 0.5;
         this.speedY = (Math.random() - 0.5) * 0.5;
-        this.opacity = Math.random() * 0.5 + 0.2;
+        this.opacity = Math.random() * 0.6 + 0.4; // Increased opacity: 0.4 to 1.0
       }
 
       update() {
@@ -48,10 +48,18 @@ const EnhancedGridBackground = memo(function EnhancedGridBackground() {
 
       draw() {
         if (!ctx) return;
+        
+        // Add glow effect
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = `rgba(0, 255, 100, ${this.opacity})`;
+        
         ctx.fillStyle = `rgba(0, 255, 100, ${this.opacity})`;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
+        
+        // Reset shadow
+        ctx.shadowBlur = 0;
       }
     }
 
@@ -79,7 +87,7 @@ const EnhancedGridBackground = memo(function EnhancedGridBackground() {
 
       // Reinitialize particles with new dimensions
       particlesRef.current = [];
-      const numberOfParticles = 100;
+      const numberOfParticles = 250; // Increased from 100 to 250
       for (let i = 0; i < numberOfParticles; i++) {
         particlesRef.current.push(new Particle());
       }
