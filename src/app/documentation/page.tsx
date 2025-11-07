@@ -28,49 +28,40 @@ function DocumentationContent() {
     {
       icon: Rocket,
       title: "Getting Started",
-      description: "Quick start guide to generate your first README",
+      description: "Quick start guide to generate your first README with AI-powered analysis",
       color: "from-blue-400 to-blue-600",
       items: [
-        "Sign in with GitHub",
-        "Paste your repository URL",
-        "Choose generation options",
-        "Download your README"
+        "Sign in with your GitHub account",
+        "Select or paste your repository URL",
+        "Choose generation options and templates",
+        "Download and customize your README",
+        "Add badges and sections as needed"
       ]
     },
     {
       icon: Settings,
       title: "Configuration",
-      description: "Customize your README generation settings",
+      description: "Customize your README generation settings and preferences",
       color: "from-purple-400 to-purple-600",
       items: [
-        "Template selection",
-        "Content preferences",
-        "Badge configuration",
-        "Section customization"
-      ]
-    },
-    {
-      icon: Code,
-      title: "API Reference",
-      description: "Integrate ReadmeArchitect into your workflow",
-      color: "from-green-400 to-green-600",
-      items: [
-        "REST API endpoints",
-        "Authentication methods",
-        "Request/response formats",
-        "Rate limiting"
+        "Select from multiple professional templates",
+        "Configure content preferences and style",
+        "Customize badge types and colors",
+        "Choose which sections to include",
+        "Set default generation options"
       ]
     },
     {
       icon: HelpCircle,
       title: "Troubleshooting",
-      description: "Common issues and their solutions",
+      description: "Common issues and their solutions to help you succeed",
       color: "from-orange-400 to-orange-600",
       items: [
-        "Generation failures",
-        "Authentication issues",
-        "Format problems",
-        "Performance tips"
+        "Resolve generation failures and errors",
+        "Fix authentication and access issues",
+        "Handle format and rendering problems",
+        "Optimize performance and speed",
+        "Debug private repository access"
       ]
     }
   ]
@@ -187,12 +178,12 @@ function DocumentationContent() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 + index * 0.1, duration: 0.6 }}
-                  className="relative group"
+                  className="relative group h-full"
                 >
-                  <div className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] p-6 text-center hover:border-green-400/30 transition-all duration-300 relative overflow-hidden">
+                  <div className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] p-6 text-center hover:border-green-400/30 transition-all duration-300 relative overflow-hidden h-full flex flex-col">
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                    <div className="relative">
+                    <div className="relative flex flex-col flex-1">
                       <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                         <item.icon className="w-8 h-8 text-white" />
                       </div>
@@ -202,7 +193,7 @@ function DocumentationContent() {
                       </div>
 
                       <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-                      <p className="text-gray-400 text-sm leading-relaxed">{item.description}</p>
+                      <p className="text-gray-400 text-sm leading-relaxed flex-1">{item.description}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -224,16 +215,16 @@ function DocumentationContent() {
               Explore detailed guides for every aspect of ReadmeArchitect
             </p>
 
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {sections.map((section, index) => (
                 <motion.div
                   key={section.title}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
-                  animate={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7 + index * 0.1, duration: 0.6 }}
                   className="group relative"
                 >
-                  <div className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] p-8 hover:border-green-400/30 transition-all duration-300 relative overflow-hidden">
+                  <div className="bg-[rgba(26,26,26,0.7)] backdrop-blur-xl rounded-2xl border border-[rgba(255,255,255,0.1)] p-8 hover:border-green-400/30 transition-all duration-300 relative overflow-hidden h-full">
                     <div className={`absolute -inset-0.5 bg-gradient-to-r ${section.color} rounded-2xl blur-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
 
                     <div className="relative">
@@ -244,28 +235,20 @@ function DocumentationContent() {
                       <h3 className="text-2xl font-bold text-white mb-4">{section.title}</h3>
                       <p className="text-gray-400 mb-6 leading-relaxed">{section.description}</p>
 
-                      <ul className="space-y-3 mb-6">
+                      <ul className="space-y-3">
                         {section.items.map((item, itemIndex) => (
                           <motion.li
                             key={item}
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.9 + index * 0.1 + itemIndex * 0.05 }}
-                            className="flex items-center gap-3 text-gray-400"
+                            className="flex items-start gap-3 text-gray-400"
                           >
-                            <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
-                            <span className="text-sm">{item}</span>
+                            <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                            <span className="text-sm leading-relaxed">{item}</span>
                           </motion.li>
                         ))}
                       </ul>
-
-                      <Button
-                        variant="outline"
-                        className="border-green-400/50 text-green-400 hover:bg-green-400/10 w-full"
-                      >
-                        Read More
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </Button>
                     </div>
                   </div>
                 </motion.div>
