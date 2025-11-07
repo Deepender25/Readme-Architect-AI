@@ -1,84 +1,151 @@
 'use client';
 
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useState, useRef } from 'react';
 
 const EnhancedGridBackground = memo(function EnhancedGridBackground() {
   const [documentHeight, setDocumentHeight] = useState('100vh');
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationFrameRef = useRef<number>();
+  const particlesRef = useRef<any[]>([]);
 
   useEffect(() => {
-    let updateTimeout: NodeJS.Timeout;
-    
-    const updateHeight = () => {
-      // Clear any pending update
-      clearTimeout(updateTimeout);
-      
-      // Throttle updates to prevent excessive recalculations
-      updateTimeout = setTimeout(() => {
-        // Get the full document height including scrollable content
-        const height = Math.max(
-          document.documentElement.scrollHeight,
-          document.documentElement.offsetHeight,
-          document.documentElement.clientHeight,
-          document.body.scrollHeight,
-          document.body.offsetHeight,
-          document.body.clientHeight
-        );
-        
-        // Only update if height has significantly changed (avoid micro-updates)
-        const newHeight = `${height}px`;
-        setDocumentHeight(prev => {
-          const prevNum = parseInt(prev.replace('px', ''));
-          const newNum = height;
-          // Only update if difference is more than 50px to prevent excessive re-renders
-          return Math.abs(newNum - prevNum) > 50 ? newHeight : prev;
-        });
-      }, 150); // Throttle to 150ms
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Particle class
+    class Particle {
+      x: number = 0;
+      y: number = 0;
+      size: number = 0;
+      speedX: number = 0;
+      speedY: number = 0;
+      opacity: number = 0;
+
+      constructor() {
+        if (!canvas) return;
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.5;
+        this.speedY = (Math.random() - 0.5) * 0.5;
+        this.opacity = Math.random() * 0.5 + 0.2;
+      }
+
+      update() {
+        if (!canvas) return;
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        // Wrap around edges
+        if (this.x > canvas.width + this.size) this.x = -this.size;
+        else if (this.x < -this.size) this.x = canvas.width + this.size;
+        if (this.y > canvas.height + this.size) this.y = -this.size;
+        else if (this.y < -this.size) this.y = canvas.height + this.size;
+      }
+
+      draw() {
+        if (!ctx) return;
+        ctx.fillStyle = `rgba(0, 255, 100, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Resize canvas to match document
+    const resizeCanvas = () => {
+      const height = Math.max(
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight,
+        document.documentElement.clientHeight,
+        document.body.scrollHeight,
+        document.body.offsetHeight,
+        document.body.clientHeight
+      );
+
+      canvas.width = window.innerWidth;
+      canvas.height = height;
+
+      // Update document height state
+      const newHeight = `${height}px`;
+      setDocumentHeight(prev => {
+        const prevNum = parseInt(prev.replace('px', ''));
+        const newNum = height;
+        return Math.abs(newNum - prevNum) > 50 ? newHeight : prev;
+      });
+
+      // Reinitialize particles with new dimensions
+      particlesRef.current = [];
+      const numberOfParticles = 100;
+      for (let i = 0; i < numberOfParticles; i++) {
+        particlesRef.current.push(new Particle());
+      }
     };
 
-    // Initial height calculation
-    updateHeight();
+    // Animation loop
+    const animate = () => {
+      if (!ctx || !canvas) return;
 
-    // Throttled resize handler
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particlesRef.current.forEach(particle => {
+        particle.update();
+        particle.draw();
+      });
+
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    // Initial setup
+    resizeCanvas();
+    animate();
+
+    // Event listeners
     let resizeTimeout: NodeJS.Timeout;
     const throttledResize = () => {
       clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(updateHeight, 100);
+      resizeTimeout = setTimeout(resizeCanvas, 100);
     };
 
-    // Update height on window resize with throttling
     window.addEventListener('resize', throttledResize);
-    
-    // Optimized mutation observer with debouncing
+    window.addEventListener('load', resizeCanvas);
+
+    // Mutation observer for dynamic content
     let mutationTimeout: NodeJS.Timeout;
     const mutationObserver = new MutationObserver(() => {
       clearTimeout(mutationTimeout);
-      mutationTimeout = setTimeout(updateHeight, 100); // Shorter delay for better responsiveness
+      mutationTimeout = setTimeout(resizeCanvas, 100);
     });
-    
-    // Observe changes that might affect height
+
     if (document.body) {
       mutationObserver.observe(document.body, {
         childList: true,
-        subtree: true, // Observe deep changes for content updates
-        attributes: false // Don't observe attribute changes
+        subtree: true,
+        attributes: false
       });
     }
 
-    // Force update on scroll to catch dynamic content
+    // Scroll handler
     let scrollTimeout: NodeJS.Timeout;
     const handleScroll = () => {
       clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(updateHeight, 300);
+      scrollTimeout = setTimeout(resizeCanvas, 300);
     };
-    
+
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
-      clearTimeout(updateTimeout);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
       clearTimeout(resizeTimeout);
       clearTimeout(mutationTimeout);
       clearTimeout(scrollTimeout);
       window.removeEventListener('resize', throttledResize);
+      window.removeEventListener('load', resizeCanvas);
       window.removeEventListener('scroll', handleScroll);
       mutationObserver.disconnect();
     };
@@ -107,7 +174,7 @@ const EnhancedGridBackground = memo(function EnhancedGridBackground() {
         }}
       />
       
-      {/* Main grid pattern - smaller squares like reference */}
+      {/* Main grid pattern */}
       <div 
         className="absolute inset-0 w-full h-full"
         style={{
@@ -121,7 +188,7 @@ const EnhancedGridBackground = memo(function EnhancedGridBackground() {
         }}
       />
       
-      {/* Secondary finer grid - smaller detail */}
+      {/* Secondary finer grid */}
       <div 
         className="absolute inset-0 w-full h-full"
         style={{
@@ -134,8 +201,18 @@ const EnhancedGridBackground = memo(function EnhancedGridBackground() {
           zIndex: 2
         }}
       />
+
+      {/* Particle Canvas - positioned above grid, below fade effects */}
+      <canvas
+        ref={canvasRef}
+        className="absolute top-0 left-0 w-full h-full pointer-events-none"
+        style={{
+          zIndex: 2,
+          display: 'block'
+        }}
+      />
       
-      {/* Enhanced fade effect - dramatic variations like reference */}
+      {/* Enhanced fade effect */}
       <div 
         className="absolute inset-0 w-full h-full"
         style={{
@@ -155,7 +232,7 @@ const EnhancedGridBackground = memo(function EnhancedGridBackground() {
         }}
       />
       
-      {/* Subtle highlight areas - gentle grid enhancement */}
+      {/* Subtle highlight areas */}
       <div 
         className="absolute inset-0 w-full h-full"
         style={{
@@ -173,7 +250,7 @@ const EnhancedGridBackground = memo(function EnhancedGridBackground() {
         className="absolute top-0 left-0 right-0 h-40 pointer-events-none"
         style={{
           background: 'linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.4) 70%, transparent 100%)',
-          zIndex: 3,
+          zIndex: 5,
         }}
       />
     </div>
