@@ -113,11 +113,10 @@ export default function ModernNavbar() {
                   quality={100}
                   style={{
                     imageRendering: 'auto' as const,
-                    WebkitImageRendering: '-webkit-optimize-contrast',
                     filter: 'none',
                     maxWidth: '100%',
                     height: 'auto',
-                  }}
+                  } as React.CSSProperties}
                 />
               </motion.div>
               
@@ -217,11 +216,14 @@ export default function ModernNavbar() {
                         height: 'auto'
                       }}
                     >
-                      <img
-                        src={user?.avatar_url}
-                        alt={user?.name}
-                        className="w-4 h-4 rounded-full flex-shrink-0"
-                      />
+                      <div className="relative flex-shrink-0">
+                        <img
+                          src={user?.avatar_url}
+                          alt={user?.name}
+                          className="w-6 h-6 rounded-full"
+                        />
+                        <div className="absolute inset-0 rounded-full ring-2 ring-green-400/60 ring-offset-2 ring-offset-transparent"></div>
+                      </div>
                       <span className="relative z-10 flex-shrink-0">
                         {user?.name}
                       </span>
