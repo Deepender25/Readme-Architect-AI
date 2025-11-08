@@ -2,22 +2,34 @@
 
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ChevronRight, Home } from 'lucide-react';
+import { ChevronRight, Home, Sparkles, Code2, BookOpen, LucideIcon } from 'lucide-react';
 
 interface BreadcrumbItem {
   name: string;
   href: string;
   current: boolean;
+  icon?: LucideIcon;
 }
 
 export default function Breadcrumbs() {
   const pathname = usePathname();
 
+  // Icon mapping for main pages
+  const getIconForPath = (path: string): LucideIcon | undefined => {
+    const iconMap: Record<string, LucideIcon> = {
+      '/': Home,
+      '/features': Sparkles,
+      '/examples': Code2,
+      '/documentation': BookOpen,
+    };
+    return iconMap[path];
+  };
+
   // Generate breadcrumb items from pathname
   const generateBreadcrumbs = (): BreadcrumbItem[] => {
     const segments = pathname.split('/').filter(Boolean);
     const breadcrumbs: BreadcrumbItem[] = [
-      { name: 'Home', href: '/', current: false }
+      { name: 'Home', href: '/', current: false, icon: Home }
     ];
 
     let currentPath = '';
@@ -34,7 +46,8 @@ export default function Breadcrumbs() {
       breadcrumbs.push({
         name,
         href: currentPath,
-        current: isLast
+        current: isLast,
+        icon: getIconForPath(currentPath)
       });
     });
 
@@ -64,8 +77,8 @@ export default function Breadcrumbs() {
             )}
             
             {item.current ? (
-              <span className="text-sm font-medium text-green-400 flex items-center gap-1">
-                {index === 0 && <Home className="w-4 h-4" />}
+              <span className="text-sm font-medium text-green-400 flex items-center gap-1.5">
+                {item.icon && <item.icon className="w-4 h-4" />}
                 {item.name}
               </span>
             ) : (
@@ -73,9 +86,9 @@ export default function Breadcrumbs() {
                 href={item.href}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="text-sm font-medium text-gray-400 hover:text-green-400 transition-colors duration-200 flex items-center gap-1"
+                className="text-sm font-medium text-gray-400 hover:text-green-400 transition-colors duration-200 flex items-center gap-1.5"
               >
-                {index === 0 && <Home className="w-4 h-4" />}
+                {item.icon && <item.icon className="w-4 h-4" />}
                 {item.name}
               </motion.a>
             )}
