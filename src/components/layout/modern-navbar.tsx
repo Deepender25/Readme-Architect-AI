@@ -187,14 +187,9 @@ export default function ModernNavbar() {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="relative flex items-center gap-2 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden whitespace-nowrap"
-                    style={{
-                      padding: '12px 24px',
-                      minHeight: 'auto',
-                      height: 'auto'
-                    }}
+                    className="relative flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden whitespace-nowrap min-w-[180px] h-[48px]"
                   >
-                    <div className="w-4 h-4 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin flex-shrink-0" />
                     <span className="relative z-10">Loading...</span>
                   </motion.div>
                 ) : !isAuthenticated ? (
@@ -206,14 +201,9 @@ export default function ModernNavbar() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => login()}
-                    className="relative flex items-center gap-2 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 whitespace-nowrap"
-                    style={{
-                      padding: '12px 24px',
-                      minHeight: 'auto',
-                      height: 'auto'
-                    }}
+                    className="relative flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 whitespace-nowrap min-w-[180px] h-[48px]"
                   >
-                    <Github className="w-4 h-4" />
+                    <Github className="w-4 h-4 flex-shrink-0" />
                     <span className="relative z-10">Connect with Github</span>
                     
                     <div className="absolute inset-0 bg-gradient-to-r from-green-400/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -231,12 +221,7 @@ export default function ModernNavbar() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setDropdownOpen(!dropdownOpen)}
-                      className="relative flex items-center gap-2 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50 whitespace-nowrap"
-                      style={{
-                        padding: '12px 24px',
-                        minHeight: 'auto',
-                        height: 'auto'
-                      }}
+                      className="relative flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50 whitespace-nowrap min-w-[180px] h-[48px]"
                     >
                       <div className="relative flex-shrink-0">
                         <img
@@ -474,9 +459,9 @@ export default function ModernNavbar() {
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.15 }}
-                      className="flex items-center gap-2 w-full px-4 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-lg"
+                      className="flex items-center justify-center gap-2 w-full px-4 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-lg h-[48px]"
                     >
-                      <div className="w-4 h-4 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin flex-shrink-0" />
                       Loading...
                     </motion.div>
                   ) : !isAuthenticated ? (
@@ -485,9 +470,9 @@ export default function ModernNavbar() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.15 }}
                       onClick={() => login()}
-                      className="flex items-center gap-2 w-full px-4 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-lg hover:bg-green-400/10 transition-colors"
+                      className="flex items-center justify-center gap-2 w-full px-4 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-lg hover:bg-green-400/10 transition-colors h-[48px]"
                     >
-                      <Github className="w-4 h-4" />
+                      <Github className="w-4 h-4 flex-shrink-0" />
                       Connect with Github
                     </motion.button>
                   ) : (
