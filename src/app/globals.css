@@ -723,8 +723,20 @@ body {
     -webkit-tap-highlight-color: transparent;
   }
 
+  .glass-nav-link svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    opacity: 1;
+    transition: all 0.3s ease-in-out;
+  }
+
   .glass-nav-link:hover {
     color: white;
+  }
+
+  .glass-nav-link:hover svg {
+    transform: scale(1.1);
   }
 
   .glass-nav-link:focus {
@@ -734,6 +746,10 @@ body {
 
   .glass-nav-link.active {
     color: #fff;
+  }
+
+  .glass-nav-link.active svg {
+    color: #00ff88;
   }
 
   .glass-nav-glider {
