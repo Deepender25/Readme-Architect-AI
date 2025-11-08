@@ -11,6 +11,7 @@
 
 /* Performance optimizations for smooth scrolling and animations */
 @import './performance.css';
+@import './professional-transitions.css';
 @import './ultra-smooth.css';
 @import './global-smooth.css';
 @import './component-animations.css';

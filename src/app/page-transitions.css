@@ -1,0 +1,316 @@
+/* ===== SLIDING WINDOW PAGE TRANSITIONS ===== */
+
+/* Prevent scrolling during transitions */
+html.page-transitioning {
+  overflow: hidden !important;
+}
+
+html.page-transitioning body {
+  overflow: hidden !important;
+}
+
+/* Page transition container */
+.page-transition-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Sliding animations */
+@keyframes slideOutLeft {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  100% {
+    transform: translateX(-100%) scale(0.95);
+    opacity: 0;
+    filter: blur(8px);
+  }
+}
+
+@keyframes slideInLeft {
+  0% {
+    transform: translateX(100%) scale(0.95);
+    opacity: 0;
+    filter: blur(8px);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+@keyframes slideOutRight {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  100% {
+    transform: translateX(100%) scale(0.95);
+    opacity: 0;
+    filter: blur(8px);
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    transform: translateX(-100%) scale(0.95);
+    opacity: 0;
+    filter: blur(8px);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+/* Fade animations for non-sequential pages */
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.98);
+    filter: blur(4px);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.98);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+}
+
+/* Apply animations based on direction */
+.page-slide-out-left {
+  animation: slideOutLeft 0.4s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+.page-slide-in-left {
+  animation: slideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.page-slide-out-right {
+  animation: slideOutRight 0.4s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+.page-slide-in-right {
+  animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.page-fade-out {
+  animation: fadeOut 0.3s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+.page-fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Hardware acceleration for smooth animations */
+.page-transition-wrapper {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Overlay effect during transition */
+.page-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 255, 136, 0.05) 50%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-transition-overlay.active {
+  opacity: 1;
+}
+
+/* Smooth transition for all page content */
+.page-content {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+/* Prevent interaction during transition */
+.page-transitioning * {
+  pointer-events: none !important;
+}
+
+.page-transitioning .page-content {
+  pointer-events: none !important;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  @keyframes slideOutLeft {
+    0% {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+      filter: blur(0px);
+    }
+    100% {
+      transform: translateX(-100%) scale(0.98);
+      opacity: 0;
+      filter: blur(4px);
+    }
+  }
+
+  @keyframes slideInLeft {
+    0% {
+      transform: translateX(100%) scale(0.98);
+      opacity: 0;
+      filter: blur(4px);
+    }
+    100% {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+      filter: blur(0px);
+    }
+  }
+
+  @keyframes slideOutRight {
+    0% {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+      filter: blur(0px);
+    }
+    100% {
+      transform: translateX(100%) scale(0.98);
+      opacity: 0;
+      filter: blur(4px);
+    }
+  }
+
+  @keyframes slideInRight {
+    0% {
+      transform: translateX(-100%) scale(0.98);
+      opacity: 0;
+      filter: blur(4px);
+    }
+    100% {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+      filter: blur(0px);
+    }
+  }
+
+  /* Reduce animation duration on mobile for better performance */
+  .page-slide-out-left,
+  .page-slide-out-right,
+  .page-slide-in-left,
+  .page-slide-in-right {
+    animation-duration: 0.3s;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .page-slide-out-left,
+  .page-slide-out-right,
+  .page-slide-in-left,
+  .page-slide-in-right,
+  .page-fade-out,
+  .page-fade-in {
+    animation: none !important;
+    transition: opacity 0.1s ease !important;
+  }
+
+  html.page-transitioning {
+    overflow: auto !important;
+  }
+}
+
+/* Loading state during transition */
+.page-transition-loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.page-transition-loading::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(0, 255, 136, 0.2);
+  border-top-color: rgba(0, 255, 136, 0.8);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Ensure navbar stays on top during transitions */
+nav {
+  z-index: 99999 !important;
+  position: fixed !important;
+}
+
+/* Smooth page enter/exit states */
+.page-entering {
+  animation: pageEnter 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.page-exiting {
+  animation: pageExit 0.4s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+@keyframes pageEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pageExit {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px) scale(1.02);
+  }
+}

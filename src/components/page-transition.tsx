@@ -8,43 +8,48 @@ interface PageTransitionProps {
   children: ReactNode
 }
 
+// Professional page transition variants - Apple-inspired smooth motion
 const pageVariants = {
   initial: {
     opacity: 0,
-    scale: 0.95,
-    filter: 'blur(10px)',
-    y: 20
+    scale: 0.98,
+    y: 12,
   },
-  in: {
+  animate: {
     opacity: 1,
     scale: 1,
-    filter: 'blur(0px)',
-    y: 0
+    y: 0,
   },
-  out: {
+  exit: {
     opacity: 0,
-    scale: 1.05,
-    filter: 'blur(10px)',
-    y: -20
+    scale: 0.98,
+    y: -12,
   }
 }
 
+// Smooth, natural timing - based on Apple's Human Interface Guidelines
 const pageTransition = {
-  type: 'tween',
-  ease: [0.22, 1, 0.36, 1],
+  type: 'tween' as const,
+  ease: [0.25, 0.1, 0.25, 1], // Apple's standard easing
   duration: 0.4,
-  filter: { duration: 0.3 }
 }
 
+// Backdrop overlay for seamless transitions
 const overlayVariants = {
-  initial: { opacity: 1 },
-  animate: { opacity: 0 },
-  exit: { opacity: 1 }
+  initial: { 
+    opacity: 0,
+  },
+  animate: { 
+    opacity: 0,
+  },
+  exit: { 
+    opacity: 0,
+  }
 }
 
 const overlayTransition = {
-  duration: 0.2,
-  ease: "easeInOut"
+  duration: 0.3,
+  ease: [0.4, 0, 0.2, 1], // Material Design standard easing
 }
 
 export default function PageTransition({ children }: PageTransitionProps) {
@@ -56,17 +61,24 @@ export default function PageTransition({ children }: PageTransitionProps) {
         <motion.div
           key={pathname}
           initial="initial"
-          animate="in"
-          exit="out"
+          animate="animate"
+          exit="exit"
           variants={pageVariants}
           transition={pageTransition}
-          className="w-full min-h-screen bg-transparent smooth-page-transition"
+          className="w-full min-h-screen bg-transparent"
+          style={{
+            // Hardware acceleration for smooth 60fps
+            transform: 'translate3d(0, 0, 0)',
+            backfaceVisibility: 'hidden',
+            perspective: 1000,
+            willChange: 'transform, opacity',
+          }}
         >
           {children}
         </motion.div>
       </AnimatePresence>
       
-      {/* Smooth transition overlay to prevent white flash */}
+      {/* Smooth transition overlay - prevents visual artifacts */}
       <AnimatePresence>
         <motion.div
           key={`overlay-${pathname}`}
@@ -76,6 +88,12 @@ export default function PageTransition({ children }: PageTransitionProps) {
           variants={overlayVariants}
           transition={overlayTransition}
           className="page-transition-overlay"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            pointerEvents: 'none',
+            zIndex: 9998,
+          }}
         />
       </AnimatePresence>
     </>

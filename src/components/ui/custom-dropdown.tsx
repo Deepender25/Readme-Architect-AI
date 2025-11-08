@@ -87,33 +87,42 @@ export default function CustomDropdown({
     };
   }, [isOpen]);
 
-  // Portal content for dropdown - simplified without AnimatePresence to prevent glitching
+  // Portal content for dropdown with professional animations
   const dropdownPortal = mounted && isOpen && typeof window !== 'undefined' ? createPortal(
     <>
       {/* Backdrop to close dropdown */}
       <div
-        className="fixed inset-0 z-[999998]"
+        className="fixed inset-0 z-[999998] backdrop-blur-sm bg-black/20"
+        style={{
+          animation: 'fadeIn 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+        }}
         onClick={() => setIsOpen(false)}
       />
       
-      {/* Dropdown content */}
+      {/* Dropdown content with professional animation */}
       <div
-        className="fixed z-[999999] bg-black/95 backdrop-blur-xl border border-green-400/20 rounded-xl shadow-2xl p-2 max-h-80 overflow-y-auto animate-in fade-in-0 zoom-in-95 duration-200"
+        className="dropdown-menu fixed z-[999999] bg-black/95 backdrop-blur-xl border border-green-400/20 rounded-xl shadow-2xl p-2 max-h-80 overflow-y-auto scrollbar-thin scrollbar-green"
         style={{
           top: position.top,
           left: position.left,
           width: Math.max(position.width, 160),
-          minWidth: '160px'
+          minWidth: '160px',
+          transform: 'translate3d(0, 0, 0)',
+          backfaceVisibility: 'hidden',
+          willChange: 'transform, opacity',
         }}
       >
-        {options.map((option) => (
+        {options.map((option, index) => (
           <div
             key={option.value}
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm cursor-pointer transition-all duration-200 min-h-[40px] ${
+            className={`dropdown-item flex items-center gap-3 px-4 py-3 rounded-lg text-sm cursor-pointer min-h-[40px] ${
               value === option.value 
-                ? 'bg-green-400/10 text-green-400 font-semibold' 
-                : 'text-white/80 hover:bg-green-400/10 hover:text-white hover:translate-x-0.5'
+                ? 'bg-green-400/10 text-green-400 font-semibold selected' 
+                : 'text-white/80'
             }`}
+            style={{
+              animationDelay: `${index * 30}ms`,
+            }}
             onClick={() => {
               onChange(option.value);
               setIsOpen(false);

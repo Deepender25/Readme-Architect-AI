@@ -39,23 +39,32 @@ export default function LogoutModal({ isOpen, onClose, onConfirm, userName }: Lo
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-          {/* Backdrop */}
+        <div className="modal-overlay fixed inset-0 z-[9999] flex items-center justify-center p-4">
+          {/* Backdrop with professional animation */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            animate={{ opacity: 1, backdropFilter: 'blur(12px)' }}
+            exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60"
           />
 
-          {/* Modal */}
+          {/* Modal with professional animation */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="relative w-full max-w-md bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl overflow-hidden"
+            transition={{ 
+              duration: 0.4,
+              ease: [0, 0, 0.2, 1], // Decelerate curve
+            }}
+            className="modal-content relative w-full max-w-md bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl overflow-hidden"
+            style={{
+              transform: 'translate3d(0, 0, 0)',
+              backfaceVisibility: 'hidden',
+              willChange: 'transform, opacity',
+            }}
           >
             {/* Header */}
             <div className="p-6 pb-4">
@@ -101,19 +110,43 @@ export default function LogoutModal({ isOpen, onClose, onConfirm, userName }: Lo
             {/* Actions */}
             <div className="flex gap-3 p-6 pt-2 bg-gray-800/50">
               <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ 
+                  scale: 1.02,
+                  y: -2,
+                  transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
+                }}
+                whileTap={{ 
+                  scale: 0.98,
+                  y: 0,
+                  transition: { duration: 0.1, ease: [0.4, 0, 0.2, 1] }
+                }}
                 onClick={onClose}
-                className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors"
+                className="btn-professional flex-1 px-4 py-2.5 text-sm font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 rounded-xl"
+                style={{
+                  transform: 'translate3d(0, 0, 0)',
+                  backfaceVisibility: 'hidden',
+                }}
               >
                 Cancel
               </motion.button>
               
               <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ 
+                  scale: 1.02,
+                  y: -2,
+                  transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
+                }}
+                whileTap={{ 
+                  scale: 0.98,
+                  y: 0,
+                  transition: { duration: 0.1, ease: [0.4, 0, 0.2, 1] }
+                }}
                 onClick={onConfirm}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-xl transition-colors"
+                className="btn-professional flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-xl"
+                style={{
+                  transform: 'translate3d(0, 0, 0)',
+                  backfaceVisibility: 'hidden',
+                }}
               >
                 <LogOut className="w-4 h-4" />
                 Sign Out
