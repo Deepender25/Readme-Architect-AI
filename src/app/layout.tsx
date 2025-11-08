@@ -197,16 +197,33 @@ export default function RootLayout({
         }
         
         
-        /* Smooth page transition styles */
+        /* Enhanced smooth page transition styles */
         .page-transition-overlay {
           position: fixed;
           top: 0;
           left: 0;
           right: 0;
           bottom: 0;
-          background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+          background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 255, 136, 0.08) 50%, rgba(0, 0, 0, 0.4) 100%);
           z-index: 9999;
           pointer-events: none;
+          transform: translate3d(0, 0, 0);
+          backface-visibility: hidden;
+          will-change: opacity, backdrop-filter;
+        }
+        
+        .page-transition-overlay.active {
+          opacity: 0.5;
+          backdrop-filter: blur(12px);
+        }
+        
+        /* Prevent content shift during transitions */
+        html.page-transitioning {
+          overflow: hidden;
+        }
+        
+        html.page-transitioning body {
+          overflow: hidden;
         }
       `}</style>
       </head>
@@ -220,25 +237,33 @@ export default function RootLayout({
               key={pathname}
               initial={{
                 opacity: 0,
-                y: 8
+                scale: 0.98,
+                y: 16,
+                filter: 'blur(4px)'
               }}
               animate={{
                 opacity: 1,
-                y: 0
+                scale: 1,
+                y: 0,
+                filter: 'blur(0px)'
               }}
               exit={{
                 opacity: 0,
-                y: -5
+                scale: 1.01,
+                y: -16,
+                filter: 'blur(4px)'
               }}
               transition={{
-                duration: 0.25,
-                ease: [0.25, 0.46, 0.45, 0.94]
+                duration: 0.45,
+                ease: [0.22, 1, 0.36, 1]
               }}
               className="min-h-screen relative z-50 ultra-smooth-scroll critical-smooth"
               style={{
-                willChange: 'transform, opacity',
+                willChange: 'transform, opacity, filter',
                 transform: 'translate3d(0, 0, 0)',
                 backfaceVisibility: 'hidden',
+                perspective: 1000,
+                transformStyle: 'preserve-3d',
                 scrollBehavior: 'smooth',
                 WebkitOverflowScrolling: 'touch',
                 overscrollBehavior: 'none'
@@ -256,22 +281,26 @@ export default function RootLayout({
             </motion.div>
           </AnimatePresence>
 
-          {/* Enhanced page transition overlay */}
-          <motion.div
-            key={`overlay-${pathname}`}
-            initial={{ opacity: 0.8, backdropFilter: 'blur(0px)' }}
-            animate={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            exit={{ opacity: 0.6, backdropFilter: 'blur(2px)' }}
-            transition={{
-              duration: 0.15,
-              ease: "easeOut"
-            }}
-            className="page-transition-overlay"
-            style={{
-              willChange: 'opacity, backdrop-filter',
-              pointerEvents: 'none'
-            }}
-          />
+          {/* Enhanced page transition overlay with smooth fade */}
+          <AnimatePresence>
+            <motion.div
+              key={`overlay-${pathname}`}
+              initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+              animate={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+              exit={{ opacity: 0.4, backdropFilter: 'blur(10px)' }}
+              transition={{
+                duration: 0.4,
+                ease: [0.4, 0, 0.2, 1]
+              }}
+              className="page-transition-overlay"
+              style={{
+                willChange: 'opacity, backdrop-filter',
+                pointerEvents: 'none',
+                transform: 'translate3d(0, 0, 0)',
+                backfaceVisibility: 'hidden'
+              }}
+            />
+          </AnimatePresence>
         </AuthProvider>
 
         {/* Vercel Analytics & Speed Insights */}

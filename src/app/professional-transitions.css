@@ -317,24 +317,26 @@ select:focus,
 }
 
 /* ===== PAGE TRANSITIONS ===== */
-/* Smooth page-to-page navigation */
+/* Ultra-smooth page-to-page navigation with enhanced effects */
 
 .page-enter {
-  animation: pageEnter var(--duration-moderate) var(--ease-decelerate) forwards;
+  animation: pageEnter var(--duration-slow) var(--ease-decelerate) forwards;
 }
 
 .page-exit {
-  animation: pageExit var(--duration-normal) var(--ease-accelerate) forwards;
+  animation: pageExit var(--duration-moderate) var(--ease-accelerate) forwards;
 }
 
 @keyframes pageEnter {
   from {
     opacity: 0;
-    transform: translateY(16px) scale(0.98);
+    transform: translateY(20px) scale(0.96);
+    filter: blur(4px);
   }
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+    filter: blur(0px);
   }
 }
 
@@ -342,10 +344,52 @@ select:focus,
   from {
     opacity: 1;
     transform: translateY(0) scale(1);
+    filter: blur(0px);
   }
   to {
     opacity: 0;
-    transform: translateY(-16px) scale(0.98);
+    transform: translateY(-20px) scale(1.02);
+    filter: blur(4px);
+  }
+}
+
+/* Enhanced page transition overlay */
+.page-transition-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 255, 136, 0.05) 50%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  will-change: opacity, backdrop-filter;
+}
+
+/* Prevent scroll during page transitions */
+html.page-transitioning,
+html.page-transitioning body {
+  overflow: hidden !important;
+}
+
+/* Smooth content fade during navigation */
+.page-content-fade {
+  animation: contentFade var(--duration-moderate) var(--ease-smooth);
+}
+
+@keyframes contentFade {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
   }
 }
 
