@@ -131,42 +131,33 @@ export default function ModernNavbar() {
               </motion.div>
             </div>
 
-            {/* Desktop Navigation Links - Centered */}
-            <div className="hidden lg:flex items-center gap-8 flex-1 justify-center">
-              {navLinks.map((link) => {
-                const isActive = isActiveLink(link.href);
-                const Icon = link.icon;
-                return (
-                  <motion.a
-                    key={link.name}
-                    href={link.href}
-                    className={`relative flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium transition-all duration-300 group whitespace-nowrap ${
-                      isActive 
-                        ? 'text-green-400 bg-green-400/10 border border-green-400/20' 
-                        : 'text-foreground/70 hover:text-green-400 hover:bg-green-400/5'
-                    }`}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Icon className="w-4 h-4" />
-                    {link.name}
-                    
-                    {isActive && (
-                      <motion.div
-                        className="absolute inset-0 bg-green-400/5 rounded-lg -z-10"
-                        animate={{
-                          opacity: [0.3, 0.6, 0.3]
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          ease: "easeInOut"
-                        }}
-                      />
-                    )}
-                  </motion.a>
-                );
-              })}
+            {/* Desktop Navigation Links - Centered with Sliding Glider */}
+            <div className="hidden lg:flex items-center flex-1 justify-center">
+              <div className="glass-nav-group">
+                {navLinks.map((link, index) => {
+                  const isActive = isActiveLink(link.href);
+                  const Icon = link.icon;
+                  return (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      className={`glass-nav-link ${isActive ? 'active' : ''}`}
+                      data-index={index}
+                    >
+                      <Icon className="w-4 h-4" />
+                      <span>{link.name}</span>
+                    </a>
+                  );
+                })}
+                <div 
+                  className="glass-nav-glider"
+                  style={{
+                    transform: `translateX(${
+                      navLinks.findIndex(link => isActiveLink(link.href)) * 100
+                    }%)`
+                  }}
+                />
+              </div>
             </div>
 
             {/* Desktop Auth Section - Far Right */}

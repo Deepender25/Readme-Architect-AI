@@ -681,6 +681,78 @@ body {
     line-height: 1.5 !important;
   }
 
+  /* ===== GLASS NAVIGATION WITH SLIDING GLIDER ===== */
+  .glass-nav-group {
+    --bg: rgba(255, 255, 255, 0.06);
+    --text: #e5e5e5;
+    display: flex;
+    position: relative;
+    background: var(--bg);
+    border-radius: 1rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow:
+      inset 1px 1px 4px rgba(255, 255, 255, 0.2),
+      inset -1px -1px 6px rgba(0, 0, 0, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    width: fit-content;
+    padding: 0.25rem;
+  }
+
+  .glass-nav-link {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 120px;
+    font-size: 14px;
+    padding: 0.8rem 1.6rem;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: var(--text);
+    position: relative;
+    z-index: 2;
+    transition: color 0.3s ease-in-out;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .glass-nav-link:hover {
+    color: white;
+  }
+
+  .glass-nav-link.active {
+    color: #fff;
+  }
+
+  .glass-nav-glider {
+    position: absolute;
+    top: 0.25rem;
+    bottom: 0.25rem;
+    left: 0.25rem;
+    width: calc((100% - 0.5rem) / 4);
+    border-radius: 0.875rem;
+    z-index: 1;
+    transition:
+      transform 0.5s cubic-bezier(0.37, 1.95, 0.66, 0.56),
+      background 0.4s ease-in-out,
+      box-shadow 0.4s ease-in-out;
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.3), rgba(0, 255, 136, 0.5));
+    box-shadow:
+      0 0 18px rgba(0, 255, 136, 0.5),
+      0 0 10px rgba(0, 255, 136, 0.4) inset;
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 1024px) {
+    .glass-nav-group {
+      display: none;
+    }
+  }
+
   /* Fix for large text titles to prevent clipping */
   .text-4xl, .text-5xl, .text-6xl, .text-7xl, .text-8xl {
     line-height: 1.4 !important;
