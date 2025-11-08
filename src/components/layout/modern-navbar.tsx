@@ -54,11 +54,20 @@ export default function ModernNavbar() {
     { name: 'Documentation', href: '/documentation', icon: BookOpen }
   ];
 
-  // Function to check if a link is active
+  // Function to check if a link is active - FIXED
   const isActiveLink = (href: string) => {
-    if (href === '/' && pathname === '/') return true;
-    if (href !== '/' && pathname.startsWith(href)) return true;
-    return false;
+    // Exact match for home
+    if (href === '/') {
+      return pathname === '/';
+    }
+    // For other pages, check if pathname starts with href
+    return pathname.startsWith(href);
+  };
+
+  // Get active link index for glider position
+  const getActiveIndex = () => {
+    const index = navLinks.findIndex(link => isActiveLink(link.href));
+    return index === -1 ? 0 : index;
   };
 
   return (
@@ -156,20 +165,13 @@ export default function ModernNavbar() {
                 <motion.div 
                   className="glass-nav-glider"
                   animate={{
-                    x: `${navLinks.findIndex(link => isActiveLink(link.href)) * 100}%`
+                    x: getActiveIndex() * 100 + '%'
                   }}
                   transition={{
                     type: "spring",
                     stiffness: 300,
                     damping: 30,
                     mass: 0.8,
-                  }}
-                  style={{
-                    position: 'absolute',
-                    top: '0.25rem',
-                    bottom: '0.25rem',
-                    left: '0.25rem',
-                    width: `calc((100% - 0.5rem) / ${navLinks.length})`,
                   }}
                 />
               </div>

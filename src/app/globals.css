@@ -744,17 +744,12 @@ body {
     width: calc((100% - 0.5rem) / 4);
     border-radius: 0.875rem;
     z-index: 1;
-    transition:
-      transform 0.5s cubic-bezier(0.37, 1.95, 0.66, 0.56),
-      background 0.4s ease-in-out,
-      box-shadow 0.4s ease-in-out;
     background: linear-gradient(135deg, rgba(0, 255, 136, 0.3), rgba(0, 255, 136, 0.5));
     box-shadow:
       0 0 18px rgba(0, 255, 136, 0.5),
       0 0 10px rgba(0, 255, 136, 0.4) inset;
     pointer-events: none;
     will-change: transform;
-    transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
   }
 
