@@ -181,7 +181,23 @@ export default function ModernNavbar() {
             {/* Desktop Auth Section - Far Right */}
             <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
               <AnimatePresence mode="wait">
-                {!isAuthenticated ? (
+                {isLoading ? (
+                  <motion.div
+                    key="loading"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="relative flex items-center gap-2 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden whitespace-nowrap"
+                    style={{
+                      padding: '12px 24px',
+                      minHeight: 'auto',
+                      height: 'auto'
+                    }}
+                  >
+                    <div className="w-4 h-4 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin" />
+                    <span className="relative z-10">Loading...</span>
+                  </motion.div>
+                ) : !isAuthenticated ? (
                   <motion.button
                     key="sign-in"
                     initial={{ opacity: 0, scale: 0.95 }}
@@ -190,8 +206,7 @@ export default function ModernNavbar() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => login()}
-                    disabled={isLoading}
-                    className="relative flex items-center gap-2 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50 whitespace-nowrap"
+                    className="relative flex items-center gap-2 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 whitespace-nowrap"
                     style={{
                       padding: '12px 24px',
                       minHeight: 'auto',
@@ -199,9 +214,7 @@ export default function ModernNavbar() {
                     }}
                   >
                     <Github className="w-4 h-4" />
-                    <span className="relative z-10">
-                      {isLoading ? 'Loading...' : 'Connect with Github'}
-                    </span>
+                    <span className="relative z-10">Connect with Github</span>
                     
                     <div className="absolute inset-0 bg-gradient-to-r from-green-400/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </motion.button>
@@ -456,17 +469,26 @@ export default function ModernNavbar() {
                 })}
                 
                 <div className="px-4 pt-4 border-t border-green-400/10 mt-4">
-                  {!isAuthenticated ? (
+                  {isLoading ? (
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.15 }}
+                      className="flex items-center gap-2 w-full px-4 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-lg"
+                    >
+                      <div className="w-4 h-4 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin" />
+                      Loading...
+                    </motion.div>
+                  ) : !isAuthenticated ? (
                     <motion.button
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.15 }}
                       onClick={() => login()}
-                      disabled={isLoading}
-                      className="flex items-center gap-2 w-full px-4 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-lg hover:bg-green-400/10 transition-colors disabled:opacity-50"
+                      className="flex items-center gap-2 w-full px-4 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-lg hover:bg-green-400/10 transition-colors"
                     >
                       <Github className="w-4 h-4" />
-                      {isLoading ? 'Loading...' : 'Connect with Github'}
+                      Connect with Github
                     </motion.button>
                   ) : (
                     <div className="space-y-1">
