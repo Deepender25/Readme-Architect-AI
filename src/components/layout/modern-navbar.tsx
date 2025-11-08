@@ -142,7 +142,7 @@ export default function ModernNavbar() {
 
             {/* Desktop Navigation Links - Centered with Sliding Glider */}
             <div className="hidden lg:flex items-center flex-1 justify-center">
-              <div className="glass-nav-group">
+              <div className="glass-nav-group" style={{ position: 'relative' }}>
                 {navLinks.map((link, index) => {
                   const isActive = isActiveLink(link.href);
                   const Icon = link.icon;
@@ -164,8 +164,9 @@ export default function ModernNavbar() {
                 })}
                 <motion.div 
                   className="glass-nav-glider"
+                  initial={false}
                   animate={{
-                    x: getActiveIndex() * 100 + '%'
+                    left: `calc(0.25rem + ${getActiveIndex()} * (100% - 0.5rem) / ${navLinks.length})`
                   }}
                   transition={{
                     type: "spring",
