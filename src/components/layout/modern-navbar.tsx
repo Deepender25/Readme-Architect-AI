@@ -143,18 +143,33 @@ export default function ModernNavbar() {
                       href={link.href}
                       className={`glass-nav-link ${isActive ? 'active' : ''}`}
                       data-index={index}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        router.push(link.href);
+                      }}
                     >
                       <Icon className="w-4 h-4" />
                       <span>{link.name}</span>
                     </a>
                   );
                 })}
-                <div 
+                <motion.div 
                   className="glass-nav-glider"
+                  animate={{
+                    x: `${navLinks.findIndex(link => isActiveLink(link.href)) * 100}%`
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 30,
+                    mass: 0.8,
+                  }}
                   style={{
-                    transform: `translateX(${
-                      navLinks.findIndex(link => isActiveLink(link.href)) * 100
-                    }%)`
+                    position: 'absolute',
+                    top: '0.25rem',
+                    bottom: '0.25rem',
+                    left: '0.25rem',
+                    width: `calc((100% - 0.5rem) / ${navLinks.length})`,
                   }}
                 />
               </div>
