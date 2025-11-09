@@ -224,10 +224,6 @@ export default function ContactPage() {
                       </>
                     )}
                   </motion.button>
-
-                  <p className="text-xs text-gray-500 text-center">
-                    ✅ Contact form is now fully functional! You'll receive a confirmation email after submitting.
-                  </p>
                 </form>
               </div>
             </motion.section>
