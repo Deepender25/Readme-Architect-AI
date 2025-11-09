@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { MessageCircle, Mail, Github, Instagram, MapPin, Clock, Send, Heart, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
+import { MessageCircle, Mail, Github, Instagram, Clock, Send, Heart, CheckCircle, AlertCircle } from 'lucide-react'
 import LayoutWrapper from '@/components/layout-wrapper'
 
 export default function ContactPage() {
@@ -27,27 +27,18 @@ export default function ContactPage() {
     setSubmitStatus('idle')
 
     try {
-      console.log('📧 Attempting to send contact form...')
-      
-      // Try Next.js API route first
       let response = await fetch('/api/contact', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       })
 
       let result = await response.json()
 
-      // If Next.js route fails, try Python fallback
       if (!response.ok) {
-        console.log('⚠️ Next.js route failed, trying Python fallback...')
         response = await fetch('/api/python/contact', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData),
         })
         result = await response.json()
@@ -56,15 +47,12 @@ export default function ContactPage() {
       if (response.ok) {
         setSubmitStatus('success')
         setStatusMessage('Thank you! Your message has been sent successfully. I\'ll get back to you soon!')
-        setFormData({ name: '', email: '', subject: '', message: '' }) // Reset form
-        console.log('✅ Contact form sent successfully')
+        setFormData({ name: '', email: '', subject: '', message: '' })
       } else {
         setSubmitStatus('error')
         setStatusMessage(result.error || 'Something went wrong. Please try again.')
-        console.error('❌ Contact form failed:', result.error)
       }
     } catch (error) {
-      console.error('❌ Contact form network error:', error)
       setSubmitStatus('error')
       setStatusMessage('Network error. Please check your connection and try again.')
     } finally {
@@ -74,72 +62,86 @@ export default function ContactPage() {
 
   return (
     <LayoutWrapper showBreadcrumbs={true} maxWidth="7xl">
-      <div className="min-h-screen py-12">
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
+      <div className="min-h-screen py-20">
+        <div className="max-w-7xl mx-auto px-4">
+          
+          {/* Hero Section */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            transition={{ duration: 0.5 }}
+            className="text-center mb-20"
           >
-            <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/30">
-              <MessageCircle className="w-8 h-8 text-white" />
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-3xl mb-6 shadow-2xl shadow-green-500/30">
+              <MessageCircle className="w-10 h-10 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-white mb-4">Get in Touch</h1>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Have questions, feedback, or ideas? I'd love to hear from you! ReadmeArchitect is built by the community, for the community.
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent">
+              Let's Connect
+            </h1>
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+              Have questions, feedback, or ideas? I'd love to hear from you! 
+              <br className="hidden md:block" />
+              ReadmeArchitect is built by the community, for the community.
             </p>
           </motion.div>
 
-          {/* Contact Methods */}
-          <div className="grid lg:grid-cols-2 gap-12 mb-16">
-            {/* Contact Form */}
-            <motion.section
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
+          {/* Main Content Grid */}
+          <div className="grid lg:grid-cols-3 gap-8 mb-20">
+            
+            {/* Contact Form - Takes 2 columns */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="lg:col-span-2"
             >
-              <div className="bg-black/40 border border-green-400/20 rounded-xl p-8">
-                <h2 className="text-2xl font-bold text-white mb-6">Send a Message</h2>
+              <div className="bg-gradient-to-br from-black/60 to-black/40 backdrop-blur-xl border border-green-400/20 rounded-2xl p-8 md:p-10 shadow-2xl">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="w-12 h-12 bg-green-400/20 rounded-xl flex items-center justify-center">
+                    <Send className="w-6 h-6 text-green-400" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-white">Send a Message</h2>
+                </div>
                 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                      Your Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      disabled={isSubmitting}
-                      className="w-full px-4 py-3 bg-black/40 border border-green-400/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-400 focus:bg-black/60 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                      placeholder="Enter your name"
-                    />
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-semibold text-gray-300 mb-2">
+                        Your Name *
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                        disabled={isSubmitting}
+                        className="w-full px-4 py-3.5 bg-black/50 border border-green-400/30 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-400/20 transition-all disabled:opacity-50"
+                        placeholder="John Doe"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-semibold text-gray-300 mb-2">
+                        Email Address *
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        disabled={isSubmitting}
+                        className="w-full px-4 py-3.5 bg-black/50 border border-green-400/30 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-400/20 transition-all disabled:opacity-50"
+                        placeholder="john@example.com"
+                      />
+                    </div>
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                      Email Address *
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      disabled={isSubmitting}
-                      className="w-full px-4 py-3 bg-black/40 border border-green-400/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-400 focus:bg-black/60 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                      placeholder="your@email.com"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
+                    <label htmlFor="subject" className="block text-sm font-semibold text-gray-300 mb-2">
                       Subject *
                     </label>
                     <select
@@ -149,7 +151,7 @@ export default function ContactPage() {
                       onChange={handleInputChange}
                       required
                       disabled={isSubmitting}
-                      className="w-full px-4 py-3 bg-black/40 border border-green-400/30 rounded-lg text-white focus:outline-none focus:border-green-400 focus:bg-black/60 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full px-4 py-3.5 bg-black/50 border border-green-400/30 rounded-xl text-white focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-400/20 transition-all disabled:opacity-50"
                     >
                       <option value="">Select a topic</option>
                       <option value="General Feedback">General Feedback</option>
@@ -162,40 +164,39 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
+                    <label htmlFor="message" className="block text-sm font-semibold text-gray-300 mb-2">
                       Message *
                     </label>
                     <textarea
                       id="message"
                       name="message"
-                      rows={5}
+                      rows={6}
                       value={formData.message}
                       onChange={handleInputChange}
                       required
                       disabled={isSubmitting}
-                      className="w-full px-4 py-3 bg-black/40 border border-green-400/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-400 focus:bg-black/60 transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed"
-                      placeholder="Tell me about your experience with ReadmeArchitect, share your ideas, or ask any questions..."
+                      className="w-full px-4 py-3.5 bg-black/50 border border-green-400/30 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-400/20 transition-all resize-none disabled:opacity-50"
+                      placeholder="Tell me about your experience, share your ideas, or ask any questions..."
                     ></textarea>
                   </div>
 
-                  {/* Status Message */}
                   {submitStatus !== 'idle' && (
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className={`p-4 rounded-lg border ${
+                      className={`p-4 rounded-xl border ${
                         submitStatus === 'success'
                           ? 'bg-green-400/10 border-green-400/30 text-green-400'
                           : 'bg-red-400/10 border-red-400/30 text-red-400'
                       }`}
                     >
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
                         {submitStatus === 'success' ? (
                           <CheckCircle className="w-5 h-5 flex-shrink-0" />
                         ) : (
                           <AlertCircle className="w-5 h-5 flex-shrink-0" />
                         )}
-                        <p className="text-sm">{statusMessage}</p>
+                        <p className="text-sm font-medium">{statusMessage}</p>
                       </div>
                     </motion.div>
                   )}
@@ -203,9 +204,9 @@ export default function ContactPage() {
                   <motion.button
                     type="submit"
                     disabled={isSubmitting}
-                    whileHover={!isSubmitting ? { scale: 1.05 } : {}}
-                    whileTap={!isSubmitting ? { scale: 0.95 } : {}}
-                    className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,255,136,0.4)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    whileHover={!isSubmitting ? { scale: 1.02 } : {}}
+                    whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+                    className="w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-bold rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,136,0.5)] disabled:opacity-50 disabled:cursor-not-allowed text-lg"
                   >
                     {isSubmitting ? (
                       <>
@@ -215,7 +216,7 @@ export default function ContactPage() {
                           <div className="cube-global"></div>
                           <div className="cube-global"></div>
                         </div>
-                        <span className="ml-2">Sending...</span>
+                        <span>Sending...</span>
                       </>
                     ) : (
                       <>
@@ -226,31 +227,31 @@ export default function ContactPage() {
                   </motion.button>
                 </form>
               </div>
-            </motion.section>
+            </motion.div>
 
-            {/* Contact Info */}
-            <motion.section
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="space-y-8"
+            {/* Sidebar - Takes 1 column */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="space-y-6"
             >
               {/* Direct Contact */}
-              <div className="bg-green-400/10 border border-green-400/30 rounded-xl p-8">
-                <h2 className="text-2xl font-bold text-white mb-6">Direct Contact</h2>
+              <div className="bg-gradient-to-br from-green-400/10 to-green-600/10 backdrop-blur-xl border border-green-400/30 rounded-2xl p-6 shadow-xl">
+                <h3 className="text-xl font-bold text-white mb-6">Direct Contact</h3>
                 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <motion.a
                     href="mailto:yadavdeepender65@gmail.com"
-                    whileHover={{ scale: 1.02 }}
-                    className="flex items-center gap-4 p-4 bg-black/40 border border-green-400/20 rounded-lg hover:border-green-400/40 transition-all"
+                    whileHover={{ scale: 1.02, x: 4 }}
+                    className="flex items-center gap-3 p-3 bg-black/40 border border-green-400/20 rounded-xl hover:border-green-400/40 hover:bg-black/60 transition-all group"
                   >
-                    <div className="w-12 h-12 bg-green-400/20 rounded-lg flex items-center justify-center">
-                      <Mail className="w-6 h-6 text-green-400" />
+                    <div className="w-10 h-10 bg-green-400/20 rounded-lg flex items-center justify-center group-hover:bg-green-400/30 transition-colors">
+                      <Mail className="w-5 h-5 text-green-400" />
                     </div>
-                    <div>
-                      <h3 className="text-white font-semibold">Email</h3>
-                      <p className="text-gray-400 text-sm">yadavdeepender65@gmail.com</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white font-semibold text-sm">Email</p>
+                      <p className="text-gray-400 text-xs truncate">yadavdeepender65@gmail.com</p>
                     </div>
                   </motion.a>
 
@@ -258,15 +259,15 @@ export default function ContactPage() {
                     href="https://github.com/Deepender25"
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.02 }}
-                    className="flex items-center gap-4 p-4 bg-black/40 border border-green-400/20 rounded-lg hover:border-green-400/40 transition-all"
+                    whileHover={{ scale: 1.02, x: 4 }}
+                    className="flex items-center gap-3 p-3 bg-black/40 border border-green-400/20 rounded-xl hover:border-green-400/40 hover:bg-black/60 transition-all group"
                   >
-                    <div className="w-12 h-12 bg-green-400/20 rounded-lg flex items-center justify-center">
-                      <Github className="w-6 h-6 text-green-400" />
+                    <div className="w-10 h-10 bg-green-400/20 rounded-lg flex items-center justify-center group-hover:bg-green-400/30 transition-colors">
+                      <Github className="w-5 h-5 text-green-400" />
                     </div>
-                    <div>
-                      <h3 className="text-white font-semibold">GitHub</h3>
-                      <p className="text-gray-400 text-sm">@Deepender25</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white font-semibold text-sm">GitHub</p>
+                      <p className="text-gray-400 text-xs">@Deepender25</p>
                     </div>
                   </motion.a>
 
@@ -274,140 +275,59 @@ export default function ContactPage() {
                     href="https://www.instagram.com/itsadi.art?igsh=NGthdzVkbTlzOXRr"
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.02 }}
-                    className="flex items-center gap-4 p-4 bg-black/40 border border-green-400/20 rounded-lg hover:border-green-400/40 transition-all"
+                    whileHover={{ scale: 1.02, x: 4 }}
+                    className="flex items-center gap-3 p-3 bg-black/40 border border-green-400/20 rounded-xl hover:border-green-400/40 hover:bg-black/60 transition-all group"
                   >
-                    <div className="w-12 h-12 bg-green-400/20 rounded-lg flex items-center justify-center">
-                      <Instagram className="w-6 h-6 text-green-400" />
+                    <div className="w-10 h-10 bg-green-400/20 rounded-lg flex items-center justify-center group-hover:bg-green-400/30 transition-colors">
+                      <Instagram className="w-5 h-5 text-green-400" />
                     </div>
-                    <div>
-                      <h3 className="text-white font-semibold">Instagram</h3>
-                      <p className="text-gray-400 text-sm">@itsadi.art</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white font-semibold text-sm">Instagram</p>
+                      <p className="text-gray-400 text-xs">@itsadi.art</p>
                     </div>
                   </motion.a>
                 </div>
               </div>
 
               {/* Response Times */}
-              <div className="bg-black/40 border border-green-400/20 rounded-xl p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <Clock className="w-6 h-6 text-green-400" />
-                  <h3 className="text-xl font-semibold text-white">Response Times</h3>
+              <div className="bg-gradient-to-br from-black/60 to-black/40 backdrop-blur-xl border border-green-400/20 rounded-2xl p-6 shadow-xl">
+                <div className="flex items-center gap-2 mb-5">
+                  <Clock className="w-5 h-5 text-green-400" />
+                  <h3 className="text-lg font-bold text-white">Response Times</h3>
                 </div>
                 
-                <div className="space-y-3 text-gray-300">
-                  <div className="flex justify-between items-center py-2 border-b border-green-400/20">
-                    <span>General Inquiries</span>
-                    <span className="text-green-400 font-semibold">24-48 hours</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-green-400/20">
-                    <span>Bug Reports</span>
-                    <span className="text-green-400 font-semibold">12-24 hours</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-green-400/20">
-                    <span>Feature Requests</span>
-                    <span className="text-green-400 font-semibold">2-5 days</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2">
-                    <span>Collaborations</span>
-                    <span className="text-green-400 font-semibold">1-3 days</span>
-                  </div>
+                <div className="space-y-3">
+                  {[
+                    { label: 'General Inquiries', time: '24-48h' },
+                    { label: 'Bug Reports', time: '12-24h' },
+                    { label: 'Feature Requests', time: '2-5 days' },
+                    { label: 'Collaborations', time: '1-3 days' }
+                  ].map((item, index) => (
+                    <div key={index} className="flex justify-between items-center py-2 border-b border-green-400/10 last:border-0">
+                      <span className="text-gray-300 text-sm">{item.label}</span>
+                      <span className="text-green-400 font-bold text-sm">{item.time}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-
-              {/* Project Info */}
-              <div className="bg-black/40 border border-green-400/20 rounded-xl p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <MapPin className="w-6 h-6 text-green-400" />
-                  <h3 className="text-xl font-semibold text-white">Project Details</h3>
-                </div>
-                
-                <div className="space-y-4 text-gray-300">
-                  <div>
-                    <h4 className="text-white font-medium mb-1">Open Source</h4>
-                    <p className="text-sm">ReadmeArchitect is completely open source and available on GitHub.</p>
-                  </div>
-                  <div>
-                    <h4 className="text-white font-medium mb-1">Community Driven</h4>
-                    <p className="text-sm">Built by developers, for developers. Your feedback shapes the future.</p>
-                  </div>
-                  <div>
-                    <h4 className="text-white font-medium mb-1">Always Improving</h4>
-                    <p className="text-sm">Regular updates and new features based on community needs.</p>
-                  </div>
-                </div>
-              </div>
-            </motion.section>
+            </motion.div>
           </div>
 
-          {/* FAQ Quick Links */}
-          <motion.section
+          {/* Bottom CTA */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="mb-16"
-          >
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4">Quick Help</h2>
-              <p className="text-gray-400">Looking for immediate answers? Check these resources first:</p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                {
-                  title: "How to Use",
-                  description: "Step-by-step guide to using ReadmeArchitect",
-                  link: "/tutorials",
-                  icon: "📖"
-                },
-                {
-                  title: "Examples",
-                  description: "See ReadmeArchitect in action with real examples",
-                  link: "/examples",
-                  icon: "🎯"
-                },
-                {
-                  title: "GitHub Issues",
-                  description: "Report bugs or request features",
-                  link: "https://github.com/Deepender25/Readme-Architect-AI/issues",
-                  icon: "🐛"
-                }
-              ].map((item, index) => (
-                <motion.a
-                  key={index}
-                  href={item.link}
-                  target={item.link.startsWith('http') ? '_blank' : '_self'}
-                  rel={item.link.startsWith('http') ? 'noopener noreferrer' : ''}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="block bg-black/40 border border-green-400/20 rounded-xl p-6 hover:border-green-400/40 transition-all"
-                >
-                  <div className="text-center">
-                    <div className="text-3xl mb-3">{item.icon}</div>
-                    <h3 className="text-lg font-semibold text-white mb-2">{item.title}</h3>
-                    <p className="text-gray-400 text-sm">{item.description}</p>
-                  </div>
-                </motion.a>
-              ))}
-            </div>
-          </motion.section>
-
-          {/* Community Note */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
             className="text-center"
           >
-            <div className="bg-gradient-to-r from-green-400/20 to-green-600/20 border border-green-400/30 rounded-xl p-8">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <Heart className="w-6 h-6 text-green-400" />
-                <h2 className="text-2xl font-bold text-white">Built with Community in Mind</h2>
+            <div className="bg-gradient-to-r from-green-400/20 via-green-500/20 to-green-600/20 backdrop-blur-xl border border-green-400/30 rounded-3xl p-10 shadow-2xl">
+              <div className="flex items-center justify-center gap-3 mb-6">
+                <Heart className="w-8 h-8 text-green-400" />
+                <h2 className="text-3xl font-bold text-white">Built with Community in Mind</h2>
               </div>
-              <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
+              <p className="text-gray-300 text-lg mb-8 max-w-3xl mx-auto leading-relaxed">
                 ReadmeArchitect is more than just a tool – it's a community project. Every message, 
-                suggestion, and piece of feedback helps make it better for everyone. 
-                Don't hesitate to reach out, no matter how small your question might seem!
+                suggestion, and piece of feedback helps make it better for everyone.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <motion.a
@@ -416,22 +336,14 @@ export default function ContactPage() {
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,255,136,0.4)]"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,136,0.5)]"
                 >
                   <Github className="w-5 h-5" />
                   View on GitHub
                 </motion.a>
-                <motion.a
-                  href="/about"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center gap-2 px-6 py-3 border border-green-400/50 text-green-400 hover:bg-green-400/10 font-semibold rounded-lg transition-all duration-300"
-                >
-                  Learn More About Us
-                </motion.a>
               </div>
             </div>
-          </motion.section>
+          </motion.div>
         </div>
       </div>
     </LayoutWrapper>
