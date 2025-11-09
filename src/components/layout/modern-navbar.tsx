@@ -213,17 +213,14 @@ export default function ModernNavbar() {
                       <button
                         ref={dropdownTriggerRef}
                         onClick={() => setDropdownOpen(!dropdownOpen)}
-                        className="relative flex items-center gap-2 px-6 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50 whitespace-nowrap"
+                        className="relative flex items-center gap-2 px-6 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 whitespace-nowrap"
                       >
-                        <div className="relative flex-shrink-0">
-                          <img
-                            src={user?.avatar_url}
-                            alt={user?.name}
-                            className="w-6 h-6 rounded-full"
-                          />
-                          <div className="absolute inset-0 rounded-full ring-1 ring-green-400/50 ring-offset-1 ring-offset-transparent"></div>
-                        </div>
-                        <span className="relative z-10 flex-shrink-0">
+                        <img
+                          src={user?.avatar_url}
+                          alt={user?.name}
+                          className="w-6 h-6 rounded-full flex-shrink-0 ring-1 ring-green-400/50"
+                        />
+                        <span className="flex-shrink-0">
                           {user?.name}
                         </span>
                         <ChevronDown
@@ -232,7 +229,7 @@ export default function ModernNavbar() {
                           }`}
                         />
                         
-                        <div className="absolute inset-0 bg-gradient-to-r from-green-400/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-green-400/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
                       </button>
                     
                     <DropdownPortal isOpen={dropdownOpen} triggerRef={dropdownTriggerRef}>
