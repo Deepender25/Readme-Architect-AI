@@ -179,7 +179,7 @@ export default function ModernNavbar() {
             </div>
 
             {/* Desktop Auth Section - Far Right */}
-            <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
+            <div className="hidden lg:flex items-center gap-4 flex-shrink-0 w-[240px] justify-end">
               {isLoading ? (
                 <div className="relative flex items-center gap-2 px-6 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl whitespace-nowrap">
                   <div className="w-6 h-6 rounded-full bg-green-400/20 animate-pulse flex-shrink-0" />
