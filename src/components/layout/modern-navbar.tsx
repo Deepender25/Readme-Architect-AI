@@ -180,7 +180,13 @@ export default function ModernNavbar() {
 
             {/* Desktop Auth Section - Far Right */}
             <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
-              {!isLoading && (
+              {isLoading ? (
+                <div className="relative flex items-center gap-2 px-6 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl whitespace-nowrap">
+                  <div className="w-6 h-6 rounded-full bg-green-400/20 animate-pulse flex-shrink-0" />
+                  <div className="h-4 w-24 bg-green-400/20 rounded animate-pulse" />
+                  <div className="w-4 h-4 flex-shrink-0 opacity-0" />
+                </div>
+              ) : (
                 <AnimatePresence mode="wait">
                   {!isAuthenticated ? (
                     <motion.button
@@ -445,7 +451,15 @@ export default function ModernNavbar() {
                 })}
                 
                 <div className="px-4 pt-4 border-t border-green-400/10 mt-4">
-                  {!isLoading && !isAuthenticated && (
+                  {isLoading ? (
+                    <div className="flex items-center gap-4 px-4 py-4 glass-card rounded-xl border border-green-400/20">
+                      <div className="w-12 h-12 rounded-full bg-green-400/20 animate-pulse flex-shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 w-32 bg-green-400/20 rounded animate-pulse" />
+                        <div className="h-3 w-24 bg-green-400/20 rounded animate-pulse" />
+                      </div>
+                    </div>
+                  ) : !isAuthenticated ? (
                     <motion.button
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -456,8 +470,7 @@ export default function ModernNavbar() {
                       <Github className="w-4 h-4 flex-shrink-0" />
                       Connect with Github
                     </motion.button>
-                  )}
-                  {!isLoading && isAuthenticated && (
+                  ) : (
                     <div className="space-y-1">
                       <div className="flex items-center gap-4 px-4 py-4 glass-card rounded-xl border border-green-400/20">
                         <div className="relative">
