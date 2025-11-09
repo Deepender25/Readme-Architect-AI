@@ -169,10 +169,8 @@ export default function ModernNavbar() {
                     left: `calc(0.25rem + ${getActiveIndex()} * (100% - 0.5rem) / ${navLinks.length})`
                   }}
                   transition={{
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 30,
-                    mass: 0.8,
+                    duration: 0.5,
+                    ease: [0.37, 1.95, 0.66, 0.56]
                   }}
                 />
               </div>
