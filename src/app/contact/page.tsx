@@ -118,7 +118,7 @@ export default function ContactPage() {
                         required
                         disabled={isSubmitting}
                         className="w-full px-4 py-3.5 bg-black/50 border border-green-400/30 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-400/20 transition-all disabled:opacity-50"
-                        placeholder="John Doe"
+                        placeholder="Your Name"
                       />
                     </div>
 
@@ -135,7 +135,7 @@ export default function ContactPage() {
                         required
                         disabled={isSubmitting}
                         className="w-full px-4 py-3.5 bg-black/50 border border-green-400/30 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-400/20 transition-all disabled:opacity-50"
-                        placeholder="john@example.com"
+                        placeholder="Your Email"
                       />
                     </div>
                   </div>
