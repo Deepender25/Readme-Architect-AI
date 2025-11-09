@@ -180,21 +180,7 @@ export default function ModernNavbar() {
 
             {/* Desktop Auth Section - Far Right */}
             <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
-              {isLoading ? (
-                <div className="relative">
-                  {/* Invisible placeholder to reserve space */}
-                  <div className="invisible flex items-center gap-2 px-6 py-3 text-sm font-medium border border-green-400/30 rounded-xl whitespace-nowrap">
-                    <div className="w-6 h-6 rounded-full flex-shrink-0" />
-                    <span className="flex-shrink-0">Loading User</span>
-                    <div className="w-4 h-4 flex-shrink-0" />
-                  </div>
-                  {/* Visible loading overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center gap-2 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl bg-black/40 backdrop-blur-sm">
-                    <div className="w-4 h-4 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin flex-shrink-0" />
-                    <span>Loading...</span>
-                  </div>
-                </div>
-              ) : (
+              {!isLoading && (
                 <AnimatePresence mode="wait">
                   {!isAuthenticated ? (
                     <motion.button
@@ -459,17 +445,7 @@ export default function ModernNavbar() {
                 })}
                 
                 <div className="px-4 pt-4 border-t border-green-400/10 mt-4">
-                  {isLoading ? (
-                    <motion.div
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.15 }}
-                      className="flex items-center gap-2 w-full px-4 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-lg"
-                    >
-                      <div className="w-4 h-4 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin flex-shrink-0" />
-                      Loading...
-                    </motion.div>
-                  ) : !isAuthenticated ? (
+                  {!isLoading && !isAuthenticated && (
                     <motion.button
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -480,7 +456,8 @@ export default function ModernNavbar() {
                       <Github className="w-4 h-4 flex-shrink-0" />
                       Connect with Github
                     </motion.button>
-                  ) : (
+                  )}
+                  {!isLoading && isAuthenticated && (
                     <div className="space-y-1">
                       <div className="flex items-center gap-4 px-4 py-4 glass-card rounded-xl border border-green-400/20">
                         <div className="relative">
