@@ -765,8 +765,7 @@ body {
       0 0 18px rgba(0, 255, 136, 0.5),
       0 0 10px rgba(0, 255, 136, 0.4) inset;
     pointer-events: none;
-    will-change: transform;
-    backface-visibility: hidden;
+    will-change: left;
   }
 
   /* Mobile responsive */

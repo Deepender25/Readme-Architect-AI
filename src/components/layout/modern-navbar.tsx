@@ -210,10 +210,8 @@ export default function ModernNavbar() {
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
                     >
-                      <motion.button
+                      <button
                         ref={dropdownTriggerRef}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
                         onClick={() => setDropdownOpen(!dropdownOpen)}
                         className="relative flex items-center gap-2 px-6 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50 whitespace-nowrap"
                       >
@@ -235,7 +233,7 @@ export default function ModernNavbar() {
                         />
                         
                         <div className="absolute inset-0 bg-gradient-to-r from-green-400/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      </motion.button>
+                      </button>
                     
                     <DropdownPortal isOpen={dropdownOpen} triggerRef={dropdownTriggerRef}>
                       <motion.div
