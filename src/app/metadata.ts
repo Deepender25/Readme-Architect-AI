@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'ReadmeArchitect - AI-Powered README Generator | Create Professional GitHub Documentation',
-  description: 'Generate professional README files for your GitHub repositories using advanced AI. Create beautiful, comprehensive documentation in under 30 seconds. Trusted by 15,000+ developers worldwide with 99.2% accuracy.',
+  title: 'ReadmeArchitect - Free AI README Generator | Create Professional GitHub Documentation in 30 Seconds',
+  description: 'Generate stunning GitHub READMEs instantly with advanced AI. Trusted by 15,000+ developers worldwide. Free README generator with 99.2% accuracy. Transform your repositories with professional documentation using Google Gemini AI. No signup required.',
   keywords: [
     'README generator',
     'AI README generator', 

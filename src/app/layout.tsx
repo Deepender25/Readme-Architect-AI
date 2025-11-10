@@ -1,83 +1,188 @@
-'use client';
-
-import { motion, AnimatePresence } from 'framer-motion';
-import { usePathname } from 'next/navigation';
-import { AuthProvider } from '@/lib/auth-client';
-import EnhancedGridBackground from '@/components/enhanced-grid-background';
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/react';
-import Head from 'next/head';
+import { Metadata } from 'next';
 import { organizationSchema, webApplicationSchema } from '@/lib/structured-data';
+import ClientRootLayout from '@/components/client-root-layout';
 import "./globals.css";
 import "@/styles/newloader.css";
 import 'highlight.js/styles/github-dark.css';
+
+export const metadata: Metadata = {
+  metadataBase: new URL('https://readmearchitect.vercel.app'),
+  title: {
+    default: 'ReadmeArchitect - Free AI README Generator | Create Professional GitHub Documentation in 30 Seconds',
+    template: '%s | ReadmeArchitect'
+  },
+  description: 'Generate stunning GitHub READMEs instantly with advanced AI. Trusted by 15,000+ developers worldwide. Free README generator with 99.2% accuracy. Transform your repositories with professional documentation in under 30 seconds using Google Gemini AI.',
+  keywords: [
+    'README generator',
+    'AI README generator',
+    'free README generator',
+    'GitHub README generator',
+    'automatic README creator',
+    'GitHub documentation',
+    'AI documentation generator',
+    'README maker',
+    'repository documentation',
+    'GitHub tools',
+    'markdown generator',
+    'documentation automation',
+    'code documentation',
+    'project documentation',
+    'developer tools',
+    'GitHub integration',
+    'AI writing assistant',
+    'technical documentation',
+    'software documentation',
+    'open source tools',
+    'ReadmeArchitect',
+    'professional documentation',
+    'AI-powered tools',
+    'developer productivity',
+    'documentation templates',
+    'Google Gemini AI',
+    'AI code analysis',
+    'repository analyzer',
+    'GitHub README template',
+    'markdown documentation'
+  ],
+  authors: [{ name: 'ReadmeArchitect Team', url: 'https://readmearchitect.vercel.app' }],
+  creator: 'ReadmeArchitect',
+  publisher: 'ReadmeArchitect',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: '/',
+    languages: {
+      'en-US': '/',
+      'en': '/'
+    }
+  },
+  verification: {
+    google: 'google74b256ed93035973',
+    other: {
+      'msvalidate.01': 'your-bing-verification-code',
+      'yandex-verification': 'your-yandex-verification-code'
+    }
+  },
+  category: 'technology',
+  classification: 'Developer Tools',
+  referrer: 'origin-when-cross-origin',
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-48x48.png', sizes: '48x48', type: 'image/png' },
+      { url: '/favicon-64x64.png', sizes: '64x64', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+      { url: '/apple-touch-icon-152x152.png', sizes: '152x152', type: 'image/png' },
+      { url: '/apple-touch-icon-144x144.png', sizes: '144x144', type: 'image/png' },
+      { url: '/apple-touch-icon-120x120.png', sizes: '120x120', type: 'image/png' },
+      { url: '/apple-touch-icon-114x114.png', sizes: '114x114', type: 'image/png' },
+      { url: '/apple-touch-icon-76x76.png', sizes: '76x76', type: 'image/png' },
+      { url: '/apple-touch-icon-72x72.png', sizes: '72x72', type: 'image/png' },
+      { url: '/apple-touch-icon-60x60.png', sizes: '60x60', type: 'image/png' },
+      { url: '/apple-touch-icon-57x57.png', sizes: '57x57', type: 'image/png' },
+    ],
+    other: [
+      {
+        rel: 'apple-touch-icon-precomposed',
+        url: '/apple-touch-icon-precomposed.png',
+      },
+    ],
+  },
+  manifest: '/site.webmanifest',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://readmearchitect.vercel.app',
+    title: 'ReadmeArchitect - Free AI README Generator | Create Professional GitHub Documentation',
+    description: 'Generate stunning GitHub READMEs instantly with AI. Trusted by 15,000+ developers worldwide. Free README generator with 99.2% accuracy.',
+    siteName: 'ReadmeArchitect',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'ReadmeArchitect - AI-Powered README Generator Interface',
+        type: 'image/png',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ReadmeArchitect - Free AI README Generator',
+    description: 'Generate stunning GitHub READMEs instantly with AI. Trusted by 15,000+ developers worldwide.',
+    site: '@readmearchitect',
+    creator: '@readmearchitect',
+    images: {
+      url: '/og-image.png',
+      alt: 'ReadmeArchitect - AI-Powered README Generator',
+    },
+  },
+  appleWebApp: {
+    capable: true,
+    title: 'ReadmeArchitect',
+    statusBarStyle: 'black-translucent',
+  },
+  other: {
+    'application-name': 'ReadmeArchitect',
+    'mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'black-translucent',
+    'apple-mobile-web-app-title': 'ReadmeArchitect',
+    'msapplication-TileColor': '#00ff88',
+    'msapplication-TileImage': '/mstile-144x144.png',
+    'msapplication-config': '/browserconfig.xml',
+    'theme-color': '#00ff88',
+    'color-scheme': 'dark',
+    'coverage': 'Worldwide',
+    'distribution': 'global',
+    'rating': 'general',
+    'target': 'all',
+    'audience': 'Developers, Software Engineers, Technical Writers, Open Source Contributors',
+    'subject': 'AI-powered README generation for GitHub repositories',
+    'abstract': 'Professional AI-powered README generator that creates stunning GitHub documentation in under 30 seconds. Free, fast, and accurate with advanced AI technology.',
+    'language': 'English',
+    'revisit-after': '3 days',
+  },
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
-
   return (
-    <html lang="en">
+    <html lang="en-US">
       <head>
-        {/* Primary Meta Tags */}
-        <title>ReadmeArchitect - Free AI README Generator | Create Professional GitHub Documentation in 30 Seconds</title>
-        <meta name="title" content="ReadmeArchitect - Free AI README Generator | Create Professional GitHub Documentation in 30 Seconds" />
-        <meta name="description" content="Generate stunning GitHub READMEs instantly with advanced AI. Trusted by 15,000+ developers worldwide. Free README generator with 99.2% accuracy. Transform your repositories with professional documentation in under 30 seconds using Google Gemini AI." />
-        <meta name="keywords" content="README generator, AI README generator, free README generator, GitHub README generator, automatic README creator, GitHub documentation, AI documentation generator, README maker, repository documentation, GitHub tools, markdown generator, documentation automation, code documentation, project documentation, developer tools, GitHub integration, AI writing assistant, technical documentation, software documentation, open source tools" />
-        <meta name="author" content="ReadmeArchitect Team" />
-        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-        <meta name="language" content="English" />
-        <meta name="revisit-after" content="3 days" />
-        <meta name="distribution" content="global" />
-        <meta name="rating" content="general" />
-        <meta name="geo.region" content="US" />
-        <meta name="geo.placename" content="United States" />
-        <meta name="geo.position" content="39.78373;-100.445882" />
-        <meta name="ICBM" content="39.78373, -100.445882" />
-        <meta name="coverage" content="Worldwide" />
-        <meta name="target" content="all" />
-        <meta name="audience" content="Developers, Software Engineers, Technical Writers, Open Source Contributors" />
-        <meta name="subject" content="AI-powered README generation for GitHub repositories" />
-        <meta name="copyright" content="ReadmeArchitect Team" />
-        <meta name="abstract" content="Professional AI-powered README generator that creates stunning GitHub documentation in under 30 seconds. Free, fast, and accurate with advanced AI technology." />
+        {/* DNS Prefetch & Preconnect for Performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://api.github.com" />
+        <link rel="dns-prefetch" href="https://github.com" />
+        <link rel="dns-prefetch" href="https://vercel.live" />
+        <link rel="dns-prefetch" href="https://vitals.vercel-insights.com" />
 
-        {/* Canonical URL */}
-        <link rel="canonical" href="https://readmearchitect.vercel.app" />
-
-        {/* Open Graph / Facebook */}
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://readmearchitect.vercel.app" />
-        <meta property="og:title" content="ReadmeArchitect - Free AI README Generator | Create Professional GitHub Documentation" />
-        <meta property="og:description" content="Generate stunning GitHub READMEs instantly with AI. Trusted by 10,000+ developers worldwide. Free README generator with 99% accuracy." />
-        <meta property="og:image" content="https://readmearchitect.vercel.app/og-image.png" />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content="ReadmeArchitect - AI-Powered README Generator" />
-        <meta property="og:site_name" content="ReadmeArchitect" />
-        <meta property="og:locale" content="en_US" />
-
-        {/* Twitter */}
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://readmearchitect.vercel.app" />
-        <meta property="twitter:title" content="ReadmeArchitect - Free AI README Generator" />
-        <meta property="twitter:description" content="Generate stunning GitHub READMEs instantly with AI. Trusted by 10,000+ developers worldwide." />
-        <meta property="twitter:image" content="https://readmearchitect.vercel.app/og-image.png" />
-        <meta property="twitter:image:alt" content="ReadmeArchitect - AI-Powered README Generator" />
-        <meta property="twitter:creator" content="@readmearchitect" />
-        <meta property="twitter:site" content="@readmearchitect" />
-
-        {/* Additional Meta Tags */}
-        <meta name="application-name" content="ReadmeArchitect" />
-        <meta name="apple-mobile-web-app-title" content="ReadmeArchitect" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="format-detection" content="telephone=no" />
-
-        {/* Structured Data */}
+        {/* Structured Data - WebSite with SearchAction */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -85,63 +190,42 @@ export default function RootLayout({
               '@context': 'https://schema.org',
               '@type': 'WebSite',
               name: 'ReadmeArchitect',
+              alternateName: 'README Architect',
               url: 'https://readmearchitect.vercel.app',
-              description: 'Professional AI-powered README generator for GitHub repositories',
+              description: 'Professional AI-powered README generator for GitHub repositories using Google Gemini AI',
+              inLanguage: 'en-US',
               potentialAction: {
                 '@type': 'SearchAction',
-                target: 'https://readmearchitect.vercel.app/generate?q={search_term_string}',
+                target: {
+                  '@type': 'EntryPoint',
+                  urlTemplate: 'https://readmearchitect.vercel.app/generate?q={search_term_string}'
+                },
                 'query-input': 'required name=search_term_string'
               },
               sameAs: [
                 'https://github.com/readmearchitect',
-                'https://twitter.com/readmearchitect'
-              ]
+                'https://twitter.com/readmearchitect',
+                'https://linkedin.com/company/readmearchitect'
+              ],
+              publisher: {
+                '@type': 'Organization',
+                name: 'ReadmeArchitect',
+                logo: {
+                  '@type': 'ImageObject',
+                  url: 'https://readmearchitect.vercel.app/logo.png',
+                  width: 512,
+                  height: 512
+                }
+              }
             })
           }}
         />
-
-        {/* Favicon - Comprehensive favicon setup */}
-        <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png" />
-        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png" />
-        <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png" />
-        <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png" />
-        <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png" />
-        <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png" />
-        <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png" />
-        <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png" />
-        <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png" />
-
-        {/* Web App Manifest */}
-        <link rel="manifest" href="/site.webmanifest" />
-
-        {/* Microsoft Tiles */}
-        <meta name="msapplication-TileColor" content="#00ff88" />
-        <meta name="msapplication-TileImage" content="/mstile-144x144.png" />
-        <meta name="msapplication-config" content="/browserconfig.xml" />
-        <meta name="theme-color" content="#00ff88" />
-
-        {/* Preconnect to external domains for performance */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://api.github.com" />
-        <link rel="dns-prefetch" href="https://github.com" />
 
         {/* Fonts with optimized loading */}
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
-          media="print"
-          onLoad={(e) => { (e.target as HTMLLinkElement).media = 'all' }}
         />
-        <noscript>
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" />
-        </noscript>
 
         {/* Structured Data - Organization */}
         <script
@@ -158,15 +242,6 @@ export default function RootLayout({
             __html: JSON.stringify(webApplicationSchema),
           }}
         />
-
-        {/* Google Search Console Verification */}
-        <meta name="google-site-verification" content="your-google-verification-code" />
-
-        {/* Bing Webmaster Tools Verification */}
-        <meta name="msvalidate.01" content="your-bing-verification-code" />
-
-        {/* Yandex Verification */}
-        <meta name="yandex-verification" content="your-yandex-verification-code" />
         <style>{`
         :root {
           --font-inter: Inter, sans-serif;
@@ -228,84 +303,7 @@ export default function RootLayout({
       `}</style>
       </head>
       <body className="antialiased bg-transparent">
-        {/* Enhanced Grid Background - Professional animated grid across all pages */}
-        <EnhancedGridBackground />
-
-        <AuthProvider>
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={pathname}
-              initial={{
-                opacity: 0,
-                scale: 0.98,
-                y: 16,
-                filter: 'blur(4px)'
-              }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-                y: 0,
-                filter: 'blur(0px)'
-              }}
-              exit={{
-                opacity: 0,
-                scale: 1.01,
-                y: -16,
-                filter: 'blur(4px)'
-              }}
-              transition={{
-                duration: 0.45,
-                ease: [0.22, 1, 0.36, 1]
-              }}
-              className="min-h-screen relative z-50 ultra-smooth-scroll critical-smooth"
-              style={{
-                willChange: 'transform, opacity, filter',
-                transform: 'translate3d(0, 0, 0)',
-                backfaceVisibility: 'hidden',
-                perspective: 1000,
-                transformStyle: 'preserve-3d',
-                scrollBehavior: 'smooth',
-                WebkitOverflowScrolling: 'touch',
-                overscrollBehavior: 'none'
-              }}
-            >
-              <div className="smooth-scroll content-scroll ultra-smooth-scroll critical-smooth" style={{
-                transform: 'translate3d(0, 0, 0)',
-                willChange: 'scroll-position',
-                scrollBehavior: 'smooth',
-                WebkitOverflowScrolling: 'touch',
-                overscrollBehavior: 'none'
-              }}>
-                {children}
-              </div>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Enhanced page transition overlay with smooth fade */}
-          <AnimatePresence>
-            <motion.div
-              key={`overlay-${pathname}`}
-              initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-              animate={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-              exit={{ opacity: 0.4, backdropFilter: 'blur(10px)' }}
-              transition={{
-                duration: 0.4,
-                ease: [0.4, 0, 0.2, 1]
-              }}
-              className="page-transition-overlay"
-              style={{
-                willChange: 'opacity, backdrop-filter',
-                pointerEvents: 'none',
-                transform: 'translate3d(0, 0, 0)',
-                backfaceVisibility: 'hidden'
-              }}
-            />
-          </AnimatePresence>
-        </AuthProvider>
-
-        {/* Vercel Analytics & Speed Insights */}
-        <Analytics />
-        <SpeedInsights />
+        <ClientRootLayout>{children}</ClientRootLayout>
       </body>
     </html>
   );
