@@ -1,0 +1,537 @@
+/**
+ * ULTRA PERFORMANCE OPTIMIZATION
+ * By Jon - World's Best Website Designer
+ * 
+ * Goal: Blazingly fast, silky smooth, zero lag on all devices
+ */
+
+/* ============================================
+   CRITICAL PERFORMANCE - LOAD FIRST
+   ============================================ */
+
+/* Prevent layout shift during font loading */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap; /* Instant text, swap when font loads */
+  src: url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+}
+
+/* Critical rendering path optimization */
+html {
+  /* Instant smooth scrolling */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  
+  /* Prevent horizontal scroll */
+  overflow-x: hidden;
+  max-width: 100vw;
+  
+  /* GPU acceleration */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+body {
+  /* Zero layout shift */
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+  
+  /* Smooth scrolling */
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+  
+  /* GPU acceleration */
+  transform: translate3d(0, 0, 0);
+  will-change: scroll-position;
+  
+  /* Prevent text size adjustment on mobile */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* ============================================
+   INSTANT CONTENT LOADING
+   ============================================ */
+
+/* Lazy load images with blur-up effect */
+img {
+  /* Prevent layout shift */
+  max-width: 100%;
+  height: auto;
+  
+  /* Smooth loading */
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  
+  /* GPU acceleration */
+  transform: translateZ(0);
+  will-change: opacity;
+}
+
+img[loading="lazy"] {
+  /* Native lazy loading */
+  content-visibility: auto;
+}
+
+img.loaded,
+img[data-loaded="true"] {
+  opacity: 1;
+}
+
+/* Skeleton loading states */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: 0.5rem;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ============================================
+   SILKY SMOOTH ANIMATIONS - 60FPS
+   ============================================ */
+
+/* Only animate transform and opacity for 60fps */
+.smooth-animate {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Reduce motion on mobile for better performance */
+@media (max-width: 768px) {
+  * {
+    /* Faster animations on mobile */
+    animation-duration: 0.2s !important;
+    transition-duration: 0.2s !important;
+  }
+  
+  /* Disable expensive animations */
+  .backdrop-blur-xl,
+  .backdrop-blur-lg {
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+  }
+  
+  /* Disable hover effects on touch devices */
+  .hover\:scale-105:hover,
+  .hover\:-translate-y-1:hover,
+  .group-hover\:scale-110 {
+    transform: none !important;
+  }
+}
+
+/* Ultra-low-end devices */
+@media (max-width: 480px) {
+  /* Minimal blur for performance */
+  .backdrop-blur-xl,
+  .backdrop-blur-lg,
+  .backdrop-blur-md {
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
+  }
+  
+  /* Disable all hover effects */
+  *:hover {
+    transform: none !important;
+  }
+}
+
+/* ============================================
+   MOBILE TOUCH OPTIMIZATION
+   ============================================ */
+
+/* Remove tap highlight */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Optimize touch interactions */
+button,
+a,
+[role="button"],
+[onclick] {
+  /* Instant touch response */
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  
+  /* Prevent double-tap zoom */
+  touch-action: manipulation;
+}
+
+/* Larger touch targets on mobile */
+@media (max-width: 768px) {
+  button,
+  a,
+  [role="button"] {
+    min-height: 44px; /* Apple's recommended touch target */
+    min-width: 44px;
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* ============================================
+   SCROLL PERFORMANCE
+   ============================================ */
+
+/* Smooth momentum scrolling */
+.scroll-container,
+[data-scroll="true"] {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  
+  /* GPU acceleration */
+  will-change: scroll-position;
+  transform: translateZ(0);
+}
+
+/* Custom scrollbar - lightweight */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 136, 0.5);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 255, 136, 0.7);
+}
+
+/* Hide scrollbar on mobile for cleaner look */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+}
+
+/* ============================================
+   CONTENT VISIBILITY - INSTANT RENDERING
+   ============================================ */
+
+/* Lazy render off-screen content */
+.lazy-render {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* Sections that can be lazy rendered */
+section:not(:first-of-type) {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 400px;
+}
+
+/* ============================================
+   ZERO LAYOUT SHIFT
+   ============================================ */
+
+/* Prevent cumulative layout shift (CLS) */
+.aspect-ratio-box {
+  position: relative;
+  width: 100%;
+}
+
+.aspect-ratio-box::before {
+  content: '';
+  display: block;
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+}
+
+.aspect-ratio-box > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Reserve space for images */
+img[width][height] {
+  aspect-ratio: attr(width) / attr(height);
+}
+
+/* ============================================
+   FRAMER MOTION OPTIMIZATION
+   ============================================ */
+
+/* Optimize Framer Motion animations */
+[data-framer-motion] {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  [data-framer-motion] {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ============================================
+   MOBILE-SPECIFIC OPTIMIZATIONS
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Reduce container padding for more space */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Optimize font sizes for mobile */
+  html {
+    font-size: 16px; /* Prevent zoom on input focus */
+  }
+  
+  /* Optimize input fields */
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* Prevent iOS zoom */
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  
+  /* Optimize modals for mobile */
+  .modal,
+  [role="dialog"] {
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ============================================
+   LOADING STATES - INSTANT FEEDBACK
+   ============================================ */
+
+/* Instant loading indicator */
+.loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid rgba(0, 255, 136, 0.3);
+  border-top-color: rgba(0, 255, 136, 1);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================
+   NETWORK-AWARE OPTIMIZATIONS
+   ============================================ */
+
+/* Reduce quality on slow connections */
+@media (prefers-reduced-data: reduce) {
+  /* Disable background images */
+  * {
+    background-image: none !important;
+  }
+  
+  /* Disable animations */
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  /* Minimal blur */
+  .backdrop-blur-xl,
+  .backdrop-blur-lg,
+  .backdrop-blur-md {
+    backdrop-filter: none !important;
+    background: rgba(0, 0, 0, 0.9) !important;
+  }
+}
+
+/* ============================================
+   CRITICAL CSS - ABOVE THE FOLD
+   ============================================ */
+
+/* Ensure above-the-fold content renders instantly */
+.hero,
+.navbar,
+[data-critical="true"] {
+  /* No lazy loading for critical content */
+  content-visibility: visible;
+  
+  /* Instant rendering */
+  contain: none;
+}
+
+/* ============================================
+   PERFORMANCE MONITORING
+   ============================================ */
+
+/* Mark performance-critical elements */
+[data-performance="critical"] {
+  will-change: transform, opacity;
+  contain: layout style paint;
+}
+
+/* ============================================
+   MOBILE LANDSCAPE OPTIMIZATION
+   ============================================ */
+
+@media (max-height: 500px) and (orientation: landscape) {
+  /* Reduce vertical spacing in landscape */
+  .py-12,
+  .py-16,
+  .py-20 {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+  
+  /* Optimize navbar height */
+  nav,
+  header {
+    min-height: 60px;
+  }
+}
+
+/* ============================================
+   PRINT OPTIMIZATION
+   ============================================ */
+
+@media print {
+  /* Remove unnecessary elements */
+  nav,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Optimize for printing */
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+}
+
+/* ============================================
+   HIGH REFRESH RATE DISPLAYS
+   ============================================ */
+
+@media (min-resolution: 120dpi) {
+  /* Smoother animations on high refresh rate displays */
+  * {
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* ============================================
+   DARK MODE OPTIMIZATION
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  /* Already optimized for dark mode */
+  html {
+    color-scheme: dark;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY - FOCUS STATES
+   ============================================ */
+
+/* Visible focus for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid rgba(0, 255, 136, 0.8);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* Remove outline for mouse users */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ============================================
+   FINAL PERFORMANCE TWEAKS
+   ============================================ */
+
+/* Contain layout shifts */
+main,
+article,
+section {
+  contain: layout style;
+}
+
+/* Optimize repaints */
+.card,
+.glass,
+[data-card="true"] {
+  contain: layout style paint;
+  will-change: transform;
+}
+
+/* Optimize text rendering */
+body {
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optimize for 60fps */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}

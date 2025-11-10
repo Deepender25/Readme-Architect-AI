@@ -1,11 +1,19 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, LazyMotion, domAnimation } from 'framer-motion';
 import { AuthProvider } from '@/lib/auth-client';
-import EnhancedGridBackground from '@/components/enhanced-grid-background';
+import dynamic from 'next/dynamic';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
+import { useEffect, useState } from 'react';
+import MobileOptimizer from '@/components/mobile-optimizer';
+
+// Lazy load background for better initial load
+const EnhancedGridBackground = dynamic(() => import('@/components/enhanced-grid-background'), {
+  ssr: false,
+  loading: () => null
+});
 
 interface ClientRootLayoutProps {
   children: React.ReactNode;
@@ -13,10 +21,29 @@ interface ClientRootLayoutProps {
 
 export default function ClientRootLayout({ children }: ClientRootLayoutProps) {
   const pathname = usePathname();
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile for optimized animations
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Faster animations on mobile
+  const transitionDuration = isMobile ? 0.25 : 0.35;
+  const blurAmount = isMobile ? 2 : 4;
 
   return (
-    <>
-      {/* Enhanced Grid Background - Professional animated grid across all pages */}
+    <LazyMotion features={domAnimation} strict>
+      {/* Mobile Performance Optimizer */}
+      <MobileOptimizer />
+      
+      {/* Enhanced Grid Background - Lazy loaded */}
       <EnhancedGridBackground />
 
       <AuthProvider>
@@ -25,75 +52,44 @@ export default function ClientRootLayout({ children }: ClientRootLayoutProps) {
             key={pathname}
             initial={{
               opacity: 0,
-              scale: 0.98,
-              y: 16,
-              filter: 'blur(4px)'
+              y: isMobile ? 8 : 16,
             }}
             animate={{
               opacity: 1,
-              scale: 1,
               y: 0,
-              filter: 'blur(0px)'
             }}
             exit={{
               opacity: 0,
-              scale: 1.01,
-              y: -16,
-              filter: 'blur(4px)'
+              y: isMobile ? -8 : -16,
             }}
             transition={{
-              duration: 0.45,
+              duration: transitionDuration,
               ease: [0.22, 1, 0.36, 1]
             }}
-            className="min-h-screen relative z-50 ultra-smooth-scroll critical-smooth"
+            className="min-h-screen relative z-50"
             style={{
-              willChange: 'transform, opacity, filter',
+              willChange: 'transform, opacity',
               transform: 'translate3d(0, 0, 0)',
               backfaceVisibility: 'hidden',
-              perspective: 1000,
-              transformStyle: 'preserve-3d',
-              scrollBehavior: 'smooth',
-              WebkitOverflowScrolling: 'touch',
-              overscrollBehavior: 'none'
             }}
           >
-            <div className="smooth-scroll content-scroll ultra-smooth-scroll critical-smooth" style={{
-              transform: 'translate3d(0, 0, 0)',
-              willChange: 'scroll-position',
-              scrollBehavior: 'smooth',
-              WebkitOverflowScrolling: 'touch',
-              overscrollBehavior: 'none'
-            }}>
+            <div 
+              className="smooth-scroll content-scroll" 
+              style={{
+                transform: 'translate3d(0, 0, 0)',
+                WebkitOverflowScrolling: 'touch',
+                overscrollBehavior: 'none'
+              }}
+            >
               {children}
             </div>
           </motion.div>
         </AnimatePresence>
-
-        {/* Enhanced page transition overlay with smooth fade */}
-        <AnimatePresence>
-          <motion.div
-            key={`overlay-${pathname}`}
-            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            animate={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            exit={{ opacity: 0.4, backdropFilter: 'blur(10px)' }}
-            transition={{
-              duration: 0.4,
-              ease: [0.4, 0, 0.2, 1]
-            }}
-            className="page-transition-overlay"
-            style={{
-              willChange: 'opacity, backdrop-filter',
-              pointerEvents: 'none',
-              transform: 'translate3d(0, 0, 0)',
-              backfaceVisibility: 'hidden'
-            }}
-          />
-        </AnimatePresence>
       </AuthProvider>
 
-      {/* Vercel Analytics & Speed Insights */}
+      {/* Vercel Analytics & Speed Insights - Lazy loaded */}
       <Analytics />
       <SpeedInsights />
-    </>
+    </LazyMotion>
   );
 }
