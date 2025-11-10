@@ -1,32 +1,36 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Documentation - Complete Guide to ReadmeArchitect README Generator | ReadmeArchitect',
-  description: 'Complete guide to using ReadmeArchitect README generator. Learn how to create perfect GitHub documentation, customize templates, integrate with repositories, and optimize your workflow. Step-by-step tutorials and best practices.',
+  title: 'Documentation - User Guide | ReadmeArchitect',
+  description: 'Learn how to use ReadmeArchitect README generator. Step-by-step tutorials and guides for creating GitHub documentation.',
   keywords: [
     'ReadmeArchitect documentation',
     'README generator guide', 
-    'how to generate README',
-    'GitHub documentation tutorial',
+    'how to use ReadmeArchitect',
     'README generator tutorial',
-    'AI documentation guide',
-    'GitHub integration guide',
-    'README best practices',
-    'documentation tutorial',
-    'GitHub README guide',
-    'automatic documentation guide',
-    'repository documentation guide'
+    'documentation guide',
+    'user manual'
   ].join(', '),
   authors: [{ name: 'ReadmeArchitect Team' }],
   creator: 'ReadmeArchitect',
   publisher: 'ReadmeArchitect',
-  robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': 150, // Limit snippet length
+    },
+  },
   alternates: {
     canonical: 'https://readmearchitect.vercel.app/documentation'
   },
   openGraph: {
-    title: 'Documentation - Complete Guide to ReadmeArchitect README Generator',
-    description: 'Complete guide to using ReadmeArchitect README generator. Learn how to create perfect GitHub documentation with step-by-step tutorials and best practices.',
+    title: 'Documentation - User Guide | ReadmeArchitect',
+    description: 'Learn how to use ReadmeArchitect README generator with step-by-step tutorials.',
     url: 'https://readmearchitect.vercel.app/documentation',
     siteName: 'ReadmeArchitect',
     images: [
@@ -34,18 +38,21 @@ export const metadata: Metadata = {
         url: 'https://readmearchitect.vercel.app/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'ReadmeArchitect Documentation Guide'
+        alt: 'ReadmeArchitect Documentation'
       }
     ],
     locale: 'en_US',
-    type: 'article'
+    type: 'website' // Changed from 'article' to 'website'
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Documentation - Complete Guide to ReadmeArchitect README Generator',
-    description: 'Complete guide to using ReadmeArchitect README generator. Learn how to create perfect GitHub documentation.',
+    title: 'Documentation - User Guide | ReadmeArchitect',
+    description: 'Learn how to use ReadmeArchitect README generator.',
     images: ['https://readmearchitect.vercel.app/og-image.png'],
     creator: '@readmearchitect'
   },
-  category: 'Technology'
+  category: 'Technology',
+  other: {
+    'priority': '0.6' // Lower priority hint
+  }
 }

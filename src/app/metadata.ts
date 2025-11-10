@@ -28,15 +28,22 @@ export const metadata: Metadata = {
     'professional documentation',
     'AI-powered tools',
     'developer productivity',
-    'documentation templates'
+    'documentation templates',
+    'Google Gemini AI',
+    'instant README',
+    'README creator online',
+    'best README generator'
   ],
-  authors: [{ name: 'ReadmeArchitect' }],
+  authors: [{ name: 'ReadmeArchitect Team', url: 'https://readmearchitect.vercel.app' }],
   creator: 'ReadmeArchitect',
   publisher: 'ReadmeArchitect',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
+  },
+  alternates: {
+    canonical: 'https://readmearchitect.vercel.app'
   },
   icons: {
     icon: [
@@ -47,13 +54,13 @@ export const metadata: Metadata = {
   },
   manifest: '/site.webmanifest',
   openGraph: {
-    title: 'ReadmeArchitect - AI-Powered README Generator | Create Professional GitHub Documentation',
-    description: 'Generate professional README files for your GitHub repositories using advanced AI. Trusted by 15,000+ developers worldwide with 99.2% accuracy.',
+    title: 'ReadmeArchitect - Free AI README Generator | Create Professional GitHub Documentation',
+    description: 'Generate professional README files for your GitHub repositories using advanced AI. Trusted by 15,000+ developers worldwide with 99.2% accuracy. Start free now!',
     url: 'https://readmearchitect.vercel.app',
     siteName: 'ReadmeArchitect',
     images: [
       {
-        url: '/og-image.png',
+        url: 'https://readmearchitect.vercel.app/og-image.png',
         width: 1200,
         height: 630,
         alt: 'ReadmeArchitect - AI-Powered README Generator Interface',
@@ -64,15 +71,16 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ReadmeArchitect - AI-Powered README Generator',
-    description: 'Generate professional README files for your GitHub repositories using advanced AI. Trusted by 15,000+ developers worldwide.',
-    images: ['/og-image.png'],
+    title: 'ReadmeArchitect - Free AI README Generator',
+    description: 'Generate professional README files for your GitHub repositories using advanced AI. Trusted by 15,000+ developers worldwide. Start free!',
+    images: ['https://readmearchitect.vercel.app/og-image.png'],
     creator: '@readmearchitect',
     site: '@readmearchitect',
   },
   robots: {
     index: true,
     follow: true,
+    nocache: false,
     googleBot: {
       index: true,
       follow: true,
@@ -81,4 +89,8 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  other: {
+    'priority': '1.0', // Highest priority
+    'importance': 'high'
+  }
 };

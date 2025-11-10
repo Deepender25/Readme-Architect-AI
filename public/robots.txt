@@ -32,19 +32,19 @@ Disallow: /output/*
 Disallow: /readme/*
 Disallow: /history/*
 
-# Allow Important Public Pages
-Allow: /
-Allow: /generate
-Allow: /generator
-Allow: /features
-Allow: /examples
-Allow: /documentation
-Allow: /blog
-Allow: /tutorials
-Allow: /contact
-Allow: /about
-Allow: /privacy
-Allow: /terms
+# Allow Important Public Pages (Priority Order)
+Allow: /$
+Allow: /generate$
+Allow: /generator$
+Allow: /features$
+Allow: /examples$
+Allow: /blog$
+Allow: /tutorials$
+Allow: /contact$
+Allow: /about$
+Allow: /documentation$
+Allow: /privacy$
+Allow: /terms$
 
 # Allow Static Assets
 Allow: /*.css$
