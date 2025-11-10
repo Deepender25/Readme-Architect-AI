@@ -1,11 +1,36 @@
 import { MetadataRoute } from 'next'
 
+/**
+ * Perfect SEO-Optimized Sitemap for ReadmeArchitect
+ * 
+ * Priority Guidelines:
+ * 1.0 = Homepage (most important)
+ * 0.9-0.95 = Core product pages (main features)
+ * 0.8-0.85 = Important content pages
+ * 0.7-0.75 = Secondary content pages
+ * 0.5-0.65 = Support pages
+ * 0.3-0.4 = Legal/policy pages
+ * 0.1-0.2 = Auth/utility pages
+ * 
+ * Change Frequency Guidelines:
+ * always = Changes every time accessed (not recommended)
+ * hourly = Changes multiple times per day
+ * daily = Changes once per day
+ * weekly = Changes once per week
+ * monthly = Changes once per month
+ * yearly = Changes once per year
+ * never = Archived content
+ */
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://readmearchitect.vercel.app'
   const currentDate = new Date()
+  const lastYear = new Date('2024-01-01')
   
   return [
-    // Homepage - Maximum Priority
+    // ============================================
+    // TIER 1: HOMEPAGE - MAXIMUM PRIORITY
+    // ============================================
     {
       url: baseUrl,
       lastModified: currentDate,
@@ -13,7 +38,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     
-    // Core Product Pages - Very High Priority
+    // ============================================
+    // TIER 2: CORE PRODUCT PAGES - CRITICAL
+    // ============================================
     {
       url: `${baseUrl}/generate`,
       lastModified: currentDate,
@@ -27,7 +54,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     
-    // Feature & Information Pages - High Priority
+    // ============================================
+    // TIER 3: FEATURE & SHOWCASE PAGES - HIGH
+    // ============================================
     {
       url: `${baseUrl}/features`,
       lastModified: currentDate,
@@ -40,75 +69,87 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 0.85,
     },
-    {
-      url: `${baseUrl}/documentation`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
     
-    // Content Pages - Medium-High Priority
+    // ============================================
+    // TIER 4: CONTENT & LEARNING PAGES - MEDIUM-HIGH
+    // ============================================
     {
       url: `${baseUrl}/tutorials`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
-      priority: 0.75,
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/blog`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
-      priority: 0.7,
+      priority: 0.75,
     },
     
-    // Support & Information Pages - Medium Priority
+    // ============================================
+    // TIER 5: INFORMATION PAGES - MEDIUM
+    // ============================================
     {
       url: `${baseUrl}/about`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
-      priority: 0.65,
+      priority: 0.7,
     },
     {
       url: `${baseUrl}/contact`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
-      priority: 0.6,
+      priority: 0.65,
     },
     
-    // Output Pages - Medium Priority (for SEO discovery)
+    // ============================================
+    // TIER 6: DOCUMENTATION - SUPPORT
+    // ============================================
     {
-      url: `${baseUrl}/output`,
+      url: `${baseUrl}/documentation`,
       lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 0.55,
-    },
-    {
-      url: `${baseUrl}/readme/output`,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
+      changeFrequency: 'monthly',
       priority: 0.5,
     },
     
-    // Legal Pages - Low Priority
+    // ============================================
+    // TIER 7: LEGAL PAGES - LOW PRIORITY
+    // ============================================
     {
       url: `${baseUrl}/privacy`,
-      lastModified: new Date('2024-01-01'),
+      lastModified: lastYear,
       changeFrequency: 'yearly',
       priority: 0.3,
     },
     {
       url: `${baseUrl}/terms`,
-      lastModified: new Date('2024-01-01'),
+      lastModified: lastYear,
       changeFrequency: 'yearly',
       priority: 0.3,
     },
-    
-    // Auth Pages - Minimal Priority (included for completeness)
-    {
-      url: `${baseUrl}/login`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.1,
-    },
   ]
 }
+
+/**
+ * EXCLUDED FROM SITEMAP (Intentionally):
+ * 
+ * User-Specific Pages (Should not be indexed):
+ * - /history - User's generation history
+ * - /history/[id] - Individual history items
+ * - /repositories - User's GitHub repositories
+ * - /settings - User settings
+ * - /output - Dynamic output pages
+ * - /output/[id] - Individual outputs
+ * - /readme/[id] - Individual README pages
+ * - /readme/output - README output pages
+ * 
+ * Authentication Pages (Low SEO value):
+ * - /login - Login page
+ * - /auth/* - Auth callback pages
+ * - /switch-account - Account switching
+ * 
+ * API Routes (Not for search engines):
+ * - /api/* - All API endpoints
+ * 
+ * These pages are handled by robots.txt with Disallow directives
+ */
