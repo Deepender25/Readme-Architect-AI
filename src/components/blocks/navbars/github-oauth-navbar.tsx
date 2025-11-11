@@ -224,8 +224,8 @@ export default function GitHubOAuthNavbar() {
                       className="glass-modal rounded-2xl shadow-2xl shadow-green-400/20 py-3 min-w-64 border border-green-400/20"
                     >
                       <div className="px-5 py-4 border-b border-green-400/10">
-                        <div className="flex items-center gap-3">
-                          <div className="relative">
+                        <div className="flex items-start gap-3">
+                          <div className="relative flex-shrink-0">
                             <img
                               src={user?.avatar_url}
                               alt={user?.name}
@@ -235,14 +235,14 @@ export default function GitHubOAuthNavbar() {
                               <div className="w-2 h-2 bg-white rounded-full"></div>
                             </div>
                           </div>
-                          <div className="flex-1">
-                            <div className="font-semibold text-white text-base leading-normal">
+                          <div className="flex-1 min-w-0 pt-0.5">
+                            <div className="font-semibold text-white text-base leading-tight truncate">
                               {user?.name}
                             </div>
-                            <div className="text-green-400 text-sm leading-normal">
+                            <div className="text-green-400 text-sm leading-tight mt-1 truncate">
                               @{user?.username}
                             </div>
-                            <div className="text-gray-400 text-xs mt-0.5">
+                            <div className="text-gray-400 text-xs mt-1 leading-tight">
                               GitHub Developer
                             </div>
                           </div>
@@ -257,12 +257,12 @@ export default function GitHubOAuthNavbar() {
                           }}
                           className="w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
                         >
-                          <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
+                          <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center flex-shrink-0 group-hover:bg-green-400/20 transition-colors">
                             <FolderGit2 className="w-4 h-4 text-green-400" />
                           </div>
-                          <div className="flex-1 text-left">
-                            <div className="font-medium">My Repositories</div>
-                            <div className="text-xs text-gray-500">Manage your projects</div>
+                          <div className="flex-1 text-left min-w-0">
+                            <div className="font-medium leading-tight">My Repositories</div>
+                            <div className="text-xs text-gray-500 leading-tight mt-0.5">Manage your projects</div>
                           </div>
                         </button>
                         
@@ -273,12 +273,12 @@ export default function GitHubOAuthNavbar() {
                           }}
                           className="w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
                         >
-                          <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
+                          <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center flex-shrink-0 group-hover:bg-green-400/20 transition-colors">
                             <History className="w-4 h-4 text-green-400" />
                           </div>
-                          <div className="flex-1 text-left">
-                            <div className="font-medium">Generation History</div>
-                            <div className="text-xs text-gray-500">View past READMEs</div>
+                          <div className="flex-1 text-left min-w-0">
+                            <div className="font-medium leading-tight">Generation History</div>
+                            <div className="text-xs text-gray-500 leading-tight mt-0.5">View past READMEs</div>
                           </div>
                         </button>
                         
@@ -289,12 +289,12 @@ export default function GitHubOAuthNavbar() {
                           }}
                           className="w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
                         >
-                          <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center group-hover:bg-green-400/20 transition-colors">
+                          <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center flex-shrink-0 group-hover:bg-green-400/20 transition-colors">
                             <Settings className="w-4 h-4 text-green-400" />
                           </div>
-                          <div className="flex-1 text-left">
-                            <div className="font-medium">Account Settings</div>
-                            <div className="text-xs text-gray-500">Preferences & privacy</div>
+                          <div className="flex-1 text-left min-w-0">
+                            <div className="font-medium leading-tight">Account Settings</div>
+                            <div className="text-xs text-gray-500 leading-tight mt-0.5">Preferences & privacy</div>
                           </div>
                         </button>
                       </div>
@@ -304,12 +304,12 @@ export default function GitHubOAuthNavbar() {
                           onClick={() => logout()}
                           className="w-full flex items-center gap-3 px-5 py-3 text-sm text-red-400/80 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 group"
                         >
-                          <div className="w-8 h-8 rounded-lg bg-red-400/10 flex items-center justify-center group-hover:bg-red-400/20 transition-colors">
+                          <div className="w-8 h-8 rounded-lg bg-red-400/10 flex items-center justify-center flex-shrink-0 group-hover:bg-red-400/20 transition-colors">
                             <LogOut className="w-4 h-4 text-red-400" />
                           </div>
-                          <div className="flex-1 text-left">
-                            <div className="font-medium">Sign Out</div>
-                            <div className="text-xs text-red-400/60">End your session</div>
+                          <div className="flex-1 text-left min-w-0">
+                            <div className="font-medium leading-tight">Sign Out</div>
+                            <div className="text-xs text-red-400/60 leading-tight mt-0.5">End your session</div>
                           </div>
                         </button>
                       </div>
