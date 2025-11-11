@@ -169,9 +169,9 @@ export default function SimpleCentered() {
                 {/* Stats Section */}
                 <ScrollAnimatedDiv delay={0.2} duration={0.4} yOffset={20}>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
-                    <StatCard number="10K+" label="READMEs Generated" delay={1} />
-                    <StatCard number="99%" label="Accuracy Rate" delay={2} />
-                    <StatCard number="< 30s" label="Average Time" delay={3} />
+                    <StatCard number="AI" label="Powered Generation" delay={1} />
+                    <StatCard number="Free" label="To Use" delay={2} />
+                    <StatCard number="< 30s" label="Generation Time" delay={3} />
                     <StatCard number="24/7" label="Available" delay={4} />
                   </div>
                 </ScrollAnimatedDiv>
@@ -240,7 +240,7 @@ export default function SimpleCentered() {
                     </motion.div>
                     <h3 className="text-2xl font-bold text-white mb-4">Ready to Transform Your Documentation?</h3>
                     <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
-                      Join thousands of developers who have already improved their project documentation with our AI-powered generator.
+                      Start creating professional documentation for your projects with our AI-powered generator. Fast, free, and easy to use.
                     </p>
                     <motion.button
                       whileHover={{ y: -2 }}

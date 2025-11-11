@@ -39,7 +39,7 @@ function FeaturesContent() {
     {
       icon: Brain,
       title: "AI-Powered Generation",
-      description: "Advanced AI analyzes your codebase and generates comprehensive, contextual documentation in under 30 seconds with 95% accuracy.",
+      description: "Advanced AI analyzes your codebase and generates comprehensive, contextual documentation in under 30 seconds.",
       color: "from-purple-400 to-pink-600",
       features: ["Instant Code Analysis", "Context Understanding", "Smart Suggestions", "Professional Formatting"]
     },
@@ -59,10 +59,10 @@ function FeaturesContent() {
     },
     {
       icon: Palette,
-      title: "Beautiful Templates",
-      description: "Choose from stunning, modern templates that make your documentation stand out and engage your users.",
+      title: "Professional Output",
+      description: "Generate clean, well-structured documentation that follows industry best practices and looks professional.",
       color: "from-orange-400 to-red-600",
-      features: ["Modern Designs", "Customizable Themes", "Responsive Layout", "Professional Look"]
+      features: ["Clean Format", "Best Practices", "Markdown Output", "Professional Look"]
     },
     {
       icon: Target,
@@ -88,8 +88,8 @@ function FeaturesContent() {
     },
     {
       icon: Layers,
-      title: "Template Library",
-      description: "Extensive collection of professional README templates"
+      title: "Smart Structure",
+      description: "Automatically organizes content into logical sections"
     },
     {
       icon: GitBranch,
@@ -98,8 +98,8 @@ function FeaturesContent() {
     },
     {
       icon: Download,
-      title: "Export Options",
-      description: "Download in multiple formats including Markdown and PDF"
+      title: "Easy Export",
+      description: "Download your README as Markdown or copy to clipboard"
     },
     {
       icon: Eye,
@@ -129,17 +129,17 @@ function FeaturesContent() {
   ]
 
   const stats = [
-    { number: "1,000+", label: "READMEs Created", icon: FileText },
+    { number: "AI", label: "Powered", icon: FileText },
     { number: "< 30s", label: "Generation Time", icon: Clock },
-    { number: "24/7", label: "Uptime", icon: Shield },
-    { number: "500+", label: "Active Users", icon: Users }
+    { number: "24/7", label: "Available", icon: Shield },
+    { number: "Free", label: "To Use", icon: Users }
   ]
 
   return (
     <LayoutWrapper>
       <PageHeader
         title="Everything You Need"
-        description="ReadmeArchitect combines cutting-edge artificial intelligence with developer-friendly tools to create professional documentation in under 30 seconds. Trusted by developers worldwide."
+        description="ReadmeArchitect combines cutting-edge artificial intelligence with developer-friendly tools to create professional documentation in under 30 seconds."
         badge="Powerful Features"
         icon={Sparkles}
       />
@@ -240,7 +240,7 @@ function FeaturesContent() {
             Ready to Get Started?
           </h2>
           <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-            Join thousands of developers who have transformed their documentation workflow with ReadmeArchitect.
+            Start creating professional documentation for your projects with our AI-powered tool.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
