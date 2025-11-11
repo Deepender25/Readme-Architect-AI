@@ -174,6 +174,9 @@ export default function RootLayout({
   return (
     <html lang="en-US">
       <head>
+        {/* Mobile Viewport Optimization */}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0, viewport-fit=cover, user-scalable=yes" />
+        
         {/* DNS Prefetch & Preconnect for Performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

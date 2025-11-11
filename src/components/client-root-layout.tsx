@@ -8,6 +8,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { useEffect, useState } from 'react';
 import MobileOptimizer from '@/components/mobile-optimizer';
+import { initPerformanceOptimizations } from '@/lib/performance-monitor';
 
 // Lazy load background for better initial load
 const EnhancedGridBackground = dynamic(() => import('@/components/enhanced-grid-background'), {
@@ -32,6 +33,11 @@ export default function ClientRootLayout({ children }: ClientRootLayoutProps) {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Initialize performance optimizations
+  useEffect(() => {
+    initPerformanceOptimizations();
   }, []);
 
   // Faster animations on mobile

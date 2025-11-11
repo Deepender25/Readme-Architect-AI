@@ -12,6 +12,7 @@
 /* Performance optimizations for smooth scrolling and animations */
 @import './ultra-performance.css';
 @import './mobile-optimizations.css';
+@import './mobile-fixes.css';
 @import './performance.css';
 @import './professional-transitions.css';
 @import './ultra-smooth.css';

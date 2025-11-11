@@ -41,7 +41,7 @@ const nextConfig = {
   // SEO and Performance optimizations
   experimental: {
     scrollRestoration: true,
-    optimizePackageImports: ['framer-motion', 'lucide-react'],
+    optimizePackageImports: ['framer-motion', 'lucide-react', 'react-markdown', 'rehype-highlight'],
   },
   
   // Optimize for production
