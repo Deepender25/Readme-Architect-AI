@@ -206,8 +206,8 @@ export default function SimpleCentered() {
                     />
                     <FeatureCard
                       icon={FileText}
-                      title="Professional Templates"
-                      description="Choose from multiple professionally designed templates that suit your project type"
+                      title="Professional Output"
+                      description="Generates clean, well-structured documentation following industry best practices"
                       delay={4}
                     />
                     <FeatureCard
