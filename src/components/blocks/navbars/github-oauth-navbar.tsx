@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Settings, FileText, LogOut, ChevronDown, FolderGit2, History } from 'lucide-react';
+import { Menu, X, Settings, LogOut, ChevronDown, FolderGit2, History } from 'lucide-react';
 import Image from 'next/image';
 import { useAuth } from '@/lib/auth-client';
 import DropdownPortal from '@/components/ui/dropdown-portal';
@@ -223,46 +223,48 @@ export default function GitHubOAuthNavbar() {
                       transition={{ type: "spring", stiffness: 350, damping: 22 }}
                       className="glass-modal rounded-2xl shadow-2xl shadow-green-400/20 py-3 min-w-64 border border-green-400/20"
                     >
-                      <div className="px-5 py-4 border-b border-green-400/10">
-                        <div className="flex items-start gap-3">
+                      {/* User Profile Header */}
+                      <div className="px-4 py-4 border-b border-green-400/10">
+                        <div className="flex items-center gap-3">
                           <div className="relative flex-shrink-0">
                             <img
                               src={user?.avatar_url}
                               alt={user?.name}
                               className="w-12 h-12 rounded-full border-2 border-green-400/40"
                             />
-                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-black flex items-center justify-center">
+                            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-400 rounded-full border-2 border-black flex items-center justify-center">
                               <div className="w-2 h-2 bg-white rounded-full"></div>
                             </div>
                           </div>
-                          <div className="flex-1 min-w-0 pt-0.5">
-                            <div className="font-semibold text-white text-base leading-tight truncate">
+                          <div className="flex-1 min-w-0">
+                            <div className="font-semibold text-white text-sm leading-snug truncate">
                               {user?.name}
                             </div>
-                            <div className="text-green-400 text-sm leading-tight mt-1 truncate">
+                            <div className="text-green-400 text-xs leading-snug mt-0.5 truncate">
                               @{user?.username}
                             </div>
-                            <div className="text-gray-400 text-xs mt-1 leading-tight">
+                            <div className="text-gray-400 text-xs leading-snug mt-0.5">
                               GitHub Developer
                             </div>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="py-2">
+                      {/* Menu Items */}
+                      <div className="py-1">
                         <button 
                           onClick={() => {
                             setDropdownOpen(false);
                             router.push('/repositories');
                           }}
-                          className="w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
                         >
-                          <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center flex-shrink-0 group-hover:bg-green-400/20 transition-colors">
+                          <div className="w-9 h-9 rounded-lg bg-green-400/10 flex items-center justify-center flex-shrink-0 group-hover:bg-green-400/20 transition-colors">
                             <FolderGit2 className="w-4 h-4 text-green-400" />
                           </div>
                           <div className="flex-1 text-left min-w-0">
-                            <div className="font-medium leading-tight">My Repositories</div>
-                            <div className="text-xs text-gray-500 leading-tight mt-0.5">Manage your projects</div>
+                            <div className="font-medium leading-snug">My Repositories</div>
+                            <div className="text-xs text-gray-500 leading-snug mt-0.5">Manage your projects</div>
                           </div>
                         </button>
                         
@@ -271,14 +273,14 @@ export default function GitHubOAuthNavbar() {
                             setDropdownOpen(false);
                             router.push('/history');
                           }}
-                          className="w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
                         >
-                          <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center flex-shrink-0 group-hover:bg-green-400/20 transition-colors">
+                          <div className="w-9 h-9 rounded-lg bg-green-400/10 flex items-center justify-center flex-shrink-0 group-hover:bg-green-400/20 transition-colors">
                             <History className="w-4 h-4 text-green-400" />
                           </div>
                           <div className="flex-1 text-left min-w-0">
-                            <div className="font-medium leading-tight">Generation History</div>
-                            <div className="text-xs text-gray-500 leading-tight mt-0.5">View past READMEs</div>
+                            <div className="font-medium leading-snug">Generation History</div>
+                            <div className="text-xs text-gray-500 leading-snug mt-0.5">View past READMEs</div>
                           </div>
                         </button>
                         
@@ -287,29 +289,30 @@ export default function GitHubOAuthNavbar() {
                             setDropdownOpen(false);
                             router.push('/settings');
                           }}
-                          className="w-full flex items-center gap-3 px-5 py-3 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-green-400/10 transition-all duration-200 group"
                         >
-                          <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center flex-shrink-0 group-hover:bg-green-400/20 transition-colors">
+                          <div className="w-9 h-9 rounded-lg bg-green-400/10 flex items-center justify-center flex-shrink-0 group-hover:bg-green-400/20 transition-colors">
                             <Settings className="w-4 h-4 text-green-400" />
                           </div>
                           <div className="flex-1 text-left min-w-0">
-                            <div className="font-medium leading-tight">Account Settings</div>
-                            <div className="text-xs text-gray-500 leading-tight mt-0.5">Preferences & privacy</div>
+                            <div className="font-medium leading-snug">Account Settings</div>
+                            <div className="text-xs text-gray-500 leading-snug mt-0.5">Preferences & privacy</div>
                           </div>
                         </button>
                       </div>
                       
-                      <div className="border-t border-green-400/10 pt-2">
+                      {/* Logout Section */}
+                      <div className="border-t border-green-400/10 pt-1">
                         <button 
                           onClick={() => logout()}
-                          className="w-full flex items-center gap-3 px-5 py-3 text-sm text-red-400/80 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 group"
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400/80 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 group"
                         >
-                          <div className="w-8 h-8 rounded-lg bg-red-400/10 flex items-center justify-center flex-shrink-0 group-hover:bg-red-400/20 transition-colors">
+                          <div className="w-9 h-9 rounded-lg bg-red-400/10 flex items-center justify-center flex-shrink-0 group-hover:bg-red-400/20 transition-colors">
                             <LogOut className="w-4 h-4 text-red-400" />
                           </div>
                           <div className="flex-1 text-left min-w-0">
-                            <div className="font-medium leading-tight">Sign Out</div>
-                            <div className="text-xs text-red-400/60 leading-tight mt-0.5">End your session</div>
+                            <div className="font-medium leading-snug">Sign Out</div>
+                            <div className="text-xs text-red-400/60 leading-snug mt-0.5">End your session</div>
                           </div>
                         </button>
                       </div>
