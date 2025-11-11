@@ -191,7 +191,7 @@ export default function GitHubOAuthNavbar() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setDropdownOpen(!dropdownOpen)}
-                    className="relative inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50 whitespace-nowrap h-10"
+                    className="relative inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50 whitespace-nowrap"
                   >
                     <div className="relative w-6 h-6 rounded-full overflow-hidden flex-shrink-0">
                       <Image
@@ -206,7 +206,7 @@ export default function GitHubOAuthNavbar() {
                         }}
                       />
                     </div>
-                    <span className="relative z-10 flex-shrink-0 leading-none">
+                    <span className="relative z-10 flex-shrink-0 leading-tight">
                       {user?.name}
                     </span>
                     <ChevronDown
