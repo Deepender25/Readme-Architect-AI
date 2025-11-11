@@ -214,11 +214,17 @@ function SettingsContent() {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="flex items-center gap-4">
-              <img
-                src={user?.avatar_url}
-                alt={user?.name}
-                className="w-20 h-20 rounded-full border-2 border-green-400/50 shadow-lg"
-              />
+              <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-green-400/50 shadow-lg flex-shrink-0">
+                <img
+                  src={user?.avatar_url || '/default-avatar.svg'}
+                  alt={user?.name || 'User'}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = '/default-avatar.svg';
+                  }}
+                />
+              </div>
               <div>
                 <h3 className="text-xl font-semibold text-white">{user?.name || 'No name set'}</h3>
                 <p className="text-gray-400 flex items-center gap-1">

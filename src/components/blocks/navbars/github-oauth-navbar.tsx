@@ -77,7 +77,7 @@ export default function GitHubOAuthNavbar() {
             onClick={() => router.push('/')}
           >
             <motion.div
-              className="relative"
+              className="relative w-10 h-10"
               animate={{
                 filter: pathname === '/' ? [
                   'drop-shadow(0 0 8px rgba(0, 255, 136, 0.4))',
@@ -104,15 +104,10 @@ export default function GitHubOAuthNavbar() {
                 alt="ReadmeArchitect Logo"
                 width={40}
                 height={40}
-                className="object-contain"
+                className="object-contain w-full h-full"
                 priority
                 quality={100}
-                style={{
-                  imageRendering: 'auto' as const,
-                  filter: 'none',
-                  maxWidth: '100%',
-                  height: 'auto',
-                }}
+                unoptimized
               />
             </motion.div>
 
@@ -198,11 +193,19 @@ export default function GitHubOAuthNavbar() {
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     className="relative flex items-center gap-2 px-6 py-3 text-sm font-medium text-green-400 border border-green-400/30 rounded-xl overflow-hidden group hover:border-green-400/50 hover:bg-green-400/10 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 disabled:opacity-50 whitespace-nowrap"
                   >
-                    <img
-                      src={user?.avatar_url}
-                      alt={user?.name}
-                      className="w-4 h-4 rounded-full"
-                    />
+                    <div className="relative w-4 h-4 rounded-full overflow-hidden flex-shrink-0">
+                      <Image
+                        src={user?.avatar_url || '/default-avatar.svg'}
+                        alt={user?.name || 'User'}
+                        width={16}
+                        height={16}
+                        className="w-full h-full object-cover rounded-full"
+                        unoptimized
+                        onError={(e: any) => {
+                          e.target.src = '/default-avatar.svg';
+                        }}
+                      />
+                    </div>
                     <span className="relative z-10">
                       {user?.name}
                     </span>
@@ -225,12 +228,20 @@ export default function GitHubOAuthNavbar() {
                     >
                       <div className="px-5 py-4 border-b border-green-400/10">
                         <div className="flex items-center gap-3">
-                          <div className="relative">
-                            <img
-                              src={user?.avatar_url}
-                              alt={user?.name}
-                              className="w-12 h-12 rounded-full border-2 border-green-400/40"
-                            />
+                          <div className="relative w-12 h-12 flex-shrink-0">
+                            <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-green-400/40">
+                              <Image
+                                src={user?.avatar_url || '/default-avatar.svg'}
+                                alt={user?.name || 'User'}
+                                width={48}
+                                height={48}
+                                className="w-full h-full object-cover"
+                                unoptimized
+                                onError={(e: any) => {
+                                  e.target.src = '/default-avatar.svg';
+                                }}
+                              />
+                            </div>
                             <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-black flex items-center justify-center">
                               <div className="w-2 h-2 bg-white rounded-full"></div>
                             </div>
@@ -429,11 +440,19 @@ export default function GitHubOAuthNavbar() {
                   ) : (
                     <div className="space-y-1">
                       <div className="flex items-center gap-3 px-2 py-3">
-                        <img
-                          src={user?.avatar_url}
-                          alt={user?.name}
-                          className="w-8 h-8 rounded-full border border-green-500/50"
-                        />
+                        <div className="relative w-8 h-8 rounded-full overflow-hidden border border-green-500/50 flex-shrink-0">
+                          <Image
+                            src={user?.avatar_url || '/default-avatar.svg'}
+                            alt={user?.name || 'User'}
+                            width={32}
+                            height={32}
+                            className="w-full h-full object-cover"
+                            unoptimized
+                            onError={(e: any) => {
+                              e.target.src = '/default-avatar.svg';
+                            }}
+                          />
+                        </div>
                         <div>
                           <div className="font-medium text-sm">{user?.name}</div>
                           <div className="text-xs text-muted-foreground">@{user?.username}</div>

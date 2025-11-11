@@ -25,11 +25,17 @@ export default function AccountSwitcher() {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-3 px-3 py-2 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700 hover:border-gray-600 rounded-xl transition-all"
       >
-        <img
-          src={user.avatar_url}
-          alt={user.name}
-          className="w-8 h-8 rounded-full border-2 border-green-500/50"
-        />
+        <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-green-500/50 flex-shrink-0">
+          <img
+            src={user.avatar_url || '/default-avatar.svg'}
+            alt={user.name}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = '/default-avatar.svg';
+            }}
+          />
+        </div>
         <div className="hidden sm:block text-left">
           <p className="text-sm font-medium text-white whitespace-nowrap">
             {user.name}
@@ -65,11 +71,17 @@ export default function AccountSwitcher() {
               {/* User Info */}
               <div className="p-4 border-b border-gray-700">
                 <div className="flex items-center gap-3">
-                  <img
-                    src={user.avatar_url}
-                    alt={user.name}
-                    className="w-12 h-12 rounded-full border-2 border-green-500/50"
-                  />
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-green-500/50 flex-shrink-0">
+                    <img
+                      src={user.avatar_url || '/default-avatar.svg'}
+                      alt={user.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/default-avatar.svg';
+                      }}
+                    />
+                  </div>
                   <div className="flex-1">
                     <h3 className="font-medium text-white">{user.name}</h3>
                     <p className="text-sm text-gray-400">@{user.username}</p>
