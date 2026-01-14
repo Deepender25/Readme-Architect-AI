@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { organizationSchema, webApplicationSchema } from '@/lib/structured-data';
 import ClientRootLayout from '@/components/client-root-layout';
 import "./globals.css";
@@ -176,7 +177,7 @@ export default function RootLayout({
       <head>
         {/* Mobile Viewport Optimization */}
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0, viewport-fit=cover, user-scalable=yes" />
-        
+
         {/* DNS Prefetch & Preconnect for Performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -308,6 +309,7 @@ export default function RootLayout({
       <body className="antialiased bg-transparent">
         <ClientRootLayout>{children}</ClientRootLayout>
       </body>
+      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || ""} />
     </html>
   );
 }
