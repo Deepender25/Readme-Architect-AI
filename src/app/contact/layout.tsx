@@ -55,5 +55,31 @@ export default function ContactLayout({
 }: {
   children: React.ReactNode
 }) {
-  return children
+  return (
+    <>
+      {/* Structured Data for Contact Page */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'ContactPage',
+            name: 'Contact ReadmeArchitect',
+            description: 'Get in touch with the ReadmeArchitect team for support, feedback, or inquiries.',
+            url: 'https://readmearchitect.vercel.app/contact',
+            mainEntity: {
+              '@type': 'Organization',
+              name: 'ReadmeArchitect',
+              url: 'https://readmearchitect.vercel.app',
+              logo: {
+                '@type': 'ImageObject',
+                url: 'https://readmearchitect.vercel.app/logo.png'
+              }
+            }
+          }),
+        }}
+      />
+      {children}
+    </>
+  )
 }

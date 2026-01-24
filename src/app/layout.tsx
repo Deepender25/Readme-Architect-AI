@@ -62,10 +62,6 @@ export const metadata: Metadata = {
   },
   verification: {
     google: 'google74b256ed93035973',
-    other: {
-      'msvalidate.01': 'your-bing-verification-code',
-      'yandex-verification': 'your-yandex-verification-code'
-    }
   },
   category: 'technology',
   classification: 'Developer Tools',

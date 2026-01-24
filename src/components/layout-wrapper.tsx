@@ -12,23 +12,28 @@ interface LayoutWrapperProps {
   className?: string
 }
 
-export default function LayoutWrapper({ 
-  children, 
-  showNavbar = true, 
+import BreadcrumbSchema from '@/components/seo/breadcrumb-schema'
+
+export default function LayoutWrapper({
+  children,
+  showNavbar = true,
   showFooter = true,
   showBreadcrumbs = true,
   maxWidth = '7xl',
   className = ''
 }: LayoutWrapperProps) {
   return (
-    <AppLayout
-      showNavbar={showNavbar}
-      showFooter={showFooter}
-      showBreadcrumbs={showBreadcrumbs}
-      maxWidth={maxWidth}
-      className={className}
-    >
-      {children}
-    </AppLayout>
+    <>
+      {showBreadcrumbs && <BreadcrumbSchema />}
+      <AppLayout
+        showNavbar={showNavbar}
+        showFooter={showFooter}
+        showBreadcrumbs={showBreadcrumbs}
+        maxWidth={maxWidth}
+        className={className}
+      >
+        {children}
+      </AppLayout>
+    </>
   )
 }

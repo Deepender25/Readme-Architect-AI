@@ -1,7 +1,6 @@
 "use client"
 
 import { Suspense } from 'react'
-import Head from 'next/head'
 import SimpleCentered from '@/components/blocks/heros/simple-centered'
 import LayoutWrapper from '@/components/layout-wrapper'
 import { faqSchema, howToSchema, serviceSchema } from '@/lib/structured-data'
@@ -17,28 +16,26 @@ function HomeContent() {
 export default function Home() {
   return (
     <>
-      <Head>
-        {/* Additional structured data for homepage */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(faqSchema),
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(howToSchema),
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(serviceSchema),
-          }}
-        />
-      </Head>
-      
+      {/* Additional structured data for homepage */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqSchema),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(howToSchema),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(serviceSchema),
+        }}
+      />
+
       <Suspense fallback={
         <div className="min-h-screen flex items-center justify-center relative z-10">
           <div className="cube-loading-container">
